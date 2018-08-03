@@ -1,11 +1,12 @@
 <template>
   <div class="page">
-    <template></template> 
+    <!-- 表格数据 -->
+    <template></template>  
   </div>  
 </template>
 <script>
 export default {
-  name: "record",
+  name: "schoolManagement",
   data() {
     return {};
   },

@@ -1,23 +1,23 @@
 <template>
    <div data-page="login">
       <el-row :gutter="10">
-        <el-col :span="4" :offset="9">
+        <el-col :span="5" :offset="9">
           <el-form :rules="rules" ref="form" :model="form">
-            <el-form-item>
+            <!-- <el-form-item>
                 <h3>欢迎登录Q校网</h3>
-            </el-form-item>
-            <el-form-item prop="UserName">
-                <el-input type="text" name="username" v-model="form.UserName" placeholder="请输入用户名">
+            </el-form-item> -->
+            <el-form-item prop="name">
+                <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名">
                     <i slot="prefix" class="el-input__icon el-icon-date"></i>
                 </el-input>
             </el-form-item>           
-            <el-form-item prop="Password">
-                <el-input type="password" name="password" v-model="form.Password" auto-complete="off" placeholder="请输入密码">
+            <el-form-item prop="password">
+                <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码">
                     <i slot="prefix" class="el-input__icon el-icon-setting"></i>
                 </el-input>
             </el-form-item>
             <el-form-item>
-                <el-button :loading="loading" style="width:100%;" type="primary" @click="handleLogin('form')">登陆</el-button>
+                <el-button :loading="loading" style="width:100%;" type="primary" @click="submit">登陆</el-button>
             </el-form-item>               
           </el-form>           
         </el-col>
@@ -25,30 +25,32 @@
    </div> 
 </template>
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: "login",
   data() {
     return {
       loading: false,
       form: {
-        UserName: "",
-        Password: ""
+        name: "",
+        password: ""
       },
       rules: {
-        UserName: [
+        name: [
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        Password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
   },
   methods: {
-    handleLogin(formName) {
-      this.$refs[formName].validate( valid => {
+    submit() {
+      this.$refs.form.validate( valid => {
         if (valid) {
           this.loading = true;
-          this.$store.dispatch('login', this.form).then(res => {
-            console.log(res);
+          this.$store.dispatch('adminLogin', this.form).then(res => {
+            this.$router.push({ path:'/home' });
           })
         }
       });
@@ -58,7 +60,6 @@ export default {
     console.log(this.$store);
   },
   mounted() {
-    console.log(this);
   }
 };
 </script>

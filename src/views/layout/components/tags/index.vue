@@ -12,7 +12,8 @@
   </div>  
 </template>
 <script>
-import { mapState } from "vuex";
+//在组件中分发 Action
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "tags",
@@ -37,7 +38,18 @@ export default {
       }
       this.$store.commit("TAG_ADD", route);
     },
-    closeTag(tag) {}
+    closeTag(tag) {
+      this.$store.dispatch("close", tag).then(res => {
+        if (tag.path === this.$route.path) {
+          const latestView = res.slice(-1)[0];
+          if (latestView) {
+            this.$router.push(latestView);
+          } else {
+            this.$router.push("/home");
+          }
+        }
+      });
+    }
   },
   mounted() {
     this.addTag();
@@ -53,7 +65,7 @@ export default {
   width: 100%;
   display: flex;
   background-color: #fff;
-  box-shadow: 0 1px 13px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.12);
   a {
     display: flex;
     align-items: center;

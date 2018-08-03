@@ -2,7 +2,7 @@ import Mock from 'mockjs';
 const deviceList = [];
 
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 100; i++) {
   deviceList.push(Mock.mock({
     deviceId: Mock.Random.id(),
     schoolName: Mock.Random.csentence(5, 10),

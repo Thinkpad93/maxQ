@@ -1,5 +1,7 @@
 <template>
-  <div class="page"></div>  
+  <div class="page">
+    <template></template> 
+  </div>  
 </template>
 <script>
 export default {

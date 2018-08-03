@@ -1,6 +1,6 @@
 <template>
-  <aside id="aside" :style="{ width:  width + 'px'}">
-    <el-menu router unique-opened default-active="/home" @open="handleOpen" @close="handleClose" :collapse="collapse" :collapse-transition="false">
+  <aside id="aside">
+    <el-menu class="el-menu-vertical-demo" router unique-opened default-active="/home" @open="handleOpen" @close="handleClose" :collapse="collapse" :collapse-transition="true">
       <el-menu-item index="/home">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
@@ -48,7 +48,9 @@ export default {
   left: 0;
   height: 100%;
   overflow: hidden;
-  transition: width linear 0.3s;
   background-color: #ebf1f6;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
 }
 </style>

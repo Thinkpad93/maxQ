@@ -26,5 +26,9 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  created() {},
+  mounted() {
+    this.$store.commit('getDbState');
+  }
 })
