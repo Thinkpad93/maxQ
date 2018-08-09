@@ -1,6 +1,13 @@
 <template>
   <aside id="aside">
-    <el-menu class="el-menu-vertical-demo" router unique-opened default-active="/home" @open="handleOpen" @close="handleClose" :collapse="collapse" :collapse-transition="true">
+    <el-menu 
+    class="el-menu-vertical-demo" 
+    router unique-opened 
+    default-active="/home" 
+    @open="handleOpen" 
+    @close="handleClose" 
+    :collapse="collapse" 
+    :collapse-transition="true">
       <el-menu-item index="/home">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
@@ -17,6 +24,10 @@
           <el-menu-item index="/device/runlog">运行日志</el-menu-item>
         </el-menu-item-group>                
       </el-submenu>
+      <el-menu-item index="/tag">
+        <i class="el-icon-menu"></i>
+        <span slot="title">标签管理</span>        
+      </el-menu-item>        
     </el-menu>
   </aside>  
 </template>

@@ -26,9 +26,9 @@
     </template>
      <!-- 表格数据 -->
      <template>
-       <el-table :data="computed_page" style="width: 100%" border stripe height="690" size="mini" v-loading="loading">
-         <el-table-column :resizable="false" label="序号" prop="deviceId"></el-table-column>
-         <el-table-column :resizable="false" label="学校名称" prop="schoolName">
+       <el-table :data="computed_page" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
+         <el-table-column :resizable="false" label="序号" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
+         <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
            <template slot-scope="scope">
              <a href="javascript:;" style="color:#409EFF">{{ scope.row.schoolName }}</a>
              <el-dialog center title="查看详情" :visible.sync="dialogView">
@@ -55,10 +55,10 @@
          <el-table-column :resizable="false" label="安装时间" prop="postTime"></el-table-column>
          <el-table-column :resizable="false" label="设备管理员" prop="manager"></el-table-column>
          <el-table-column :resizable="false" label="联系电话" prop="phone"></el-table-column>
-         <el-table-column :resizable="false" label="操作">
+         <el-table-column :resizable="false" label="操作" width="200">
            <template slot-scope="scope">
-             <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-             <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+             <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
            </template>
          </el-table-column>
        </el-table>
@@ -80,7 +80,71 @@
     </template>    
     <!-- 新增 -->
     <template>
-      
+       <el-dialog width="50%" :close-on-click-modal="false" center top="40px" title="新增绑定" :visible.sync="dialogAdd" :modal-append-to-body="false">
+          <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
+            <el-form-item label="区域选择" prop="area">
+              <el-row :gutter="5">
+                <el-col :span="7">
+                  <el-select v-model="addForm.provinceText">
+                    <el-option v-for="item in province" :key="item.value" :label="item.key" :value="item.value"></el-option>
+                  </el-select>                  
+                </el-col>
+                <el-col :span="7">
+                  <el-select v-model="addForm.city">
+                    <el-option v-for="item in city" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="7">
+                  <el-select v-model="addForm.area">
+                    <el-option v-for="item in area" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                  </el-select>                  
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item label="学校名称" prop="schoolid">
+              <el-input v-model="addForm.schoolid" placeholder="请输入学校名称" maxlength="20"></el-input>
+            </el-form-item>
+            <el-form-item label="安装位置" prop="address">
+              <el-input v-model="addForm.address" placeholder="请输入安装位置" maxlength="40"></el-input>
+            </el-form-item>
+            <el-form-item label="设备批次" prop="batch">
+              <el-input v-model="addForm.batch" placeholder="请输入设备批次" maxlength="30"></el-input>
+            </el-form-item>
+            <el-form-item label="设备序号" prop="serial">
+              <el-select v-model="addForm.serial" placeholder="请选择设备序号">
+                <el-option
+                  v-for="item in schoolName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>            
+              </el-select>              
+            </el-form-item>
+            <el-form-item label="冠名企业" prop="sponsors">
+              <el-select v-model="addForm.sponsors" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
+                <el-option
+                  v-for="item in sponsorsList"
+                  :key="item.labelId"
+                  :label="item.name"
+                  :value="item.labelId">
+                </el-option>
+              </el-select>              
+            </el-form-item>
+            <el-form-item label="MAC地址" prop="mac">
+              <el-input v-model="addForm.mac" placeholder="请输入MAC地址"></el-input>
+            </el-form-item>
+            <el-form-item label="设备管理员" prop="manager">
+              <el-input v-model="addForm.manager" placeholder="请输入设备管理员" maxlength="4"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话" prop="phone">
+              <el-input v-model="addForm.phone" placeholder="请输入联系电话"></el-input>
+            </el-form-item>
+            <el-row style="text-align:center">
+                <el-button size="mini" @click="dialogAdd = false">取消</el-button>
+                <el-button :loading="btnloading" size="mini" type="primary" @click="addsForm('addForm')">绑定</el-button>
+            </el-row>            
+          </el-form>
+       </el-dialog>      
     </template> 
      <!-- 编辑 -->
      <template>
@@ -148,6 +212,7 @@ export default {
       btnloading: false,
       formLabelWidth: "100px",
       form: {},
+      addForm: {},
       edit: {
         sponsors: [1]
       },
@@ -188,6 +253,7 @@ export default {
         }
       ],          
       tableData: [],
+      rules: {},
       editrules: {}
     };
   },
@@ -197,6 +263,10 @@ export default {
         (this.query.page - 1) * this.query.page_size,
         this.query.page * this.query.page_size
       );
+    },
+    //设置表格高度
+    tableHeight() {
+      return window.innerHeight - 255;
     }
   },  
   methods: {
@@ -226,12 +296,13 @@ export default {
     },
     //pageSize 改变时会触发
     handleSizeChange(size) {
-      this.page_size = size;
+      this.query.page_size = size;
     },
     //currentPage 改变时会触发
     handleCurrentChange() {},    
     handleEdit(row) {
       this.dialogEdit = true;
+      this.edit = Object.assign({}, row);
     },
     handleSelect() {},
     handleDel(row) {
