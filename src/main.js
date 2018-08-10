@@ -29,6 +29,6 @@ new Vue({
   template: '<App/>',
   created() {},
   mounted() {
-    this.$store.commit('getDbState');
+    this.$store.commit('DB_GET_USER');
   }
 })

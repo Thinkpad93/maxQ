@@ -6,9 +6,13 @@
      <div class="toggle-aside" @click="toggle">
        <i class="icon iconfont icon-weibiaoti26"></i>
      </div>
-      <el-dropdown class="us">
-        <span class="el-dropdown-link">{{ userInfo.name }}</span>
+      <el-dropdown class="us" @command="handleCommand">
+        <span class="el-dropdown-link">
+          {{ userInfo.name }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
         <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>个人信息</el-dropdown-item>
           <el-dropdown-item>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>     
@@ -24,12 +28,15 @@ export default {
   },
   computed: {
     ...mapState({
-      userInfo: state => state.user.userInfo
+      userInfo: state => state.userInfo
     })
   },
   methods: {
     toggle() {
       this.$emit("toggle");
+    },
+    handleCommand(command) {
+      this.$message('click on item ' + command);
     }
   }
 };
@@ -60,8 +67,7 @@ export default {
 .us {
   cursor: pointer;
   float: right;
-  height: 60px;
-  line-height: 60px;
+  margin-top: 22px;
   margin-right: 40px;
 }
 </style>

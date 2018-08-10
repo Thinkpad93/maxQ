@@ -25,7 +25,9 @@
    </div> 
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
+import { userLogin } from "@/api/login";
+import "@/mock/login";
 
 export default {
   name: "login",
@@ -37,21 +39,28 @@ export default {
         password: ""
       },
       rules: {
-        name: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
-        ],
+        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
   },
   methods: {
     submit() {
-      this.$refs.form.validate( valid => {
+      this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true;
-          this.$store.dispatch('adminLogin', this.form).then(res => {
-            this.$router.push({ path:'/home' });
-          })
+          this.login();
+          // this.$store.dispatch('adminLogin', this.form).then(res => {
+          //   this.$router.push({ path:'/home' });
+          // })
+        }
+      });
+    },
+    login() {
+      userLogin(this.form).then(res => {
+        if (res.status === 200) {
+          this.$store.dispatch('loginAction', this.form);
+          this.$router.push({ path: "/home" });
         }
       });
     }
@@ -59,12 +68,11 @@ export default {
   created() {
     console.log(this.$store);
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 <style lang="less" scoped>
-div[data-page='login'] {
+div[data-page="login"] {
   position: absolute;
   left: 0;
   right: 0;
@@ -73,8 +81,8 @@ div[data-page='login'] {
   z-index: 10;
   width: 100%;
   height: 100%;
-  background-color: rgb(240, 242, 245);  
-  background-image: url('../../images/TB1kOoAqv1TBuNjy0FjXXajyXXa-600-600.png');
+  background-color: rgb(240, 242, 245);
+  background-image: url("../../images/TB1kOoAqv1TBuNjy0FjXXajyXXa-600-600.png");
   background-origin: center center;
   background-repeat: no-repeat;
 }
@@ -88,6 +96,6 @@ div[data-page='login'] {
   h3 {
     font-size: 20px;
     text-align: center;
-  }  
+  }
 }
 </style>

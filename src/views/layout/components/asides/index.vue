@@ -20,9 +20,18 @@
         <el-menu-item-group>
           <el-menu-item index="/device/index">设备列表</el-menu-item>
           <el-menu-item index="/device/monitoring">设备监控</el-menu-item>
-          <el-menu-item index="/device/record">检修记录</el-menu-item>
-          <el-menu-item index="/device/runlog">运行日志</el-menu-item>
+          <el-menu-item index="/device/record">设备检修记录</el-menu-item>
+          <el-menu-item index="/device/runlog">设备运行日志</el-menu-item>
         </el-menu-item-group>                
+      </el-submenu>
+      <el-submenu index="3">
+        <template slot="title">
+          <i class="el-icon-loading"></i>
+          <span>校区管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="/school/index">学校管理</el-menu-item>
+        </el-menu-item-group>
       </el-submenu>
       <el-menu-item index="/tag">
         <i class="el-icon-menu"></i>

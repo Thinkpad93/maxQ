@@ -42,7 +42,7 @@ export const constantRouterMap = [
       },
       {
         path: 'record',
-        name: '检修记录',
+        name: '设备检修记录',
         component: () => import ('@/views/device/record'),
         meta: {}        
       },      
@@ -51,6 +51,19 @@ export const constantRouterMap = [
         name: '设备运行日志',
         component: () => import ('@/views/device/runlog'),
         meta: {}        
+      }
+    ]
+  },
+  {
+    path: '/school',
+    component: Layout,
+    redirect: 'index',    
+    children: [
+      {
+        path: 'index',
+        name: '学校管理',
+        component: () => import ('@/views/campus/schoolmanagement/index'),
+        meta: {}
       }
     ]
   },

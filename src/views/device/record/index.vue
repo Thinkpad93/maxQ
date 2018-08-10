@@ -1,8 +1,30 @@
 <template>
   <div class="page">
+    <template>
+      <el-row :gutter="10">
+        <el-col :span="24">
+          <div class="page-form">
+            <el-form :inline="true" :model="form" size="small" label-width="70px" label-position="left">
+              <el-form-item>
+                <el-autocomplete
+                  class="inline-input"
+                  v-model="state1"
+                  :fetch-suggestions="querySearch"
+                  placeholder="请输入学校名称"
+                  @select="handleSelect"
+                ></el-autocomplete>                
+              </el-form-item>           
+              <el-form-item>
+                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+              </el-form-item>              
+            </el-form>
+          </div>
+        </el-col>
+      </el-row>      
+    </template>     
     <!-- 表格数据 -->
     <template>
-      <el-table :data="computed_page" style="width: 100%" border stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
           <el-table-column :resizable="false" width="100" label="序号" prop="repairId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
@@ -111,13 +133,43 @@ export default {
         schoolid: 0,
         page: 1,
         page_size: 10
-      },            
+      }, 
+      restaurants: [],
+      state1: '',      
+      rules: {},
+      addForm: {},
+      edit: {},
+      tableData: []           
     };
   },
   methods: {
     show() {},
-    close() {},    
-  }
+    close() {}, 
+    search() {},
+    querySearch(queryString, cb) {
+      let restaurants = this.restaurants;
+      let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    loadAll() {
+      return [
+        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
+        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
+        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
+        { "value": "泷千家(天山西路店)", "address": "天山西路438号" },        
+      ]
+    },
+    handleSelect() {},        
+  },
+  mounted() {
+    this.restaurants = this.loadAll();
+  }   
 };
 </script>
 <style lang="less" scoped>

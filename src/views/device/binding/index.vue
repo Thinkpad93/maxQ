@@ -17,7 +17,7 @@
               </el-form-item>           
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                <el-button icon="el-icon-plus" type="info" @click="dialogAdd = true">新增绑定</el-button>
+                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增绑定</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -29,7 +29,7 @@
        <el-table :data="computed_page" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
          <el-table-column :resizable="false" label="序号" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
-           <template slot-scope="scope">
+           <!-- <template slot-scope="scope">
              <a href="javascript:;" style="color:#409EFF">{{ scope.row.schoolName }}</a>
              <el-dialog center title="查看详情" :visible.sync="dialogView">
                <el-row :gutter="10" v-if="Object.keys(edit).length">
@@ -47,7 +47,7 @@
                </el-row>
                <el-row v-else><p>发生了点错误~</p></el-row>
              </el-dialog>
-           </template>
+           </template> -->
          </el-table-column>
          <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="MAC地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
@@ -80,9 +80,9 @@
     </template>    
     <!-- 新增 -->
     <template>
-       <el-dialog width="50%" :close-on-click-modal="false" center top="40px" title="新增绑定" :visible.sync="dialogAdd" :modal-append-to-body="false">
+       <el-dialog width="50%" :close-on-click-modal="false" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd" :modal-append-to-body="false">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-            <el-form-item label="区域选择" prop="area">
+            <!-- <el-form-item label="区域选择" prop="area">
               <el-row :gutter="5">
                 <el-col :span="7">
                   <el-select v-model="addForm.provinceText">
@@ -100,7 +100,7 @@
                   </el-select>                  
                 </el-col>
               </el-row>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="学校名称" prop="schoolid">
               <el-input v-model="addForm.schoolid" placeholder="请输入学校名称" maxlength="20"></el-input>
             </el-form-item>
@@ -148,7 +148,7 @@
     </template> 
      <!-- 编辑 -->
      <template>
-       <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
+       <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false" @open="show" @close="close">
          <el-form :rules="editrules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
            <el-form-item label="学校名称">
              <el-input v-model="edit.schoolName" :disabled="true"></el-input>
@@ -199,10 +199,12 @@
 </template>
 <script>
 import { showDeviceList } from "@/api/device";
+import Mixin from "../mixin/binding";
 import "@/mock/binding";
 
 export default {
   name: "binding",
+  mixins: [Mixin],
   data() {
     return {
       loading: false,
@@ -214,7 +216,7 @@ export default {
       form: {},
       addForm: {},
       edit: {
-        sponsors: [1]
+        sponsors: []
       },
       //默认参数
       query: {
@@ -253,7 +255,6 @@ export default {
         }
       ],          
       tableData: [],
-      rules: {},
       editrules: {}
     };
   },
@@ -314,6 +315,15 @@ export default {
       }).then(function() {
         this.deleteDevice(row.deviceId);
       });      
+    },
+    addsForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+
+        }else {
+          return false;
+        }
+      })
     },
     //显示设备列表
     getDeviceList() {

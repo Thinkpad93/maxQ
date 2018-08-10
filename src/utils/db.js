@@ -6,7 +6,7 @@ const db = low(adapter);
 
 
 // 初始化数据库
-db.defaults({ userInfo: {} }).write();
+db.defaults({ userInfo: {}, tabList: [] }).write();
 
 
 export default db;

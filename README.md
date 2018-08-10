@@ -1,4 +1,5 @@
-> 科普进校园管理平台
+> Q校网业务综合管理后台
+
 
 ``` javascript
 echo "# maxQ" >> README.md
