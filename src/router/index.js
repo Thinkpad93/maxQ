@@ -68,6 +68,25 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/user',
+    component: Layout,
+    redirect: 'index',
+    children: [
+      {
+        path: 'permissions',
+        name: '权限管理',
+        component: () => import ('@/views/user/permissions'),
+        meta: {}
+      },
+      {
+        path: 'account',
+        name: '账号管理',
+        component: () => import ('@/views/user/account'),
+        meta: {}
+      }      
+    ]   
+  },
+  {
     path: '/tag',
     name: '标签管理',
     component: () =>  import ('@/views/tag'),

@@ -19,6 +19,7 @@
      <template>
 
      </template> 
+
    </div> 
 </template>
 <script>
@@ -28,7 +29,6 @@ export default {
     return {
       dialogAdd: false,
       form: {},
-      
     };
   },
   methods: {

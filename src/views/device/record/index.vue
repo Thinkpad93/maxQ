@@ -16,6 +16,7 @@
               </el-form-item>           
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -44,7 +45,7 @@
     </template> 
     <!-- 新增检修记录 -->
     <template>
-      <el-dialog :close-on-click-modal="false" center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd">
+      <el-dialog :close-on-click-modal="false" center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="学校名称" prop="schoolid">
             <el-input v-model="addForm.schoolid" placeholder="请输入学校名称" maxlength="20"></el-input>
@@ -136,7 +137,26 @@ export default {
       }, 
       restaurants: [],
       state1: '',      
-      rules: {},
+      rules: {
+        schoolid: [
+          { required: true, message: "请输入学校名称", trigger: "blur" }
+        ],
+        fault_time: [
+          { required: true, message: "请选择故障时间", trigger: "blur" }
+        ],
+        repair_time: [
+          { required: true, message: "请选择检修时间", trigger: "blur" }
+        ],
+        fault_description: [
+          { required: true, message: "请输入故障描述", trigger: "blur" }
+        ],
+        repair_result: [
+          { required: true, message: "请输入检修结果", trigger: "blur" }
+        ],
+        repair_man: [
+          { required: true, message: "请输入检修人员", trigger: "blur" }
+        ]
+      },
       addForm: {},
       edit: {},
       tableData: []           

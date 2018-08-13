@@ -38,6 +38,10 @@ export default {
     handleCommand(command) {
       this.$message('click on item ' + command);
     }
+  },
+  created() {},
+  mounted() {
+    console.log(this.$root);
   }
 };
 </script>

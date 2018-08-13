@@ -1,6 +1,4 @@
-import {
-  AXIOS_DEFAULT_CONFIG
-} from '@/config';
+import { AXIOS_DEFAULT_CONFIG } from '@/config';
 import axios from 'axios';
 
 axios.defaults.baseURL = AXIOS_DEFAULT_CONFIG.baseURL;

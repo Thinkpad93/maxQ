@@ -5,7 +5,10 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="form" size="small" label-width="70px" label-position="left">
+            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+              <!-- <el-form-item>
+                <el-cascader :options="options" change-on-select></el-cascader>
+              </el-form-item> -->
               <el-form-item>
                 <el-autocomplete
                   class="inline-input"
@@ -26,8 +29,8 @@
     </template>
      <!-- 表格数据 -->
      <template>
-       <el-table :data="computed_page" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
-         <el-table-column :resizable="false" label="序号" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
+       <el-table :data="tableData" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
+         <el-table-column :resizable="false" label="设备ID" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
            <!-- <template slot-scope="scope">
              <a href="javascript:;" style="color:#409EFF">{{ scope.row.schoolName }}</a>
@@ -111,22 +114,23 @@
               <el-input v-model="addForm.batch" placeholder="请输入设备批次" maxlength="30"></el-input>
             </el-form-item>
             <el-form-item label="设备序号" prop="serial">
-              <el-select v-model="addForm.serial" placeholder="请选择设备序号">
+              <el-input v-model="addForm.serial" placeholder="请选择设备序号" maxlength="30"></el-input>
+              <!-- <el-select v-model="addForm.serial" placeholder="请选择设备序号">
                 <el-option
                   v-for="item in schoolName"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
                 </el-option>            
-              </el-select>              
+              </el-select>               -->
             </el-form-item>
             <el-form-item label="冠名企业" prop="sponsors">
-              <el-select v-model="addForm.sponsors" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
+              <el-select v-model="addForm.sponsors" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
                 <el-option
                   v-for="item in sponsorsList"
                   :key="item.labelId"
                   :label="item.name"
-                  :value="item.labelId">
+                  :value="item">
                 </el-option>
               </el-select>              
             </el-form-item>
@@ -170,7 +174,7 @@
               </el-select>              
             </el-form-item>    
             <el-form-item label="冠名企业" prop="sponsors">
-              <el-select v-model="edit.sponsors" multiple placeholder="请选择冠名企业" @change="changeTag">
+              <el-select v-model="edit.sponsors" value-key="labelId" multiple placeholder="请选择冠名企业" @change="changeTag">
                 <el-option
                   v-for="item in sponsorsList"
                   :key="item.labelId"
@@ -198,7 +202,13 @@
   </div>  
 </template>
 <script>
-import { showDeviceList } from "@/api/device";
+import {
+  addDeviceBind,
+  updateDeviceBind,
+  deleteDeviceBind,
+  showDeviceList
+} from "@/api/device";
+import { ERROR_CODE } from "@/config";
 import Mixin from "../mixin/binding";
 import "@/mock/binding";
 
@@ -214,25 +224,34 @@ export default {
       btnloading: false,
       formLabelWidth: "100px",
       form: {},
-      addForm: {},
+      addForm: {
+        sponsors: [
+          {
+            labelId: 1,
+            name: "美食",
+            description: "",
+            type: 3
+          }
+        ]
+      },
       edit: {
         sponsors: []
       },
       //默认参数
       query: {
-        schoolid: 0,
+        schoolId: 0,
         page: 1,
-        page_size: 10
+        pageSize: 10
       },
       restaurants: [],
-      state1: '',
+      state1: "",
       //学校名称
       schoolName: [
         { value: "1", label: "棠东小学" },
         { value: "2", label: "棠下一小" },
         { value: "3", label: "东风中小学" },
         { value: "4", label: "棠下小学" }
-      ],  
+      ],
       //请求的数据
       sponsorsList: [
         {
@@ -253,7 +272,7 @@ export default {
           description: "",
           type: 3
         }
-      ],          
+      ],
       tableData: [],
       editrules: {}
     };
@@ -269,38 +288,49 @@ export default {
     tableHeight() {
       return window.innerHeight - 255;
     }
-  },  
+  },
   methods: {
     //搜索
-    search() {
-
+    search() {},
+    changeTag(value) {
+      console.log(value);
     },
-    changeTag() {},
     querySearch(queryString, cb) {
       let restaurants = this.restaurants;
-      let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      let results = queryString
+        ? restaurants.filter(this.createFilter(queryString))
+        : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      return restaurant => {
+        return (
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
+          0
+        );
       };
     },
     loadAll() {
       return [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-        { "value": "泷千家(天山西路店)", "address": "天山西路438号" },        
-      ]
+        { value: "三全鲜食（北新泾店）", address: "长宁区新渔路144号" },
+        {
+          value: "Hot honey 首尔炸鸡（仙霞路）",
+          address: "上海市长宁区淞虹路661号"
+        },
+        {
+          value: "新旺角茶餐厅",
+          address: "上海市普陀区真北路988号创邑金沙谷6号楼113"
+        },
+        { value: "泷千家(天山西路店)", address: "天山西路438号" }
+      ];
     },
     //pageSize 改变时会触发
     handleSizeChange(size) {
       this.query.page_size = size;
     },
     //currentPage 改变时会触发
-    handleCurrentChange() {},    
+    handleCurrentChange() {},
     handleEdit(row) {
       this.dialogEdit = true;
       this.edit = Object.assign({}, row);
@@ -314,30 +344,45 @@ export default {
         type: "warning"
       }).then(function() {
         this.deleteDevice(row.deviceId);
-      });      
+      });
     },
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-
-        }else {
+          //let { sponsors } = this.addForm;
+          //let sponsorsList = sponsors.map(x => ({ labelid: x }));
+          //sponsors.splice(0, sponsors.length).push(sponsorsList);
+          //console.log(this.addForm);
+        } else {
           return false;
         }
-      })
+      });
     },
     //显示设备列表
-    getDeviceList() {
-      let that = this;
-      that.loading = true;
-      showDeviceList(that.query).then(response => {
-        console.log(response);
-        this.loading = false;
-        this.tableData = response.data;
+    createTable() {
+      this.loading = true;
+      showDeviceList(this.query).then(res => {
+        if (res.data.errorCode === 0) {
+          this.loading = false;
+          this.tableData = res.data.data;
+        }
       });
+    },
+    //新增设备绑定
+    addTable() {
+      addDeviceBind(this.query).then(res => {});
+    },
+    //编辑设备绑定
+    updateTable() {
+      updateDeviceBind(this.query).then(res => {});
+    },
+    //删除设备绑定
+    deleteTable() {
+      deleteDeviceBind(this.query).then(res => {});
     }
   },
   mounted() {
-    this.getDeviceList();
+    this.createTable();
     this.restaurants = this.loadAll();
   }
 };
