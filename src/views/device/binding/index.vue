@@ -6,10 +6,37 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <!-- <el-form-item>
-                <el-cascader :options="options" change-on-select></el-cascader>
-              </el-form-item> -->
-              <el-form-item>
+              <el-form-item label="区域选择">
+                <!-- <el-cascader 
+                  :options="region" 
+                  :props="props" 
+                  @active-item-change="handleRegion"></el-cascader> -->
+                  <el-select v-model="area" placeholder="请选择省">
+                    <el-option
+                      v-for="item in schoolName"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>                    
+                  </el-select>    
+                  <el-select v-model="area" placeholder="请选择市">
+                    <el-option
+                      v-for="item in schoolName"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>                    
+                  </el-select>  
+                  <el-select v-model="area" placeholder="请选择区">
+                    <el-option
+                      v-for="item in schoolName"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>                    
+                  </el-select>                                                                                   
+              </el-form-item>
+              <el-form-item label="学校名称">
                 <el-autocomplete
                   class="inline-input"
                   v-model="state1"
@@ -76,14 +103,14 @@
             @current-change="handleCurrentChange"
             :current-page.sync="query.page"
             :page-size="query.page_size"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="tableData.length">
+            layout="total, prev, pager, next, jumper"
+            :total="tableData[0].totalCount">
           </el-pagination> 
       </div>   
     </template>    
     <!-- 新增 -->
     <template>
-       <el-dialog width="50%" :close-on-click-modal="false" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd" :modal-append-to-body="false">
+       <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd" :modal-append-to-body="false">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <!-- <el-form-item label="区域选择" prop="area">
               <el-row :gutter="5">
@@ -104,8 +131,8 @@
                 </el-col>
               </el-row>
             </el-form-item> -->
-            <el-form-item label="学校名称" prop="schoolid">
-              <el-input v-model="addForm.schoolid" placeholder="请输入学校名称" maxlength="20"></el-input>
+            <el-form-item label="学校名称" prop="schoolId">
+              <el-input v-model="addForm.schoolId" placeholder="请输入学校名称" maxlength="20"></el-input>
             </el-form-item>
             <el-form-item label="安装位置" prop="address">
               <el-input v-model="addForm.address" placeholder="请输入安装位置" maxlength="40"></el-input>
@@ -124,13 +151,13 @@
                 </el-option>            
               </el-select>               -->
             </el-form-item>
-            <el-form-item label="冠名企业" prop="sponsors">
-              <el-select v-model="addForm.sponsors" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
+            <el-form-item label="冠名企业" prop="labelIds">
+              <el-select v-model="addForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
                 <el-option
-                  v-for="item in sponsorsList"
+                  v-for="item in labelsList"
                   :key="item.labelId"
                   :label="item.name"
-                  :value="item">
+                  :value="item.labelId">
                 </el-option>
               </el-select>              
             </el-form-item>
@@ -153,7 +180,7 @@
      <!-- 编辑 -->
      <template>
        <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false" @open="show" @close="close">
-         <el-form :rules="editrules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
+         <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
            <el-form-item label="学校名称">
              <el-input v-model="edit.schoolName" :disabled="true"></el-input>
            </el-form-item>
@@ -164,25 +191,21 @@
               <el-input v-model="edit.batch" placeholder="请输入设备批次" :disabled="true"></el-input>
             </el-form-item>    
             <el-form-item label="设备序号" prop="serial">
-              <el-select v-model="edit.serial" placeholder="请选择设备序号" :disabled="true">
-                <el-option
-                  v-for="item in schoolName"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>            
-              </el-select>              
-            </el-form-item>    
-            <el-form-item label="冠名企业" prop="sponsors">
-              <el-select v-model="edit.sponsors" value-key="labelId" multiple placeholder="请选择冠名企业" @change="changeTag">
-                <el-option
-                  v-for="item in sponsorsList"
-                  :key="item.labelId"
-                  :label="item.name"
-                  :value="item.labelId">
-                </el-option>
-              </el-select>               
-            </el-form-item>
+              <el-input v-model="edit.serial" placeholder="请选择设备序号" :disabled="true" maxlength="30"></el-input>
+            </el-form-item>  
+            <!-- 如果存在冠名企业 -->  
+            <template>
+              <el-form-item label="冠名企业" prop="labelIds">
+                <el-select v-model="edit.labelIds" value-key="labelId" multiple placeholder="请选择冠名企业" @change="changeTag">
+                  <el-option
+                    v-for="item in labelsList"
+                    :key="item.labelId"
+                    :label="item.name"
+                    :value="item.labelId">
+                  </el-option>
+                </el-select>               
+              </el-form-item>
+            </template>
            <el-form-item label="MAC地址" prop="mac">
              <el-input v-model="edit.mac" :disabled="true"></el-input>
            </el-form-item>
@@ -208,9 +231,9 @@ import {
   deleteDeviceBind,
   showDeviceList
 } from "@/api/device";
-import { ERROR_CODE } from "@/config";
+import { queryLabel } from "@/api/label";
+import { queryRegion } from "@/api/school";
 import Mixin from "../mixin/binding";
-import "@/mock/binding";
 
 export default {
   name: "binding",
@@ -225,17 +248,10 @@ export default {
       formLabelWidth: "100px",
       form: {},
       addForm: {
-        sponsors: [
-          {
-            labelId: 1,
-            name: "美食",
-            description: "",
-            type: 3
-          }
-        ]
+        labelIds: []
       },
       edit: {
-        sponsors: []
+        labelIds: []
       },
       //默认参数
       query: {
@@ -245,6 +261,7 @@ export default {
       },
       restaurants: [],
       state1: "",
+      area: "",
       //学校名称
       schoolName: [
         { value: "1", label: "棠东小学" },
@@ -253,37 +270,13 @@ export default {
         { value: "4", label: "棠下小学" }
       ],
       //请求的数据
-      sponsorsList: [
-        {
-          labelId: 1,
-          name: "美食",
-          description: "",
-          type: 3
-        },
-        {
-          labelId: 2,
-          name: "没有选择了",
-          description: "",
-          type: 3
-        },
-        {
-          labelId: 22,
-          name: "品牌曝光",
-          description: "",
-          type: 3
-        }
-      ],
+      labelsList: [],
+
       tableData: [],
       editrules: {}
     };
   },
   computed: {
-    computed_page() {
-      return this.tableData.slice(
-        (this.query.page - 1) * this.query.page_size,
-        this.query.page * this.query.page_size
-      );
-    },
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
@@ -292,8 +285,9 @@ export default {
   methods: {
     //搜索
     search() {},
+    handleRegion(val) {},
     changeTag(value) {
-      console.log(value);
+      //console.log(value);
     },
     querySearch(queryString, cb) {
       let restaurants = this.restaurants;
@@ -327,61 +321,124 @@ export default {
     },
     //pageSize 改变时会触发
     handleSizeChange(size) {
-      this.query.page_size = size;
+      //this.query.page_size = size;
     },
     //currentPage 改变时会触发
-    handleCurrentChange() {},
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },
     handleEdit(row) {
       this.dialogEdit = true;
-      this.edit = Object.assign({}, row);
+      this.$nextTick(function() {
+        this.edit = Object.assign({}, row);
+      });
     },
     handleSelect() {},
     handleDel(row) {
-      let { schoolName } = row;
-      this.$confirm(`你确定真的要删除${schoolName}吗?`, "提示", {
+      let that = this;
+      this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(function() {
-        this.deleteDevice(row.deviceId);
+        that.deleteTable(row.deviceId);
       });
     },
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //let { sponsors } = this.addForm;
-          //let sponsorsList = sponsors.map(x => ({ labelid: x }));
-          //sponsors.splice(0, sponsors.length).push(sponsorsList);
-          //console.log(this.addForm);
+          console.log(this.addForm);
+          this.addTable(this.addForm);
         } else {
           return false;
+        }
+      });
+    },
+    editorForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let { postTime, schoolName, totalCount, ...row } = this.edit;
+          this.updateTable(row);
+        } else {
+          return false;
+        }
+      });
+    },
+    //查询区域
+    getRegion() {
+      queryRegion({ queryId: 0, queryType: 0 }).then(res => {
+        console.log(res);
+      });
+    },
+    //查询标签
+    getLabel() {
+      queryLabel({ queryType: 3 }).then(res => {
+        if (res.data.errorCode === 0) {
+          this.labelsList = res.data.data;
         }
       });
     },
     //显示设备列表
     createTable() {
       this.loading = true;
-      showDeviceList(this.query).then(res => {
-        if (res.data.errorCode === 0) {
+      showDeviceList(this.query)
+        .then(res => {
+          if (res.data.errorCode === 0) {
+            this.edit = {};
+            this.loading = false;
+            this.tableData = res.data.data;
+          }
+        })
+        .catch(error => {
           this.loading = false;
-          this.tableData = res.data.data;
+        });
+    },
+    //新增设备绑定
+    addTable(params = {}) {
+      addDeviceBind(params).then(res => {
+        if (res.data.errorCode === 0) {
+          this.dialogAdd = false;
+          this.$message({ message: `${res.data.errorMsg}`, type: "success" });
+          this.createTable({
+            schoolId: 0,
+            page: 1,
+            pageSize: 10
+          });
         }
       });
     },
-    //新增设备绑定
-    addTable() {
-      addDeviceBind(this.query).then(res => {});
-    },
     //编辑设备绑定
-    updateTable() {
-      updateDeviceBind(this.query).then(res => {});
+    updateTable(params = {}) {
+      updateDeviceBind(params).then(res => {
+        this.dialogEdit = false;
+        if (res.data.errorCode === 0) {
+          this.$message({ message: `${res.data.errorMsg}`, type: "success" });
+          this.createTable({
+            schoolId: 0,
+            page: 1,
+            pageSize: 10
+          });          
+        }
+      });
     },
     //删除设备绑定
-    deleteTable() {
-      deleteDeviceBind(this.query).then(res => {});
+    deleteTable(deviceId) {
+      deleteDeviceBind({ deviceId }).then(res => {
+        console.log(res);
+        if (res.data.errorCode === 0) {
+          this.createTable({
+            schoolId: 0,
+            page: 1,
+            pageSize: 10
+          });
+        }
+      });
     }
   },
   mounted() {
+    this.getRegion();
+    this.getLabel();
     this.createTable();
     this.restaurants = this.loadAll();
   }

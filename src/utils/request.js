@@ -4,7 +4,7 @@ import axios from 'axios';
 axios.defaults.baseURL = AXIOS_DEFAULT_CONFIG.baseURL;
 axios.defaults.timeout = AXIOS_DEFAULT_CONFIG.timeout;
 axios.defaults.headers = AXIOS_DEFAULT_CONFIG.headers;
-
+axios.defaults.transformRequest = AXIOS_DEFAULT_CONFIG.transformRequest;
 
 //请求拦截器
 axios.interceptors.request.use(config => {
@@ -31,7 +31,7 @@ export default {
    * @param {String} url [请求的url地址] 
    * @param {Object} params [请求时携带的参数] 
    */  
-  fetchGet(url, params = {}) {
+  fetchGet(url, params) {
     return new Promise((resolve, reject) => {
       axios.get(url, params).then(res => {
         resolve(res);
@@ -45,7 +45,7 @@ export default {
  * @param {String} url [请求的url地址] 
  * @param {Object} params [请求时携带的参数] 
  */
-  fetchPost(url, params = {}) {
+  fetchPost(url, params) {
     return new Promise((resolve, reject) => {
       axios.post(url, params).then(res => {
         resolve(res);

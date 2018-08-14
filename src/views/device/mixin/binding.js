@@ -3,7 +3,7 @@ const Mixin = {
   data() {
     return {
       rules: {
-        schoolid: [
+        schoolId: [
           {
             required: true,
             message: "请输入学校名称",
@@ -31,7 +31,7 @@ const Mixin = {
             trigger: "blur"
           }
         ],
-        sponsors: [
+        labelIds: [
           {
             required: true,
             message: "请选择冠名企业",
@@ -81,7 +81,7 @@ const Mixin = {
   methods: {
     show() {
       this.$nextTick(function () {  
-        this.edit.sponsors.push(2, 22);
+        //this.edit.sponsors.push(2, 22);
       });
     },
     close() {}
