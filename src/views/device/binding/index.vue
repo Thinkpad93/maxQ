@@ -7,43 +7,19 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <!-- <el-cascader 
-                  :options="region" 
-                  :props="props" 
-                  @active-item-change="handleRegion"></el-cascader> -->
-                  <el-select v-model="area" placeholder="请选择省">
-                    <el-option
-                      v-for="item in schoolName"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>                    
-                  </el-select>    
-                  <el-select v-model="area" placeholder="请选择市">
-                    <el-option
-                      v-for="item in schoolName"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>                    
-                  </el-select>  
-                  <el-select v-model="area" placeholder="请选择区">
-                    <el-option
-                      v-for="item in schoolName"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>                    
-                  </el-select>                                                                                   
+
+                <region @change="handleRegion"></region>
+
               </el-form-item>
               <el-form-item label="学校名称">
-                <el-autocomplete
-                  class="inline-input"
-                  v-model="state1"
-                  :fetch-suggestions="querySearch"
-                  placeholder="请输入学校名称"
-                  @select="handleSelect"
-                ></el-autocomplete>                
+                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
+                  <el-option
+                    v-for="item in schoolList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option> 
+                </el-select>
               </el-form-item>           
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
@@ -59,27 +35,8 @@
        <el-table :data="tableData" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
          <el-table-column :resizable="false" label="设备ID" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
-           <!-- <template slot-scope="scope">
-             <a href="javascript:;" style="color:#409EFF">{{ scope.row.schoolName }}</a>
-             <el-dialog center title="查看详情" :visible.sync="dialogView">
-               <el-row :gutter="10" v-if="Object.keys(edit).length">
-                 <el-col :span="6"><p class="">区域： 广东省广州市天河区</p></el-col>
-                 <el-col :span="6"><p class="">学校名称：{{ edit.schoolName }}</p></el-col>
-                 <el-col :span="6"><p class="">安装位置：{{ edit.address }}</p></el-col>
-                 <el-col :span="6"><p class="">学校编号：001</p></el-col>
-                 <el-col :span="6"><p class="">设备批次：20180508V1.0</p></el-col>
-                 <el-col :span="6"><p class="">设备序号：001</p></el-col>
-                 <el-col :span="6"><p class="">冠名企业：01</p></el-col>
-                 <el-col :span="6"><p class="">MAC地址：{{ edit.mac }}</p></el-col>
-                 <el-col :span="6"><p class="">安装日期：{{ edit.postTime }}</p></el-col>
-                 <el-col :span="6"><p class="">设备管理员：{{ edit.manager }}</p></el-col>
-                 <el-col :span="6"><p class="">联系电话：{{ edit.phone }}</p></el-col>
-               </el-row>
-               <el-row v-else><p>发生了点错误~</p></el-row>
-             </el-dialog>
-           </template> -->
          </el-table-column>
-         <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
+         <el-table-column :resizable="false" label="设备编号" prop="batch" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="MAC地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="安装位置" prop="address" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="安装时间" prop="postTime"></el-table-column>
@@ -112,27 +69,21 @@
     <template>
        <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd" :modal-append-to-body="false">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-            <!-- <el-form-item label="区域选择" prop="area">
-              <el-row :gutter="5">
-                <el-col :span="7">
-                  <el-select v-model="addForm.provinceText">
-                    <el-option v-for="item in province" :key="item.value" :label="item.key" :value="item.value"></el-option>
-                  </el-select>                  
-                </el-col>
-                <el-col :span="7">
-                  <el-select v-model="addForm.city">
-                    <el-option v-for="item in city" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                  </el-select>
-                </el-col>
-                <el-col :span="7">
-                  <el-select v-model="addForm.area">
-                    <el-option v-for="item in area" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                  </el-select>                  
-                </el-col>
-              </el-row>
-            </el-form-item> -->
+            <el-form-item label="区域选择" prop="area">
+
+              <region @change="handleRegion"></region>
+
+            </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
-              <el-input v-model="addForm.schoolId" placeholder="请输入学校名称" maxlength="20"></el-input>
+               <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
+                  <el-option
+                    v-for="item in schoolList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option> 
+                </el-select>              
+
             </el-form-item>
             <el-form-item label="安装位置" prop="address">
               <el-input v-model="addForm.address" placeholder="请输入安装位置" maxlength="40"></el-input>
@@ -142,14 +93,6 @@
             </el-form-item>
             <el-form-item label="设备序号" prop="serial">
               <el-input v-model="addForm.serial" placeholder="请选择设备序号" maxlength="30"></el-input>
-              <!-- <el-select v-model="addForm.serial" placeholder="请选择设备序号">
-                <el-option
-                  v-for="item in schoolName"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>            
-              </el-select>               -->
             </el-form-item>
             <el-form-item label="冠名企业" prop="labelIds">
               <el-select v-model="addForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
@@ -231,13 +174,17 @@ import {
   deleteDeviceBind,
   showDeviceList
 } from "@/api/device";
-import { queryLabel } from "@/api/label";
-import { queryRegion } from "@/api/school";
+import { queryLabel } from "@/api/school";
 import Mixin from "../mixin/binding";
+import region from "@/components/region";
+
 
 export default {
   name: "binding",
   mixins: [Mixin],
+  components: {
+    region
+  },
   data() {
     return {
       loading: false,
@@ -259,21 +206,12 @@ export default {
         page: 1,
         pageSize: 10
       },
-      restaurants: [],
-      state1: "",
-      area: "",
+      schoolId: null,
       //学校名称
-      schoolName: [
-        { value: "1", label: "棠东小学" },
-        { value: "2", label: "棠下一小" },
-        { value: "3", label: "东风中小学" },
-        { value: "4", label: "棠下小学" }
-      ],
+      schoolList: [],
       //请求的数据
       labelsList: [],
-
       tableData: [],
-      editrules: {}
     };
   },
   computed: {
@@ -284,40 +222,23 @@ export default {
   },
   methods: {
     //搜索
-    search() {},
-    handleRegion(val) {},
+    search() {
+      if (this.schoolId === null) {
+        this.$message({ message: '请选择学校名称', type: 'warning'});
+      }else {
+        this.createTable();
+      }
+    },
+    handleRegion(list) {
+      if (Array.isArray(list)) {
+        this.schoolList = list;
+      }
+    },
     changeTag(value) {
       //console.log(value);
     },
-    querySearch(queryString, cb) {
-      let restaurants = this.restaurants;
-      let results = queryString
-        ? restaurants.filter(this.createFilter(queryString))
-        : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return restaurant => {
-        return (
-          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
-          0
-        );
-      };
-    },
-    loadAll() {
-      return [
-        { value: "三全鲜食（北新泾店）", address: "长宁区新渔路144号" },
-        {
-          value: "Hot honey 首尔炸鸡（仙霞路）",
-          address: "上海市长宁区淞虹路661号"
-        },
-        {
-          value: "新旺角茶餐厅",
-          address: "上海市普陀区真北路988号创邑金沙谷6号楼113"
-        },
-        { value: "泷千家(天山西路店)", address: "天山西路438号" }
-      ];
+    handleSchool(value) {
+      this.query.schoolId = value;
     },
     //pageSize 改变时会触发
     handleSizeChange(size) {
@@ -330,6 +251,9 @@ export default {
     },
     handleEdit(row) {
       this.dialogEdit = true;
+      if (row.labelIds === null) {
+        row.labelIds = [];
+      }
       this.$nextTick(function() {
         this.edit = Object.assign({}, row);
       });
@@ -348,7 +272,6 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.addForm);
           this.addTable(this.addForm);
         } else {
           return false;
@@ -359,23 +282,19 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { postTime, schoolName, totalCount, ...row } = this.edit;
+          console.log(row);
+          console.log("==============================");
           this.updateTable(row);
         } else {
           return false;
         }
       });
-    },
-    //查询区域
-    getRegion() {
-      queryRegion({ queryId: 0, queryType: 0 }).then(res => {
-        console.log(res);
-      });
-    },
+    },  
     //查询标签
     getLabel() {
       queryLabel({ queryType: 3 }).then(res => {
-        if (res.data.errorCode === 0) {
-          this.labelsList = res.data.data;
+        if (res.errorCode === 0) {
+          this.labelsList = res.data;
         }
       });
     },
@@ -384,10 +303,9 @@ export default {
       this.loading = true;
       showDeviceList(this.query)
         .then(res => {
-          if (res.data.errorCode === 0) {
-            this.edit = {};
+          if (res.errorCode === 0) {
             this.loading = false;
-            this.tableData = res.data.data;
+            this.tableData = res.data;
           }
         })
         .catch(error => {
@@ -397,9 +315,9 @@ export default {
     //新增设备绑定
     addTable(params = {}) {
       addDeviceBind(params).then(res => {
-        if (res.data.errorCode === 0) {
+        if (res.errorCode === 0) {
           this.dialogAdd = false;
-          this.$message({ message: `${res.data.errorMsg}`, type: "success" });
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable({
             schoolId: 0,
             page: 1,
@@ -412,8 +330,8 @@ export default {
     updateTable(params = {}) {
       updateDeviceBind(params).then(res => {
         this.dialogEdit = false;
-        if (res.data.errorCode === 0) {
-          this.$message({ message: `${res.data.errorMsg}`, type: "success" });
+        if (res.errorCode === 0) {
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable({
             schoolId: 0,
             page: 1,
@@ -425,8 +343,8 @@ export default {
     //删除设备绑定
     deleteTable(deviceId) {
       deleteDeviceBind({ deviceId }).then(res => {
-        console.log(res);
-        if (res.data.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        if (res.errorCode === 0) {
           this.createTable({
             schoolId: 0,
             page: 1,
@@ -437,10 +355,8 @@ export default {
     }
   },
   mounted() {
-    this.getRegion();
     this.getLabel();
     this.createTable();
-    this.restaurants = this.loadAll();
   }
 };
 </script>

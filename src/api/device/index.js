@@ -18,7 +18,7 @@ export const deleteDeviceBind = (params) => {
 }
 //显示设备状态
 export const showDeviceStatus = (params) => {
-    return http.fetchPost('/action/mod-xiaojiao/device/showDeviceStatus.do', params);
+    return http.fetchPost('/action/mod-xiaojiao/status/showDeviceStatus.do', params);
 }
 //显示设备运行日志
 export const showDeviceRunLog = (params) => {

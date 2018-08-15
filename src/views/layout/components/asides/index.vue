@@ -27,13 +27,22 @@
       <el-submenu index="3">
         <template slot="title">
           <i class="el-icon-loading"></i>
+          <span>内容管理</span>
+        </template>    
+        <el-menu-item-group>
+          <el-menu-item index="/content/index">栏目管理</el-menu-item>
+        </el-menu-item-group>    
+      </el-submenu>
+      <el-submenu index="4">
+        <template slot="title">
+          <i class="el-icon-loading"></i>
           <span>校区管理</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="/school/index">学校管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="4">
+      <el-submenu index="5">
         <template slot="title">
           <i class="el-icon-loading"></i>
           <span>用户管理</span>

@@ -6,7 +6,7 @@ const Mixin = {
         schoolId: [
           {
             required: true,
-            message: "请输入学校名称",
+            message: "请选择学校名称",
             trigger: "blur"
           }
         ],
@@ -31,13 +31,13 @@ const Mixin = {
             trigger: "blur"
           }
         ],
-        labelIds: [
-          {
-            required: true,
-            message: "请选择冠名企业",
-            trigger: "blur"
-          }
-        ],
+        // labelIds: [
+        //   {
+        //     required: true,
+        //     message: "请选择冠名企业",
+        //     trigger: "blur"
+        //   }
+        // ],
         mac: [
           {
             required: true,

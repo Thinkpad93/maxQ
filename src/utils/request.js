@@ -8,7 +8,7 @@ axios.defaults.transformRequest = AXIOS_DEFAULT_CONFIG.transformRequest;
 
 //请求拦截器
 axios.interceptors.request.use(config => {
-  console.log("请求拦截器");
+  //console.log("请求拦截器");
   return config;
 }, error => {
   return Promise.reject(error);
@@ -16,7 +16,7 @@ axios.interceptors.request.use(config => {
 
 // 响应拦截器
 axios.interceptors.response.use(response => {
-  console.log("响应拦截器");
+  //console.log("响应拦截器");
   return response;
 }, error => {
   return Promise.reject(error);
@@ -48,7 +48,7 @@ export default {
   fetchPost(url, params) {
     return new Promise((resolve, reject) => {
       axios.post(url, params).then(res => {
-        resolve(res);
+        resolve(res.data);
       }).catch(error => {
         reject(error);
       })

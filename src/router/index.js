@@ -57,12 +57,25 @@ export const constantRouterMap = [
   {
     path: '/school',
     component: Layout,
-    redirect: 'index',    
+    redirect: 'index',  
     children: [
       {
         path: 'index',
         name: '学校管理',
         component: () => import ('@/views/campus/schoolmanagement/index'),
+        meta: {}
+      }
+    ]
+  },
+  {
+    path: '/content',
+    component: Layout,
+    redirect: 'index',    
+    children: [
+      {
+        path: 'index',
+        name: '栏目管理',
+        component: () => import ('@/views/content/column/index'),
         meta: {}
       }
     ]
