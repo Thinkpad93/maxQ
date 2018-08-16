@@ -18,15 +18,15 @@ export const deleteDeviceBind = (params) => {
 }
 //显示设备状态
 export const showDeviceStatus = (params) => {
-    return http.fetchPost('/action/mod-xiaojiao/status/showDeviceStatus.do', params);
+    return http.fetchPost('/action/mod-xiaojiao/device/status/showDeviceStatus.do', params);
 }
 //显示设备运行日志
 export const showDeviceRunLog = (params) => {
-    return http.fetchPost('/action/mod-xiaojiao/device/showDeviceRunLog.do', params);
+    return http.fetchPost('/action/mod-xiaojiao/device/runlog/showDeviceRunLog.do', params);
 }
 //发送设备命令
 export const sendDeviceCommand = (params) => {
-    return http.fetchPost('/action/mod-xiaojiao/device/sendDeviceCommand.do', params);
+    return http.fetchPost('/action/mod-xiaojiao/command/sendDeviceCommand.do', params);
 }
 //显示设备详情
 export const showDeviceDetail = (params) => {
@@ -34,7 +34,7 @@ export const showDeviceDetail = (params) => {
 }
 //显示检修列表
 export const showRepairList = (params) => {
-    return http.fetchPost('/action/mod-xiaoq/device/showRepairList.action', params);
+    return http.fetchPost('/action/mod-xiaoq/device/repair/showRepairList.action', params);
 }
 //新增检修记录
 export const addDeviceRepair = (params) => {

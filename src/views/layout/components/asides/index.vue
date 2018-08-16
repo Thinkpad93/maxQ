@@ -8,10 +8,14 @@
     @close="handleClose" 
     :collapse="collapse" 
     :collapse-transition="true">
-      <el-menu-item index="/home">
+      <el-menu-item index="/home/index">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
       </el-menu-item>      
+      <el-menu-item index="/tag/index">
+        <i class="el-icon-menu"></i>
+        <span slot="title">标签管理</span>        
+      </el-menu-item>         
       <el-submenu index="2">
         <template slot="title">
           <i class="el-icon-loading"></i>
@@ -31,6 +35,7 @@
         </template>    
         <el-menu-item-group>
           <el-menu-item index="/content/index">栏目管理</el-menu-item>
+          <el-menu-item index="/content/columntpl">栏目模板</el-menu-item>
         </el-menu-item-group>    
       </el-submenu>
       <el-submenu index="4">
@@ -51,11 +56,7 @@
           <el-menu-item index="/user/permissions">权限管理</el-menu-item>
           <el-menu-item index="/user/account">账号管理</el-menu-item>
         </el-menu-item-group>
-      </el-submenu>      
-      <el-menu-item index="/tag">
-        <i class="el-icon-menu"></i>
-        <span slot="title">标签管理</span>        
-      </el-menu-item>        
+      </el-submenu>           
     </el-menu>
   </aside>  
 </template>

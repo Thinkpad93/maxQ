@@ -4,16 +4,17 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="form" size="small" label-width="70px" label-position="left">
-              <el-form-item>
-                <el-autocomplete
-                  class="inline-input"
-                  v-model="state1"
-                  :fetch-suggestions="querySearch"
-                  placeholder="请输入学校名称"
-                  @select="handleSelect"
-                ></el-autocomplete>                
-              </el-form-item>           
+            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+              <el-form-item label="学校名称">
+                <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
+                  <el-option
+                    v-for="item in schoolList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option> 
+                </el-select>
+              </el-form-item>       
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增</el-button>
@@ -25,7 +26,7 @@
     </template>     
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
           <el-table-column :resizable="false" width="100" label="序号" prop="repairId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
@@ -45,33 +46,46 @@
     </template> 
     <!-- 新增检修记录 -->
     <template>
-      <el-dialog :close-on-click-modal="false" center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
+      <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="学校名称" prop="schoolid">
+          <el-form-item label="区域选择" prop="area">
+            <region @change="handleRegion"></region>
+          </el-form-item>    
+          <el-form-item label="学校名称" prop="schoolId">
+            <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
+              <el-option
+                v-for="item in schoolList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option> 
+            </el-select>              
+          </el-form-item>                
+          <!-- <el-form-item label="学校名称" prop="schoolid">
             <el-input v-model="addForm.schoolid" placeholder="请输入学校名称" maxlength="20"></el-input>
-          </el-form-item>
-          <el-form-item label="故障时间" prop="fault_time">
+          </el-form-item> -->
+          <el-form-item label="故障时间" prop="faultTime">
             <el-date-picker
-              v-model="addForm.fault_time"
+              v-model="addForm.faultTime"
               type="date"
               placeholder="选择故障时间">
             </el-date-picker>            
           </el-form-item>
-          <el-form-item label="检修时间" prop="repair_time">
+          <el-form-item label="检修时间" prop="repairTime">
             <el-date-picker
-              v-model="addForm.repair_time"
+              v-model="addForm.repairTime"
               type="date"
               placeholder="选择检修时间">
             </el-date-picker>             
           </el-form-item>          
-          <el-form-item label="故障描述" prop="fault_description">
-            <el-input type="textarea" v-model="addForm.fault_description" :rows="4" placeholder="请输入故障描述"></el-input>
+          <el-form-item label="故障描述" prop="faultDescription">
+            <el-input type="textarea" v-model="addForm.faultDescription" :rows="4" placeholder="请输入故障描述"></el-input>
           </el-form-item>
-          <el-form-item label="检修结果" prop="repair_result">
-            <el-input type="textarea" v-model="addForm.repair_result" :rows="4" placeholder="请输入检修结果"></el-input>
+          <el-form-item label="检修结果" prop="repairResult">
+            <el-input type="textarea" v-model="addForm.repairResult" :rows="4" placeholder="请输入检修结果"></el-input>
           </el-form-item>
-          <el-form-item label="检修人员" prop="repair_man">
-            <el-input v-model="addForm.repair_man" placeholder="请输入检修人员" maxlength="4"></el-input>
+          <el-form-item label="检修人员" prop="repairMan">
+            <el-input v-model="addForm.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
@@ -82,33 +96,33 @@
     </template>   
     <!-- 编辑检修记录 -->
     <template>
-      <el-dialog :close-on-click-modal="false" center @open="show" @close="close" top="40px" title="编辑检修记录" :visible.sync="dialogEdit">
+      <el-dialog center @open="show" @close="close" top="40px" title="编辑检修记录" :visible.sync="dialogEdit" :modal-append-to-body="false">
         <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
           <el-form-item label="学校名称" prop="schoolid">
             <el-input v-model="edit.schoolid" maxlength="20"></el-input>
           </el-form-item>
-          <el-form-item label="故障时间" prop="fault_time">
+          <el-form-item label="故障时间" prop="faultTime">
             <el-date-picker
-              v-model="edit.fault_time"
+              v-model="edit.faultTime"
               type="date"
               placeholder="选择故障时间">
             </el-date-picker>   
           </el-form-item>
-          <el-form-item label="检修时间" prop="repair_time">
+          <el-form-item label="检修时间" prop="repairTime">
             <el-date-picker
-              v-model="edit.repair_time"
+              v-model="edit.repairTime"
               type="date"
               placeholder="选择检修时间">
             </el-date-picker>               
           </el-form-item>
-          <el-form-item label="故障描述" prop="fault_description">
-            <el-input type="textarea" v-model="edit.fault_description" :rows="4" placeholder="请输入故障描述"></el-input>
+          <el-form-item label="故障描述" prop="faultDescription">
+            <el-input type="textarea" v-model="edit.faultDescription" :rows="4" placeholder="请输入故障描述"></el-input>
           </el-form-item>
-          <el-form-item label="检修结果" prop="repair_result">
-            <el-input type="textarea" v-model="edit.repair_result" :rows="4" placeholder="请输入检修结果"></el-input>
+          <el-form-item label="检修结果" prop="repairResult">
+            <el-input type="textarea" v-model="edit.repairResult" :rows="4" placeholder="请输入检修结果"></el-input>
           </el-form-item>
-          <el-form-item label="检修人员" prop="repair_man">
-            <el-input v-model="edit.repair_man" placeholder="请输入检修人员" maxlength="4"></el-input>
+          <el-form-item label="检修人员" prop="repairMan">
+            <el-input v-model="edit.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogEdit = false">取消</el-button>
@@ -120,8 +134,13 @@
   </div>  
 </template>
 <script>
+import { showRepairList, addDeviceRepair, updateDeviceRepair, deleteDeviceRepair } from "@/api/device";
+import region from "@/components/region";
 export default {
   name: "record",
+  components: {
+    region
+  },
   data() {
     return {
       loading: false,
@@ -131,65 +150,71 @@ export default {
       formLabelWidth: "100px",
       //默认参数
       query: {
-        schoolid: 0,
+        schoolId: 0,
         page: 1,
         page_size: 10
-      }, 
-      restaurants: [],
-      state1: '',      
+      },
+      //学校名称
+      schoolList: [],
       rules: {
-        schoolid: [
+        schoolId: [
           { required: true, message: "请输入学校名称", trigger: "blur" }
         ],
-        fault_time: [
+        faultTime: [
           { required: true, message: "请选择故障时间", trigger: "blur" }
         ],
-        repair_time: [
+        repairTime: [
           { required: true, message: "请选择检修时间", trigger: "blur" }
         ],
-        fault_description: [
+        faultDescription: [
           { required: true, message: "请输入故障描述", trigger: "blur" }
         ],
-        repair_result: [
+        repairResult: [
           { required: true, message: "请输入检修结果", trigger: "blur" }
         ],
-        repair_man: [
+        repairMan: [
           { required: true, message: "请输入检修人员", trigger: "blur" }
         ]
       },
       addForm: {},
       edit: {},
-      tableData: []           
+      tableData: []
     };
   },
+  computed: {
+    //设置表格高度
+    tableHeight() {
+      return window.innerHeight - 255;
+    }
+  },  
   methods: {
     show() {},
-    close() {}, 
+    close() {},
     search() {},
-    querySearch(queryString, cb) {
-      let restaurants = this.restaurants;
-      let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+    handleRegion() {},
+    handleSchool() {},
+    addsForm(formName) {
+      this.$refs[formName].validate(valid => {});
     },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
+    editorForm(formName) {
+      this.$refs[formName].validate(valid => {});
     },
-    loadAll() {
-      return [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-        { "value": "泷千家(天山西路店)", "address": "天山西路438号" },        
-      ]
+    //显示检修列表
+    createTable() {
+      showRepairList(this.query).then(res => {
+        console.log(res);
+      });
     },
-    handleSelect() {},        
+    //新增检修记录
+    addTable() {},
+    //编辑检修记录
+    updateTable() {},
+    //删除检修记录
+    deleteTable() {}
   },
   mounted() {
-    this.restaurants = this.loadAll();
-  }   
+    this.createTable();
+  }
 };
 </script>
 <style lang="less" scoped>

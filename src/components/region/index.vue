@@ -30,6 +30,12 @@
 import { queryRegion } from "@/api/school";
 export default {
   name: "region",
+  props: {
+    trigger: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       region: {
@@ -77,7 +83,11 @@ export default {
             this.areaList = res.data;
           }
           if (params.queryType === 3) {
-            this.$emit("change", res.data);
+            if (this.trigger) {
+              this.$emit("change", res.data);
+            }else {
+              this.$emit("change", this.area);
+            }
           }
         }
       });

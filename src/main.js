@@ -20,6 +20,16 @@ Vue.use(Element, { size: 'samll', zIndex: 3000 });
 
 Vue.config.productionTip = false;
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    console.log("1");
+    next();
+  }else {
+    next();
+    console.log("3");
+  }
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

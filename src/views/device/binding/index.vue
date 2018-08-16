@@ -71,13 +71,13 @@
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="area">
 
-              <region @change="handleRegion"></region>
+              <region @change="handleRegionInner"></region>
 
             </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
                <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
                   <el-option
-                    v-for="item in schoolList"
+                    v-for="item in schoolListInner"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id">
@@ -178,7 +178,6 @@ import { queryLabel } from "@/api/school";
 import Mixin from "../mixin/binding";
 import region from "@/components/region";
 
-
 export default {
   name: "binding",
   mixins: [Mixin],
@@ -209,9 +208,10 @@ export default {
       schoolId: null,
       //学校名称
       schoolList: [],
+      schoolListInner: [],
       //请求的数据
       labelsList: [],
-      tableData: [],
+      tableData: []
     };
   },
   computed: {
@@ -224,14 +224,19 @@ export default {
     //搜索
     search() {
       if (this.schoolId === null) {
-        this.$message({ message: '请选择学校名称', type: 'warning'});
-      }else {
+        this.$message({ message: "请选择学校名称", type: "warning" });
+      } else {
         this.createTable();
       }
     },
     handleRegion(list) {
       if (Array.isArray(list)) {
         this.schoolList = list;
+      }
+    },
+    handleRegionInner(list) {
+      if (Array.isArray(list)) {
+        this.schoolListInner = list;
       }
     },
     changeTag(value) {
@@ -265,9 +270,13 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(function() {
-        that.deleteTable(row.deviceId);
-      });
+      })
+        .then(function() {
+          that.deleteTable(row.deviceId);
+        })
+        .catch(error => {
+          return false;
+        });
     },
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -282,14 +291,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { postTime, schoolName, totalCount, ...row } = this.edit;
-          console.log(row);
-          console.log("==============================");
           this.updateTable(row);
         } else {
           return false;
         }
       });
-    },  
+    },
     //查询标签
     getLabel() {
       queryLabel({ queryType: 3 }).then(res => {
@@ -323,6 +330,9 @@ export default {
             page: 1,
             pageSize: 10
           });
+        }else if (res.errorCode === -1) {
+          this.$message({ message: `${res.errorMsg}`, type: "warning" });
+          return false;
         }
       });
     },
@@ -336,7 +346,7 @@ export default {
             schoolId: 0,
             page: 1,
             pageSize: 10
-          });          
+          });
         }
       });
     },

@@ -5,7 +5,7 @@
         :key="tag.path" 
         :to="tag.path">
         {{ tag.name }}
-        <template v-if="tag.path !== '/home'">
+        <template v-if="tag.path !== '/home/index'">
           <i class='el-icon-close' @click.prevent.stop="closeTag(tag)"></i>
         </template>
     </router-link>      
