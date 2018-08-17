@@ -139,7 +139,7 @@
             <!-- 如果存在冠名企业 -->  
             <template>
               <el-form-item label="冠名企业" prop="labelIds">
-                <el-select v-model="edit.labelIds" value-key="labelId" multiple placeholder="请选择冠名企业" @change="changeTag">
+                <el-select v-model="edit.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
                   <el-option
                     v-for="item in labelsList"
                     :key="item.labelId"
@@ -290,6 +290,7 @@ export default {
     editorForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnloading = true;
           let { postTime, schoolName, totalCount, ...row } = this.edit;
           this.updateTable(row);
         } else {
@@ -330,7 +331,7 @@ export default {
             page: 1,
             pageSize: 10
           });
-        }else if (res.errorCode === -1) {
+        } else if (res.errorCode === -1) {
           this.$message({ message: `${res.errorMsg}`, type: "warning" });
           return false;
         }
@@ -340,6 +341,7 @@ export default {
     updateTable(params = {}) {
       updateDeviceBind(params).then(res => {
         this.dialogEdit = false;
+        this.btnloading = false;
         if (res.errorCode === 0) {
           this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable({

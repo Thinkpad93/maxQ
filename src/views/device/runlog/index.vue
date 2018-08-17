@@ -8,7 +8,13 @@
         <el-table-column :resizable="false" label="mac地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="IP地址" prop="ip" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="日志详细信息" prop="logText" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column :resizable="false" label="状态码" prop="status" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column :resizable="false" label="状态码" prop="status" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <p v-if="scope.row.status === 0">正常</p>
+            <p v-else-if="scope.row.status === 1">故障</p>
+            <p v-else="scope.row.status === 2">正常关机</p>
+          </template>
+        </el-table-column>
         <el-table-column :resizable="false" label="错误码" prop="deviceError" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="日志级别" prop="level">
           <template slot-scope="scope">
@@ -47,9 +53,11 @@ export default {
     createTable() {
       this.loading = true;
       showDeviceRunLog(this.query).then(res => {
-        console.log(res);
+        
         if (res.errorCode === 0) {
+          console.log(res);
           this.loading = false;
+          this.tableData = res.data;
         }
       }).catch(error => {
         this.loading = false;

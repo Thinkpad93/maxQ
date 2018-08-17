@@ -66,7 +66,7 @@ export const constantRouterMap = [
         meta: { requiresAuth: true }
       },
       {
-        path: 'details',
+        path: 'details/:schoolId',
         name: '学校信息详情',
         component: () => import ('@/views/campus/schoolmanagement/details'),
         meta: { requiresAuth: true }

@@ -49,12 +49,12 @@
       <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="area">
-            <region @change="handleRegion"></region>
+            <region @change="handleRegionInner"></region>
           </el-form-item>    
           <el-form-item label="学校名称" prop="schoolId">
             <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
               <el-option
-                v-for="item in schoolList"
+                v-for="item in schoolListInner"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -66,15 +66,19 @@
           </el-form-item> -->
           <el-form-item label="故障时间" prop="faultTime">
             <el-date-picker
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="addForm.faultTime"
-              type="date"
+              type="datetime"
               placeholder="选择故障时间">
             </el-date-picker>            
           </el-form-item>
           <el-form-item label="检修时间" prop="repairTime">
             <el-date-picker
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="addForm.repairTime"
-              type="date"
+              type="datetime"
               placeholder="选择检修时间">
             </el-date-picker>             
           </el-form-item>          
@@ -98,20 +102,24 @@
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="编辑检修记录" :visible.sync="dialogEdit" :modal-append-to-body="false">
         <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
-          <el-form-item label="学校名称" prop="schoolid">
-            <el-input v-model="edit.schoolid" maxlength="20"></el-input>
-          </el-form-item>
+          <!-- <el-form-item label="学校名称" prop="schoolName">
+            <el-input v-model="edit.schoolName" maxlength="20" :disabled="true"></el-input>
+          </el-form-item> -->
           <el-form-item label="故障时间" prop="faultTime">
             <el-date-picker
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="edit.faultTime"
-              type="date"
+              type="datetime"
               placeholder="选择故障时间">
             </el-date-picker>   
           </el-form-item>
           <el-form-item label="检修时间" prop="repairTime">
             <el-date-picker
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="edit.repairTime"
-              type="date"
+              type="datetime"
               placeholder="选择检修时间">
             </el-date-picker>               
           </el-form-item>
@@ -152,10 +160,11 @@ export default {
       query: {
         schoolId: 0,
         page: 1,
-        page_size: 10
+        pageSize: 10
       },
       //学校名称
       schoolList: [],
+      schoolListInner: [],
       rules: {
         schoolId: [
           { required: true, message: "请输入学校名称", trigger: "blur" }
@@ -192,25 +201,91 @@ export default {
     close() {},
     search() {},
     handleRegion() {},
+    handleRegionInner(list) {
+      if (Array.isArray(list)) {
+        this.schoolListInner = list;
+      }
+    },    
     handleSchool() {},
+    handleEdit(row) {
+      this.dialogEdit = true;
+      this.$nextTick(function() {
+        this.edit = Object.assign({}, row);
+      });      
+    },
+    handleDel(row) {
+      let that = this;
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function() {
+        that.deleteTable(row.repairId);
+      }).catch(error => {
+        return false;
+      });      
+    },
     addsForm(formName) {
-      this.$refs[formName].validate(valid => {});
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnloading = true;
+          this.addTable(this.addForm);
+        }else {
+          return false;
+        }
+      });
     },
     editorForm(formName) {
-      this.$refs[formName].validate(valid => {});
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnloading = true;
+          let { address, deviceNo, schoolName, postTime, deviceId, ...z } = this.edit;
+          this.updateTable(z);
+        }else {
+          return false;
+        }
+      });
     },
     //显示检修列表
     createTable() {
       showRepairList(this.query).then(res => {
-        console.log(res);
+         if (res.errorCode === 0) {
+           this.tableData = res.data;
+         }
       });
     },
     //新增检修记录
-    addTable() {},
+    addTable(params = {}) {
+      addDeviceRepair(params).then(res => {
+        if (res.errorCode === 0) {
+          this.dialogAdd = false;
+          this.btnloading = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable(this.query);
+        }else {
+          this.btnloading = false;
+          this.$message({ message: `${res.errorMsg}`, type: "error" });
+        }
+      })
+    },
     //编辑检修记录
-    updateTable() {},
+    updateTable(params = {}) {
+      updateDeviceRepair(params).then(res => {
+        if (res.errorCode === 0) {
+          this.dialogEdit = false;
+          this.btnloading = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable(this.query);
+        }
+      });
+    },
     //删除检修记录
-    deleteTable() {}
+    deleteTable(repairId) {
+      deleteDeviceRepair({ repairId }).then(res => {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable(this.query);
+      })
+    }
   },
   mounted() {
     this.createTable();

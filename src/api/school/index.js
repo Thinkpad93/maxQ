@@ -30,3 +30,9 @@ export const queryLabel = (params) => {
 export const querySchoolCategory = (params) => {
     return http.fetchPost('/action/mod-xiaojiao/region/querySchoolCategory.do', params);
 }
+
+
+//上传图片
+export const addImage = (params) => {
+    return http.fetchPost('/action/mod-xiaojiao/region/addImage.do', params);
+}

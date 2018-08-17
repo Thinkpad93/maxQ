@@ -22,7 +22,6 @@ Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    console.log("1");
     next();
   }else {
     next();

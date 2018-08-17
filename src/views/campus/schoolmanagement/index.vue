@@ -7,9 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-
                <region @change="handleRegion"></region>
-
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClear">
@@ -36,8 +34,9 @@
         <el-table-column label="学校ID" prop="schoolId"></el-table-column>
         <el-table-column label="学校名称" prop="name">
           <template slot-scope="scope">
-            <a href="javascript:;" style="color:#409EFF" @click="handleDetails(scope.row)">{{ scope.row.name }}</a>
-            <!-- <router-link style="color:#409EFF" :to="{path: '/school/details', query: {schoolId: scope.row.schoolId}}">{{ scope.row.name }}</router-link> -->
+            <!-- <a href="javascript:;" style="color:#409EFF" @click="handleDetails(scope.row)">{{ scope.row.name }}</a> -->
+            <router-link style="color:#409EFF" 
+              :to="{path: `/school/details/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
           </template>                    
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName"></el-table-column>
@@ -167,7 +166,7 @@
           </el-row>            
           <!-- for --> 
           <el-form-item>
-            <el-button :disabled="addForm.linkMan.length === 3" icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增负责人</el-button>
+            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增负责人</el-button>
             <!-- <el-button icon="el-icon-delete" type="danger" size="mini" v-if="addForm.link_man.length > 1" @click="dellinkMan()">删除一项</el-button> -->
           </el-form-item>  
           <el-form-item label="学校简介" prop="description">
@@ -178,7 +177,9 @@
               <el-form-item prop="schoolImage">
                   <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    :multiple="false"
+                    :auto-upload="true"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload">
@@ -190,7 +191,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="schoolImage">
-                  <el-upload
+                  <!-- <el-upload
                     class="avatar-uploader"
                     action="https://jsonplaceholder.typicode.com/posts/"
                     :show-file-list="false"
@@ -199,7 +200,7 @@
                     <img v-if="imageUrl" :src="imageUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">上传学校全景图</div>
-                  </el-upload>
+                  </el-upload> -->
                 </el-form-item>
             </el-col>
           </el-row>            
@@ -216,8 +217,8 @@
           </el-form-item>           
           <el-form-item label="内容复审">
             <el-radio-group v-model="addForm.reviewFlag">
-              <el-radio label="0">不需要</el-radio>
-              <el-radio label="1">需要</el-radio>
+              <el-radio :label="1">需要</el-radio>
+              <el-radio :label="0">不需要</el-radio>
             </el-radio-group>
           </el-form-item>                      
           <el-row style="text-align:center">
@@ -229,7 +230,97 @@
     </template>
     <!-- 编辑 -->
     <template>
-
+      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogEdit" :modal-append-to-body="false">
+        <el-form :rules="rules" ref="addForm" :model="editForm" status-icon size="small" :label-width="formLabelWidth">
+          <el-row :gutter="5">
+            <el-col :span="8">
+              <el-form-item label="学校名称" prop="name">
+                <el-input v-model="editForm.name" placeholder="请输入学校名称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="学校性质" prop="propertyId">
+                <el-select v-model="editForm.propertyId" placeholder="请选择学校性质" style="width:100%">
+                  <el-option
+                    v-for="item in propertyidList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>            
+                </el-select>                          
+              </el-form-item>
+            </el-col> 
+            <el-col :span="8">
+              <el-form-item label="学校类型" prop="typeId">
+                <el-select v-model="editForm.typeId" placeholder="请选择学校类型" style="width:100%">
+                  <el-option
+                    v-for="item in typeidList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>            
+                </el-select>                           
+              </el-form-item> 
+            </el-col>  
+            <el-col :span="8">
+              <el-form-item label="详细地址" prop="address">
+                <el-input v-model="editForm.address" placeholder="请输入详细地址"></el-input>
+              </el-form-item>  
+            </el-col>   
+            <el-col :span="8">
+              <el-form-item label="办学元年" prop="firstYear">
+                <el-date-picker
+                  v-model="editForm.firstYear"
+                  type="year"
+                  placeholder="选择办学元年" style="width:100%">
+                </el-date-picker>                        
+              </el-form-item>
+            </el-col>  
+            <el-col :span="8">
+              <el-form-item label="学校标语" prop="slogan">
+                <el-input v-model="editForm.sloslogangan" placeholder="请输入学校标语"></el-input>
+              </el-form-item> 
+            </el-col>  
+            <el-col :span="8">
+              <el-form-item label="学校标签" prop="labelIds">
+                <el-select v-model="editForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择学校标签" style="width:100%">
+                  <el-option
+                    v-for="item in labelsList"
+                    :key="item.labelId"
+                    :label="item.name"
+                    :value="item.labelId">
+                  </el-option>
+                </el-select>               
+              </el-form-item>
+            </el-col> 
+            <el-col :span="8">
+              <el-form-item label="班级数量" prop="classNumber">
+                <el-input v-model="editForm.classNumber" placeholder="请输入班级数量"></el-input>
+              </el-form-item>  
+            </el-col>  
+            <el-col :span="8">
+              <el-form-item label="学生数量" prop="studentNumber">
+                <el-input v-model="editForm.studentNumber" placeholder="请输入学生数量"></el-input>
+              </el-form-item>                              
+            </el-col>   
+            <el-col :span="8">
+              <el-form-item label="校长" prop="masterName">
+                <el-input v-model="editForm.masterName" placeholder="请输入校长" maxlength="4"></el-input>
+              </el-form-item>                             
+            </el-col>  
+            <el-col :span="8">
+              <el-form-item label="校长电话" prop="masterPhone">
+                <el-input v-model="editForm.masterPhone" placeholder="请输入校长电话"></el-input>
+              </el-form-item>  
+            </el-col>    
+            <el-col :span="8">
+              <el-form-item label="校长邮箱" prop="masterEmail">
+                <el-input v-model="editForm.masterEmail" placeholder="请输入校长邮箱"></el-input>
+              </el-form-item>                             
+            </el-col>                                                                                                              
+          </el-row>
+        </el-form>
+      </el-dialog>
     </template>
   </div>  
 </template>
@@ -238,7 +329,8 @@ import {
   showSchoolList,
   addSchool,
   querySchoolInfo,
-  querySchoolCategory
+  querySchoolCategory,
+  addImage
 } from "@/api/school";
 import { queryLabel } from "@/api/school";
 import region from "@/components/region";
@@ -252,6 +344,7 @@ export default {
     return {
       loading: false,
       dialogAdd: false,
+      dialogEdit: false,
       btnloading: false,
       formLabelWidth: "100px",
       query: {
@@ -286,9 +379,10 @@ export default {
       ],
       imageUrl: "",      
       tableData: [],
+      editForm: {},
       addForm: {
         regionId: 0,
-        reviewFlag: "0",
+        reviewFlag: 0,
         linkMan: [{ linkMan: "", phone: "", email: "" }]
       },
       linkmanRules: {},
@@ -327,10 +421,12 @@ export default {
       }
     },
     handleDetails(row) {
-      this.$router.push({ path: 'details', query: { schoolId: `${row.schoolId}` }});
+      //console.log(typeof row.schoolId);
+      //this.$router.push({ path: `details/${row.schoolId}` });
+      //this.$router.push({ path: 'details', query: {schoolId:}})
     },
     handleEdit(row) {
-      
+      this.dialogEdit = true;
     },
     handleDel(row) {},
     show() {},
@@ -339,6 +435,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           console.log(this.addForm);
+          this.addSchoolAction(this.addForm);
         }else {
           return false;
         }
@@ -357,14 +454,15 @@ export default {
       this.query.schoolId = value;
     },
     handleClear() {
-      console.log(0);
       this.query.schoolId = 0;
     },
-    handleAvatarSuccess(res, file) {
+    handleAvatarSuccess(response, file, fileList) {
       this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
-
+      console.log(file); 
+      // let f = new FormData();
+      // f.append('url', file);
     },
     //查询标签
     getLabel() {
@@ -385,6 +483,11 @@ export default {
           }
         }
       }); 
+    },
+    addSchoolAction(params = {}) {
+      addSchool(params).then(res => {
+        console.log(res);
+      });
     }, 
     //显示学校列表
     createTable() {
