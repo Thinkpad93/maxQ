@@ -5,8 +5,13 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+              <el-form-item label="区域选择">
+
+                <region @change="handleRegion"></region>
+
+              </el-form-item>              
               <el-form-item label="学校名称">
-                <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
+                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
                   <el-option
                     v-for="item in schoolList"
                     :key="item.id"
@@ -142,7 +147,12 @@
   </div>  
 </template>
 <script>
-import { showRepairList, addDeviceRepair, updateDeviceRepair, deleteDeviceRepair } from "@/api/device";
+import {
+  showRepairList,
+  addDeviceRepair,
+  updateDeviceRepair,
+  deleteDeviceRepair
+} from "@/api/device";
 import region from "@/components/region";
 export default {
   name: "record",
@@ -162,6 +172,7 @@ export default {
         page: 1,
         pageSize: 10
       },
+      schoolId: null,
       //学校名称
       schoolList: [],
       schoolListInner: [],
@@ -195,23 +206,36 @@ export default {
     tableHeight() {
       return window.innerHeight - 255;
     }
-  },  
+  },
   methods: {
     show() {},
     close() {},
-    search() {},
-    handleRegion() {},
+    //搜索
+    search() {
+      if (this.schoolId === null) {
+        this.$message({ message: "请选择学校名称", type: "warning" });
+      } else {
+        this.createTable();
+      }
+    },
+    handleRegion(list) {
+      if (Array.isArray(list)) {
+        this.schoolList = list;
+      }
+    },
     handleRegionInner(list) {
       if (Array.isArray(list)) {
         this.schoolListInner = list;
       }
-    },    
-    handleSchool() {},
+    },
+    handleSchool(value) {
+      this.query.schoolId = value;
+    },
     handleEdit(row) {
       this.dialogEdit = true;
       this.$nextTick(function() {
         this.edit = Object.assign({}, row);
-      });      
+      });
     },
     handleDel(row) {
       let that = this;
@@ -219,18 +243,20 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(function() {
-        that.deleteTable(row.repairId);
-      }).catch(error => {
-        return false;
-      });      
+      })
+        .then(function() {
+          that.deleteTable(row.repairId);
+        })
+        .catch(error => {
+          return false;
+        });
     },
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnloading = true;
           this.addTable(this.addForm);
-        }else {
+        } else {
           return false;
         }
       });
@@ -239,9 +265,16 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnloading = true;
-          let { address, deviceNo, schoolName, postTime, deviceId, ...z } = this.edit;
+          let {
+            address,
+            deviceNo,
+            schoolName,
+            postTime,
+            deviceId,
+            ...z
+          } = this.edit;
           this.updateTable(z);
-        }else {
+        } else {
           return false;
         }
       });
@@ -249,9 +282,9 @@ export default {
     //显示检修列表
     createTable() {
       showRepairList(this.query).then(res => {
-         if (res.errorCode === 0) {
-           this.tableData = res.data;
-         }
+        if (res.errorCode === 0) {
+          this.tableData = res.data;
+        }
       });
     },
     //新增检修记录
@@ -262,11 +295,11 @@ export default {
           this.btnloading = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable(this.query);
-        }else {
+        } else {
           this.btnloading = false;
           this.$message({ message: `${res.errorMsg}`, type: "error" });
         }
-      })
+      });
     },
     //编辑检修记录
     updateTable(params = {}) {
@@ -284,7 +317,7 @@ export default {
       deleteDeviceRepair({ repairId }).then(res => {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.createTable(this.query);
-      })
+      });
     }
   },
   mounted() {

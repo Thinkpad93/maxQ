@@ -97,6 +97,8 @@
             <el-col :span="8">
               <el-form-item label="办学元年" prop="firstYear">
                 <el-date-picker
+                format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   v-model="addForm.firstYear"
                   type="year"
                   placeholder="选择办学元年" style="width:100%">
@@ -145,29 +147,43 @@
                 <el-input v-model="addForm.masterEmail" placeholder="请输入校长邮箱"></el-input>
               </el-form-item>                             
             </el-col>
+            <el-col :span="8">
+              <el-form-item label="负责人" prop="headName">
+                <el-input v-model="addForm.headName" placeholder="请输入负责人" maxlength="4"></el-input>
+              </el-form-item>                             
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="负责人电话" prop="headPhone">
+                <el-input v-model="addForm.headPhone" placeholder="请输入负责人电话"></el-input>
+              </el-form-item>  
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="负责人邮箱" prop="headEmail">
+                <el-input v-model="addForm.headEmail" placeholder="请输入负责人邮箱"></el-input>
+              </el-form-item>                             
+            </el-col>            
           </el-row>
           <!-- for -->   
           <el-row v-for="(item,index) in addForm.linkMan" :key="index">
             <el-col :span="8">
-              <el-form-item label="负责人" :prop="`linkMan.${index}.linkMan`" :rules="linkmanRules.linkman">
-                <el-input v-model="item.linkMan" placeholder="请输入负责人" maxlength="4"></el-input>
+              <el-form-item :label="`联系人`" :prop="`linkMan.${index}.linkMan`" :rules="linkmanRules.linkman">
+                <el-input v-model="item.linkMan" placeholder="请输入联系人" maxlength="4"></el-input>
               </el-form-item>                            
             </el-col>
             <el-col :span="8">
-              <el-form-item label="负责人电话" :prop="`linkMan.${index}.phone`" :rules="linkmanRules.phone">
-                <el-input v-model="item.phone" placeholder="请输入负责人电话"></el-input>
+              <el-form-item :label="`联系人电话`" :prop="`linkMan.${index}.phone`" :rules="linkmanRules.phone">
+                <el-input v-model="item.phone" placeholder="请输入联系人电话"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="负责人邮箱" :prop="`linkMan.${index}.email`" :rules="linkmanRules.email">
-                <el-input v-model="item.email" placeholder="请输入负责人邮箱"></el-input>
+              <el-form-item :label="`联系人邮箱`" :prop="`linkMan.${index}.email`" :rules="linkmanRules.email">
+                <el-input v-model="item.email" placeholder="请输入联系人邮箱"></el-input>
               </el-form-item>                             
             </el-col>
           </el-row>            
           <!-- for --> 
           <el-form-item>
-            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增负责人</el-button>
-            <!-- <el-button icon="el-icon-delete" type="danger" size="mini" v-if="addForm.link_man.length > 1" @click="dellinkMan()">删除一项</el-button> -->
+            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增联系人</el-button>
           </el-form-item>  
           <el-form-item label="学校简介" prop="description">
             <el-input type="textarea" v-model="addForm.description" placeholder="请输入学校简介" :rows="3"></el-input>
@@ -175,7 +191,7 @@
           <el-row :gutter="5">
             <el-col :span="12">
               <el-form-item prop="schoolImage">
-                  <el-upload
+                  <!-- <el-upload
                     class="avatar-uploader"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     :multiple="false"
@@ -186,12 +202,12 @@
                     <img v-if="imageUrl" :src="imageUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">上传学校荣誉牌</div>
-                  </el-upload>
+                  </el-upload> -->
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="schoolImage">
-                  <!-- <el-upload
+                  <el-upload
                     class="avatar-uploader"
                     action="https://jsonplaceholder.typicode.com/posts/"
                     :show-file-list="false"
@@ -200,7 +216,7 @@
                     <img v-if="imageUrl" :src="imageUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">上传学校全景图</div>
-                  </el-upload> -->
+                  </el-upload>
                 </el-form-item>
             </el-col>
           </el-row>            
@@ -231,16 +247,16 @@
     <!-- 编辑 -->
     <template>
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogEdit" :modal-append-to-body="false">
-        <el-form :rules="rules" ref="addForm" :model="editForm" status-icon size="small" :label-width="formLabelWidth">
+        <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-row :gutter="5">
             <el-col :span="8">
               <el-form-item label="学校名称" prop="name">
-                <el-input v-model="editForm.name" placeholder="请输入学校名称"></el-input>
+                <el-input v-model="edit.name" placeholder="请输入学校名称"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="学校性质" prop="propertyId">
-                <el-select v-model="editForm.propertyId" placeholder="请选择学校性质" style="width:100%">
+                <el-select v-model="edit.propertyId" placeholder="请选择学校性质" style="width:100%">
                   <el-option
                     v-for="item in propertyidList"
                     :key="item.id"
@@ -252,7 +268,7 @@
             </el-col> 
             <el-col :span="8">
               <el-form-item label="学校类型" prop="typeId">
-                <el-select v-model="editForm.typeId" placeholder="请选择学校类型" style="width:100%">
+                <el-select v-model="edit.typeId" placeholder="请选择学校类型" style="width:100%">
                   <el-option
                     v-for="item in typeidList"
                     :key="item.id"
@@ -264,13 +280,13 @@
             </el-col>  
             <el-col :span="8">
               <el-form-item label="详细地址" prop="address">
-                <el-input v-model="editForm.address" placeholder="请输入详细地址"></el-input>
+                <el-input v-model="edit.address" placeholder="请输入详细地址"></el-input>
               </el-form-item>  
             </el-col>   
             <el-col :span="8">
               <el-form-item label="办学元年" prop="firstYear">
                 <el-date-picker
-                  v-model="editForm.firstYear"
+                  v-model="edit.firstYear"
                   type="year"
                   placeholder="选择办学元年" style="width:100%">
                 </el-date-picker>                        
@@ -278,12 +294,12 @@
             </el-col>  
             <el-col :span="8">
               <el-form-item label="学校标语" prop="slogan">
-                <el-input v-model="editForm.sloslogangan" placeholder="请输入学校标语"></el-input>
+                <el-input v-model="edit.sloslogangan" placeholder="请输入学校标语"></el-input>
               </el-form-item> 
             </el-col>  
             <el-col :span="8">
               <el-form-item label="学校标签" prop="labelIds">
-                <el-select v-model="editForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择学校标签" style="width:100%">
+                <el-select v-model="edit.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择学校标签" style="width:100%">
                   <el-option
                     v-for="item in labelsList"
                     :key="item.labelId"
@@ -295,30 +311,62 @@
             </el-col> 
             <el-col :span="8">
               <el-form-item label="班级数量" prop="classNumber">
-                <el-input v-model="editForm.classNumber" placeholder="请输入班级数量"></el-input>
+                <el-input v-model="edit.classNumber" placeholder="请输入班级数量"></el-input>
               </el-form-item>  
             </el-col>  
             <el-col :span="8">
               <el-form-item label="学生数量" prop="studentNumber">
-                <el-input v-model="editForm.studentNumber" placeholder="请输入学生数量"></el-input>
+                <el-input v-model="edit.studentNumber" placeholder="请输入学生数量"></el-input>
               </el-form-item>                              
             </el-col>   
             <el-col :span="8">
               <el-form-item label="校长" prop="masterName">
-                <el-input v-model="editForm.masterName" placeholder="请输入校长" maxlength="4"></el-input>
+                <el-input v-model="edit.masterName" placeholder="请输入校长" maxlength="4"></el-input>
               </el-form-item>                             
             </el-col>  
             <el-col :span="8">
               <el-form-item label="校长电话" prop="masterPhone">
-                <el-input v-model="editForm.masterPhone" placeholder="请输入校长电话"></el-input>
+                <el-input v-model="edit.masterPhone" placeholder="请输入校长电话"></el-input>
               </el-form-item>  
             </el-col>    
             <el-col :span="8">
               <el-form-item label="校长邮箱" prop="masterEmail">
-                <el-input v-model="editForm.masterEmail" placeholder="请输入校长邮箱"></el-input>
+                <el-input v-model="edit.masterEmail" placeholder="请输入校长邮箱"></el-input>
               </el-form-item>                             
             </el-col>                                                                                                              
           </el-row>
+          <!-- for -->
+          <el-row></el-row>
+          <!-- for -->
+          <el-form-item>
+            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增负责人</el-button>
+            <!-- <el-button icon="el-icon-delete" type="danger" size="mini" v-if="addForm.link_man.length > 1" @click="dellinkMan()">删除一项</el-button> -->
+          </el-form-item>      
+          <el-form-item label="学校简介" prop="description">
+            <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="3"></el-input>
+          </el-form-item>  
+          <el-row :gutter="5"></el-row>
+          <el-form-item label="栏目模板" prop="templateId">
+            <el-select v-model="edit.templateId" placeholder="请选择栏目播放模板">
+              <el-option
+                v-for="item in templateidList"
+                :key="item.templateId"
+                :label="item.name"
+                :value="item.templateId">
+              </el-option>            
+            </el-select>    
+            <a href="javascript:;" style="color:#409EFF;margin-left:10px;" v-show="edit.templateid">预览</a>                          
+          </el-form-item>       
+          <el-form-item label="内容复审">
+            <el-radio-group v-model="edit.reviewFlag">
+              <el-radio :label="1">需要</el-radio>
+              <el-radio :label="0">不需要</el-radio>
+            </el-radio-group>
+          </el-form-item>  
+          <el-row style="text-align:center">
+            <el-button size="mini" @click="dialogEdit = false">取消</el-button>
+            <el-button :loading="btnloading" size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
+          </el-row>                                             
         </el-form>
       </el-dialog>
     </template>
@@ -377,9 +425,9 @@ export default {
           postTime: "2018-05-30 15:30"
         }
       ],
-      imageUrl: "",      
+      imageUrl: "",
       tableData: [],
-      editForm: {},
+      edit: {},
       addForm: {
         regionId: 0,
         reviewFlag: 0,
@@ -426,7 +474,15 @@ export default {
       //this.$router.push({ path: 'details', query: {schoolId:}})
     },
     handleEdit(row) {
-      this.dialogEdit = true;
+      querySchoolInfo({ schoolId: row.schoolId }).then(res => {
+        console.log(res);
+        if (res.errorCode === 0) {
+          this.dialogEdit = true;
+          this.$nextTick(function() {
+            this.edit = Object.assign({}, res.data);
+          });
+        }
+      });
     },
     handleDel(row) {},
     show() {},
@@ -436,13 +492,15 @@ export default {
         if (valid) {
           console.log(this.addForm);
           this.addSchoolAction(this.addForm);
-        }else {
+        } else {
           return false;
         }
       });
     },
+    editorForm(formName) {
+      this.$refs[formName].validate(valid => {});
+    },
     handleRegion(list) {
-      console.log(list);
       if (Array.isArray(list)) {
         this.schoolList = list;
       }
@@ -460,9 +518,7 @@ export default {
       this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
-      console.log(file); 
-      // let f = new FormData();
-      // f.append('url', file);
+      console.log(file);
     },
     //查询标签
     getLabel() {
@@ -471,24 +527,24 @@ export default {
           this.labelsList = res.data;
         }
       });
-    },   
+    },
     //查询学校类别
     getSchoolCateg(params = {}) {
       querySchoolCategory(params).then(res => {
         if (res.errorCode === 0) {
           if (params.queryType) {
             this.typeidList = res.data;
-          }else {
+          } else {
             this.propertyidList = res.data;
           }
         }
-      }); 
+      });
     },
     addSchoolAction(params = {}) {
       addSchool(params).then(res => {
         console.log(res);
       });
-    }, 
+    },
     //显示学校列表
     createTable() {
       showSchoolList(this.query).then(res => {
@@ -500,14 +556,13 @@ export default {
   },
   mounted() {
     this.getLabel();
-    this.getSchoolCateg({ queryType: 0 })
-    this.getSchoolCateg({ queryType: 1 })
+    this.getSchoolCateg({ queryType: 0 });
+    this.getSchoolCateg({ queryType: 1 });
     this.createTable();
   }
 };
 </script>
 <style lang="less" scoped>
-
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;

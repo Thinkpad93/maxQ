@@ -89,7 +89,19 @@ export const constantRouterMap = [
         name: '栏目模板',
         component: () => import ('@/views/content/columntpl'),
         meta: { requiresAuth: true }
-      }      
+      },
+      {
+        path: 'playform',
+        name: '学校播放表单',
+        component: () => import ('@/views/content/playform'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'release',
+        name: '内容发布',
+        component: () => import ('@/views/content/release'),
+        meta: { requiresAuth: true }
+      }                    
     ]
   },
   {

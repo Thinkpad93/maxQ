@@ -87,7 +87,14 @@ export default {
       },
       addForm: {},
       editForm: {},
-      rules: {},
+      rules: {
+        name: [
+          { required: true, message: "请输入栏目名称", trigger: "blur" }
+        ],
+        description: [
+          { required: true, message: "请输入栏目描述", trigger: "blur" }
+        ]
+      },
       tableData: [],        
     };
   },
@@ -97,7 +104,9 @@ export default {
     show() {},
     close() {},
     addsForm(formName) {
-
+      this.$refs[formName].validate(valid => {
+        console.log(valid);
+      });
     } 
   }
 };

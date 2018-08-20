@@ -8,7 +8,8 @@ axios.defaults.transformRequest = AXIOS_DEFAULT_CONFIG.transformRequest;
 
 //请求拦截器
 axios.interceptors.request.use(config => {
-  //console.log("请求拦截器");
+  console.log("请求拦截器");
+  console.log(config);
   return config;
 }, error => {
   return Promise.reject(error);
