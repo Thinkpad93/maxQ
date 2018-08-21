@@ -1,6 +1,14 @@
 <template>
    <div class="page">
      <template>
+        <el-cascader
+            size="mini"
+            :options="wzjbOptions"
+            @active-item-change="handleItemChange"
+            :props="zrbzProps"
+        ></el-cascader>
+     </template>  
+     <template>
          <el-table :data="tableData" style="width: 100%" border stripe size="mini" empty-text="没有标签哦" v-loading="loading">
              <el-table-column label="标签ID" prop="labelId"></el-table-column>
             <el-table-column label="标签名称" prop="tagName" :show-overflow-tooltip="true">
@@ -58,22 +66,65 @@
    </div> 
 </template>
 <script>
-import { queryLabel } from "@/api/school";
+import { queryRegion, queryLabel } from "@/api/school";
 export default {
   name: "tag",
   data() {
     return {
       loading: false,
+      region: {
+        queryId: 0,
+        queryType: 0
+      },
+      wzjbOptions: [],
+      zrbzProps: {
+        value: "value",
+        children: "bzs"
+      },
       labelsList: [],
       tableData: []
     };
   },
   methods: {
+    handleItemChange(val) {
+      console.log(val);
+      let va = val[0];
+      let rObj = {};
+      let newt = this.wzjbOptions.forEach(element => {
+        if (element.value == va) {
+          rObj = Object.assign({}, element);
+        }
+      });
+      queryRegion({ queryId: rObj.value, queryType: 1 }).then(res => {
+        this.wzjbOptions[0].bzs = res.data.map((v, i) => {
+          return {
+            label: v.name,
+            value: v.id,
+            bzs: []
+          };
+        });
+      });
+    },
     handleEdit(row) {
       this.$set(row, "show", true);
       this.$set(row, "state", 1);
     },
     handleSave(index, row) {},
+    //初始数据加载
+    getRegiosList(params = {}) {
+      queryRegion(params).then(res => {
+        if (res.errorCode === 0) {
+          var handItems = res.data;
+          this.wzjbOptions = handItems.map((v, i) => {
+            return {
+              label: v.name,
+              value: v.id,
+              bzs: []
+            };
+          });
+        }
+      });
+    },
     //查询标签
     getLabel() {
       queryLabel({ queryType: 0 }).then(res => {
@@ -86,6 +137,7 @@ export default {
   },
   mounted() {
     this.getLabel();
+    this.getRegiosList({ queryId: 0, queryType: 0 });
   }
 };
 </script>

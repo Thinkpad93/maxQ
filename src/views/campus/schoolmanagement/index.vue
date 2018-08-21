@@ -166,17 +166,17 @@
           <!-- for -->   
           <el-row v-for="(item,index) in addForm.linkMan" :key="index">
             <el-col :span="8">
-              <el-form-item :label="`联系人`" :prop="`linkMan.${index}.linkMan`" :rules="linkmanRules.linkman">
+              <el-form-item :label="`联系人`" :prop="`linkMan`" :rules="linkmanRules.linkman">
                 <el-input v-model="item.linkMan" placeholder="请输入联系人" maxlength="4"></el-input>
               </el-form-item>                            
             </el-col>
             <el-col :span="8">
-              <el-form-item :label="`联系人电话`" :prop="`linkMan.${index}.phone`" :rules="linkmanRules.phone">
+              <el-form-item :label="`联系人电话`" :prop="`linkMan`" :rules="linkmanRules.phone">
                 <el-input v-model="item.phone" placeholder="请输入联系人电话"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item :label="`联系人邮箱`" :prop="`linkMan.${index}.email`" :rules="linkmanRules.email">
+              <el-form-item :label="`联系人邮箱`" :prop="`linkMan`" :rules="linkmanRules.email">
                 <el-input v-model="item.email" placeholder="请输入联系人邮箱"></el-input>
               </el-form-item>                             
             </el-col>
@@ -191,9 +191,9 @@
           <el-row :gutter="5">
             <el-col :span="12">
               <el-form-item prop="schoolImage">
-                  <!-- <el-upload
+                  <el-upload
                     class="avatar-uploader"
-                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="https://jsonplaceholder.typicode.com/posts/"
                     :multiple="false"
                     :auto-upload="true"
                     :show-file-list="false"
@@ -202,7 +202,7 @@
                     <img v-if="imageUrl" :src="imageUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">上传学校荣誉牌</div>
-                  </el-upload> -->
+                  </el-upload>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -435,23 +435,23 @@ export default {
       },
       linkmanRules: {},
       rules: {
-        regionId: [{ required: true, message: "请选择区域", trigger: "blur" }],
-        name: [{ required: true, message: "请选择学校名称", trigger: "blur" }],
-        propertyId: [
-          { required: true, message: "请选择学校性质", trigger: "blur" }
-        ],
-        labelIds: [
-          { required: true, message: "请选择冠名企业", trigger: "blur" }
-        ],
-        typeId: [
-          { required: true, message: "请选择学校类型", trigger: "blur" }
-        ],
-        address: [
-          { required: true, message: "请输入详细地址", trigger: "blur" }
-        ],
-        templateId: [
-          { required: true, message: "请选择栏目模板", trigger: "blur" }
-        ]
+        // regionId: [{ required: true, message: "请选择区域", trigger: "blur" }],
+        // name: [{ required: true, message: "请选择学校名称", trigger: "blur" }],
+        // propertyId: [
+        //   { required: true, message: "请选择学校性质", trigger: "blur" }
+        // ],
+        // labelIds: [
+        //   { required: true, message: "请选择冠名企业", trigger: "blur" }
+        // ],
+        // typeId: [
+        //   { required: true, message: "请选择学校类型", trigger: "blur" }
+        // ],
+        // address: [
+        //   { required: true, message: "请输入详细地址", trigger: "blur" }
+        // ],
+        // templateId: [
+        //   { required: true, message: "请选择栏目模板", trigger: "blur" }
+        // ]
       }
     };
   },
@@ -490,7 +490,7 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.addForm);
+          let { linkMan } = this.addForm;
           this.addSchoolAction(this.addForm);
         } else {
           return false;
@@ -541,7 +541,7 @@ export default {
       });
     },
     addSchoolAction(params = {}) {
-      addSchool(params).then(res => {
+      addSchool(params, { headers: { 'content-type': 'application/json;charset=utf-8' } }).then(res => {
         console.log(res);
       });
     },

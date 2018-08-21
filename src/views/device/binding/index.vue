@@ -59,7 +59,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="query.page"
-            :page-size="query.page_size"
+            :page-size="query.pageSize"
             layout="total, prev, pager, next, jumper"
             :total="tableData[0].totalCount">
           </el-pagination> 
@@ -205,6 +205,7 @@ export default {
         page: 1,
         pageSize: 10
       },
+      //分页
       schoolId: null,
       //学校名称
       schoolList: [],
@@ -313,7 +314,7 @@ export default {
         .then(res => {
           if (res.errorCode === 0) {
             this.loading = false;
-            this.tableData = res.data;
+            this.tableData = res.data.data;
           }
         })
         .catch(error => {
@@ -326,11 +327,7 @@ export default {
         if (res.errorCode === 0) {
           this.dialogAdd = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable({
-            schoolId: 0,
-            page: 1,
-            pageSize: 10
-          });
+          this.createTable();
         } else if (res.errorCode === -1) {
           this.$message({ message: `${res.errorMsg}`, type: "warning" });
           return false;
@@ -344,11 +341,7 @@ export default {
         this.btnloading = false;
         if (res.errorCode === 0) {
           this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable({
-            schoolId: 0,
-            page: 1,
-            pageSize: 10
-          });
+          this.createTable();
         }
       });
     },
@@ -357,11 +350,7 @@ export default {
       deleteDeviceBind({ deviceId }).then(res => {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         if (res.errorCode === 0) {
-          this.createTable({
-            schoolId: 0,
-            page: 1,
-            pageSize: 10
-          });
+          this.createTable();
         }
       });
     }

@@ -6,7 +6,7 @@
             <el-col :span="24">
                 <div class="page-form">
                     <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-                        <el-form-item label="学校名称">
+                        <el-form-item label="栏目名称">
                             <el-input v-model="query.channelName" placeholder="请输入学校名称" maxlength="40"></el-input>
                         </el-form-item>
                         <el-form-item>
@@ -20,7 +20,7 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-        <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
+        <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
             <el-table-column label="栏目编号" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
@@ -31,6 +31,21 @@
             </el-table-column>
         </el-table>        
     </template>
+    <!-- 分页 -->
+    <template>
+      <div class="pagination" v-if="tableData.length">   
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="query.page"
+            :page-size="query.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination> 
+      </div>   
+    </template>      
     <!-- 新增 -->
     <template>
         <el-dialog center top="40px" title="新增栏目" :visible.sync="dialogAdd" :modal-append-to-body="false">
@@ -72,6 +87,12 @@
   </div>      
 </template>
 <script>
+import {
+  queryChannel,
+  addChannel,
+  updateChannel,
+  deleteChannel
+} from "@/api/content";
 export default {
   name: "column",
   data() {
@@ -83,31 +104,102 @@ export default {
       query: {
         channelName: "",
         page: 0,
-        pageSize: 10  
+        pageSize: 10
       },
+      totalCount: 0,
       addForm: {},
       editForm: {},
       rules: {
-        name: [
-          { required: true, message: "请输入栏目名称", trigger: "blur" }
-        ],
+        name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
         description: [
           { required: true, message: "请输入栏目描述", trigger: "blur" }
         ]
       },
-      tableData: [],        
+      tableData: []
     };
   },
+  computed: {
+    //设置表格高度
+    tableHeight() {
+      return window.innerHeight - 255;
+    }
+  },
   methods: {
-    search() {},
-    handleEdit(row) {}, 
+    search() {
+      if (this.query.channelName != null) {
+        this.createTable();
+      }
+    },
+    handleEdit(row) {
+      this.dialogEdit = true;
+      this.$nextTick(function() {
+        this.editForm = Object.assign({}, row);
+      });
+    },
+    handleSizeChange() {},
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },
     show() {},
     close() {},
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
-        console.log(valid);
+        if (valid) {
+          this.addTable(this.addForm);
+        }
       });
-    } 
+    },
+    editorForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let { postTime, ...row } = this.editForm;
+          this.updateTable(row);
+        }
+      });
+    },
+    //显示栏目列表
+    createTable() {
+      queryChannel(this.query).then(res => {
+        if (res.errorCode === 0) {
+          this.tableData = res.data.data;
+          this.totalCount = res.data.totalCount;
+        }
+      });
+    },
+    //新增栏目
+    addTable(params = {}) {
+      addChannel(params).then(res => {
+        if (res.errorCode === 0) {
+          this.dialogAdd = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
+        } else if (res.errorCode === 1) {
+          this.$message({ message: `${res.errorMsg}`, type: "warning" });
+        }
+      });
+    },
+    //编辑栏目
+    updateTable(params = {}) {
+      updateChannel(params).then(res => {
+        if (res.errorCode === 0) {
+          this.dialogEdit = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
+        }
+      });
+    },
+    //删除栏目
+    deleteTable(channelId) {
+      deleteChannel({ channelId }).then(res => {
+        if (res.errorCode === 0) {
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+        }
+      });
+    }
+  },
+  mounted() {
+    this.createTable();
   }
 };
 </script>
