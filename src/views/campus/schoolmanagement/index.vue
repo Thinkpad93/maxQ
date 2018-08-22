@@ -97,8 +97,8 @@
             <el-col :span="8">
               <el-form-item label="办学元年" prop="firstYear">
                 <el-date-picker
-                format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
+                  format="yyyy"
+                  value-format="yyyy"
                   v-model="addForm.firstYear"
                   type="year"
                   placeholder="选择办学元年" style="width:100%">
@@ -107,7 +107,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="学校标语" prop="slogan">
-                <el-input v-model="addForm.sloslogangan" placeholder="请输入学校标语"></el-input>
+                <el-input v-model="addForm.slogan" placeholder="请输入学校标语"></el-input>
               </el-form-item> 
             </el-col>
             <el-col :span="8">
@@ -188,38 +188,6 @@
           <el-form-item label="学校简介" prop="description">
             <el-input type="textarea" v-model="addForm.description" placeholder="请输入学校简介" :rows="3"></el-input>
           </el-form-item> 
-          <el-row :gutter="5">
-            <el-col :span="12">
-              <el-form-item prop="schoolImage">
-                  <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :multiple="false"
-                    :auto-upload="true"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌</div>
-                  </el-upload>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="schoolImage">
-                  <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校全景图</div>
-                  </el-upload>
-                </el-form-item>
-            </el-col>
-          </el-row>            
           <el-form-item label="栏目模板" prop="templateId">
             <el-select v-model="addForm.templateId" placeholder="请选择栏目播放模板">
               <el-option
@@ -236,7 +204,48 @@
               <el-radio :label="1">需要</el-radio>
               <el-radio :label="0">不需要</el-radio>
             </el-radio-group>
-          </el-form-item>                      
+          </el-form-item>            
+          <el-row :gutter="5">
+            <el-col :span="12">
+              <el-form-item prop="honorImage">
+                  <el-upload
+                    ref="upload"
+                    class="image-uploader"
+                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    name="honorImage"
+                    :data="{type: '0'}"
+                    :multiple="false"
+                    accept="image/jpeg,image/gif,image/png,image/bmp" 
+                    :auto-upload="true"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl1" :src="imageUrl1" class="avatar">
+                    <i v-else class="el-icon-plus uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌，<span style="color:#409EFF" >图片大小不能超过2MB</span></div>
+                  </el-upload>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item prop="honorImage">
+                  <el-upload
+                    class="image-uploader"
+                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    name="honorImage"
+                    :data="{type: '1'}"
+                    :multiple="false"
+                    accept="image/jpeg,image/gif,image/png,image/bmp" 
+                    :auto-upload="true"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl2" :src="imageUrl2" class="avatar">
+                    <i v-else class="el-icon-plus uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">上传学校全景图，<span style="color:#409EFF" >图片大小不能超过2MB</span></div>
+                  </el-upload>
+                </el-form-item>
+            </el-col>
+          </el-row>                                
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
             <el-button :loading="btnloading" size="mini" type="primary" @click="addsForm('addForm')">保存</el-button>
@@ -246,7 +255,7 @@
     </template>
     <!-- 编辑 -->
     <template>
-      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogEdit" :modal-append-to-body="false">
+      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="编辑学校" :visible.sync="dialogEdit" :modal-append-to-body="false">
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-row :gutter="5">
             <el-col :span="8">
@@ -294,7 +303,7 @@
             </el-col>  
             <el-col :span="8">
               <el-form-item label="学校标语" prop="slogan">
-                <el-input v-model="edit.sloslogangan" placeholder="请输入学校标语"></el-input>
+                <el-input v-model="edit.slogan" placeholder="请输入学校标语"></el-input>
               </el-form-item> 
             </el-col>  
             <el-col :span="8">
@@ -333,14 +342,44 @@
               <el-form-item label="校长邮箱" prop="masterEmail">
                 <el-input v-model="edit.masterEmail" placeholder="请输入校长邮箱"></el-input>
               </el-form-item>                             
-            </el-col>                                                                                                              
+            </el-col>  
+            <el-col :span="8">
+              <el-form-item label="负责人" prop="headName">
+                <el-input v-model="edit.headName" placeholder="请输入负责人" maxlength="4"></el-input>
+              </el-form-item>                             
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="负责人电话" prop="headPhone">
+                <el-input v-model="edit.headPhone" placeholder="请输入负责人电话"></el-input>
+              </el-form-item>  
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="负责人邮箱" prop="headEmail">
+                <el-input v-model="edit.headEmail" placeholder="请输入负责人邮箱"></el-input>
+              </el-form-item>                             
+            </el-col>                                                                                                                           
           </el-row>
           <!-- for -->
-          <el-row></el-row>
+          <el-row v-for="(item,index) in edit.linkMan" :key="index">
+            <el-col :span="8">
+              <el-form-item :label="`联系人`" :prop="`linkMan`" :rules="linkmanRules.linkman">
+                <el-input v-model="item[index]" placeholder="请输入联系人" maxlength="4"></el-input>
+              </el-form-item>                            
+            </el-col>
+            <el-col :span="8">
+              <el-form-item :label="`联系人电话`" :prop="`linkMan`" :rules="linkmanRules.phone">
+                <el-input v-model="edit.phone[index]" placeholder="请输入联系人电话"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item :label="`联系人邮箱`" :prop="`linkMan`" :rules="linkmanRules.email">
+                <el-input v-model="edit.email[index]" placeholder="请输入联系人邮箱"></el-input>
+              </el-form-item>                             
+            </el-col>            
+          </el-row>
           <!-- for -->
           <el-form-item>
-            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增负责人</el-button>
-            <!-- <el-button icon="el-icon-delete" type="danger" size="mini" v-if="addForm.link_man.length > 1" @click="dellinkMan()">删除一项</el-button> -->
+            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增联系人</el-button>
           </el-form-item>      
           <el-form-item label="学校简介" prop="description">
             <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="3"></el-input>
@@ -363,6 +402,39 @@
               <el-radio :label="0">不需要</el-radio>
             </el-radio-group>
           </el-form-item>  
+          <el-row :gutter="5">
+            <el-col :span="12">
+              <el-form-item prop="schoolImage">
+                  <!-- <el-upload
+                    class="avatar-uploader"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    name="schoolImage"
+                    :multiple="false"
+                    :auto-upload="true"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌</div>
+                  </el-upload> -->
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item prop="schoolImage">
+                  <!-- <el-upload
+                    class="avatar-uploader"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">上传学校全景图</div>
+                  </el-upload> -->
+                </el-form-item>
+            </el-col>
+          </el-row>            
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogEdit = false">取消</el-button>
             <el-button :loading="btnloading" size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
@@ -373,6 +445,7 @@
   </div>  
 </template>
 <script>
+import axios from "axios";
 import {
   showSchoolList,
   addSchool,
@@ -425,33 +498,35 @@ export default {
           postTime: "2018-05-30 15:30"
         }
       ],
-      imageUrl: "",
+      imageUrl1: "",
+      imageUrl2: "",
       tableData: [],
       edit: {},
       addForm: {
         regionId: 0,
         reviewFlag: 0,
+        schoolImage: [],
         linkMan: [{ linkMan: "", phone: "", email: "" }]
       },
       linkmanRules: {},
       rules: {
-        // regionId: [{ required: true, message: "请选择区域", trigger: "blur" }],
-        // name: [{ required: true, message: "请选择学校名称", trigger: "blur" }],
-        // propertyId: [
-        //   { required: true, message: "请选择学校性质", trigger: "blur" }
-        // ],
-        // labelIds: [
-        //   { required: true, message: "请选择冠名企业", trigger: "blur" }
-        // ],
-        // typeId: [
-        //   { required: true, message: "请选择学校类型", trigger: "blur" }
-        // ],
-        // address: [
-        //   { required: true, message: "请输入详细地址", trigger: "blur" }
-        // ],
-        // templateId: [
-        //   { required: true, message: "请选择栏目模板", trigger: "blur" }
-        // ]
+        regionId: [{ required: true, message: "请选择区域", trigger: "blur" }],
+        name: [{ required: true, message: "请选择学校名称", trigger: "blur" }],
+        propertyId: [
+          { required: true, message: "请选择学校性质", trigger: "blur" }
+        ],
+        labelIds: [
+          { required: true, message: "请选择冠名企业", trigger: "blur" }
+        ],
+        typeId: [
+          { required: true, message: "请选择学校类型", trigger: "blur" }
+        ],
+        address: [
+          { required: true, message: "请输入详细地址", trigger: "blur" }
+        ],
+        templateId: [
+          { required: true, message: "请选择栏目模板", trigger: "blur" }
+        ]
       }
     };
   },
@@ -474,14 +549,9 @@ export default {
       //this.$router.push({ path: 'details', query: {schoolId:}})
     },
     handleEdit(row) {
-      querySchoolInfo({ schoolId: row.schoolId }).then(res => {
-        console.log(res);
-        if (res.errorCode === 0) {
-          this.dialogEdit = true;
-          this.$nextTick(function() {
-            this.edit = Object.assign({}, res.data);
-          });
-        }
+      this.dialogEdit = true;
+      this.$nextTick(function() {
+        this.edit = Object.assign({}, row);
       });
     },
     handleDel(row) {},
@@ -490,8 +560,10 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { linkMan } = this.addForm;
+          //let { linkMan } = this.addForm;
+          //console.log(this.$refs.upload);
           this.addSchoolAction(this.addForm);
+          console.log(this.addForm);
         } else {
           return false;
         }
@@ -515,7 +587,15 @@ export default {
       this.query.schoolId = 0;
     },
     handleAvatarSuccess(response, file, fileList) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      if (response.errorCode === 0) {
+        if (response.data.type == "0") {
+          this.imageUrl1 = URL.createObjectURL(file.raw);
+          this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
+        }else if (response.data.type == "1") {
+          this.imageUrl2 = URL.createObjectURL(file.raw);
+          this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
+        }
+      }
     },
     beforeAvatarUpload(file) {
       console.log(file);
@@ -541,8 +621,13 @@ export default {
       });
     },
     addSchoolAction(params = {}) {
-      addSchool(params, { headers: { 'content-type': 'application/json;charset=utf-8' } }).then(res => {
-        console.log(res);
+      addSchool(params, {
+        headers: { "content-type": "application/json;charset=utf-8" }
+      }).then(res => {
+        if (res.errorCode === 0) {
+          this.dialogAdd = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+        }
       });
     },
     //显示学校列表
@@ -563,7 +648,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.avatar-uploader-icon {
+.uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 178px;
@@ -572,8 +657,8 @@ export default {
   text-align: center;
 }
 .avatar {
-  width: 178px;
-  height: 178px;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 </style>

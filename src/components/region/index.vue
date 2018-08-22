@@ -52,6 +52,7 @@ export default {
   },
   methods: {
     handleProvince(value) {
+      console.log(value);
       this.region.queryId = value;
       this.region.queryType = 1;
       this.city = null;

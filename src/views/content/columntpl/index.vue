@@ -44,13 +44,18 @@
    </div> 
 </template>
 <script>
+import { queryChannelTemplate } from "@/api/content";
 export default {
   name: "columnTpl",
   data() {
     return {
-      dialogAdd: false,  
+      dialogAdd: false,
       loading: false,
-      query: {},
+      query: {
+        templateName: "",
+        page: 1,
+        pageSize: 10
+      },
       tableData: []
     };
   },
@@ -58,9 +63,19 @@ export default {
     search() {},
     handleEdit() {},
     handleDel() {},
-    handleView() {}
+    handleView() {},
+    //显示栏目模板列表
+    createTable() {
+      queryChannelTemplate(this.query).then(res => {
+        if (res.errorCode === 0) {
+          this.tableData = res.data.data;
+        }
+      });
+    }
   },
-  mounted() {}
+  mounted() {
+    this.createTable();
+  }
 };
 </script>
 <style lang="less" scoped>

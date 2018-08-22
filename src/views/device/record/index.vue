@@ -6,12 +6,10 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-
                 <region @change="handleRegion"></region>
-
               </el-form-item>              
               <el-form-item label="学校名称">
-                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
+                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
                   <el-option
                     v-for="item in schoolList"
                     :key="item.id"
@@ -43,8 +41,8 @@
           <el-table-column :resizable="false" label="检修人员" prop="repairMan" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
             </template>            
           </el-table-column>
       </el-table>        
@@ -66,9 +64,6 @@
               </el-option> 
             </el-select>              
           </el-form-item>                
-          <!-- <el-form-item label="学校名称" prop="schoolid">
-            <el-input v-model="addForm.schoolid" placeholder="请输入学校名称" maxlength="20"></el-input>
-          </el-form-item> -->
           <el-form-item label="故障时间" prop="faultTime">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
@@ -107,9 +102,6 @@
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="编辑检修记录" :visible.sync="dialogEdit" :modal-append-to-body="false">
         <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
-          <!-- <el-form-item label="学校名称" prop="schoolName">
-            <el-input v-model="edit.schoolName" maxlength="20" :disabled="true"></el-input>
-          </el-form-item> -->
           <el-form-item label="故障时间" prop="faultTime">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
@@ -172,6 +164,7 @@ export default {
         page: 1,
         pageSize: 10
       },
+      totalCount: 0,
       schoolId: null,
       //学校名称
       schoolList: [],
@@ -212,11 +205,15 @@ export default {
     close() {},
     //搜索
     search() {
+      let page = this.query.page;
       if (this.schoolId === null) {
         this.$message({ message: "请选择学校名称", type: "warning" });
-      } else {
-        this.createTable();
+        return;
       }
+      if (page > 1) {
+        this.query.page = 1;
+      }
+      this.createTable();
     },
     handleRegion(list) {
       if (Array.isArray(list)) {
@@ -230,6 +227,9 @@ export default {
     },
     handleSchool(value) {
       this.query.schoolId = value;
+    },
+    handleClearSchool() {
+      this.query.schoolId = 0;
     },
     handleEdit(row) {
       this.dialogEdit = true;
@@ -281,9 +281,11 @@ export default {
     },
     //显示检修列表
     createTable() {
+      this.loading = true;
       showRepairList(this.query).then(res => {
         if (res.errorCode === 0) {
-          this.tableData = res.data;
+          this.loading = false;
+          this.tableData = res.data.data;
         }
       });
     },

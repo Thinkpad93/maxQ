@@ -3,9 +3,10 @@
      <template>
         <el-cascader
             size="mini"
-            :options="wzjbOptions"
+            v-model="selectedOptions3"
+            :options="options2"
             @active-item-change="handleItemChange"
-            :props="zrbzProps"
+            :props="props"
         ></el-cascader>
      </template>  
      <template>
@@ -76,10 +77,12 @@ export default {
         queryId: 0,
         queryType: 0
       },
-      wzjbOptions: [],
-      zrbzProps: {
+      options2: [],
+      selectedOptions3: [],
+      props: {
         value: "value",
-        children: "bzs"
+        label: "name",
+        children: "cities"
       },
       labelsList: [],
       tableData: []
@@ -87,23 +90,61 @@ export default {
   },
   methods: {
     handleItemChange(val) {
-      console.log(val);
-      let va = val[0];
-      let rObj = {};
-      let newt = this.wzjbOptions.forEach(element => {
-        if (element.value == va) {
-          rObj = Object.assign({}, element);
-        }
-      });
-      queryRegion({ queryId: rObj.value, queryType: 1 }).then(res => {
-        this.wzjbOptions[0].bzs = res.data.map((v, i) => {
-          return {
-            label: v.name,
-            value: v.id,
-            bzs: []
-          };
+      let len = val.length;
+      //省
+      if (len == 1) {
+        this.region.queryId = val[0];
+        this.region.queryType = 1;
+        // queryRegion(this.region).then(res => {
+        //   if (res.errorCode === 0) {
+        //     this.options2[len - 1].cities = res.data.map((v, i) => {
+        //       return {
+        //         value: v.id,
+        //         label: v.name,
+        //         cities: []
+        //       };
+        //     });
+        //   }
+        // });
+      }
+      //市
+      if (len == 2) {
+        this.region.queryId = val[val.length - 1];
+        this.region.queryType = 2;
+        queryRegion(this.region).then(res => {
+          if (res.errorCode === 0) {
+            this.options2[len - 1].cities[len].cities = res.data.map((v, i) => {
+              return {
+                value: v.id,
+                label: v.name
+              };
+            });
+          }
         });
-      });
+      }
+      //区
+      if (len == 3) {
+        console.log(len);
+        //this.options2[0].cities[0].cities = [{  value: 'xiaolv', label: '效率' }]
+      }
+
+      // let va = val[0];
+      // let rObj = {};
+
+      // let newt = this.options2.forEach(element => {
+      //   if (element.value == va) {
+      //     rObj = Object.assign({}, element);
+      //   }
+      // });
+      // queryRegion({ queryId: rObj.value, queryType: 1 }).then(res => {
+      //   this.options2[0].cities = res.data.map((v, i) => {
+      //     return {
+      //       value: v.id,
+      //       label: v.name,
+      //       cities: []
+      //     };
+      //   });
+      // });
     },
     handleEdit(row) {
       this.$set(row, "show", true);
@@ -114,12 +155,11 @@ export default {
     getRegiosList(params = {}) {
       queryRegion(params).then(res => {
         if (res.errorCode === 0) {
-          var handItems = res.data;
-          this.wzjbOptions = handItems.map((v, i) => {
+          this.options2 = res.data.map((v, i) => {
             return {
-              label: v.name,
               value: v.id,
-              bzs: []
+              label: v.name,
+              cities: []
             };
           });
         }

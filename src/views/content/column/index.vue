@@ -7,7 +7,7 @@
                 <div class="page-form">
                     <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
                         <el-form-item label="栏目名称">
-                            <el-input v-model="query.channelName" placeholder="请输入学校名称" maxlength="40"></el-input>
+                            <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
@@ -21,10 +21,10 @@
     <!-- 表格数据 -->
     <template>
         <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
-            <el-table-column label="栏目编号" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column width="300" label="栏目编号" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="操作">
+            <el-table-column width="200" label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
                 </template>
@@ -103,10 +103,10 @@ export default {
       formLabelWidth: "100px",
       query: {
         channelName: "",
-        page: 0,
+        page: 1,
         pageSize: 10
       },
-      totalCount: 0,
+      totalCount: 0, //分页总数
       addForm: {},
       editForm: {},
       rules: {
@@ -126,9 +126,15 @@ export default {
   },
   methods: {
     search() {
-      if (this.query.channelName != null) {
-        this.createTable();
+      let page = this.query.page;
+      // if (!this.query.channelName.length) {
+      //   this.$message({ message: "请选择栏目名称", type: "warning" });
+      //   return;
+      // }
+      if (page > 1) {
+        this.query.page = 1;
       }
+      this.createTable();
     },
     handleEdit(row) {
       this.dialogEdit = true;
@@ -141,8 +147,6 @@ export default {
       this.query.page = curr;
       this.createTable();
     },
-    show() {},
-    close() {},
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

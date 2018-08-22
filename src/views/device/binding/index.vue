@@ -7,12 +7,10 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-
                 <region @change="handleRegion"></region>
-
               </el-form-item>
               <el-form-item label="学校名称">
-                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
+                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
                   <el-option
                     v-for="item in schoolList"
                     :key="item.id"
@@ -56,12 +54,11 @@
           <el-pagination
             background
             small
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="query.page"
             :page-size="query.pageSize"
             layout="total, prev, pager, next, jumper"
-            :total="tableData[0].totalCount">
+            :total="totalCount">
           </el-pagination> 
       </div>   
     </template>    
@@ -95,7 +92,7 @@
               <el-input v-model="addForm.serial" placeholder="请选择设备序号" maxlength="30"></el-input>
             </el-form-item>
             <el-form-item label="冠名企业" prop="labelIds">
-              <el-select v-model="addForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
+              <el-select v-model="addForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
                 <el-option
                   v-for="item in labelsList"
                   :key="item.labelId"
@@ -139,7 +136,7 @@
             <!-- 如果存在冠名企业 -->  
             <template>
               <el-form-item label="冠名企业" prop="labelIds">
-                <el-select v-model="edit.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业" @change="changeTag">
+                <el-select v-model="edit.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
                   <el-option
                     v-for="item in labelsList"
                     :key="item.labelId"
@@ -205,6 +202,7 @@ export default {
         page: 1,
         pageSize: 10
       },
+      totalCount: 0,
       //分页
       schoolId: null,
       //学校名称
@@ -224,11 +222,15 @@ export default {
   methods: {
     //搜索
     search() {
+      let page = this.query.page;
       if (this.schoolId === null) {
         this.$message({ message: "请选择学校名称", type: "warning" });
-      } else {
-        this.createTable();
+        return;
       }
+      if (page > 1) {
+        this.query.page = 1;
+      }
+      this.createTable();
     },
     handleRegion(list) {
       if (Array.isArray(list)) {
@@ -240,17 +242,12 @@ export default {
         this.schoolListInner = list;
       }
     },
-    changeTag(value) {
-      //console.log(value);
-    },
     handleSchool(value) {
       this.query.schoolId = value;
     },
-    //pageSize 改变时会触发
-    handleSizeChange(size) {
-      //this.query.page_size = size;
+    handleClearSchool() {
+      this.query.schoolId = 0;
     },
-    //currentPage 改变时会触发
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.createTable();
@@ -315,6 +312,10 @@ export default {
           if (res.errorCode === 0) {
             this.loading = false;
             this.tableData = res.data.data;
+            this.totalCount = res.data.totalCount;
+          } else if (res.errorCode === 1) {
+            this.loading = false;
+            this.$message({ message: `${res.errorMsg}`, type: "warning" });
           }
         })
         .catch(error => {

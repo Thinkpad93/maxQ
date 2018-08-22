@@ -200,7 +200,7 @@ export default {
       showDeviceStatus(this.query).then(res => {
         console.log(res);
         if (res.errorCode === 0) {
-          this.tableData = res.data;  
+          this.tableData = res.data.data;  
         }
       })
     },

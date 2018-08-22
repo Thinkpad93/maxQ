@@ -11,3 +11,6 @@ git push -u origin master
 
 ```
 
+* 发送设备指令还没有做完
+* 省市区选择需要优化
+
