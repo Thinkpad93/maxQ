@@ -262,19 +262,53 @@ export default {
       formLabelWidth: "100px",
       schoolId: null,
       schoolList: [],
-      tableData: [],
       query: {
         schoolId: 0
       },
       channelForm: {},
-      rules: {}
+      rules: {},
+      tableData: [
+        {
+          itemId: 1,
+          channelId: 1,
+          channelName: "科普知识",
+          playStartTime: "10:00:00",
+          playEndTime: "11:00:00",
+          scrollType: 0,
+          priority: 1,
+          validType: 0,
+          validStartTime: "2018-6-30",
+          validStartTime: "2018-7-30",
+          postTime: "2018-05-30 15:30"
+        }
+      ]
     };
   },
   methods: {
     search() {},
+    show() {},
+    close() {},
+    setTableEditState(tableData) {
+      if (Array.isArray(tableData)) {
+        tableData.forEach((e, v) => {
+          if (!e.show) {
+            this.$set(e, 'show', false);
+            this.$set(e, 'state', 0);
+          }
+        });
+      }
+    },
     handleRegion() {},
     handleSchool() {},
-    addChannelForm() {}
+    handleEdit(index, row) {
+      let tableData = this.tableData;
+      this.$set(row, 'show', true);
+      this.$set(row, 'state', 1);
+      this.setTableEditState(tableData);
+    },
+    addChannelForm() {},
+    //显示学校播放表单列表
+    createTable() {}
   }
 };
 </script>

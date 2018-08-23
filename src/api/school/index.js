@@ -8,6 +8,11 @@ export const showSchoolList = (params) => {
 export const addSchool = (params, config) => {
     return http.fetchPost('/action/mod-xiaojiao/region/addSchool.do', params, config);
 }
+//编辑学校
+export const updateSchool = (params, config) => {
+    return http.fetchPost('/action/mod-xiaojiao/region/updateSchool.do', params, config);
+}
+
 //查询学校信息
 export const querySchoolInfo = (params) => {
     return http.fetchPost('/action/mod-xiaojiao/region/querySchoolInfo.do', params);

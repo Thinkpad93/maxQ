@@ -183,7 +183,7 @@
           </el-row>            
           <!-- for --> 
           <el-form-item>
-            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增联系人</el-button>
+            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan(true)">新增联系人</el-button>
           </el-form-item>  
           <el-form-item label="学校简介" prop="description">
             <el-input type="textarea" v-model="addForm.description" placeholder="请输入学校简介" :rows="3"></el-input>
@@ -210,6 +210,7 @@
               <el-form-item prop="honorImage">
                   <el-upload
                     ref="upload"
+                    :style="{ backgroundImage : addImageUrl1 }"
                     class="image-uploader"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
@@ -218,17 +219,19 @@
                     accept="image/jpeg,image/gif,image/png,image/bmp" 
                     :auto-upload="true"
                     :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl1" :src="imageUrl1" class="avatar">
-                    <i v-else class="el-icon-plus uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌，<span style="color:#409EFF" >图片大小不能超过2MB</span></div>
+                    :on-success="handleImageSuccess"
+                    :before-upload="beforeImageUpload">
+                    <!-- <img v-if="addImageUrl1" :src="addImageUrl1" class="avatar"> -->
+                    <!-- <i v-else class="el-icon-plus uploader-icon">上传学校荣誉牌</i> -->
+                    <!-- <div class="el-upload__tip" slot="tip">上传学校荣誉牌，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
                   </el-upload>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="honorImage">
                   <el-upload
+                    ref="upload"
+                    :style="{ backgroundImage : addImageUrl2 }"
                     class="image-uploader"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
@@ -237,11 +240,11 @@
                     accept="image/jpeg,image/gif,image/png,image/bmp" 
                     :auto-upload="true"
                     :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl2" :src="imageUrl2" class="avatar">
-                    <i v-else class="el-icon-plus uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校全景图，<span style="color:#409EFF" >图片大小不能超过2MB</span></div>
+                    :on-success="handleImageSuccess"
+                    :before-upload="beforeImageUpload">
+                    <!-- <img v-if="addImageUrl2" :src="addImageUrl2" class="avatar">
+                    <i v-else class="el-icon-plus uploader-icon">上传学校全景图</i> -->
+                    <!-- <div class="el-upload__tip" slot="tip">上传学校全景图，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
                   </el-upload>
                 </el-form-item>
             </el-col>
@@ -360,26 +363,26 @@
             </el-col>                                                                                                                           
           </el-row>
           <!-- for -->
-          <el-row v-for="(item,index) in edit.linkMan" :key="index">
-            <el-col :span="8">
-              <el-form-item :label="`联系人`" :prop="`linkMan`" :rules="linkmanRules.linkman">
-                <el-input v-model="item[index]" placeholder="请输入联系人" maxlength="4"></el-input>
-              </el-form-item>                            
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="`联系人电话`" :prop="`linkMan`" :rules="linkmanRules.phone">
-                <el-input v-model="edit.phone[index]" placeholder="请输入联系人电话"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item :label="`联系人邮箱`" :prop="`linkMan`" :rules="linkmanRules.email">
-                <el-input v-model="edit.email[index]" placeholder="请输入联系人邮箱"></el-input>
-              </el-form-item>                             
-            </el-col>            
-          </el-row>
+            <el-row v-for="(item,index) in edit.linkMan" :key="index">
+              <el-col :span="8">
+                <el-form-item :label="`联系人`" :prop="`linkMan`" :rules="linkmanRules.linkman">
+                  <el-input v-model="item.linkMan" placeholder="请输入联系人" maxlength="4"></el-input>
+                </el-form-item>                            
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="`联系人电话`" :prop="`phone`" :rules="linkmanRules.phone">
+                  <el-input v-model="item.phone" placeholder="请输入联系人电话"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="`联系人邮箱`" :prop="`email`" :rules="linkmanRules.email">
+                  <el-input v-model="item.email" placeholder="请输入联系人邮箱"></el-input>
+                </el-form-item>                             
+              </el-col>            
+            </el-row>
           <!-- for -->
           <el-form-item>
-            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan">新增联系人</el-button>
+            <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan(false)">新增联系人</el-button>
           </el-form-item>      
           <el-form-item label="学校简介" prop="description">
             <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="3"></el-input>
@@ -404,34 +407,45 @@
           </el-form-item>  
           <el-row :gutter="5">
             <el-col :span="12">
-              <el-form-item prop="schoolImage">
-                  <!-- <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    name="schoolImage"
+              <el-form-item prop="honorImage">
+                  <el-upload
+                    ref="upload"
+                    :style="{ backgroundImage : editImageUrl3 }"
+                    class="image-uploader"
+                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    name="honorImage"
+                    :data="{type: '0'}"
                     :multiple="false"
+                    accept="image/jpeg,image/gif,image/png,image/bmp" 
                     :auto-upload="true"
                     :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌</div>
-                  </el-upload> -->
+                    :on-success="handleEditImageSuccess"
+                    :before-upload="beforeImageUpload">
+                    <!-- <img v-if="editImageUrl3" :src="editImageUrl3" class="avatar">
+                    <i v-else class="el-icon-plus uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
+                  </el-upload>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item prop="schoolImage">
-                  <!-- <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                <el-form-item prop="honorImage">
+                  <el-upload
+                    ref="upload"
+                    :style="{ backgroundImage : editImageUrl4 }"
+                    class="image-uploader"
+                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    name="honorImage"
+                    :data="{type: '1'}"
+                    :multiple="false"
+                    accept="image/jpeg,image/gif,image/png,image/bmp" 
+                    :auto-upload="true"
                     :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校全景图</div>
-                  </el-upload> -->
+                    :on-success="handleEditImageSuccess"
+                    :before-upload="beforeImageUpload">
+                    <!-- <img v-if="editImageUrl4" :src="editImageUrl4" class="avatar">
+                    <i v-else class="el-icon-plus uploader-icon"></i>
+                    <div class="el-upload__tip" slot="tip">上传学校全景图，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
+                  </el-upload>
                 </el-form-item>
             </el-col>
           </el-row>            
@@ -445,15 +459,18 @@
   </div>  
 </template>
 <script>
-import axios from "axios";
+
 import {
   showSchoolList,
   addSchool,
+  updateSchool,
   querySchoolInfo,
   querySchoolCategory,
+  queryLabel,
   addImage
 } from "@/api/school";
-import { queryLabel } from "@/api/school";
+import { queryChannelTemplate } from "@/api/content";
+
 import region from "@/components/region";
 
 export default {
@@ -498,15 +515,20 @@ export default {
           postTime: "2018-05-30 15:30"
         }
       ],
-      imageUrl1: "",
-      imageUrl2: "",
+      addImageUrl1: "url(https://picnicss.com/web/img/optimised.svg)",
+      addImageUrl2: "url(https://picnicss.com/web/img/optimised.svg)",
+      editImageUrl3: "url(https://picnicss.com/web/img/optimised.svg)",
+      editImageUrl4: "url(https://picnicss.com/web/img/optimised.svg)",
       tableData: [],
-      edit: {},
+      edit: {
+        schoolImage: [{}, {}],
+        linkMan: []
+      },
       addForm: {
         regionId: 0,
         reviewFlag: 0,
-        schoolImage: [],
-        linkMan: [{ linkMan: "", phone: "", email: "" }]
+        schoolImage: [{}, {}],
+        linkMan: []
       },
       linkmanRules: {},
       rules: {
@@ -531,9 +553,14 @@ export default {
     };
   },
   methods: {
-    addlinkMan() {
-      if (this.addForm.linkMan.length) {
-        this.addForm.linkMan.push({ linkMan: "", phone: "", email: "" });
+    //新增联系人
+    addlinkMan(flags) {
+      let addLinkMan = this.addForm.linkMan;
+      let editLinkMan = this.edit.linkMan;
+      if (flags) {
+        addLinkMan.push({ linkMan: "", phone: "", email: "" });
+      }else {
+        editLinkMan.push({ linkMan: "", phone: "", email: "" });
       }
     },
     search() {
@@ -550,6 +577,10 @@ export default {
     },
     handleEdit(row) {
       this.dialogEdit = true;
+      if (row.schoolImage.length) {
+        this.editImageUrl3 = `url(${row.schoolImage[0].imageUrl})`;
+        this.editImageUrl4 = `url(${row.schoolImage[1].imageUrl})`;
+      }
       this.$nextTick(function() {
         this.edit = Object.assign({}, row);
       });
@@ -560,8 +591,6 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //let { linkMan } = this.addForm;
-          //console.log(this.$refs.upload);
           this.addSchoolAction(this.addForm);
           console.log(this.addForm);
         } else {
@@ -570,13 +599,21 @@ export default {
       });
     },
     editorForm(formName) {
-      this.$refs[formName].validate(valid => {});
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let { propertyName, typeName, ...z } = this.edit;
+          this.updateSchoolAction(z);
+        } else {
+          return false;
+        }
+      });
     },
     handleRegion(list) {
       if (Array.isArray(list)) {
         this.schoolList = list;
       }
     },
+    //所属区域id
     handleRegionInner(areaId) {
       this.addForm.regionId = areaId;
     },
@@ -586,19 +623,55 @@ export default {
     handleClear() {
       this.query.schoolId = 0;
     },
-    handleAvatarSuccess(response, file, fileList) {
+    //上传成功后的函数 新增
+    handleImageSuccess(response, file, fileList) {
+       //console.log("林场");
+      let schoolImage = this.addForm.schoolImage;
+      let imgObj = { imageUrl: response.data.url, type: response.data.type };
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
-          this.imageUrl1 = URL.createObjectURL(file.raw);
-          this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
-        }else if (response.data.type == "1") {
-          this.imageUrl2 = URL.createObjectURL(file.raw);
-          this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
+          schoolImage[0] = Object.assign({}, imgObj);
+          this.addImageUrl1 = `url(${response.data.url})`;
+          //console.log(`url(${response.data.url})`);
+          //console.log("林场");
+          //console.log(this.addForm.schoolImage[0].imageUrl);
+          //this.addImageUrl1 = URL.createObjectURL(file.raw);
+          //this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
+        } else if (response.data.type == "1") {
+          schoolImage[1] = Object.assign({}, imgObj);
+          this.addImageUrl2 = `url(${response.data.url})`;
+          //console.log(file.raw);
+          //this.addImageUrl2 = URL.createObjectURL(file.raw);
+          //this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
         }
       }
     },
-    beforeAvatarUpload(file) {
+    //上传成功后的函数 编辑
+    handleEditImageSuccess(response, file, fileList) {
+      let schoolImage = this.edit.schoolImage;
+      let imgObj = { imageUrl: response.data.url, type: response.data.type };
+      if (response.errorCode === 0) {
+        if (response.data.type == "0") {
+          schoolImage[0] = Object.assign({}, imgObj);
+          this.editImageUrl3 = `url(${response.data.url})`;
+          //this.addImageUrl3 = URL.createObjectURL(file.raw);
+        } else if (response.data.type == "1") {
+          schoolImage[1] = Object.assign({}, imgObj);
+          this.editImageUrl4 =`url(${response.data.url})`;
+          //this.addImageUrl4 = URL.createObjectURL(file.raw);
+        }
+      }
+    },
+    beforeImageUpload(file) {
       console.log(file);
+    },
+    //查询栏目模板
+    getChannelTemplate() {
+      queryChannelTemplate({ templateName: "", page: 1, pageSize: 10 }).then(res => {
+        if (res.errorCode === 0) {
+          this.templateidList = res.data.data;
+        }
+      });
     },
     //查询标签
     getLabel() {
@@ -620,6 +693,7 @@ export default {
         }
       });
     },
+    //新增学校
     addSchoolAction(params = {}) {
       addSchool(params, {
         headers: { "content-type": "application/json;charset=utf-8" }
@@ -627,6 +701,19 @@ export default {
         if (res.errorCode === 0) {
           this.dialogAdd = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
+        }
+      });
+    },
+    //编辑学校
+    updateSchoolAction(params = {}) {
+      updateSchool(params, {
+        headers: { "content-type": "application/json;charset=utf-8" }
+      }).then(res => {
+        if (res.errorCode === 0) {
+          this.dialogEdit = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
         }
       });
     },
@@ -641,6 +728,7 @@ export default {
   },
   mounted() {
     this.getLabel();
+    //this.getChannelTemplate();
     this.getSchoolCateg({ queryType: 0 });
     this.getSchoolCateg({ queryType: 1 });
     this.createTable();
