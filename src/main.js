@@ -15,7 +15,10 @@ import '@/iconfont/iconfont.css';
 
 
 
-Vue.use(Element, { size: 'samll', zIndex: 3000 });
+Vue.use(Element, {
+  size: 'samll',
+  zIndex: 3000
+});
 
 
 Vue.config.productionTip = false;
@@ -23,9 +26,8 @@ Vue.config.productionTip = false;
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     next();
-  }else {
+  } else {
     next();
-    console.log("3");
   }
 });
 
@@ -34,7 +36,9 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>',
   created() {},
   mounted() {

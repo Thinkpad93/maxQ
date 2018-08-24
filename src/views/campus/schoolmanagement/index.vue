@@ -7,7 +7,9 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-               <region @change="handleRegion"></region>
+
+                <region @last="lastChange"></region>
+
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClear">
@@ -57,7 +59,9 @@
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
-            <region @change="handleRegionInner" :trigger="false"></region>
+
+            <region @last="lastInnerChange"></region>
+
           </el-form-item>
           <el-row :gutter="5">
             <el-col :span="8">
@@ -260,6 +264,11 @@
     <template>
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="编辑学校" :visible.sync="dialogEdit" :modal-append-to-body="false">
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
+          <el-form-item label="区域选择" prop="regionId">
+
+            <region></region>
+
+          </el-form-item>
           <el-row :gutter="5">
             <el-col :span="8">
               <el-form-item label="学校名称" prop="name">
@@ -490,7 +499,7 @@ export default {
         page: 1,
         pageSize: 10
       },
-      schoolId: null,
+      schoolId: null,      
       //学校
       schoolList: [],
       //标签列表
@@ -521,6 +530,7 @@ export default {
       editImageUrl4: "url(https://picnicss.com/web/img/optimised.svg)",
       tableData: [],
       edit: {
+        regionId: 0,
         schoolImage: [{}, {}],
         linkMan: []
       },
@@ -608,15 +618,12 @@ export default {
         }
       });
     },
-    handleRegion(list) {
-      if (Array.isArray(list)) {
-        this.schoolList = list;
-      }
+    lastChange(value) {
+      
     },
-    //所属区域id
-    handleRegionInner(areaId) {
-      this.addForm.regionId = areaId;
-    },
+    lastInnerChange(value) {
+      this.addForm.regionId = value;
+    },    
     handleSchool(value) {
       this.query.schoolId = value;
     },
@@ -625,24 +632,15 @@ export default {
     },
     //上传成功后的函数 新增
     handleImageSuccess(response, file, fileList) {
-       //console.log("林场");
       let schoolImage = this.addForm.schoolImage;
       let imgObj = { imageUrl: response.data.url, type: response.data.type };
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
           schoolImage[0] = Object.assign({}, imgObj);
           this.addImageUrl1 = `url(${response.data.url})`;
-          //console.log(`url(${response.data.url})`);
-          //console.log("林场");
-          //console.log(this.addForm.schoolImage[0].imageUrl);
-          //this.addImageUrl1 = URL.createObjectURL(file.raw);
-          //this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
         } else if (response.data.type == "1") {
           schoolImage[1] = Object.assign({}, imgObj);
           this.addImageUrl2 = `url(${response.data.url})`;
-          //console.log(file.raw);
-          //this.addImageUrl2 = URL.createObjectURL(file.raw);
-          //this.addForm.schoolImage.push({ imageUrl: response.data.url, type: response.data.type });
         }
       }
     },
@@ -654,17 +652,15 @@ export default {
         if (response.data.type == "0") {
           schoolImage[0] = Object.assign({}, imgObj);
           this.editImageUrl3 = `url(${response.data.url})`;
-          //this.addImageUrl3 = URL.createObjectURL(file.raw);
         } else if (response.data.type == "1") {
           schoolImage[1] = Object.assign({}, imgObj);
           this.editImageUrl4 =`url(${response.data.url})`;
-          //this.addImageUrl4 = URL.createObjectURL(file.raw);
         }
       }
     },
     beforeImageUpload(file) {
       console.log(file);
-    },
+    }, 
     //查询栏目模板
     getChannelTemplate() {
       queryChannelTemplate({ templateName: "", page: 1, pageSize: 10 }).then(res => {
