@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" v-loading.fullscreen.lock="fullscreenLoading">
     <!-- 表单 -->
     <template>
       <el-row :gutter="10">
@@ -33,23 +33,22 @@
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
-        <el-table-column label="学校ID" prop="schoolId"></el-table-column>
-        <el-table-column label="学校名称" prop="name">
+        <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <!-- <a href="javascript:;" style="color:#409EFF" @click="handleDetails(scope.row)">{{ scope.row.name }}</a> -->
-            <router-link style="color:#409EFF" 
-              :to="{path: `/school/details/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
+            <a href="javascript:;" style="color:#409EFF" @click="handleDetails(scope.row)">{{ scope.row.name }}</a>
+            <!-- <router-link style="color:#409EFF" 
+              :to="{path: `/school/details/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link> -->
           </template>                    
         </el-table-column>
-        <el-table-column label="学校性质" prop="propertyName"></el-table-column>
-        <el-table-column label="学校类型" prop="typeName"></el-table-column>
-        <el-table-column label="负责人" prop="headName"></el-table-column>
-        <el-table-column label="负责人电话" prop="headPhone"></el-table-column>
+        <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <!-- <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button> -->
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
           </template>                       
         </el-table-column>        
       </el-table>
@@ -266,7 +265,7 @@
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
 
-            <region></region>
+            <region @last="lastInnerEditChange" v-model="setected"></region>
 
           </el-form-item>
           <el-row :gutter="5">
@@ -465,6 +464,12 @@
         </el-form>
       </el-dialog>
     </template>
+    <!-- 查看学校信息 -->
+    <template>
+      <el-dialog center width="60%" top="40px" title="学校详情信息" :visible.sync="dialogView" :modal-append-to-body="false">
+
+      </el-dialog>
+    </template>
   </div>  
 </template>
 <script>
@@ -476,6 +481,8 @@ import {
   querySchoolInfo,
   querySchoolCategory,
   queryLabel,
+  queryRegion,
+  findRegion,
   addImage
 } from "@/api/school";
 import { queryChannelTemplate } from "@/api/content";
@@ -489,9 +496,12 @@ export default {
   },
   data() {
     return {
+      setected: [],
+      fullscreenLoading: false,
       loading: false,
       dialogAdd: false,
       dialogEdit: false,
+      dialogView: false,
       btnloading: false,
       formLabelWidth: "100px",
       query: {
@@ -581,19 +591,26 @@ export default {
       }
     },
     handleDetails(row) {
+      let { schoolId } = row;
+      this.getSchoolInfo(schoolId);
       //console.log(typeof row.schoolId);
       //this.$router.push({ path: `details/${row.schoolId}` });
       //this.$router.push({ path: 'details', query: {schoolId:}})
     },
     handleEdit(row) {
       this.dialogEdit = true;
-      if (row.schoolImage.length) {
+      this.edit = Object.assign({}, row);
+      let { schoolImage } = this.edit;
+      if (schoolImage[0]) {
         this.editImageUrl3 = `url(${row.schoolImage[0].imageUrl})`;
+      }
+      if (schoolImage[1]) {
         this.editImageUrl4 = `url(${row.schoolImage[1].imageUrl})`;
       }
-      this.$nextTick(function() {
-        this.edit = Object.assign({}, row);
-      });
+      this.getFindRegion(row.regionId);
+      // this.$nextTick(function() {
+      //   this.edit = Object.assign({}, row);
+      // });
     },
     handleDel(row) {},
     show() {},
@@ -619,9 +636,18 @@ export default {
       });
     },
     lastChange(value) {
-      
+      queryRegion({ queryId: value, queryType: 3 }).then(res => {
+        if (res.errorCode === 0) {
+          this.schoolList = res.data;
+        }else {
+          return false;
+        }
+      });
     },
     lastInnerChange(value) {
+      this.addForm.regionId = value;
+    },
+    lastInnerEditChange(value) {
       this.addForm.regionId = value;
     },    
     handleSchool(value) {
@@ -661,6 +687,17 @@ export default {
     beforeImageUpload(file) {
       console.log(file);
     }, 
+    //根据区域ID查省市
+    getFindRegion(regionId) {
+      findRegion({ regionId }).then(res => {
+          if (res.errorCode === 0) {
+             this.setected[0] = res.data.province; 
+             this.setected[1] = res.data.city; 
+             this.setected[2] = res.data.region; 
+             console.log(res);
+          }
+      })
+    },
     //查询栏目模板
     getChannelTemplate() {
       queryChannelTemplate({ templateName: "", page: 1, pageSize: 10 }).then(res => {
@@ -689,6 +726,12 @@ export default {
         }
       });
     },
+    //查询学校信息
+    getSchoolInfo(schoolId) {
+      querySchoolInfo({ schoolId }).then(res => {
+        console.log(res);
+      })
+    },
     //新增学校
     addSchoolAction(params = {}) {
       addSchool(params, {
@@ -715,8 +758,10 @@ export default {
     },
     //显示学校列表
     createTable() {
+      this.loading = true;
       showSchoolList(this.query).then(res => {
         if (res.errorCode === 0) {
+          this.loading = false;
           this.tableData = res.data;
         }
       });

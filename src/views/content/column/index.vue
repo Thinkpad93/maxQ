@@ -100,6 +100,7 @@ export default {
       dialogEdit: false,
       dialogAdd: false,
       loading: false,
+      isSave: true,
       formLabelWidth: "100px",
       query: {
         channelName: "",
@@ -123,6 +124,18 @@ export default {
     tableHeight() {
       return window.innerHeight - 255;
     }
+  },
+  watch: {
+    'editForm.name': (val, oldVal) => {
+      if (val !== oldVal) {
+        this.isSave = false;
+      }
+    },
+    'editForm.description': (val, oldVal) => {
+      if (val !== oldVal) {
+        this.isSave = false;
+      }
+    },    
   },
   methods: {
     search() {

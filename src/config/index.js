@@ -2,7 +2,6 @@
 import qs from 'qs';
 
 export const AXIOS_DEFAULT_CONFIG = {
-  //baseURL: 'https://www.huoler.com/action',
   //baseURL: 'http://192.168.18.104:8080/qxiao-cms/',
   baseURL: 'http://192.168.18.106:8080/qxiao-cms/',
   timeout: 2000,

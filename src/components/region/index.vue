@@ -1,10 +1,11 @@
 <template>
   <div>
     <el-cascader
-      v-model="selected"
+      :value="value"
       :options="allData"
       @change="handleRegionChange"
-      :props="props"
+      @input="input"
+      :props="propss"
     ></el-cascader>           
   </div>  
 </template>
@@ -12,12 +13,19 @@
 import { findAll } from "@/api/school";
 export default {
   name: "region",
-  props: {},
+  props: {
+    value: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    }
+  },
   data() {
     return {
-      selected: [],
       allData: [],
-      props: {
+      selected: [],
+      propss: {
         value: "id",
         label: "name",
         children: "children"
@@ -26,6 +34,7 @@ export default {
   },
   watch: {},
   methods: {
+    input() {},
     handleRegionChange(value) {
       if (value.length >= 3) {
         let last = value[value.length -  1]; // 区

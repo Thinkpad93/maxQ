@@ -58,21 +58,27 @@
     </template>      
     <!-- 新增栏目模板 -->  
     <template>
-        <el-dialog width="80%" center @open="show" @close="close" top="0px" title="新增栏目模板" :visible.sync="dialogAdd" :modal-append-to-body="false">
-           <el-form  :rules="rules" ref="tplform" :model="tplform" size="mini" :label-width="formLabelWidth" label-position="left" style="width:500px;">
+        <el-dialog width="90%" center @open="show" @close="close" top="0px" title="新增栏目模板" :visible.sync="dialogAdd" :modal-append-to-body="false">
+           <el-form :rules="rules" ref="tplform" :model="tplform" size="mini" :label-width="formLabelWidth" label-position="left" style="width: 500px;">
                 <el-form-item label="栏目模板名称" prop="name">
                     <el-input v-model="tplform.name" placeholder="请输入栏目名称"></el-input>
                 </el-form-item>  
                 <el-form-item label="栏目模板描述" prop="description">
-                    <el-input type="textarea" v-model="tplform.description" :rows="4" placeholder="请输入栏目描述"></el-input>
+                    <el-input v-model="tplform.description" :rows="4" placeholder="请输入栏目描述"></el-input>
                 </el-form-item> 
+                <el-form-item label="模板类型">
+                    <el-radio-group v-model="tplform.type">
+                    <el-radio :label="0">非缺省模板</el-radio>
+                    <el-radio :label="1">缺省模板</el-radio>
+                    </el-radio-group>
+                </el-form-item>                   
                 <el-form-item>
                     <el-button type="primary" @click="addTemplate('tplform')">保存</el-button>
-                    <el-button icon="el-icon-plus" type="success" @click="addTablerow">新增一行</el-button>
+                    <el-button :disabled="disabled === 0" icon="el-icon-plus" type="success" @click="addTablerow">新增模板详细项</el-button>
                 </el-form-item>                                            
            </el-form> 
            <!-- 表格 -->
-           <el-table ref="tpladd" :data="tplAddData" style="width: 100%" :height="400" border stripe size="mini">
+           <el-table ref="tpladd" :data="tplAddData" style="width: 100%" :height="450" border stripe size="mini">
                <el-table-column width="400" property="rule" label="播放时段">
                    <template slot-scope="scope">
                        <template v-if="scope.row.show">
@@ -218,7 +224,12 @@
    </div> 
 </template>
 <script>
-import { queryChannelAll, queryChannelTemplate } from "@/api/content";
+import {
+  queryChannelAll,
+  queryChannelTemplate,
+  addChannelTemplate,
+  addChannelTemplateDetail
+} from "@/api/content";
 export default {
   name: "columnTpl",
   data() {
@@ -226,6 +237,7 @@ export default {
       dialogAdd: false,
       dialogValidity: false,
       loading: false,
+      disabled: 0,
       formLabelWidth: "100px",
       radio: 0,
       value4: [new Date(), new Date()],
@@ -236,7 +248,9 @@ export default {
       },
       totalCount: 0, //分页总数
       rules: {},
-      tplform: {},
+      tplform: {
+        type: 0
+      },
       channelList: [], //栏目
       scrollTypeList: [
         {
@@ -256,17 +270,17 @@ export default {
         { value: 5 }
       ], // 播放优先级别
       tplAddData: [
-        {
-          templateId: 0,
-          channelId: 0,
-          playStartTime: "10:00:00",
-          playEndTime: "11:00:00",
-          scrollType: 0,
-          priority: 1,
-          validType: 1,
-          validStartTime: "2018-6-30",
-          validEndTime: "2018-7-30"
-        }
+        // {
+        //   templateId: 0,
+        //   channelId: 0,
+        //   playStartTime: "10:00:00",
+        //   playEndTime: "11:00:00",
+        //   scrollType: 0,
+        //   priority: 1,
+        //   validType: 1,
+        //   validStartTime: "2018-6-30",
+        //   validEndTime: "2018-7-30"
+        // }
       ],
       tableData: []
     };
@@ -288,7 +302,9 @@ export default {
     handleCurrentChange() {},
     handleTplSave(index, row) {},
     handleTplEdit(index, row) {},
-    addTemplate() {},
+    addTemplate(formName) {
+      this.$refs[formName].validate(valid => {});
+    },
     addTablerow() {},
     validityShow() {},
     validitySave() {},

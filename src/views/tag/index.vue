@@ -14,7 +14,7 @@
      <template>
          <el-table :data="tableData" style="width: 100%" border stripe size="mini" empty-text="没有标签哦" v-loading="loading">
             <el-table-column label="标签ID" prop="labelId"></el-table-column>
-            <el-table-column label="标签名称" prop="tagName" :show-overflow-tooltip="true">
+            <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
               <template slot-scope="scope">
                 <template v-if="scope.row.show">
                   <el-input v-model="scope.row.name" size="mini"></el-input>
@@ -56,12 +56,13 @@
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <template v-if="scope.row.show">
+                <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+                <!-- <template v-if="scope.row.show">
                   <el-button size="mini" type="success" @click="handleSave(scope.$index, scope.row)">保存</el-button>
                 </template>
                 <template v-else>
-                  <el-button :disabled="scope.row.state === 0" icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                </template>
+                  <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                </template> -->
               </template>
             </el-table-column>
          </el-table>
@@ -76,7 +77,7 @@
             <el-form-item label="标签类型" prop="type">
               <el-select v-model="addForm.type" clearable filterable placeholder="选择标签类型">
                 <el-option
-                    v-for="item in labelsList"
+                    v-for="item in labelsType"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id">
@@ -92,20 +93,11 @@
             </el-row>                             
          </el-form>
        </el-dialog>
-     </template>
-     <template>
-        <el-cascader
-            size="mini"
-            v-model="selectedOptions3"
-            :options="all"
-            @active-item-change="handleItemChange"
-            :props="props"
-        ></el-cascader>
-     </template>       
+     </template>    
    </div> 
 </template>
 <script>
-import { queryLabel, queryMainLabel, findAll } from "@/api/school";
+import { queryLabel, addLabel, deleteLabel } from "@/api/school";
 export default {
   name: "tag",
   data() {
@@ -113,10 +105,6 @@ export default {
       loading: false,
       dialogAdd: false,
       formLabelWidth: "100px",
-      region: {
-        queryId: 0,
-        queryType: 0
-      },
       addForm: {},
       rules: {
         name: [{ required: true, message: "请输入标签名称", trigger: "blur" }],
@@ -125,14 +113,12 @@ export default {
           { required: true, message: "请输入标签描述", trigger: "blur" }
         ]
       },
-      all: [],
-      selectedOptions3: [],
-      props: {
-        value: "id",
-        label: "name",
-        children: "children"
-      },
-      labelsList: [],
+      labelsType: [
+        { id: 0, name: "缺省" },
+        { id: 1, name: "特色" },
+        { id: 2, name: "商圈" },
+        { id: 3, name: "冠名企业" }
+      ],
       tableData: []
     };
   },
@@ -147,31 +133,54 @@ export default {
     },
     handleItemChange(val) {},
     handleEdit(row) {
-      this.$set(row, "show", true);
-      this.$set(row, "state", 1);
+      //this.$set(row, "show", true);
+      //this.$set(row, "state", 1);
+    },
+    handleDel(row) {
+      let that = this;
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
+          that.deleteTable(row.labelId);
+        })
+        .catch(error => {
+          return false;
+        });
     },
     handleSave(index, row) {},
-    //查询标签
-    mainLabel() {
-      queryMainLabel({ type: 4 }).then(res => {
+    //查询标签列表
+    createTable() {
+      queryLabel({ queryType: 0 }).then(res => {
         if (res.errorCode === 0) {
           this.tableData = res.data;
-          this.labelsList = res.data;
         }
       });
     },
-    //查询省市区所有数据
-    getProvinces() {
-      findAll({}).then(res => {
+    //新增标签
+    addTable(params = {}) {
+      addLabel(params).then(res => {
         if (res.errorCode === 0) {
-          this.all = res.data;
+          this.dialogAdd = false;
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
+        }
+      });
+    },
+    //删除标签
+    deleteTable(labelId) {
+      deleteLabel({ labelId }).then(res => {
+        if (res.errorCode === 0) {
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
         }
       });
     }
   },
   mounted() {
-    //this.mainLabel();
-    this.getProvinces();
+    this.createTable();
   }
 };
 </script>
