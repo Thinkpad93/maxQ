@@ -26,7 +26,7 @@ export const queryChannelTemplate = (params) => {
 }
 //新增栏目模板
 export const addChannelTemplate = (params) => {
-  return http.fetchPost('/action/mod-xiaojiao/channel/addChannelTemplate.do', params);
+  return http.fetchPost('/action/mod-xiaojiao/channel/template/addChannelTemplate.do', params);
 }
 //查询栏目模板详细
 export const queryChannelTemplateDetail = (params) => {
@@ -47,4 +47,12 @@ export const updateChannelTemplateDetail = (params) => {
 //删除栏目模板详细项
 export const deleteChannelTemplateDetail = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/channel/templateDetail/deleteChannelTemplateDetail.do', params);
+}
+//设置默认栏目模板
+export const updateDefaultTemplate = (params) => {
+  return http.fetchPost('/action/mod-xiaojiao/channel/template/updateDefaultTemplate.do', params);
+}
+//删除栏目模板
+export const deleteChannelTemplate = (params) => {
+  return http.fetchPost('/action/mod-xiaojiao/channel/template/deleteChannelTemplate.do', params);
 }

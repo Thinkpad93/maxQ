@@ -1,18 +1,22 @@
 <template>
   <div class="wrapper">
-    <!-- 主体 顶栏 -->
-    <q-header @toggle="handleToggle" />
-    <!-- 主体 侧边栏 -->
-    <q-aside :collapse="collapse" :width="left" />
-    <!-- 主体 内容 -->
-    <main id="main" :style="{ left:  left + 'px'}">
-        <q-tags />
-        <transition name="fade-transform" mode="out-in">
-            <keep-alive>
-                <router-view />
-            </keep-alive>
-        </transition>   
-    </main>   
+    <el-container style="height:100vh;" class="is-vertical">
+      <!-- 主体 顶栏 -->
+      <q-header @toggle="handleToggle" />
+      <el-container>
+        <!-- 主体 侧边栏 -->
+        <q-aside :collapse="collapse" :width="left" />
+        <!-- 主体 内容 -->
+        <el-main id="main">
+            <q-tags />
+            <transition name="fade-transform" mode="out-in">
+                <keep-alive>
+                    <router-view />
+                </keep-alive>
+            </transition>   
+        </el-main>  
+      </el-container> 
+    </el-container>
   </div>  
 </template>
 <script>
@@ -48,12 +52,14 @@ export default {
 </script>
 <style lang="less" scoped>
 #main {
-  position: absolute;
-  top: 60px;
-  bottom: 0;
-  right: 0;
-  z-index: 998;
-  transition: left linear 0.3s;
+  position: relative;
+  padding: 0 !important;
+  // position: absolute;
+  // top: 60px;
+  // bottom: 0;
+  // right: 0;
+  // z-index: 998;
+  // transition: left linear 0.3s;
   //   height: calc(~'100% - 60px');
 }
 </style>

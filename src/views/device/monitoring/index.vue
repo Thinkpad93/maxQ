@@ -6,7 +6,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @change="handleRegion"></region>
+                <region @last="lastChange"></region>
               </el-form-item>  
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
@@ -98,6 +98,7 @@
 </template>
 <script>
 import { showDeviceStatus , showDeviceDetail ,sendDeviceCommand } from "@/api/device";
+import { queryRegion } from "@/api/school";
 import region from "@/components/region";
 export default {
   name: "monitoring",
@@ -149,6 +150,15 @@ export default {
         this.createTable();
       }      
     },
+    lastChange(value) {
+      queryRegion({ queryId: value, queryType: 3 }).then(res => {
+        if (res.errorCode === 0) {
+          this.schoolList = res.data;
+        }else {
+          return false;
+        }
+      });
+    },     
     handleSchool(value) {
       this.query.schoolId = value;
     },

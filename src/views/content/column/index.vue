@@ -48,7 +48,7 @@
     </template>      
     <!-- 新增 -->
     <template>
-        <el-dialog center top="40px" title="新增栏目" :visible.sync="dialogAdd" :modal-append-to-body="false">
+        <el-dialog center top="40px" title="新增栏目" :visible.sync="dialogAdd">
             <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
                 <el-form-item label="栏目名称" prop="name">
                     <el-input v-model="addForm.name" placeholder="请输入栏目名称"></el-input>
@@ -65,7 +65,7 @@
     </template>
     <!-- 编辑 -->
     <template>
-        <el-dialog center top="40px" :visible.sync="dialogEdit" :modal-append-to-body="false">
+        <el-dialog center top="40px" :visible.sync="dialogEdit">
             <div slot="title"><h3>正在编辑栏目：{{ editForm.name }}</h3></div>
             <el-form :rules="rules" ref="editForm" :model="editForm" size="small" :label-width="formLabelWidth">
                 <el-form-item v-show="false">

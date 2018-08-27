@@ -1,8 +1,12 @@
 <template>
-  <aside id="aside">
+  <el-aside id="aside" style="width:200px;background-color: #545c64;">
     <el-menu 
     class="el-menu-vertical-demo" 
-    router unique-opened 
+    background-color="#545c64" 
+    text-color="#fff"
+    active-text-color="#ffd04b"
+    router 
+    unique-opened 
     default-active="/home" 
     @open="handleOpen" 
     @close="handleClose" 
@@ -60,7 +64,7 @@
         </el-menu-item-group>
       </el-submenu>           
     </el-menu>
-  </aside>  
+  </el-aside>  
 </template>
 <script>
 export default {
@@ -84,15 +88,16 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-#aside {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  height: 100%;
-  overflow: hidden;
-  background-color: #ebf1f6;
-}
+// #aside {
+//   position: fixed;
+//   top: 60px;
+//   left: 0;
+//   height: 100%;
+//   overflow: hidden;
+//   background-color: #ebf1f6;
+// }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
+  min-height: 400px;
 }
 </style>

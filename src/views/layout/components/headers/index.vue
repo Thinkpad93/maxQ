@@ -1,11 +1,11 @@
 <template>
-   <header id="header">
-     <h1 class="h1">
+   <el-header id="header">
+     <!-- <h1 class="h1">
        <img src="../../../../images/all.png"></img>  
      </h1>   
      <div class="toggle-aside" @click="toggle">
        <i class="icon iconfont icon-weibiaoti26"></i>
-     </div>
+     </div> -->
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
           {{ userInfo.name }}
@@ -16,7 +16,7 @@
           <el-dropdown-item>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>     
-   </header>   
+   </el-header>   
 </template>
 <script>
 import { mapState } from "vuex";

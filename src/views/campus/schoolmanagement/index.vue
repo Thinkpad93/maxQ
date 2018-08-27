@@ -55,7 +55,7 @@
     </template>  
     <!-- 新增 -->
     <template>
-      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd" :modal-append-to-body="false">
+      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
 
@@ -261,7 +261,7 @@
     </template>
     <!-- 编辑 -->
     <template>
-      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="编辑学校" :visible.sync="dialogEdit" :modal-append-to-body="false">
+      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="编辑学校" :visible.sync="dialogEdit">
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
 
@@ -763,6 +763,8 @@ export default {
         if (res.errorCode === 0) {
           this.loading = false;
           this.tableData = res.data;
+        }else if (res.errorCode === -1) {
+          this.loading = false;
         }
       });
     }
