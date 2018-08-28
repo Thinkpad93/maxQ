@@ -34,7 +34,7 @@ export const queryChannelTemplateDetail = (params) => {
 }
 //编辑栏目模板
 export const updateChannelTemplate = (params) => {
-  return http.fetchPost('/action/mod-xiaojiao/channel/updateChannelTemplate.do', params);
+  return http.fetchPost('/action/mod-xiaojiao/channel/template/updateChannelTemplate.do', params);
 }
 //新增栏目模板详细项
 export const addChannelTemplateDetail = (params) => {

@@ -47,6 +47,20 @@
           </el-table-column>
       </el-table>        
     </template> 
+    <!-- 分页 -->
+    <template>
+      <div class="pagination" v-if="tableData.length">   
+          <el-pagination
+            background
+            small
+            @current-change="handleCurrentChange"
+            :current-page.sync="query.page"
+            :page-size="query.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination> 
+      </div>   
+    </template>     
     <!-- 新增检修记录 -->
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
@@ -216,6 +230,10 @@ export default {
       }
       this.createTable();
     },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },    
     handleRegion(list) {
       if (Array.isArray(list)) {
         this.schoolList = list;
@@ -296,6 +314,7 @@ export default {
         if (res.errorCode === 0) {
           this.loading = false;
           this.tableData = res.data.data;
+          this.totalCount = res.data.totalCount;
         }
       });
     },

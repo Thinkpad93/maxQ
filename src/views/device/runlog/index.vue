@@ -27,6 +27,20 @@
         <el-table-column :resizable="false" label="日志时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
       </el-table>        
     </template>  
+    <!-- 分页 -->
+    <template>
+      <div class="pagination" v-if="tableData.length">   
+          <el-pagination
+            background
+            small
+            @current-change="handleCurrentChange"
+            :current-page.sync="query.page"
+            :page-size="query.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="tableData.length">
+          </el-pagination> 
+      </div>   
+    </template>       
   </div>  
 </template>
 <script>
@@ -39,6 +53,7 @@ export default {
       query: {
         schoolId: 0
       },
+      totalCount: 0,
       tableData: []
     };
   },
@@ -49,13 +64,15 @@ export default {
     }
   },  
   methods: {
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },     
     //显示设备运行日志
     createTable() {
       this.loading = true;
       showDeviceRunLog(this.query).then(res => {
-        
         if (res.errorCode === 0) {
-          console.log(res);
           this.loading = false;
           this.tableData = res.data;
         }
