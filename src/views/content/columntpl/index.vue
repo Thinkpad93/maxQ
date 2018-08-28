@@ -519,6 +519,7 @@ export default {
     editShow() {
       this.is = 1;
     },
+    show() {},
     close() {},
     selectChannelName(value) {
       let obj = {};
@@ -528,6 +529,7 @@ export default {
     handleEdit(row) {
       this.dialogEdit = true;
       this.tpleditform = Object.assign({}, row);
+      this.tplDetailform.templateId = row.templateId;
       //this.tpleditDetailform.templateId = row.templateId;
       this.queryChannelTemplateDetailAction(row.templateId, "edit");
     },
@@ -615,8 +617,7 @@ export default {
             validStartTime,
             validEndTime
           });
-          console.log(this.is);
-          //this.addChannelTemplateDetailAction(obj);
+          this.addChannelTemplateDetailAction(obj);
         }
       });
     },
@@ -666,7 +667,9 @@ export default {
     //删除栏目模板详细项
     deleteChannelTemplateDetailAction(id) {
       deleteChannelTemplateDetail({ id }).then(res => {
-        console.log(res);
+        if (res.errorCode === 0) {
+
+        }
       });
     },
     //新增栏目模板详细项
@@ -675,11 +678,16 @@ export default {
         if (res.errorCode === 0) {
           let channelName = this.channelName;
           let { templateId, ...z } = params;
-          this.tplAddData.push(
-            Object.assign({}, z, {
-              channelName
-            })
-          );
+          if (this.is === 0) {
+            this.tplAddData.push(
+              Object.assign({}, z, {
+                channelName
+              })
+            );
+          }
+          if (this.is === 1) {
+            this.queryChannelTemplateDetailAction(this.tpleditform.templateId,"edit");  
+          }
           this.$message({ message: `${res.errorMsg}`, type: "success" });
         }
       });
