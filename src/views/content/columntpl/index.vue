@@ -507,7 +507,9 @@ export default {
           let { show, state, channelName, postTime, ...z } = row;
           let templateId = this.tplDetailform.templateId;
           let obj = Object.assign({}, z, {
-            templateId
+            templateId,
+            playStartTime: this.value4[0],
+            playEndTime: this.value4[1]
           });
           this.updateChannelTemplateDetailAction(obj);
         })
@@ -635,6 +637,8 @@ export default {
         row.validType = 1;
       }else {
         row.validType = 0;
+        row.validStartTime = "";
+        row.validEndTime = "";
       }
       this.dialogValidity = false;
     },
