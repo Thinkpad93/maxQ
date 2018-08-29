@@ -66,12 +66,12 @@
       <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="area">
-            <region @change="handleRegionInner"></region>
+            <region @last="lastChange"></region>
           </el-form-item>    
           <el-form-item label="学校名称" prop="schoolId">
             <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
               <el-option
-                v-for="item in schoolListInner"
+                v-for="item in schoolList"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id">
@@ -233,7 +233,7 @@ export default {
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.createTable();
-    },    
+    },
     handleRegion(list) {
       if (Array.isArray(list)) {
         this.schoolList = list;
@@ -302,18 +302,23 @@ export default {
       queryRegion({ queryId: value, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
-        }else {
+        } else {
           return false;
         }
       });
-    },     
+    },
     //显示检修列表
     createTable() {
       this.loading = true;
       showRepairList(this.query).then(res => {
         if (res.errorCode === 0) {
+          let data = res.data.data;
+          if (!Array.isArray(data)) {
+            data = [];
+          } else {
+            this.tableData = data;
+          }
           this.loading = false;
-          this.tableData = res.data.data;
           this.totalCount = res.data.totalCount;
         }
       });

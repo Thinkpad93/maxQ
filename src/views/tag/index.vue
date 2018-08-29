@@ -56,7 +56,7 @@
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+                <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
                 <!-- <template v-if="scope.row.show">
                   <el-button size="mini" type="success" @click="handleSave(scope.$index, scope.row)">保存</el-button>
                 </template>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-cascader
+      :clearable="true"
       :value="value"
       :options="allData"
       @change="handleRegionChange"

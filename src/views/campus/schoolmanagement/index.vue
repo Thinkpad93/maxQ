@@ -43,12 +43,16 @@
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <el-tag size="small">{{ scope.row.headName }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
           </template>                       
         </el-table-column>        
       </el-table>
@@ -473,7 +477,6 @@
   </div>  
 </template>
 <script>
-
 import {
   showSchoolList,
   addSchool,
@@ -509,7 +512,7 @@ export default {
         page: 1,
         pageSize: 10
       },
-      schoolId: null,      
+      schoolId: null,
       //学校
       schoolList: [],
       //标签列表
@@ -579,7 +582,7 @@ export default {
       let editLinkMan = this.edit.linkMan;
       if (flags) {
         addLinkMan.push({ linkMan: "", phone: "", email: "" });
-      }else {
+      } else {
         editLinkMan.push({ linkMan: "", phone: "", email: "" });
       }
     },
@@ -639,7 +642,7 @@ export default {
       queryRegion({ queryId: value, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
-        }else {
+        } else {
           return false;
         }
       });
@@ -649,7 +652,7 @@ export default {
     },
     lastInnerEditChange(value) {
       this.addForm.regionId = value;
-    },    
+    },
     handleSchool(value) {
       this.query.schoolId = value;
     },
@@ -680,31 +683,33 @@ export default {
           this.editImageUrl3 = `url(${response.data.url})`;
         } else if (response.data.type == "1") {
           schoolImage[1] = Object.assign({}, imgObj);
-          this.editImageUrl4 =`url(${response.data.url})`;
+          this.editImageUrl4 = `url(${response.data.url})`;
         }
       }
     },
     beforeImageUpload(file) {
       console.log(file);
-    }, 
+    },
     //根据区域ID查省市
     getFindRegion(regionId) {
       findRegion({ regionId }).then(res => {
-          if (res.errorCode === 0) {
-             this.setected[0] = res.data.province; 
-             this.setected[1] = res.data.city; 
-             this.setected[2] = res.data.region; 
-             console.log(res);
-          }
-      })
+        if (res.errorCode === 0) {
+          this.setected[0] = res.data.province;
+          this.setected[1] = res.data.city;
+          this.setected[2] = res.data.region;
+          console.log(res);
+        }
+      });
     },
     //查询栏目模板
     getChannelTemplate() {
-      queryChannelTemplate({ templateName: "", page: 1, pageSize: 10 }).then(res => {
-        if (res.errorCode === 0) {
-          this.templateidList = res.data.data;
+      queryChannelTemplate({ templateName: "", page: 1, pageSize: 10 }).then(
+        res => {
+          if (res.errorCode === 0) {
+            this.templateidList = res.data.data;
+          }
         }
-      });
+      );
     },
     //查询标签
     getLabel() {
@@ -730,7 +735,7 @@ export default {
     getSchoolInfo(schoolId) {
       querySchoolInfo({ schoolId }).then(res => {
         console.log(res);
-      })
+      });
     },
     //新增学校
     addSchoolAction(params = {}) {
@@ -759,14 +764,18 @@ export default {
     //显示学校列表
     createTable() {
       this.loading = true;
-      showSchoolList(this.query).then(res => {
-        if (res.errorCode === 0) {
+      showSchoolList(this.query)
+        .then(res => {
+          if (res.errorCode === 0) {
+            this.loading = false;
+            this.tableData = res.data;
+          } else if (res.errorCode === -1) {
+            this.loading = false;
+          }
+        })
+        .catch(error => {
           this.loading = false;
-          this.tableData = res.data;
-        }else if (res.errorCode === -1) {
-          this.loading = false;
-        }
-      });
+        });
     }
   },
   mounted() {

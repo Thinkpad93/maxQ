@@ -10,6 +10,14 @@ git remote add origin git@github.com:Thinkpad93/maxQ.git
 git push -u origin master
 
 ```
+> 状态码解释
+
+* 415
+* 400
+* 404
+
+
+
 
 * 发送设备指令还没有做完
 * 省市区选择需要优化(建议做成一个下拉框，数据全部返回来)

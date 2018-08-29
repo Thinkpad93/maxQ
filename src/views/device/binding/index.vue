@@ -42,8 +42,8 @@
          <el-table-column :resizable="false" label="联系电话" prop="phone"></el-table-column>
          <el-table-column :resizable="false" label="操作" width="200">
            <template slot-scope="scope">
-             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-             <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+             <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+             <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
            </template>
          </el-table-column>
        </el-table>
@@ -68,13 +68,13 @@
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="area">
 
-              <region @change="handleRegionInner"></region>
+              <region @last="lastChange"></region>
 
             </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
                <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
                   <el-option
-                    v-for="item in schoolListInner"
+                    v-for="item in schoolList"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id">
@@ -232,16 +232,6 @@ export default {
       }
       this.createTable();
     },
-    handleRegion(list) {
-      if (Array.isArray(list)) {
-        this.schoolList = list;
-      }
-    },
-    handleRegionInner(list) {
-      if (Array.isArray(list)) {
-        this.schoolListInner = list;
-      }
-    },
     handleSchool(value) {
       this.query.schoolId = value;
     },
@@ -300,11 +290,11 @@ export default {
       queryRegion({ queryId: value, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
-        }else {
+        } else {
           return false;
         }
       });
-    },    
+    },
     //查询标签
     getLabel() {
       queryLabel({ queryType: 3 }).then(res => {
@@ -319,8 +309,13 @@ export default {
       showDeviceList(this.query)
         .then(res => {
           if (res.errorCode === 0) {
+            let data = res.data.data;
+            if (!Array.isArray(data)) {
+              data = [];
+            } else {
+              this.tableData = data;
+            }
             this.loading = false;
-            this.tableData = res.data.data;
             this.totalCount = res.data.totalCount;
           } else if (res.errorCode === 1) {
             this.loading = false;
@@ -341,6 +336,10 @@ export default {
         } else if (res.errorCode === -1) {
           this.$message({ message: `${res.errorMsg}`, type: "warning" });
           return false;
+        } else if (res.errorCode === 1) {
+          //MAC码已存在
+          this.$message({ message: `${res.errorMsg}`, type: "warning" });
+          return false;          
         }
       });
     },

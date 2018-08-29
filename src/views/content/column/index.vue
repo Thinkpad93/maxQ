@@ -26,7 +26,7 @@
             <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column width="200" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>        
