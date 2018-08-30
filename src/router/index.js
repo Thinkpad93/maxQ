@@ -120,6 +120,13 @@ export const constantRouterMap = [{
         meta: {}
       },
       {
+        path: '/content/upload/add',
+        name: '上传内容',
+        component: () =>
+          import ('@/views/content/upload/add'),
+        meta: {}
+      },
+      {
         path: '/content/columntpl/add',
         name: '新增栏目模板详细',
         component: () =>

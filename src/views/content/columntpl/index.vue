@@ -25,7 +25,7 @@
             <el-table-column label="栏目模板" prop="name">
                 <template slot-scope="scope">
                   <!-- <a href="javascript:;" style="color:#409EFF" @click="handleView(scope.row)">{{ scope.row.name }}</a> -->
-                  <a href="javascript:;" style="color:#409EFF">{{ scope.row.name }}</a>
+                  <span style="color:#409EFF">{{ scope.row.name }}</span>
                 </template>                    
             </el-table-column>
             <el-table-column label="栏目模板描述" prop="description"></el-table-column>
@@ -40,7 +40,7 @@
                     <template v-else>
                         <el-button size="mini" type="text" @click="setChannelDefautl(scope.row)">设置默认模板</el-button>
                     </template>
-                    <el-button size="mini" type="text" @click="handleDel(scope.row)" v-if="!scope.row.type">删除</el-button> 
+                    <el-button size="mini" type="text" @click="handleDel(scope.$index,scope.row)" v-if="!scope.row.type">删除</el-button> 
                 </template>
             </el-table-column>
         </el-table>
@@ -369,7 +369,7 @@ export default {
       query: {
         templateName: "",
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       totalCount: 0, //分页总数
       rules: {
@@ -404,26 +404,26 @@ export default {
         playTime: hours(),
         validTime: []
       },
-      tpleditDetailform: {
-        templateId: null,
-        validType: 0,
-        scrollType: 0,
-        playTime: hours(),
-        validTime: []
-      },
-      tpleditform: {},
+      // tpleditDetailform: {
+      //   templateId: null,
+      //   validType: 0,
+      //   scrollType: 0,
+      //   playTime: hours(),
+      //   validTime: []
+      // },
+      //tpleditform: {},
       channelList: [], //栏目
       //初始数据
-      initTableData: {
-        channelId: 1,
-        playStartTime: "",
-        playEndTime: "",
-        scrollType: 0,
-        priority: 1,
-        validType: 0,
-        validStartTime: "",
-        validEndTime: ""
-      },
+      // initTableData: {
+      //   channelId: 1,
+      //   playStartTime: "",
+      //   playEndTime: "",
+      //   scrollType: 0,
+      //   priority: 1,
+      //   validType: 0,
+      //   validStartTime: "",
+      //   validEndTime: ""
+      // },
       tplAddData: [],
       tplEditData: [],
       tableData: [],
@@ -475,7 +475,7 @@ export default {
       this.dialogDetail = true;
       this.tplDetailform.templateId = row.templateId;
     },
-    handleDel(row) {
+    handleDel(index,row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
@@ -483,7 +483,7 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteChannelTemplateAction(row.templateId);
+          that.deleteChannelTemplateAction(index,row.templateId);
         })
         .catch(error => {
           return false;
@@ -681,11 +681,12 @@ export default {
       });
     },
     //删除栏目模板
-    deleteChannelTemplateAction(templateId) {
+    deleteChannelTemplateAction(index,templateId) {
       deleteChannelTemplate({ templateId }).then(res => {
         if (res.errorCode === 0) {
           this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
+          //this.createTable();
+          this.tableData.splice(index, 1);
         }
       });
     },

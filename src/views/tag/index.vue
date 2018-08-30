@@ -131,6 +131,9 @@ export default {
         }
       });
     },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },    
     handleItemChange(val) {},
     handleEdit(row) {
       //this.$set(row, "show", true);
@@ -165,6 +168,7 @@ export default {
         if (res.errorCode === 0) {
           this.dialogAdd = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.resetForm('addForm');
           this.createTable();
         }
       });

@@ -20,7 +20,7 @@
                           </el-form-item>
                           <el-form-item>
                                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">上传内容</el-button>
+                                <el-button icon="el-icon-plus" type="primary" @click="uoloadAction">上传内容</el-button>
                           </el-form-item>                           
                       </el-form>
                   </div>
@@ -116,6 +116,9 @@ export default {
     search() {},
     handleSizeChange() {},
     handleCurrentChange() {},
+    uoloadAction() {
+      this.$router.push({ path: "/content/upload/add" });  
+    },
     createTable() {
       queryContentList(this.query).then(res => {
         console.log(res);
