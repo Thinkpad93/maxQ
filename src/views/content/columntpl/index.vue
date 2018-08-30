@@ -80,7 +80,7 @@
 
     <!-- 新增栏目模板详细项 -->
     <template>
-      <el-dialog width="80%" center top="0px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
+      <el-dialog width="80%" center top="0px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
         <el-form :rules="rules2" ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="20">
             <el-col :span="12">
@@ -456,7 +456,9 @@ export default {
       this.is = 1;
     },
     show() {},
-    close() {},
+    close() {
+      this.resetForm('tplDetailform');
+    },
     selectChannelName(value) {
       let obj = {};
       obj = this.channelList.find(item => item.channelId === value);
@@ -666,6 +668,7 @@ export default {
           //this.tplDetailform.templateId = res.data.templateId;3
           this.dialogAdd = false;
           this.createTable();
+          this.resetForm('tplform');
         } else if (res.errorCode === 1) {
           this.$message({ message: `${res.errorMsg}`, type: "warning" });
         }
@@ -692,7 +695,7 @@ export default {
         if (res.errorCode === 0) {
           this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.queryChannelTemplateDetailAction(
-            this.tpleditform.templateId,
+            this.tplDetailform.templateId,
             "edit"
           );
         }

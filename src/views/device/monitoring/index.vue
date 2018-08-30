@@ -97,14 +97,18 @@
   </div>  
 </template>
 <script>
-import { showDeviceStatus , showDeviceDetail ,sendDeviceCommand } from "@/api/device";
+import {
+  showDeviceStatus,
+  showDeviceDetail,
+  sendDeviceCommand
+} from "@/api/device";
 import { queryRegion } from "@/api/school";
 import region from "@/components/region";
 export default {
   name: "monitoring",
   components: {
     region
-  },  
+  },
   data() {
     return {
       dialogAdd: false,
@@ -148,17 +152,17 @@ export default {
         this.$message({ message: "请选择学校名称", type: "warning" });
       } else {
         this.createTable();
-      }      
+      }
     },
     lastChange(value) {
       queryRegion({ queryId: value, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
-        }else {
+        } else {
           return false;
         }
       });
-    },     
+    },
     handleSchool(value) {
       this.query.schoolId = value;
     },
@@ -166,16 +170,20 @@ export default {
       if (Array.isArray(list)) {
         this.schoolList = list;
       }
-    },    
+    },
     handleSelect() {},
     handleRestart(item) {
       let that = this;
-      let params = { deviceId: item.deviceId, cmdName: 'content_update', cmdData: ''};
+      let params = {
+        deviceId: item.deviceId,
+        cmdName: "content_update",
+        cmdData: ""
+      };
       that.loadingText = "设备重启中";
       that.$set(item, "loading", true);
       setTimeout(() => {
         that.sendDeviceDirective(params, item);
-      }, 1000);      
+      }, 1000);
       // this.$confirm("您确定要对设备进行重启操作?", "提示", {
       //   confirmButtonText: "确定",
       //   cancelButtonText: "取消",
@@ -188,7 +196,11 @@ export default {
     },
     handleUpdate(item) {
       let that = this;
-      let params = { deviceId: item.deviceId, cmdName: 'content_refresh', cmdData: ''};
+      let params = {
+        deviceId: item.deviceId,
+        cmdName: "content_refresh",
+        cmdData: ""
+      };
       that.loadingText = "设备刷新中";
       that.$set(item, "loading", true);
       setTimeout(() => {
@@ -203,16 +215,21 @@ export default {
           this.viewDevice = res.data[0];
           this.dialogView = true;
         }
-      })
+      });
     },
     //显示设备状态列表
     createTable() {
       showDeviceStatus(this.query).then(res => {
-        console.log(res);
         if (res.errorCode === 0) {
-          this.tableData = res.data.data;  
+          let data = res.data.data;
+          if (!Array.isArray(data)) {
+            data = [];
+          } else {
+            this.tableData = data;
+          }
+          //this.totalCount = res.data.totalCount;
         }
-      })
+      });
     },
     //发送设备命令
     sendDeviceDirective(params = {}, item) {
@@ -262,10 +279,10 @@ export default {
   color: #333;
   p {
     padding: 15px 0;
-    border-bottom: 1px solid rgba(220,223,230,.5);
+    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
   }
   span {
-    color: #409EFF;
+    color: #409eff;
   }
 }
 </style>

@@ -41,7 +41,7 @@
             @current-change="handleCurrentChange"
             :current-page.sync="query.page"
             :page-size="query.pageSize"
-            layout="total, prev, pager, next, jumper"
+            layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount">
           </el-pagination> 
       </div>   
@@ -155,7 +155,10 @@ export default {
         this.editForm = Object.assign({}, row);
       });
     },
-    handleSizeChange() {},
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.createTable();
+    },
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.createTable();
@@ -175,6 +178,9 @@ export default {
         }
       });
     },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
     //显示栏目列表
     createTable() {
       queryChannel(this.query).then(res => {
@@ -191,6 +197,7 @@ export default {
           this.dialogAdd = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable();
+          this.resetForm('addForm');
         } else if (res.errorCode === 1) {
           this.$message({ message: `${res.errorMsg}`, type: "warning" });
         }

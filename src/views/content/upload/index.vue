@@ -33,17 +33,56 @@
               <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="内容类型" prop="ContentType" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
+                  <template slot-scope="scope">
+                      <p v-if="scope.row.contentType === 0">全屏播放</p>
+                      <p v-else>滚动播放</p>
+                  </template>
+              </el-table-column>
+              <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
+                  <template slot-scope="scope">
+                      <p v-if="scope.row.contentProperty === 0">原创</p>
+                      <p v-else>摘要</p>
+                  </template>
+              </el-table-column>
               <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="审核阶段" prop="checkStage" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="审核状态" prop="verifyStatus" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column :resizable="false" label="审核阶段" prop="checkStage" :show-overflow-tooltip="true">
+                  <template slot-scope="scope">
+                      <p v-if="scope.row.checkStage === 0">待审核</p>
+                      <p v-else-if="scope.row.checkStage === 1">初审</p>
+                      <p v-else-if="scope.row.checkStage === 2">复审</p>
+                      <p v-else>终审</p>
+                  </template>
+              </el-table-column>
+              <el-table-column :resizable="false" label="审核状态" prop="verifyStatus" :show-overflow-tooltip="true">
+                  <template slot-scope="scope">
+                      <p v-if="scope.row.verifyStatus === 0">初始</p>
+                      <p v-else-if="scope.row.verifyStatus === 1">审核通过</p>
+                      <p v-else>审核不通过</p>
+                  </template>
+              </el-table-column>
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
           </el-table>
       </template>
+    <!-- 分页 -->
+    <template>
+      <div class="pagination" v-if="tableData.length">   
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="query.page"
+            :page-size="query.pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination> 
+      </div>   
+    </template>          
    </div> 
 </template>
 <script>
+import { queryContentList } from "@/api/content";
 export default {
   name: "upload",
   data() {
@@ -52,11 +91,12 @@ export default {
       loading: false,
       query: {
         schoolId: 0,
-        checkStage: 4,
+        checkStage: 0,
         title: "",
         page: 1,
         pageSize: 10
       },
+      totalCount: 0,
       checkStageList: [
         { value: 0, label: "待审核" },
         { value: 1, label: "初审" },
@@ -73,7 +113,26 @@ export default {
     }
   },
   methods: {
-    search() {}
+    search() {},
+    handleSizeChange() {},
+    handleCurrentChange() {},
+    createTable() {
+      queryContentList(this.query).then(res => {
+        console.log(res);
+        if (res.errorCode === 0) {
+          let data = res.data.data;
+          if (!Array.isArray(data)) {
+            data = [];
+          } else {
+            this.tableData = data;
+          }
+          this.totalCount = res.data.totalCount;
+        }
+      });
+    }
+  },
+  mounted() {
+    this.createTable();
   }
 };
 </script>
