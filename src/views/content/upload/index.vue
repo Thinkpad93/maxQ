@@ -29,9 +29,13 @@
       </template> 
       <!-- 上传列表 -->
       <template>
-          <el-table :data="tableData" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
+          <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="mini" v-loading="loading">
               <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
+                  <template slot-scope="scope">
+                      <span style="color:#409EFF">{{ scope.row.title }}</span>
+                  </template>
+              </el-table-column>
               <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
@@ -56,12 +60,18 @@
               </el-table-column>
               <el-table-column :resizable="false" label="审核状态" prop="verifyStatus" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <p v-if="scope.row.verifyStatus === 0">初始</p>
-                      <p v-else-if="scope.row.verifyStatus === 1">审核通过</p>
-                      <p v-else>审核不通过</p>
+                      <p v-if="scope.row.verifyStatus === 0" style="color:#409EFF">初始</p>
+                      <p v-else-if="scope.row.verifyStatus === 1" style="color:#67C23A;">审核通过</p>
+                      <p v-else style="color:#F56C6C;">审核不通过</p>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column label="审核状态">
+                  <template slot-scope="scope">
+                      <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+                      <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+                  </template>
+              </el-table-column>
           </el-table>
       </template>
     <!-- 分页 -->
@@ -91,7 +101,7 @@ export default {
       loading: false,
       query: {
         schoolId: 0,
-        checkStage: 0,
+        checkStage: 4,
         title: "",
         page: 1,
         pageSize: 10
@@ -116,6 +126,8 @@ export default {
     search() {},
     handleSizeChange() {},
     handleCurrentChange() {},
+    handleEdit(row) {},
+    handleDel(row) {},
     uoloadAction() {
       this.$router.push({ path: "/content/upload/add" });  
     },

@@ -127,6 +127,13 @@ export const constantRouterMap = [{
         meta: {}
       },
       {
+        path: '/content/poster',
+        name: '海报在线编辑',
+        component: () =>
+          import ('@/views/content/poster'),
+        meta: {}
+      },
+      {
         path: '/content/columntpl/add',
         name: '新增栏目模板详细',
         component: () =>

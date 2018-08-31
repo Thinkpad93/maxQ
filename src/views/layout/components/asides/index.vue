@@ -41,6 +41,7 @@
           <el-menu-item index="/content/index">栏目管理</el-menu-item>
           <el-menu-item index="/content/columntpl">栏目模板</el-menu-item>
           <el-menu-item index="/content/upload">我的上传</el-menu-item>
+          <el-menu-item index="/content/poster">海报在线编辑</el-menu-item>
           <el-menu-item index="/content/release">内容发布</el-menu-item>
           <el-menu-item index="/content/playform">学校播放表单</el-menu-item>
         </el-menu-item-group>    

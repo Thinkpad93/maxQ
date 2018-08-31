@@ -43,11 +43,7 @@
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <el-tag size="small">{{ scope.row.headName }}</el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">

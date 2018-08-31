@@ -11,7 +11,7 @@
                         </el-form-item>
                         <el-form-item>
                             <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                            <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增栏目</el-button>
+                            <el-button icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">新增栏目</el-button>
                         </el-form-item>   
                     </el-form>
                 </div>
@@ -46,44 +46,25 @@
           </el-pagination> 
       </div>   
     </template>      
-    <!-- 新增 -->
+    <!-- 新增 or 编辑 -->
     <template>
-        <el-dialog center top="40px" title="新增栏目" :visible.sync="dialogAdd">
-            <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-                <el-form-item label="栏目名称" prop="name">
-                    <el-input v-model="addForm.name" placeholder="请输入栏目名称"></el-input>
-                </el-form-item>       
-                <el-form-item label="栏目描述" prop="description">
-                    <el-input type="textarea" v-model="addForm.description" :rows="5" placeholder="请输入栏目描述"></el-input>
-                </el-form-item>  
-                <el-row style="text-align:center">
-                    <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-                    <el-button size="mini" type="primary" @click="addsForm('addForm')">确定</el-button>
-                </el-row>                    
-            </el-form>
-        </el-dialog>
+      <el-dialog 
+        center top="40px" 
+        title="" :visible.sync="dialogFormVisible" @close="close">
+        <el-form :rules="rules" ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
+          <el-form-item label="栏目名称" prop="name">
+            <el-input v-model="form.name" placeholder="请输入栏目名称"></el-input>
+          </el-form-item>
+          <el-form-item label="栏目描述" prop="description">
+            <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入栏目描述"></el-input>
+          </el-form-item>
+          <el-row style="text-align:center">
+            <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
+            <el-button size="mini" type="primary" @click="formAction('formRef')">确定</el-button>
+          </el-row>
+        </el-form>
+      </el-dialog>
     </template>
-    <!-- 编辑 -->
-    <template>
-        <el-dialog center top="40px" :visible.sync="dialogEdit">
-            <div slot="title"><h3>正在编辑栏目：{{ editForm.name }}</h3></div>
-            <el-form :rules="rules" ref="editForm" :model="editForm" size="small" :label-width="formLabelWidth">
-                <el-form-item v-show="false">
-                    <el-input type="hidden" v-model="editForm.channelId"></el-input>
-                </el-form-item>
-                <el-form-item label="栏目名称" prop="name">
-                    <el-input v-model="editForm.name"></el-input>
-                </el-form-item>       
-                <el-form-item label="栏目描述" prop="description">
-                    <el-input type="textarea" v-model="editForm.description" :rows="5"></el-input>
-                </el-form-item>  
-                <el-row style="text-align:center">
-                    <el-button size="mini" @click="dialogEdit = false">取消</el-button>
-                    <el-button size="mini" type="primary" @click="editorForm('editForm')">确定</el-button>
-                </el-row>                                                  
-            </el-form>
-        </el-dialog>
-    </template>    
   </div>      
 </template>
 <script>
@@ -99,6 +80,7 @@ export default {
     return {
       dialogEdit: false,
       dialogAdd: false,
+      dialogFormVisible: false,
       loading: false,
       isSave: true,
       formLabelWidth: "100px",
@@ -106,6 +88,10 @@ export default {
         channelName: "",
         page: 1,
         pageSize: 10
+      },
+      form: {
+        name: "",
+        description: ""
       },
       totalCount: 0, //分页总数
       addForm: {},
@@ -125,35 +111,28 @@ export default {
       return window.innerHeight - 255;
     }
   },
-  watch: {
-    'editForm.name': (val, oldVal) => {
-      if (val !== oldVal) {
-        this.isSave = false;
-      }
-    },
-    'editForm.description': (val, oldVal) => {
-      if (val !== oldVal) {
-        this.isSave = false;
-      }
-    },    
-  },
+  watch: {},
   methods: {
     search() {
       let page = this.query.page;
-      // if (!this.query.channelName.length) {
-      //   this.$message({ message: "请选择栏目名称", type: "warning" });
-      //   return;
-      // }
+      if (!this.query.channelName.length) {
+        this.$message({ message: "请选择栏目名称", type: "warning" });
+        return;
+      }
       if (page > 1) {
         this.query.page = 1;
       }
       this.createTable();
     },
+    close() {
+      this.resetForm("formRef");
+    },
+    addEquipment() {
+      this.dialogFormVisible = true;
+    },
     handleEdit(row) {
-      this.dialogEdit = true;
-      this.$nextTick(function() {
-        this.editForm = Object.assign({}, row);
-      });
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
@@ -163,18 +142,15 @@ export default {
       this.query.page = curr;
       this.createTable();
     },
-    addsForm(formName) {
+    formAction(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addTable(this.addForm);
-        }
-      });
-    },
-    editorForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let { postTime, ...row } = this.editForm;
-          this.updateTable(row);
+          let { postTime, ...args } = this.form;
+          if (postTime && args.channelId) {
+            this.updateTable(args);
+          }else {
+            this.addTable(this.form); 
+          }
         }
       });
     },
@@ -194,10 +170,10 @@ export default {
     addTable(params = {}) {
       addChannel(params).then(res => {
         if (res.errorCode === 0) {
-          this.dialogAdd = false;
+          this.dialogFormVisible = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable();
-          this.resetForm('addForm');
+          this.resetForm("formRef");
         } else if (res.errorCode === 1) {
           this.$message({ message: `${res.errorMsg}`, type: "warning" });
         }
@@ -207,7 +183,7 @@ export default {
     updateTable(params = {}) {
       updateChannel(params).then(res => {
         if (res.errorCode === 0) {
-          this.dialogEdit = false;
+          this.dialogFormVisible = false;
           this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable();
         }
