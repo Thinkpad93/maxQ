@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       allData: [],
-      selected: [],
+      //selected: [],
       propss: {
         value: "id",
         label: "name",
@@ -37,13 +37,15 @@ export default {
   methods: {
     input() {},
     handleRegionChange(value) {
-      if (value.length >= 3) {
-        let last = value[value.length -  1]; // 区
-        this.$emit('last', last);
+      if (Array.isArray(value)) {
+        this.$emit('last', value);
       }
+      // if (value.length >= 3) {
+      //   let last = value[value.length -  1]; // 区
+      //   this.$emit('last', last);
+      // }
     },
-    //初始化
-    //查询省市区所有数据
+    //初始化查询省市区所有数据
     init() {
       findAll({}).then(res => {
         if (res.errorCode === 0) {

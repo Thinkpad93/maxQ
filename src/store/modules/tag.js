@@ -1,4 +1,7 @@
-import { TAG_ADD, TAG_DELETE } from '../mutation-types';
+import {
+  TAG_ADD,
+  TAG_DELETE
+} from '../mutation-types';
 
 const state = {
   tagList: []
@@ -6,14 +9,17 @@ const state = {
 
 const mutations = {
 
-  [TAG_ADD] (state, params) {
+  [TAG_ADD](state, params) {
     if (state.tagList.some(v => v.path === params.path)) {
       return false;
     }
     state.tagList.push(Object.assign({}, params));
   },
 
-  [TAG_DELETE](state, { path, name }) {
+  [TAG_DELETE](state, {
+    path,
+    name
+  }) {
     //查找是否有该路由对象
     let ientries = state.tagList.entries();
     for (let [i, v] of ientries) {
@@ -26,7 +32,10 @@ const mutations = {
 };
 
 const actions = {
-  close({ commit, state }, params) {
+  close({
+    commit,
+    state
+  }, params) {
     return new Promise((resolve) => {
       commit('TAG_DELETE', params);
       resolve([...state.tagList]);

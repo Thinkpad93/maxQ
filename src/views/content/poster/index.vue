@@ -1,5 +1,6 @@
 <template>
     <div class="page">
+        <h1>{{  }}</h1>
         <el-row :gutter="10">
           <el-col :span="12" :offset="6">
             <swiper :options="swiperOption" ref="pSwiper">
@@ -11,7 +12,7 @@
         </el-row>
         <el-row :gutter="10">
             <div class="element-box" v-loading="loading">
-                <iframe ref="iframe" src="../static/poster1.html" @load="loaded"></iframe>
+                <!-- <iframe ref="iframe" src="../static/poster1.html" @load="loaded"></iframe> -->
             </div>
             <div class="page-manage"></div>
         </el-row>
@@ -47,9 +48,16 @@ export default {
       return this.$refs.pSwiper.swiper;
     }
   },
+  watch: {
+
+  },
   mounted() {
-    this.loaded();
+    //this.loaded();
     console.log(this.swiper);
+    
+  },
+  activated() {
+    console.log(this.$route.params.id);
   }
 };
 </script>

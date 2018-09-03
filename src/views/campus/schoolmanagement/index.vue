@@ -32,19 +32,29 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <a href="javascript:;" style="color:#409EFF" @click="handleDetails(scope.row)">{{ scope.row.name }}</a>
+            <span style="color:#409EFF" @click="handleDetails(scope.row)">{{ scope.row.name }}</span>
             <!-- <router-link style="color:#409EFF" 
               :to="{path: `/school/details/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link> -->
           </template>                    
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="scope.row.headName === null">无</span>
+            <span v-else>{{ scope.row.headName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="scope.row.headPhone === null">无</span>
+            <span v-else>{{ scope.row.headPhone }}</span>
+          </template>          
+        </el-table-column>
         <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -58,9 +68,7 @@
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
-
-            <region @last="lastInnerChange"></region>
-
+            <region @last="lastInnerChange" v-model="addForm.regionId"></region>
           </el-form-item>
           <el-row :gutter="5">
             <el-col :span="8">
@@ -265,7 +273,7 @@
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
 
-            <region @last="lastInnerEditChange" v-model="setected"></region>
+            <region @last="lastInnerEditChange" v-model="edit.regionId"></region>
 
           </el-form-item>
           <el-row :gutter="5">
@@ -484,7 +492,7 @@ import {
   findRegion,
   addImage
 } from "@/api/school";
-import { queryChannelTemplate } from "@/api/content";
+import { queryChannelTemplateAll } from "@/api/content";
 
 import region from "@/components/region";
 
@@ -495,7 +503,7 @@ export default {
   },
   data() {
     return {
-      setected: [],
+      setected: [1,1,1],
       fullscreenLoading: false,
       loading: false,
       dialogAdd: false,
@@ -508,6 +516,7 @@ export default {
         page: 1,
         pageSize: 10
       },
+      totalCount: 0,
       schoolId: null,
       //学校
       schoolList: [],
@@ -517,34 +526,18 @@ export default {
       propertyidList: [],
       typeidList: [],
 
-      templateidList: [
-        {
-          templateId: 1,
-          name: "科普知识",
-          description: "学而时习之",
-          type: 0,
-          postTime: "2018-05-30 15:30"
-        },
-        {
-          templateId: 2,
-          name: "国学经典",
-          description: "",
-          type: 1,
-          postTime: "2018-05-30 15:30"
-        }
-      ],
+      templateidList: [],
       addImageUrl1: "url(https://picnicss.com/web/img/optimised.svg)",
       addImageUrl2: "url(https://picnicss.com/web/img/optimised.svg)",
       editImageUrl3: "url(https://picnicss.com/web/img/optimised.svg)",
       editImageUrl4: "url(https://picnicss.com/web/img/optimised.svg)",
       tableData: [],
       edit: {
-        regionId: 0,
         schoolImage: [{}, {}],
         linkMan: []
       },
       addForm: {
-        regionId: 0,
+        regionId: [],
         reviewFlag: 0,
         schoolImage: [{}, {}],
         linkMan: []
@@ -552,7 +545,7 @@ export default {
       linkmanRules: {},
       rules: {
         regionId: [{ required: true, message: "请选择区域", trigger: "blur" }],
-        name: [{ required: true, message: "请选择学校名称", trigger: "blur" }],
+        name: [{ required: true, message: "请输入学校名称", trigger: "blur" }],
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
         ],
@@ -598,7 +591,7 @@ export default {
     },
     handleEdit(row) {
       this.dialogEdit = true;
-      this.edit = Object.assign({}, row);
+      this.edit = Object.assign({}, row, { regionId: [] });
       let { schoolImage } = this.edit;
       if (schoolImage[0]) {
         this.editImageUrl3 = `url(${row.schoolImage[0].imageUrl})`;
@@ -607,9 +600,6 @@ export default {
         this.editImageUrl4 = `url(${row.schoolImage[1].imageUrl})`;
       }
       this.getFindRegion(row.regionId);
-      // this.$nextTick(function() {
-      //   this.edit = Object.assign({}, row);
-      // });
     },
     handleDel(row) {},
     show() {},
@@ -617,8 +607,11 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addSchoolAction(this.addForm);
-          console.log(this.addForm);
+          let { regionId, ...args } = this.addForm;
+          let obj = Object.assign({}, args, {
+            regionId: regionId[regionId.length - 1]
+          });
+          this.addSchoolAction(obj);
         } else {
           return false;
         }
@@ -627,8 +620,12 @@ export default {
     editorForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { propertyName, typeName, ...z } = this.edit;
-          this.updateSchoolAction(z);
+          let { propertyName, typeName, regionId, postTime, ...args } = this.edit;
+          //this.updateSchoolAction(args);
+          let obj = Object.assign({}, args, {
+            regionId: regionId[regionId.length - 1]
+          });
+          console.log(obj);
         } else {
           return false;
         }
@@ -647,7 +644,7 @@ export default {
       this.addForm.regionId = value;
     },
     lastInnerEditChange(value) {
-      this.addForm.regionId = value;
+      this.edit.regionId = value;
     },
     handleSchool(value) {
       this.query.schoolId = value;
@@ -690,19 +687,15 @@ export default {
     getFindRegion(regionId) {
       findRegion({ regionId }).then(res => {
         if (res.errorCode === 0) {
-          this.setected[0] = res.data.province;
-          this.setected[1] = res.data.city;
-          this.setected[2] = res.data.region;
-          console.log(res);
+          this.edit.regionId = [res.data.province,res.data.city,res.data.region];
         }
       });
     },
     //查询栏目模板
     getChannelTemplate() {
-      queryChannelTemplate({ templateName: "", page: 1, pageSize: 10 }).then(
-        res => {
+      queryChannelTemplateAll({}).then(res => {
           if (res.errorCode === 0) {
-            this.templateidList = res.data.data;
+            this.templateidList = res.data;
           }
         }
       );
@@ -763,8 +756,14 @@ export default {
       showSchoolList(this.query)
         .then(res => {
           if (res.errorCode === 0) {
+            let data = res.data.data;
+            if (!Array.isArray(data)) {
+              data = [];
+            } else {
+              this.tableData = data;
+            }            
             this.loading = false;
-            this.tableData = res.data;
+            this.totalCount = res.data.totalCount;
           } else if (res.errorCode === -1) {
             this.loading = false;
           }
@@ -776,7 +775,7 @@ export default {
   },
   mounted() {
     this.getLabel();
-    //this.getChannelTemplate();
+    this.getChannelTemplate();
     this.getSchoolCateg({ queryType: 0 });
     this.getSchoolCateg({ queryType: 1 });
     this.createTable();

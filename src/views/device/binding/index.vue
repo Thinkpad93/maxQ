@@ -357,8 +357,8 @@ export default {
     //删除设备绑定
     deleteTable(deviceId) {
       deleteDeviceBind({ deviceId }).then(res => {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         if (res.errorCode === 0) {
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
           this.createTable();
         }
       });

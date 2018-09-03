@@ -92,7 +92,7 @@
    </div> 
 </template>
 <script>
-import { queryContentList } from "@/api/content";
+import { queryContentList, deleteContent } from "@/api/content";
 export default {
   name: "upload",
   data() {
@@ -127,9 +127,22 @@ export default {
     handleSizeChange() {},
     handleCurrentChange() {},
     handleEdit(row) {},
-    handleDel(row) {},
+    handleDel(row) {
+      let that = this;
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
+          that.deleteTable(row.contentId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
     uoloadAction() {
-      this.$router.push({ path: "/content/upload/add" });  
+      this.$router.push({ path: "/content/uploadContent" });
     },
     createTable() {
       queryContentList(this.query).then(res => {
@@ -142,6 +155,13 @@ export default {
             this.tableData = data;
           }
           this.totalCount = res.data.totalCount;
+        }
+      });
+    },
+    deleteTable(contentId) {
+      deleteContent({ contentId }).then(res => {
+        if (res.errorCode === 0) {
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
         }
       });
     }

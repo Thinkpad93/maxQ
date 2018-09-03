@@ -11,7 +11,7 @@
             <q-tags />
             <transition name="fade-transform" mode="out-in">
                 <keep-alive>
-                    <router-view />
+                    <router-view :key="$route.fullPath"/>
                 </keep-alive>
             </transition>   
         </el-main>  

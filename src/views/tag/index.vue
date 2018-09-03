@@ -12,7 +12,7 @@
      </template>
      <!-- 表格数据 -->
      <template>
-         <el-table :data="tableData" style="width: 100%" border stripe size="mini" empty-text="没有标签哦" v-loading="loading">
+         <el-table :data="tableData" style="width: 100%" stripe size="mini" empty-text="没有标签哦" v-loading="loading">
             <el-table-column label="标签ID" prop="labelId"></el-table-column>
             <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
               <template slot-scope="scope">

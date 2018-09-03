@@ -24,6 +24,11 @@ export const deleteChannel = (params) => {
 export const queryChannelTemplate = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/channel/template/queryChannelTemplate.do', params);
 }
+//查询栏目模板(不带参数)
+export const queryChannelTemplateAll = (params) => {
+  return http.fetchPost('/action/mod-xiaojiao/channel/template/queryChannelTemplateAll.do', params);
+}
+
 //新增栏目模板
 export const addChannelTemplate = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/channel/template/addChannelTemplate.do', params);

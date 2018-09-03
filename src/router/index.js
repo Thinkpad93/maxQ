@@ -6,6 +6,10 @@ Vue.use(Router);
 
 
 export const constantRouterMap = [{
+    path: '/',
+    component: Layout,
+  },
+  {
     path: '/login',
     component: () =>
       import ('@/views/login'),
@@ -120,15 +124,17 @@ export const constantRouterMap = [{
         meta: {}
       },
       {
-        path: '/content/upload/add',
+        path: '/content/uploadContent',
         name: '上传内容',
         component: () =>
           import ('@/views/content/upload/add'),
         meta: {}
       },
       {
+        //path: '/content/poster',
+        //path: '/content/poster/:id',
         path: '/content/poster',
-        name: '海报在线编辑',
+        name: '海报编辑',
         component: () =>
           import ('@/views/content/poster'),
         meta: {}

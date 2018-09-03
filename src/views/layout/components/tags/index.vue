@@ -28,7 +28,7 @@ export default {
   computed: {
     ...mapState({
       tagList: state => state.tag.tagList
-    })
+    }),
   },
   methods: {
     addTag() {
@@ -38,6 +38,9 @@ export default {
       }
       this.$store.commit("TAG_ADD", route);
     },
+    isActive(route) {
+      return route.name === this.$route.name;
+    },    
     closeTag(tag) {
       this.$store.dispatch("close", tag).then(res => {
         if (tag.path === this.$route.path) {
