@@ -8,7 +8,7 @@
                           <el-form-item label="内容标题">
                               <el-input v-model="query.title" placeholder="请输入栏目模板" maxlength="40"></el-input>
                           </el-form-item>
-                          <el-form-item label="审核状态">
+                          <el-form-item label="审核阶段">
                             <el-select v-model="query.checkStage" clearable placeholder="请选择设备状态">
                                 <el-option
                                     v-for="item in checkStageList"
@@ -66,7 +66,7 @@
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column label="审核状态">
+              <el-table-column label="操作">
                   <template slot-scope="scope">
                       <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
                       <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
@@ -123,10 +123,15 @@ export default {
     }
   },
   methods: {
-    search() {},
+    search() {
+      this.createTable();
+    },
     handleSizeChange() {},
     handleCurrentChange() {},
-    handleEdit(row) {},
+    handleEdit(row) {
+      //this.$router.push({ name: 'uploadContentEdit', params: row });
+      this.$router.push({ path: `/content/uploadContentEdit/${row.channelId}` });
+    },
     handleDel(row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
@@ -162,6 +167,7 @@ export default {
       deleteContent({ contentId }).then(res => {
         if (res.errorCode === 0) {
           this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.createTable();
         }
       });
     }

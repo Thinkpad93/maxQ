@@ -1,6 +1,8 @@
 <template>
-    <div class="page">
-        <h1>{{  }}</h1>
+    <div class="page" 
+      v-loading="pageLoading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-row :gutter="10">
           <el-col :span="12" :offset="6">
             <swiper :options="swiperOption" ref="pSwiper">
@@ -12,7 +14,7 @@
         </el-row>
         <el-row :gutter="10">
             <div class="element-box" v-loading="loading">
-                <!-- <iframe ref="iframe" src="../static/poster1.html" @load="loaded"></iframe> -->
+              <iframe ref="iframe" src="../static/poster1.html" @load="loaded"></iframe>
             </div>
             <div class="page-manage"></div>
         </el-row>
@@ -29,9 +31,10 @@ export default {
   data() {
     return {
       loading: false,
+      pageLoading: false,
       swiperOption: {
-        slidesPerView: "auto",
-        slidesPerView: 10,
+        //slidesPerView: "auto",
+        //slidesPerView: 10,
         spaceBetween: 10
       },
       swiperSlides: [1, 2, 3, 4, 5]
@@ -41,7 +44,13 @@ export default {
     loaded() {
       const win = this.$refs.iframe.contentWindow.vm;
       console.log(win);
-    }
+    },
+    //显示内容模板列表
+    queryContentTemplateAction(showType) {
+      queryContentTemplate({ showType }).then(res => {
+        console.log(res);
+      });
+    }    
   },
   computed: {
     swiper() {
@@ -53,7 +62,7 @@ export default {
   },
   mounted() {
     //this.loaded();
-    console.log(this.swiper);
+    //console.log(this.swiper);
     
   },
   activated() {

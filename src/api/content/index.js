@@ -28,7 +28,6 @@ export const queryChannelTemplate = (params) => {
 export const queryChannelTemplateAll = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/channel/template/queryChannelTemplateAll.do', params);
 }
-
 //新增栏目模板
 export const addChannelTemplate = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/channel/template/addChannelTemplate.do', params);
@@ -63,19 +62,19 @@ export const deleteChannelTemplate = (params) => {
 }
 //查询学校播放频道
 export const querySchoolPlayChannel = (params) => {
-  return http.fetchPost('/action/mod-xiaojiao/schoolPlay/querySchoolPlayChannel.do', params);
+  return http.fetchPost('/action/mod-xiaojiao/content/schoolPlay/querySchoolPlayChannel.do', params);
 }
 //新增学校播放频道
 export const addSchoolPlayChannel = (params) => {
-  return http.fetchPost('/action/mod-xiaojiao/schoolPlay/addSchoolPlayChannel.do', params);
+  return http.fetchPost('/action/mod-xiaojiao/content/schoolPlay/addSchoolPlayChannel.do', params);
 }
 //编辑学校播放频道
 export const updateSchoolPlayChannel = (params) => {
-  return http.fetchPost('/action/mod-xiaojiao/schoolPlay/updateSchoolPlayChannel.do', params);
+  return http.fetchPost('/action/mod-xiaojiao/content/schoolPlay/updateSchoolPlayChannel.do', params);
 }
-//编辑学校播放频道
+//删除学校播放频道
 export const deleteSchoolPlayChannel = (params) => {
-  return http.fetchPost('/action/mod-xiaojiao/schoolPlay/deleteSchoolPlayChannel.do', params);
+  return http.fetchPost('/action/mod-xiaojiao/content/schoolPlay/deleteSchoolPlayChannel.do', params);
 }
 //查询频道对应内容列表
 export const queryChannelContent = (params) => {
@@ -92,6 +91,14 @@ export const deleteContent = (params) => {
 //上传内容
 export const uploadContent = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/channel/uploadContent.do', params);
+}
+//显示内容模板列表
+export const queryContentTemplate = (params) => {
+  return http.fetchPost('/action/mod-xiaojiao/channel/queryContentTemplate.do', params);
+}
+//保存模板
+export const addContentTemplate = (params) => {
+  return http.fetchPost('/action/mod-xiaojiao/channel/addContentTemplate.do', params);
 }
 //查询审核内容列表
 export const querycheckContentList = (params) => {

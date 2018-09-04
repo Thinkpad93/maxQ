@@ -32,7 +32,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -63,6 +63,21 @@
         </el-table-column>        
       </el-table>
     </template>  
+    <!-- 分页 -->
+    <template>
+      <div class="pagination" v-if="tableData.length">   
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination> 
+      </div>   
+    </template>      
     <!-- 新增 -->
     <template>
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
@@ -199,8 +214,8 @@
           <el-form-item label="学校简介" prop="description">
             <el-input type="textarea" v-model="addForm.description" placeholder="请输入学校简介" :rows="3"></el-input>
           </el-form-item> 
-          <el-form-item label="栏目模板" prop="templateId">
-            <el-select v-model="addForm.templateId" placeholder="请选择栏目播放模板">
+          <el-form-item label="栏目模板" prop="channelTemplateId">
+            <el-select v-model="addForm.channelTemplateId" placeholder="请选择栏目播放模板">
               <el-option
                 v-for="item in templateidList"
                 :key="item.templateId"
@@ -232,9 +247,6 @@
                     :show-file-list="false"
                     :on-success="handleImageSuccess"
                     :before-upload="beforeImageUpload">
-                    <!-- <img v-if="addImageUrl1" :src="addImageUrl1" class="avatar"> -->
-                    <!-- <i v-else class="el-icon-plus uploader-icon">上传学校荣誉牌</i> -->
-                    <!-- <div class="el-upload__tip" slot="tip">上传学校荣誉牌，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -253,9 +265,6 @@
                     :show-file-list="false"
                     :on-success="handleImageSuccess"
                     :before-upload="beforeImageUpload">
-                    <!-- <img v-if="addImageUrl2" :src="addImageUrl2" class="avatar">
-                    <i v-else class="el-icon-plus uploader-icon">上传学校全景图</i> -->
-                    <!-- <div class="el-upload__tip" slot="tip">上传学校全景图，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
                   </el-upload>
                 </el-form-item>
             </el-col>
@@ -404,8 +413,8 @@
             <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="3"></el-input>
           </el-form-item>  
           <el-row :gutter="5"></el-row>
-          <el-form-item label="栏目模板" prop="templateId">
-            <el-select v-model="edit.templateId" placeholder="请选择栏目播放模板">
+          <el-form-item label="栏目模板" prop="channelTemplateId">
+            <el-select v-model="edit.channelTemplateId" placeholder="请选择栏目播放模板">
               <el-option
                 v-for="item in templateidList"
                 :key="item.templateId"
@@ -437,9 +446,6 @@
                     :show-file-list="false"
                     :on-success="handleEditImageSuccess"
                     :before-upload="beforeImageUpload">
-                    <!-- <img v-if="editImageUrl3" :src="editImageUrl3" class="avatar">
-                    <i v-else class="el-icon-plus uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校荣誉牌，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -458,9 +464,6 @@
                     :show-file-list="false"
                     :on-success="handleEditImageSuccess"
                     :before-upload="beforeImageUpload">
-                    <!-- <img v-if="editImageUrl4" :src="editImageUrl4" class="avatar">
-                    <i v-else class="el-icon-plus uploader-icon"></i>
-                    <div class="el-upload__tip" slot="tip">上传学校全景图，<span style="color:#409EFF" >图片大小不能超过2MB</span></div> -->
                   </el-upload>
                 </el-form-item>
             </el-col>
@@ -493,9 +496,7 @@ import {
   addImage
 } from "@/api/school";
 import { queryChannelTemplateAll } from "@/api/content";
-
 import region from "@/components/region";
-
 export default {
   name: "schoolManagement",
   components: {
@@ -558,12 +559,18 @@ export default {
         address: [
           { required: true, message: "请输入详细地址", trigger: "blur" }
         ],
-        templateId: [
+        channelTemplateId: [
           { required: true, message: "请选择栏目模板", trigger: "blur" }
         ]
       }
     };
   },
+  computed: {
+    //设置表格高度
+    tableHeight() {
+      return window.innerHeight - 255;
+    }
+  },  
   methods: {
     //新增联系人
     addlinkMan(flags) {
@@ -582,6 +589,8 @@ export default {
         this.createTable();
       }
     },
+    handleSizeChange() {},
+    handleCurrentChange() {},
     handleDetails(row) {
       let { schoolId } = row;
       this.getSchoolInfo(schoolId);
@@ -621,11 +630,11 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { propertyName, typeName, regionId, postTime, ...args } = this.edit;
-          //this.updateSchoolAction(args);
           let obj = Object.assign({}, args, {
             regionId: regionId[regionId.length - 1]
           });
           console.log(obj);
+          this.updateSchoolAction(obj);
         } else {
           return false;
         }

@@ -131,8 +131,13 @@ export const constantRouterMap = [{
         meta: {}
       },
       {
-        //path: '/content/poster',
-        //path: '/content/poster/:id',
+        path: '/content/uploadContentEdit/:id',
+        name: '上传内容编辑',
+        component: () =>
+          import ('@/views/content/upload/edit'),
+        meta: {}
+      },
+      {
         path: '/content/poster',
         name: '海报编辑',
         component: () =>

@@ -164,8 +164,8 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
-            <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
-            <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -245,6 +245,7 @@
    </div> 
 </template>
 <script>
+import { querySchoolPlayChannel, addSchoolPlayChannel, updateSchoolPlayChannel, deleteSchoolPlayChannel } from "@/api/content";
 import region from "@/components/region";
 export default {
   name: "playform",
@@ -306,9 +307,27 @@ export default {
       this.$set(row, 'state', 1);
       this.setTableEditState(tableData);
     },
+    handleDelete(index, row) {
+
+    },
     addChannelForm() {},
     //显示学校播放表单列表
-    createTable() {}
+    createTable() {
+      querySchoolPlayChannel(this.query).then(res => {
+        if (res.errorCode === 0) {
+          
+        }
+      })
+    },
+    //编辑学校播放频道
+    updateTable(params = {}) {
+      updateSchoolPlayChannel(params).then(res => {
+        console.log(res);
+      })
+    }
+  },
+  mounted() {
+    this.createTable();
   }
 };
 </script>

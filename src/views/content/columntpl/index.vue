@@ -72,7 +72,7 @@
           </el-form-item>                  
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="addTemplate('tplform')">新增模板名称</el-button>
+            <el-button size="mini" type="primary" @click="addTemplate('tplform')">保存</el-button>
           </el-row>                                            
         </el-form> 
       </el-dialog>

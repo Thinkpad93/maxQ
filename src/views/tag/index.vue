@@ -156,8 +156,10 @@ export default {
     handleSave(index, row) {},
     //查询标签列表
     createTable() {
+      this.loading = true;
       queryLabel({ queryType: 0 }).then(res => {
         if (res.errorCode === 0) {
+          this.loading = false;
           this.tableData = res.data;
         }
       });
