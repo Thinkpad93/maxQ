@@ -29,9 +29,13 @@
     </template>     
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
           <el-table-column :resizable="false" width="100" label="序号" prop="repairId" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
+            </template>
+          </el-table-column>
           <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="安装位置" prop="address" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="故障时间" prop="faultTime" :show-overflow-tooltip="true"></el-table-column>
@@ -41,8 +45,8 @@
           <el-table-column :resizable="false" label="检修人员" prop="repairMan" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
             </template>            
           </el-table-column>
       </el-table>        

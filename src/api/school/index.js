@@ -24,6 +24,10 @@ export const queryRegion = (params) => {
 export const findRegion = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/region/findRegion.do', params);
 }
+//根据学校Id查询区域
+export const queryProvinceCityRegionBySchoolId = (params) => {
+  return http.fetchPost('/action/mod-xiaojiao/region/queryProvinceCityRegionBySchoolId.do', params);
+}
 //查询省市区所有数据
 export const findAll = (params) => {
   return http.fetchPost('/action/mod-xiaojiao/region/findAll.do', params);

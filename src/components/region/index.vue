@@ -2,6 +2,7 @@
   <div>
     <el-cascader
       :clearable="true"
+      :disabled="disabled"
       :value="value"
       :options="allData"
       @change="handleRegionChange"
@@ -20,6 +21,10 @@ export default {
       default: function() {
         return [];
       }
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

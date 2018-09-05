@@ -30,9 +30,12 @@
     </template>
      <!-- 表格数据 -->
      <template>
-       <el-table :data="tableData" style="width: 100%" border stripe :height="tableHeight" size="mini" v-loading="loading">
+       <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="mini" v-loading="loading">
          <el-table-column :resizable="false" label="设备ID" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
+           <template slot-scope="scope">
+             <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
+           </template>
          </el-table-column>
          <el-table-column :resizable="false" label="设备编号" prop="batch" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="MAC地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
@@ -67,9 +70,7 @@
        <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="area">
-
               <region @last="lastChange"></region>
-
             </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
                <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
@@ -80,7 +81,6 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>              
-
             </el-form-item>
             <el-form-item label="安装位置" prop="address">
               <el-input v-model="addForm.address" placeholder="请输入安装位置" maxlength="40"></el-input>
@@ -121,6 +121,9 @@
      <template>
        <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false" @open="show" @close="close">
          <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
+           <el-form-item label="区域">
+             <el-input v-model="selected" :disabled="true"></el-input>
+           </el-form-item>           
            <el-form-item label="学校名称">
              <el-input v-model="edit.schoolName" :disabled="true"></el-input>
            </el-form-item>
@@ -171,7 +174,7 @@ import {
   deleteDeviceBind,
   showDeviceList
 } from "@/api/device";
-import { queryLabel, queryRegion } from "@/api/school";
+import { queryLabel, queryRegion, queryProvinceCityRegionBySchoolId } from "@/api/school";
 import Mixin from "../mixin/binding";
 import region from "@/components/region";
 
@@ -189,6 +192,7 @@ export default {
       dialogEdit: false,
       btnloading: false,
       formLabelWidth: "100px",
+      selected: "",
       form: {},
       addForm: {
         labelIds: []
@@ -243,13 +247,13 @@ export default {
       this.createTable();
     },
     handleEdit(row) {
+      console.log(row);
       this.dialogEdit = true;
       if (row.labelIds === null) {
         row.labelIds = [];
       }
-      this.$nextTick(function() {
-        this.edit = Object.assign({}, row);
-      });
+      this.edit = Object.assign({}, row);
+      this.regionBySchoolId(row.schoolId);
     },
     handleSelect() {},
     handleDel(row) {
@@ -287,11 +291,22 @@ export default {
       });
     },
     lastChange(value) {
-      queryRegion({ queryId: value, queryType: 3 }).then(res => {
+      let last = value[value.length - 1];
+      queryRegion({ queryId: last, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
         } else {
           return false;
+        }
+      });
+    },
+    //根据学校Id查询区域
+    regionBySchoolId(schoolId) {
+      queryProvinceCityRegionBySchoolId({ schoolId }).then(res => {
+        console.log(res);
+        if (res.errorCode === 0) {
+          let { province, city, region } = res.data[0];
+          this.selected = `${province} / ${city} / ${region}`;
         }
       });
     },
