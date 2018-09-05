@@ -20,11 +20,10 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-        <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
+        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
             <el-table-column label="栏目模板ID" prop="templateId" width="200"></el-table-column>
             <el-table-column label="栏目模板" prop="name">
                 <template slot-scope="scope">
-                  <!-- <a href="javascript:;" style="color:#409EFF" @click="handleView(scope.row)">{{ scope.row.name }}</a> -->
                   <span style="color:#409EFF">{{ scope.row.name }}</span>
                 </template>                    
             </el-table-column>
@@ -175,7 +174,7 @@
         </el-form>
         <div class="plac"></div> 
         <el-alert title="已新增的模板详细项" type="info" :closable="false"></el-alert>
-        <el-table :data="tplAddData" style="width: 100%" :height="250" border stripe size="mini">
+        <el-table :data="tplAddData" style="width: 100%" :height="250" stripe size="mini">
           <el-table-column label="播放时段">
             <template slot-scope="scope">
               <p>{{ scope.row.playStartTime }} - {{ scope.row.playEndTime }}</p>                        
@@ -210,7 +209,7 @@
     <template>
       <el-dialog width="80%" center top="0px" :visible.sync="dialogEdit">
         <el-alert title="已有的模板详细项" type="success" :closable="false"></el-alert>
-        <el-table :data="tplEditData"  style="width: 100%" :height="450" border stripe size="mini">
+        <el-table :data="tplEditData"  style="width: 100%" :height="450" stripe size="mini">
           <el-table-column width="400" label="播放时段">
             <template slot-scope="scope">                       
               <template v-if="scope.row.show">
@@ -404,26 +403,7 @@ export default {
         playTime: hours(),
         validTime: []
       },
-      // tpleditDetailform: {
-      //   templateId: null,
-      //   validType: 0,
-      //   scrollType: 0,
-      //   playTime: hours(),
-      //   validTime: []
-      // },
-      //tpleditform: {},
       channelList: [], //栏目
-      //初始数据
-      // initTableData: {
-      //   channelId: 1,
-      //   playStartTime: "",
-      //   playEndTime: "",
-      //   scrollType: 0,
-      //   priority: 1,
-      //   validType: 0,
-      //   validStartTime: "",
-      //   validEndTime: ""
-      // },
       tplAddData: [],
       tplEditData: [],
       tableData: [],

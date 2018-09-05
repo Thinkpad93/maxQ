@@ -30,7 +30,7 @@
     </template>
      <!-- 表格数据 -->
      <template>
-       <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="mini" v-loading="loading">
+       <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small" v-loading="loading">
          <el-table-column :resizable="false" label="设备ID" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
            <template slot-scope="scope">

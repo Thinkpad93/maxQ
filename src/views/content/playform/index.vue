@@ -7,10 +7,10 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @change="handleRegion"></region>
+                <region @last="lastChange"></region>
               </el-form-item>
               <el-form-item label="学校名称">
-                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
+                <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @clear="handleClearSchool">
                   <el-option
                     v-for="item in schoolList"
                     :key="item.id"
@@ -30,7 +30,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
         <el-table-column width="400" label="播放时段">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
@@ -49,11 +49,11 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="栏目名称" prop="channelName">
+        <el-table-column label="栏目名称" prop="channelId">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
-              <el-select v-model="scope.row.channelName" placeholder="请选择" size="mini">
-                <el-option v-for="item in optionsColumn" :key="item.value" :value="item.value"></el-option>
+              <el-select v-model="scope.row.channelId" placeholder="请选择" size="mini">
+                <el-option v-for="item in channelList" :key="item.channelId" :value="item.channelId" :label="item.name"></el-option>
               </el-select>
             </template>
             <template v-else>
@@ -65,7 +65,7 @@
           <template slot-scope="scope">
             <template v-if="scope.row.show">
               <el-select v-model="scope.row.scrollType" placeholder="请选择" size="mini">
-                <el-option v-for="item in optionsAttr" :key="item.value" :value="item.value" :label="item.label"></el-option>
+                <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
               </el-select>
             </template>
             <template v-else>
@@ -79,7 +79,7 @@
             <template v-if="scope.row.show">
               <el-select v-model="scope.row.priority" placeholder="请选择" size="mini">
                 <el-option 
-                  v-for="item in optionsPrio" 
+                  v-for="item in priorityList" 
                   :key="item.value" 
                   :value="item.value"
                   :label="item.label"></el-option>
@@ -192,7 +192,7 @@
           <el-form-item label="优先级" prop="priority">
               <el-select v-model="channelForm.priority" placeholder="请选择" size="mini" style="width:300px;">
                 <el-option 
-                  v-for="item in optionsPrio" 
+                  v-for="item in priorityList" 
                   :key="item.value" 
                   :value="item.value"
                   :label="item.label">
@@ -245,10 +245,14 @@
    </div> 
 </template>
 <script>
-import { querySchoolPlayChannel, addSchoolPlayChannel, updateSchoolPlayChannel, deleteSchoolPlayChannel } from "@/api/content";
+import { queryChannelAll, querySchoolPlayChannel, addSchoolPlayChannel, updateSchoolPlayChannel, deleteSchoolPlayChannel } from "@/api/content";
+import { queryRegion } from "@/api/school";
 import region from "@/components/region";
+import Mixin from "@/mixins/priority";
+import { disabledDate, hours } from "@/utils/tools";
 export default {
   name: "playform",
+  mixins: [Mixin],
   components: {
     region
   },
@@ -256,39 +260,38 @@ export default {
     return {
       dialogAdd: false,
       dialogValidity: false,
+      dialogContent: false,
       loading: false,
       btnloading: false,
       saveloading: false,
       dialogChannel: false,
       formLabelWidth: "100px",
       schoolId: null,
+      radio: 0,
       schoolList: [],
+      value4: hours(),
+      contentsList: [],
+      playContendata: [],
+      channelList: [],
       query: {
-        schoolId: 0
+        schoolId: null
       },
       channelForm: {},
       rules: {},
-      tableData: [
-        {
-          itemId: 1,
-          channelId: 1,
-          channelName: "科普知识",
-          playStartTime: "10:00:00",
-          playEndTime: "11:00:00",
-          scrollType: 0,
-          priority: 1,
-          validType: 0,
-          validStartTime: "2018-6-30",
-          validStartTime: "2018-7-30",
-          postTime: "2018-05-30 15:30"
-        }
-      ]
+      tableData: []
     };
   },
   methods: {
-    search() {},
+    search() {
+      if (this.query.schoolId === null) {
+        return;
+      }
+      this.createTable();
+    },
     show() {},
     close() {},
+    toggleSelection() {},
+    selectCheckbox() {},
     setTableEditState(tableData) {
       if (Array.isArray(tableData)) {
         tableData.forEach((e, v) => {
@@ -301,6 +304,9 @@ export default {
     },
     handleRegion() {},
     handleSchool() {},
+    handleClearSchool() {
+      this.query.schoolId = null;
+    },
     handleEdit(index, row) {
       let tableData = this.tableData;
       this.$set(row, 'show', true);
@@ -311,11 +317,29 @@ export default {
 
     },
     addChannelForm() {},
+    lastChange(value) {
+      let last = value[value.length - 1];
+      queryRegion({ queryId: last, queryType: 3 }).then(res => {
+        if (res.errorCode === 0) {
+          this.schoolList = res.data;
+        } else {
+          return false;
+        }
+      });
+    },    
+    //查询栏目名称
+    queryChannelInner() {
+      queryChannelAll({}).then(res => {
+        if (res.errorCode === 0) {
+          this.channelList = res.data;
+        }
+      });
+    },    
     //显示学校播放表单列表
     createTable() {
       querySchoolPlayChannel(this.query).then(res => {
         if (res.errorCode === 0) {
-          
+          this.tableData = res.data;
         }
       })
     },
@@ -328,6 +352,7 @@ export default {
   },
   mounted() {
     this.createTable();
+    this.queryChannelInner();
   }
 };
 </script>

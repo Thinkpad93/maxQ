@@ -20,7 +20,7 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-        <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
+        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small" v-loading="loading">
             <el-table-column width="300" label="栏目编号" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>

@@ -130,7 +130,7 @@ export default {
     handleCurrentChange() {},
     handleEdit(row) {
       //this.$router.push({ name: 'uploadContentEdit', params: row });
-      this.$router.push({ path: `/content/uploadContentEdit/${row.channelId}` });
+      this.$router.push({ path: `/content/uploadContentEdit/${row.contentId}` });
     },
     handleDel(row) {
       let that = this;

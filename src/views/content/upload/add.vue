@@ -44,11 +44,16 @@
                                         :value="item.value">
                                     </el-option>                  
                                 </el-select>   
-                                <a href="javascript:;" 
+                                <!-- <a href="javascript:;" 
                                         class="poster-a" 
                                         style="color:#409EFF" 
-                                        v-if="query.contentTemplateId" @click="posterEditAction">请选择海报编辑</a>                              
-                            </el-form-item>   
+                                        v-if="query.contentTemplateId" @click="posterEditAction">请选择海报编辑</a>                               -->
+                            </el-form-item>  
+                            <el-form-item label="内容模板选择">
+                                <el-select v-model="query.contentTemplateId" clearable placeholder="请选择内容模板选择" @change="handleChange">
+                                  <el-option v-for="item in contentTemplateIdList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                </el-select>
+                            </el-form-item> 
                             <el-form-item label="视频上传" prop="videoUrl">
                                 <el-upload 
                                     class="upload-video"
@@ -61,7 +66,7 @@
                                     <el-button :disabled="disabled === 1" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取视频</el-button>
                                 </el-upload>                                
                             </el-form-item>  
-                            <el-form-item label="视频显示">
+                            <el-form-item label="视频预览">
                                 <div class="views-video">
                                   <template v-if="query.videoUrl">
                                     <video :src="query.videoUrl" controls autoplay loop></video>
@@ -82,7 +87,7 @@
                         </el-form-item>                        
                     </el-form>
                </el-col>
-               <el-col :span="16">
+               <!-- <el-col :span="16">
                   <h3>海报模板编辑选择</h3>
                   <el-row :gutter="10">
                     <el-col :span="20" :offset="2">
@@ -99,7 +104,7 @@
                       </div>
                       <div class="page-manage"></div>
                   </el-row>                  
-               </el-col>
+               </el-col> -->
            </el-row>
        </div>
    </div> 
@@ -165,6 +170,12 @@ export default {
         { value: 1, label: "上视频下海报方式" },
         { value: 2, label: "上海报下视频方式" }
       ],
+      contentTemplateIdList: [
+        { value: 1, label: "秋季多吃冷眼食物" },
+        { value: 2, label: "火灾发生三要素" },
+        { value: 3, label: "日常交通安全" },
+        { value: 4, label: "周易" }
+      ],
       channelList: []
     };
   },
@@ -214,6 +225,15 @@ export default {
         }
       });
     },
+    //显示内容模板列表
+    queryContentTemplateAction(showType) {
+      queryContentTemplate({ showType }).then(res => {
+        console.log(res);
+        if (res.errorCode === 0) {
+          this.posterList = res.data;
+        }
+      });
+    },     
     //查询栏目名称
     queryChannelInner() {
       queryChannelAll({}).then(res => {
