@@ -213,6 +213,6 @@ export const constantRouterMap = [{
 
 
 export default new Router({
-  mode: 'history', //取消导航中的 # 
+  //mode: 'history', //取消导航中的 # 
   routes: constantRouterMap
 });

@@ -3,6 +3,7 @@
         <div class="qx-navbar"></div>
         <div class="qx-sidebar-panel">
           <div class="qx-sidebar">
+            <el-button type="info" size="mini" @click="sendMessage">向iframe发送信息</el-button>
             <div class="qx-showType">
               <el-select v-model="query.showType" size="small" placeholder="请选择内容模板" @change="handleChange">
                 <el-option
@@ -34,8 +35,8 @@
             </swiper> -->
           </el-col>
           <el-col :span="18">
-            <div class="element-box" v-loading="loading">
-              <iframe ref="iframe" src="../static/poster1.html" @load="loaded"></iframe>
+            <div class="element-box">
+              <iframe id="posterFrame" ref="iframe" :src="src"></iframe>
             </div>
             <div class="page-manage"></div>
           </el-col>
@@ -57,6 +58,8 @@ export default {
     return {
       loading: false,
       pageLoading: false,
+      src: "../static/poster1.html",
+      iframeWin: {},
       thumb: "../static/placeholder-img.jpg",
       query: {
         showType: 0 //默认查询纯海报
@@ -67,10 +70,8 @@ export default {
         { value: 0, label: "纯海报方式" },
         { value: 1, label: "上视频下海报方式" },
         { value: 2, label: "上海报下视频方式" }
-      ],      
+      ],
       swiperOption: {
-        //slidesPerView: "auto",
-        //slidesPerView: 10,
         spaceBetween: 10
       },
       swiperSlides: [1, 2, 3, 4, 5]
@@ -80,47 +81,47 @@ export default {
     handleChange(value) {
       this.queryContentTemplateAction(value);
     },
-    loaded() {
-      const win = this.$refs.iframe.contentWindow.vm;
-      console.log(win);
+    sendMessage() {
+      this.iframeWin.postMessage({
+          cmd: "getFormJson",
+          params: {}
+        },"*" );
+    },
+    async handleMessage(event) {
+      const data = event.data;
+      console.log(data);
+      console.log("00101");
     },
     //显示内容模板列表
     queryContentTemplateAction(showType) {
       queryContentTemplate({ showType }).then(res => {
-        console.log(res);
         if (res.errorCode === 0) {
           this.posterList = res.data;
         }
       });
-    }    
-  },
-  computed: {
-    swiper() {
-      return this.$refs.pSwiper.swiper;
     }
   },
-  watch: {
-
-  },
+  computed: {},
   mounted() {
-    //this.loaded();
-    //console.log(this.swiper); 
     this.queryContentTemplateAction(0);
-  },
-  activated() {
-    console.log(this.$route.params.id);
+    // 这里就拿到了iframe的对象
+    //console.log(this.$refs.iframe);
+    // 这里就拿到了iframe的window对象
+    //console.log(this.$refs.iframe.contentWindow);
+    window.addEventListener("message", this.handleMessage);
+    this.iframeWin = this.$refs.iframe.contentWindow;
   }
 };
 </script>
 <style lang="less">
-@import "swiper/dist/css/swiper.css";
-.swiper-container {
-  height: 100px;
-}
-.swiper-slide {
-  cursor: pointer;
-  background-color: #ccc;
-}
+//@import "swiper/dist/css/swiper.css";
+// .swiper-container {
+//   height: 100px;
+// }
+// .swiper-slide {
+//   cursor: pointer;
+//   background-color: #ccc;
+// }
 .element-box {
   width: 400px;
   height: 1000px;
@@ -138,7 +139,7 @@ export default {
 .tab-list {
   &:before,
   &:after {
-    content: '';
+    content: "";
     display: table;
   }
   &:after {

@@ -234,10 +234,11 @@
           <el-row :gutter="5">
             <el-col :span="12">
               <el-form-item prop="honorImage">
+                  <h4>上传学校荣誉牌</h4>
                   <el-upload
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl1 }"
-                    class="image-uploader"
+                    class="upload-image"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
@@ -252,10 +253,11 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="honorImage">
+                  <h4>上传学校全景图</h4>
                   <el-upload
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl2 }"
-                    class="image-uploader"
+                    class="upload-image"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
@@ -413,8 +415,8 @@
             <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="3"></el-input>
           </el-form-item>  
           <el-row :gutter="5"></el-row>
-          <el-form-item label="栏目模板" prop="channelTemplateId">
-            <el-select v-model="edit.channelTemplateId" placeholder="请选择栏目播放模板">
+          <el-form-item label="栏目模板">
+            <el-select v-model="edit.channelTemplateId" placeholder="请选择栏目播放模板" disabled>
               <el-option
                 v-for="item in templateidList"
                 :key="item.templateId"
@@ -433,10 +435,11 @@
           <el-row :gutter="5">
             <el-col :span="12">
               <el-form-item prop="honorImage">
+                  <h4>学校荣誉牌</h4>
                   <el-upload
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl3 }"
-                    class="image-uploader"
+                    class="upload-image"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
@@ -451,10 +454,11 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="honorImage">
+                  <h4>学校全景图</h4>
                   <el-upload
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl4 }"
-                    class="image-uploader"
+                    class="upload-image"
                     action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
@@ -528,10 +532,10 @@ export default {
       typeidList: [],
 
       templateidList: [],
-      addImageUrl1: "url(https://picnicss.com/web/img/optimised.svg)",
-      addImageUrl2: "url(https://picnicss.com/web/img/optimised.svg)",
-      editImageUrl3: "url(https://picnicss.com/web/img/optimised.svg)",
-      editImageUrl4: "url(https://picnicss.com/web/img/optimised.svg)",
+      addImageUrl1: "",
+      addImageUrl2: "",
+      editImageUrl3: "",
+      editImageUrl4: "",
       tableData: [],
       edit: {
         schoolImage: [{}, {}],
@@ -633,7 +637,6 @@ export default {
           let obj = Object.assign({}, args, {
             regionId: regionId[regionId.length - 1]
           });
-          console.log(obj);
           this.updateSchoolAction(obj);
         } else {
           return false;
@@ -641,7 +644,8 @@ export default {
       });
     },
     lastChange(value) {
-      queryRegion({ queryId: value, queryType: 3 }).then(res => {
+      let last = value[value.length - 1];
+      queryRegion({ queryId: last, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
         } else {
@@ -664,7 +668,7 @@ export default {
     //上传成功后的函数 新增
     handleImageSuccess(response, file, fileList) {
       let schoolImage = this.addForm.schoolImage;
-      let imgObj = { imageUrl: response.data.url, type: response.data.type };
+      let imgObj = { imageUrl: response.data.url, smallUrl: response.data.smallUrl, type: response.data.type };
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
           schoolImage[0] = Object.assign({}, imgObj);
@@ -678,20 +682,18 @@ export default {
     //上传成功后的函数 编辑
     handleEditImageSuccess(response, file, fileList) {
       let schoolImage = this.edit.schoolImage;
-      let imgObj = { imageUrl: response.data.url, type: response.data.type };
+      let imgObj = { imageUrl: response.data.url, smallUrl: response.data.smallUrl, type: response.data.type };
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
-          schoolImage[0] = Object.assign({}, imgObj);
+          schoolImage[0] = Object.assign({}, imgObj, { imageId: schoolImage[0].imageId });
           this.editImageUrl3 = `url(${response.data.url})`;
         } else if (response.data.type == "1") {
-          schoolImage[1] = Object.assign({}, imgObj);
+          schoolImage[1] = Object.assign({}, imgObj, { imageId: schoolImage[1].imageId });
           this.editImageUrl4 = `url(${response.data.url})`;
         }
       }
     },
-    beforeImageUpload(file) {
-      console.log(file);
-    },
+    beforeImageUpload(file) {},
     //根据区域ID查省市
     getFindRegion(regionId) {
       findRegion({ regionId }).then(res => {

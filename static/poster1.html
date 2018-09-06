@@ -7,26 +7,75 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>海报模板一</title>
   <style>
-
   </style>
 </head>
 
 <body>
   <main id="main">
     <section class="poster">
-      <h1 contenteditable="true">多一度热爱 {{ message }}</h1>
+      <h1 contenteditable="true">{{ message }}</h1>
+      <component-a></component-a>
+      <component-b></component-b>
     </section>
   </main>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 <script>
-  const vm = new Vue({
-    el: '#main',
-    data: {
-      message: 'Hello Vue!'
+   // 接受父页面发来的信息
+  window.addEventListener('message', function(event) {
+    console.log(event);
+    var data = event.data;
+    switch(data.cmd) {
+      case 'getFormJson':
+        console.log("接受父页面发来的信息");
+      break;
     }
   });
-  window.vm = vm; 
+
+  let Bus = new Vue();
+  let componentA = {
+    name: "coma",
+    template: `<button @click="add">You clicked me {{ count }} times.</button>`,
+    data: function () {
+      return {
+        count: 0
+      }
+    },
+    methods: {
+      add: function () {
+        let that = this;
+        this.count += 1;
+        Bus.$emit('sendEvent', this.count);
+        window.parent.postMessage({
+          cmd: that.count
+        }, '*');
+      }
+    }
+  }
+  let componentB = {
+    name: "comb",
+    template: `<button>点击获取组件A的数据</button>`,
+    data: function () {
+      return {}
+    },
+    methods: {},
+    mounted: function () {
+      Bus.$on('sendEvent', function (msg) {
+        console.log(msg);
+      });
+    },
+  }
+  const vm = new Vue({
+    el: '#main',
+    components: {
+      'component-a': componentA,
+      'component-b': componentB
+    },
+    data: {
+      message: '多一度热爱'
+    }
+  });
+
 </script>
 
 </html>

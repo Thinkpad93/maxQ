@@ -208,7 +208,7 @@
     <!-- 编辑栏目模板详细项 -->
     <template>
       <el-dialog width="80%" center top="0px" :visible.sync="dialogEdit">
-        <el-alert title="已有的模板详细项" type="success" :closable="false"></el-alert>
+        <!-- <el-alert title="已有的模板详细项" type="success" :closable="false"></el-alert> -->
         <el-table :data="tplEditData"  style="width: 100%" :height="450" stripe size="mini">
           <el-table-column width="400" label="播放时段">
             <template slot-scope="scope">                       
