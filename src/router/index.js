@@ -33,7 +33,7 @@ export const constantRouterMap = [{
     component: Layout,
     redirect: '/device/index',
     children: [{
-        path: 'index',
+        path: '/device/index',
         name: '设备列表',
         component: () =>
           import ('@/views/device/binding'),
@@ -42,7 +42,7 @@ export const constantRouterMap = [{
         }
       },
       {
-        path: 'monitoring',
+        path: '/device/monitoring',
         name: '设备监控',
         component: () =>
           import ('@/views/device/monitoring'),
@@ -51,7 +51,7 @@ export const constantRouterMap = [{
         }
       },
       {
-        path: 'record',
+        path: '/device/record',
         name: '设备检修记录',
         component: () =>
           import ('@/views/device/record'),
@@ -60,7 +60,7 @@ export const constantRouterMap = [{
         }
       },
       {
-        path: 'runlog',
+        path: '/device/runlog',
         name: '设备运行日志',
         component: () =>
           import ('@/views/device/runlog'),
@@ -75,7 +75,7 @@ export const constantRouterMap = [{
     component: Layout,
     redirect: '/school/index',
     children: [{
-        path: 'index',
+        path: '/school/index',
         name: '学校管理',
         component: () =>
           import ('@/views/campus/schoolmanagement/index'),
@@ -84,7 +84,7 @@ export const constantRouterMap = [{
         }
       },
       {
-        path: 'details/:schoolId',
+        path: '/school/details/:schoolId',
         name: '学校信息详情',
         component: () =>
           import ('@/views/campus/schoolmanagement/details'),

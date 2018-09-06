@@ -69,8 +69,8 @@
     <template>
        <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-            <el-form-item label="区域选择" prop="area">
-              <region @last="lastChange"></region>
+            <el-form-item label="区域选择" prop="regionId">
+              <region @last="lastChange" v-model="addForm.regionId"></region>
             </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
                <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
@@ -119,7 +119,7 @@
     </template> 
      <!-- 编辑 -->
      <template>
-       <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false" @open="show" @close="close">
+       <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
          <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
            <el-form-item label="区域">
              <el-input v-model="selected" :disabled="true"></el-input>
@@ -195,6 +195,7 @@ export default {
       selected: "",
       form: {},
       addForm: {
+        regionId: [],
         labelIds: []
       },
       edit: {
@@ -211,7 +212,6 @@ export default {
       schoolId: null,
       //学校名称
       schoolList: [],
-      schoolListInner: [],
       //请求的数据
       labelsList: [],
       tableData: []
@@ -247,7 +247,6 @@ export default {
       this.createTable();
     },
     handleEdit(row) {
-      console.log(row);
       this.dialogEdit = true;
       if (row.labelIds === null) {
         row.labelIds = [];
@@ -273,7 +272,8 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addTable(this.addForm);
+          //this.addTable(this.addForm);
+          console.log(this.addForm);
         } else {
           return false;
         }
@@ -289,8 +289,10 @@ export default {
           return false;
         }
       });
-    },
+    }, 
+    //加载学校数据
     lastChange(value) {
+      this.addForm.regionId = value;
       let last = value[value.length - 1];
       queryRegion({ queryId: last, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
@@ -303,7 +305,6 @@ export default {
     //根据学校Id查询区域
     regionBySchoolId(schoolId) {
       queryProvinceCityRegionBySchoolId({ schoolId }).then(res => {
-        console.log(res);
         if (res.errorCode === 0) {
           let { province, city, region } = res.data[0];
           this.selected = `${province} / ${city} / ${region}`;

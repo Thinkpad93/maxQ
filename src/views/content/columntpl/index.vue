@@ -54,7 +54,7 @@
             @current-change="handleCurrentChange"
             :current-page.sync="query.page"
             :page-size="query.pageSize"
-            layout="total, prev, pager, next, jumper"
+            layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount">
           </el-pagination> 
       </div>   
@@ -539,11 +539,14 @@ export default {
         });
       }
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    // handleTplEdit(index, row) {
-    //   this.$set(row, "show", false);
-    // },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.createTable();      
+    },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.createTable();      
+    },
     addTemplate(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

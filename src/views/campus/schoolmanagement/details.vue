@@ -1,71 +1,103 @@
 <template>
    <div class="page">
-       <div class="page-form">
-           <el-row :gutter="10">
-               <el-col :span="12">
-                    <el-form :model="info" status-icon size="small" :label-width="formLabelWidth">
-                        <el-form-item label="学校名称">
-                            <el-input v-model="info.name" readonly></el-input>
-                        </el-form-item>
-                        <el-form-item label="学校性质">
-                            <el-input v-model="info.propertyName" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="学校类型">
-                            <el-input v-model="info.typeName" readonly></el-input>
-                        </el-form-item>  
-                        <el-form-item label="区域">
-                            <el-input v-model="info.regionName" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="详细地址">
-                            <el-input v-model="info.address" readonly></el-input>
-                        </el-form-item>    
-                        <el-form-item label="办学元年">
-                            <el-input v-model="info.firstYear" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="学校标语">
-                            <el-input v-model="info.slogan" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="学校标签">
-                            <el-tag v-for="(tag, index) in info.labelName" :key="index">{{ tag }}</el-tag>
-                        </el-form-item>   
-                        <el-form-item label="班级数量">
-                            <el-input v-model="info.classNumber" readonly></el-input>
-                        </el-form-item>    
-                        <el-form-item label="学校人数">
-                            <el-input v-model="info.studentNumber" readonly></el-input>
-                        </el-form-item>      
-                        <el-form-item label="校长">
-                            <el-input v-model="info.masterName" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="校长电话">
-                            <el-input v-model="info.masterPhone" readonly></el-input>
-                        </el-form-item> 
-                        <el-form-item label="校长邮箱">
-                            <el-input v-model="info.masterEmail" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="负责人">
-                            <el-input v-model="info.headName" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="负责人电话">
-                            <el-input v-model="info.headPhone" readonly></el-input>
-                        </el-form-item> 
-                        <el-form-item label="负责人邮箱">
-                            <el-input v-model="info.headEmail" readonly></el-input>
-                        </el-form-item>   
-                        <el-form-item label="联系人列表">
-                            <el-row :gutter="10">
-                                <el-col :span="8" v-for="(item,index) in info.linkMan" :key="index">
-                                    <div class="contact">
-                                        <h3>{{ item }}</h3>
-                                        <p>联系人电话：{{ info.phone[index] }}</p>
-                                        <p>联系人邮箱：{{ info.email[index] }}</p>
-                                    </div>
-                                </el-col>
-                            </el-row> 
-                        </el-form-item>                                                                                                                                                                                                                                                                                         
-                    </el-form>
-               </el-col>
-           </el-row>
+       <div class="qx-card">
+           <div class="qx-card-head">
+               <div class="qx-card-head-wrapper">
+                   <div class="qx-card-head-title">学校信息详情</div>
+               </div>
+           </div>
+           <div class="qx-card-body">
+               <el-row :gutter="10">
+                   <el-col :span="8">
+                       <div class="qx-trem">学校名称</div>
+                       <div class="qx-detail">{{ info.name }}</div>
+                   </el-col>
+                   <el-col :span="8">
+                       <div class="qx-trem">学校性质</div>
+                       <div class="qx-detail">{{ info.propertyName }}</div>                       
+                   </el-col>
+                   <el-col :span="8">
+                       <div class="qx-trem">学校类型</div>
+                       <div class="qx-detail">{{ info.typeName }}</div>                           
+                   </el-col>
+                   <el-col :span="8">
+                       <div class="qx-trem">区域</div>
+                       <div class="qx-detail">{{ info.regionName }}</div>                           
+                   </el-col>    
+                   <el-col :span="8">
+                       <div class="qx-trem">详细地址</div>
+                       <div class="qx-detail">{{ info.address }}</div>                           
+                   </el-col>  
+                   <el-col :span="8">
+                       <div class="qx-trem">办学元年</div>
+                       <div class="qx-detail">{{ info.firstYear }}</div>                           
+                   </el-col>   
+                   <el-col :span="8">
+                       <div class="qx-trem">学校标语</div>
+                       <div class="qx-detail">{{ info.slogan }}</div>                           
+                   </el-col>       
+                   <el-col :span="8">
+                       <div class="qx-trem">班级数量</div>
+                       <div class="qx-detail">{{ info.classNumber }}</div>                           
+                   </el-col>   
+                   <el-col :span="8">
+                       <div class="qx-trem">学校人数</div>
+                       <div class="qx-detail">{{ info.studentNumber }}</div>                           
+                   </el-col>  
+                   <el-col :span="8">
+                       <div class="qx-trem">校长</div>
+                       <div class="qx-detail">{{ info.masterName }}</div>                           
+                   </el-col>       
+                   <el-col :span="8">
+                       <div class="qx-trem">校长电话</div>
+                       <div class="qx-detail">{{ info.masterPhone }}</div>                           
+                   </el-col>   
+                   <el-col :span="8">
+                       <div class="qx-trem">校长邮箱</div>
+                       <div class="qx-detail">{{ info.masterEmail }}</div>                           
+                   </el-col>     
+                  <el-col :span="8">
+                       <div class="qx-trem">负责人</div>
+                       <div class="qx-detail">{{ info.headName }}</div>                           
+                   </el-col>       
+                   <el-col :span="8">
+                       <div class="qx-trem">负责人电话</div>
+                       <div class="qx-detail">{{ info.headPhone }}</div>                           
+                   </el-col>   
+                   <el-col :span="8">
+                       <div class="qx-trem">负责人邮箱</div>
+                       <div class="qx-detail">{{ info.headEmail }}</div>                           
+                   </el-col>                                                                                                     
+               </el-row>
+               <el-row :gutter="10">
+                   <el-col :span="24">
+                       <div class="qx-trem">学校标签</div>
+                       <div class="qx-detail">
+                           <span v-for="(tag, index) in info.labelName" :key="index">{{ tag }}</span>
+                       </div>
+                   </el-col>
+               </el-row>
+               <el-row :gutter="10">
+                   <el-col :span="24">
+                       <div class="qx-trem">学校描述</div>
+                       <div class="qx-detail">{{ info.description }}</div>
+                   </el-col>
+               </el-row>
+               <template v-if="info.linkMan">
+                    <el-table :data="info.linkMan" stripe size="samll" style="width: 100%">
+                        <el-table-column prop="linkMan" label="联系人姓名"></el-table-column>
+                        <el-table-column prop="phone" label="联系人电话"></el-table-column>
+                        <el-table-column prop="email" label="联系人邮箱"></el-table-column>
+                    </el-table>
+               </template>
+               <el-row :gutter="10">
+                   <el-col :span="12">
+                       <div class="qx-honour"
+                        v-for="(item, index) in info.honourImg" :key="index"
+                        :style="{ backgroundImage: `url(${item})` }"></div>
+                   </el-col>
+               </el-row>
+           </div>
        </div>
    </div> 
 </template>
@@ -76,8 +108,7 @@ export default {
   data() {
     return {
       schoolId: this.$route.params.schoolId,
-      info: {},
-      formLabelWidth: "100px"
+      info: {}
     };
   },
   methods: {
@@ -90,29 +121,76 @@ export default {
     }
   },
   mounted() {
-    //console.log(this.schoolId);  
-    //console.log("林");  
-  },
-  activated() {
-    console.log("林"); 
-    console.log(this.$route.params.schoolId); 
     this.schoolInfo(this.$route.params.schoolId);
   }
 };
 </script>
 <style lang="less" scoped>
-.contact {
-  color: #fff;
-  padding: 10px;
-  height: 100px;
-  border-radius: 4px;
-  line-height: 1.5;
-  background: -webkit-gradient(
+.qx-card {
+  color: rgba(0, 0, 0, 0.65);
+  background: #fff;
+  border-radius: 2px;  
+  position: relative;
+}
+.qx-card-head {
+  font-size: 16px;
+  font-weight: 500;
+  min-height: 48px;
+  padding: 0 32px;
+  border-bottom: 1px solid #e8e8e8;
+  border-radius: 2px 2px 0 0;  
+}
+.qx-card-head-wrapper {
+  display: flex;  
+}
+.qx-card-head-title {
+  display: inline-block;
+  flex: 1 1;
+  overflow: hidden;
+  padding: 16px 0;
+  text-overflow: ellipsis; 
+  white-space: nowrap;  
+}
+.qx-card-body {
+  padding: 24px 32px;  
+  transition: padding .3s;
+}
+.qx-trem {
+  display: table-cell;   
+  white-space: nowrap;
+  line-height: 20px;
+  padding-bottom: 16px;
+  color: rgba(0, 0, 0, 0.85);  
+  &::after {
+    content: ":";
+    margin: 0 8px 0 2px;
+    position: relative;
+    top: -.5px;      
+  }
+}
+.qx-detail {
+  display: table-cell;
+  line-height: 22px;
+  padding-bottom: 16px;
+  color: rgba(0, 0, 0, 0.65);  
+  span {
+    color: #fff;  
+    padding: 1px 10px;
+    font-size: 12px;
+    margin-right: 3px;
+    display: inline-block;
+    background: -webkit-gradient(
     linear,
     0% 0%,
     0% 100%,
     from(#3c8ce7),
     to(#0396ff)
-  );
+  );  
+  }
+}
+.qx-honour {
+  width: 446px;  
+  height: 240px;  
+  background-size: cover;
 }
 </style>

@@ -1,45 +1,37 @@
-import { isMac, isPhone } from "@/utils/validator";
+import {
+  isMac,
+  isPhone
+} from "@/utils/validator";
 const Mixin = {
   data() {
     return {
       rules: {
-        schoolId: [
-          {
-            required: true,
-            message: "请选择学校名称",
-            trigger: "blur"
-          }
-        ],
-        address: [
-          {
-            required: true,
-            message: "请输入安装位置",
-            trigger: "blur"
-          }
-        ],
-        batch: [
-          {
-            required: true,
-            message: "请输入设备批次",
-            trigger: "blur"
-          }
-        ],
-        serial: [
-          {
-            required: true,
-            message: "请选择设备序号",
-            trigger: "blur"
-          }
-        ],
-        // labelIds: [
-        //   {
-        //     required: true,
-        //     message: "请选择冠名企业",
-        //     trigger: "blur"
-        //   }
-        // ],
-        mac: [
-          {
+        regionId: [{
+          required: true,
+          message: "请选择区域",
+          trigger: "blur"
+        }],
+        schoolId: [{
+          required: true,
+          message: "请选择学校名称",
+          trigger: "blur"
+        }],
+        address: [{
+          required: true,
+          message: "请输入安装位置",
+          trigger: "blur"
+        }],
+        batch: [{
+          required: true,
+          message: "请输入设备批次",
+          trigger: "blur"
+        }],
+        serial: [{
+          required: true,
+          message: "请选择设备序号",
+          trigger: "blur"
+        }],
+        mac: [{
             required: true,
             message: "请输入MAC地址",
             trigger: "blur"
@@ -50,8 +42,7 @@ const Mixin = {
             trigger: "blur"
           }
         ],
-        manager: [
-          {
+        manager: [{
             required: true,
             message: "请输入设备管理员",
             trigger: "blur"
@@ -63,8 +54,7 @@ const Mixin = {
             trigger: "blur"
           }
         ],
-        phone: [
-          {
+        phone: [{
             required: true,
             message: "手机号不能为空",
             trigger: "blur"
@@ -75,16 +65,8 @@ const Mixin = {
             trigger: "blur"
           }
         ]
-      },      
+      },
     }
-  },
-  methods: {
-    show() {
-      this.$nextTick(function () {  
-        //this.edit.sponsors.push(2, 22);
-      });
-    },
-    close() {}
   }
 }
 
