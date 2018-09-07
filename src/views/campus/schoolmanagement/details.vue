@@ -84,7 +84,7 @@
                    </el-col>
                </el-row>
                <template v-if="info.linkMan">
-                    <el-table :data="info.linkMan" stripe size="samll" style="width: 100%">
+                    <el-table :data="info.linkMan" border stripe size="mini" style="width: 100%">
                         <el-table-column prop="linkMan" label="联系人姓名"></el-table-column>
                         <el-table-column prop="phone" label="联系人电话"></el-table-column>
                         <el-table-column prop="email" label="联系人邮箱"></el-table-column>
@@ -94,7 +94,9 @@
                    <el-col :span="12">
                        <div class="qx-honour"
                         v-for="(item, index) in info.honourImg" :key="index"
-                        :style="{ backgroundImage: `url(${item})` }"></div>
+                        :style="{ backgroundImage: `url(${item})` }">
+                        
+                        </div>
                    </el-col>
                </el-row>
            </div>
@@ -191,6 +193,7 @@ export default {
 .qx-honour {
   width: 446px;  
   height: 240px;  
+  display: table-cell;
   background-size: cover;
 }
 </style>

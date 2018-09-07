@@ -69,8 +69,8 @@
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="区域选择" prop="area">
-            <region @last="lastChange"></region>
+          <el-form-item label="区域选择" prop="regionId">
+            <region @last="lastChange" v-model="addForm.regionId"></region>
           </el-form-item>    
           <el-form-item label="学校名称" prop="schoolId">
             <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
@@ -187,8 +187,14 @@ export default {
       schoolId: null,
       //学校名称
       schoolList: [],
-      schoolListInner: [],
       rules: {
+        regionId: [
+          {
+            required: true,
+            message: "请选择区域",
+            trigger: "blur"
+          }
+        ],
         schoolId: [
           { required: true, message: "请输入学校名称", trigger: "blur" }
         ],
@@ -208,7 +214,9 @@ export default {
           { required: true, message: "请输入检修人员", trigger: "blur" }
         ]
       },
-      addForm: {},
+      addForm: {
+        regionId: []
+      },
       edit: {},
       tableData: []
     };
@@ -243,11 +251,6 @@ export default {
         this.schoolList = list;
       }
     },
-    handleRegionInner(list) {
-      if (Array.isArray(list)) {
-        this.schoolListInner = list;
-      }
-    },
     handleSchool(value) {
       this.query.schoolId = value;
     },
@@ -278,7 +281,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnloading = true;
-          this.addTable(this.addForm);
+          let { regionId, ...args } = this.addForm;
+          this.addTable(args);
         } else {
           return false;
         }
@@ -303,7 +307,9 @@ export default {
       });
     },
     lastChange(value) {
-      queryRegion({ queryId: value, queryType: 3 }).then(res => {
+      this.addForm.regionId = value;
+      let last = value[value.length - 1];
+      queryRegion({ queryId: last, queryType: 3 }).then(res => {
         if (res.errorCode === 0) {
           this.schoolList = res.data;
         } else {

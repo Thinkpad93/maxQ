@@ -14,6 +14,7 @@ const mutations = {
       return false;
     }
     state.tagList.push(Object.assign({}, params));
+    console.log(state.tagList);
   },
 
   [TAG_DELETE](state, {

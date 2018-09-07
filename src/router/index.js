@@ -19,12 +19,13 @@ export const constantRouterMap = [{
     component: Layout,
     redirect: '/home/index',
     children: [{
-      path: 'index',
-      name: '首页',
+      path: '/home/index',
+      name: 'home',
       component: () =>
         import ('@/views/home'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: "首页"
       }
     }]
   },
@@ -34,38 +35,42 @@ export const constantRouterMap = [{
     redirect: '/device/index',
     children: [{
         path: '/device/index',
-        name: '设备列表',
+        name: 'device',
         component: () =>
           import ('@/views/device/binding'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "设备列表"
         }
       },
       {
         path: '/device/monitoring',
-        name: '设备监控',
+        name: 'monitoring',
         component: () =>
           import ('@/views/device/monitoring'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "设备列表"
         }
       },
       {
         path: '/device/record',
-        name: '设备检修记录',
+        name: 'record',
         component: () =>
           import ('@/views/device/record'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "设备检修记录"
         }
       },
       {
         path: '/device/runlog',
-        name: '设备运行日志',
+        name: 'runlog',
         component: () =>
           import ('@/views/device/runlog'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "设备运行日志"
         }
       }
     ]
@@ -76,20 +81,22 @@ export const constantRouterMap = [{
     redirect: '/school/index',
     children: [{
         path: '/school/index',
-        name: '学校管理',
+        name: 'school',
         component: () =>
           import ('@/views/campus/schoolmanagement/index'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "学校管理"
         }
       },
       {
         path: '/school/details/:schoolId',
-        name: '学校信息详情',
+        name: 'schoolDetails',
         component: () =>
           import ('@/views/campus/schoolmanagement/details'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "学校信息详情"
         }
       }
     ]
@@ -100,73 +107,82 @@ export const constantRouterMap = [{
     redirect: '/content/index',
     children: [{
         path: '/content/index',
-        name: '栏目管理',
+        name: 'column',
         component: () =>
           import ('@/views/content/column'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "栏目管理"
         }
       },
       {
         path: '/content/columntpl',
-        name: '栏目模板',
+        name: 'columntpl',
         component: () =>
           import ('@/views/content/columntpl'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "栏目模板"
         }
       },
       {
         path: '/content/upload',
-        name: '我的上传',
+        name: 'upload',
         component: () =>
           import ('@/views/content/upload'),
-        meta: {}
+        meta: {
+          requiresAuth: true,
+          title: "我的上传"
+        }
       },
       {
         path: '/content/uploadContent',
-        name: '上传内容',
+        name: 'uploadContent',
         component: () =>
           import ('@/views/content/upload/add'),
-        meta: {}
+        meta: {
+          requiresAuth: true,
+          title: "上传内容"
+        }
       },
       {
         path: '/content/uploadContentEdit/:id',
-        name: '上传内容编辑',
+        name: 'uploadContentEdit',
         component: () =>
           import ('@/views/content/upload/edit'),
-        meta: {}
+        meta: {
+          requiresAuth: true,
+          title: "上传内容编辑"
+        }
       },
       {
         path: '/content/poster',
-        name: '海报编辑',
+        name: 'poster',
         component: () =>
           import ('@/views/content/poster'),
-        meta: {}
-      },
-      {
-        path: '/content/columntpl/add',
-        name: '新增栏目模板详细',
-        component: () =>
-          import ('@/views/content/columntpl/add'),
-        meta: {}
+        meta: {
+          requiresAuth: true,
+          title: "海报编辑"
+        }
       },
       {
         path: '/content/playform',
-        name: '学校播放表单',
+        name: 'playform',
         component: () =>
           import ('@/views/content/playform'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "学校播放表单"
         }
       },
       {
         path: '/content/release',
-        name: '内容发布',
+        name: 'release',
         component: () =>
           import ('@/views/content/release'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "内容发布"
         }
       }
     ]
@@ -174,23 +190,25 @@ export const constantRouterMap = [{
   {
     path: '/user',
     component: Layout,
-    redirect: 'index',
+    redirect: '/user/index',
     children: [{
         path: 'permissions',
-        name: '权限管理',
+        name: 'permissions',
         component: () =>
           import ('@/views/user/permissions'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "权限管理"
         }
       },
       {
         path: 'account',
-        name: '账号管理',
+        name: 'account',
         component: () =>
           import ('@/views/user/account'),
         meta: {
-          requiresAuth: true
+          requiresAuth: true,
+          title: "账号管理"
         }
       }
     ]
@@ -200,12 +218,13 @@ export const constantRouterMap = [{
     component: Layout,
     redirect: '/tag/index',
     children: [{
-      path: 'index',
-      name: '标签管理',
+      path: '/tag/index',
+      name: 'tag',
       component: () =>
         import ('@/views/tag'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: "标签管理"
       }
     }]
   }

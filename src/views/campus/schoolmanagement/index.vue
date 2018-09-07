@@ -594,8 +594,14 @@ export default {
         this.createTable();
       }
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.createTable();
+    },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },
     handleEdit(row) {
       this.dialogEdit = true;
       this.edit = Object.assign({}, row, { regionId: [] });
@@ -677,12 +683,21 @@ export default {
     handleEditImageSuccess(response, file, fileList) {
       let schoolImage = this.edit.schoolImage;
       let imgObj = { imageUrl: response.data.url, smallUrl: response.data.smallUrl, type: response.data.type };
+      let type = response.data.type;
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
-          schoolImage[0] = Object.assign({}, imgObj, { imageId: schoolImage[0].imageId });
+          if (schoolImage.lenght) {
+            schoolImage[0] = Object.assign({}, imgObj, { imageId: schoolImage[0].imageId });
+          }else {
+            schoolImage[0] = Object.assign({}, imgObj);
+          }
           this.editImageUrl3 = `url(${response.data.url})`;
-        } else if (response.data.type == "1") {
-          schoolImage[1] = Object.assign({}, imgObj, { imageId: schoolImage[1].imageId });
+        }else if (response.data.type == "1") {
+          if (schoolImage.lenght) {
+            schoolImage[1] = Object.assign({}, imgObj, { imageId: schoolImage[1].imageId });
+          }else {
+            schoolImage[1] = Object.assign({}, imgObj);
+          }
           this.editImageUrl4 = `url(${response.data.url})`;
         }
       }

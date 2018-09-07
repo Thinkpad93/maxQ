@@ -19,9 +19,7 @@
                 <template v-if="scope.row.show">
                   <el-input v-model="scope.row.name" size="mini"></el-input>
                 </template>
-                <template v-else>
-                  <p>{{ scope.row.name }}</p>
-                </template>
+                <template v-else>{{ scope.row.name }}</template>
               </template>
             </el-table-column>
             <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
@@ -29,12 +27,10 @@
                 <template v-if="scope.row.show">
                   <el-input v-model="scope.row.desription" size="mini"></el-input>
                 </template>
-                <template v-else>
-                  <p>{{ scope.row.desription }}</p>
-                </template>                        
+                <template v-else>{{ scope.row.desription }}</template>                        
               </template>
             </el-table-column>
-            <el-table-column label="标签类型" prop="type">
+            <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
               <template slot-scope="scope">
                 <template v-if="scope.row.show">
                   <el-select v-model="scope.row.type" size="mini">
@@ -47,10 +43,14 @@
                   </el-select>   
                 </template>
                 <template v-else>
-                  <p v-if="scope.row.type === 0">缺省</p>
+                  <el-tag size="mini" v-if="scope.row.type === 0">缺省</el-tag>
+                  <el-tag size="mini" v-else-if="scope.row.type === 1">特色</el-tag>
+                  <el-tag size="mini" v-else-if="scope.row.type === 2">商圈</el-tag>
+                  <el-tag size="mini" v-else="scope.row.type === 3">冠名企业</el-tag>
+                  <!-- <p v-if="scope.row.type === 0">缺省</p>
                   <p v-else-if="scope.row.type === 1">特色</p>
                   <p v-else-if="scope.row.type === 2">商圈</p>
-                  <p v-else="scope.row.type === 3">冠名企业</p>
+                  <p v-else="scope.row.type === 3">冠名企业</p> -->
                 </template>
               </template>
             </el-table-column>
@@ -123,7 +123,6 @@ export default {
     };
   },
   methods: {
-    addTags() {},
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -135,10 +134,7 @@ export default {
       this.$refs[formName].resetFields();
     },    
     handleItemChange(val) {},
-    handleEdit(row) {
-      //this.$set(row, "show", true);
-      //this.$set(row, "state", 1);
-    },
+    handleEdit(row) {},
     handleDel(row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {

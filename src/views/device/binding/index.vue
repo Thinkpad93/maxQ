@@ -272,8 +272,8 @@ export default {
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //this.addTable(this.addForm);
-          console.log(this.addForm);
+          let { regionId, ...args } = this.addForm;
+          this.addTable(args);
         } else {
           return false;
         }
@@ -283,8 +283,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnloading = true;
-          let { postTime, schoolName, totalCount, ...row } = this.edit;
-          this.updateTable(row);
+          let { postTime, schoolName, totalCount, ...args } = this.edit;
+          this.updateTable(args);
         } else {
           return false;
         }

@@ -36,8 +36,11 @@
             <template v-if="scope.row.show">
               <el-time-picker
                 is-range
+                format="HH:mm:ss"
+                value-format="HH:mm:ss"                
                 v-model="value4"
                 size="mini"
+                :clearable="false"
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
@@ -93,34 +96,38 @@
         <el-table-column label="栏目有效期" prop="validType">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
-              <p @click="selectValidity(scope.row)" class="simInput">
+              <p class="simInput" @click="validitySelect(scope.row)">
                 <span v-if="scope.row.validType === 0">长期有效</span>
                 <span v-else>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</span>
               </p>
-              <el-dialog center title="选择栏目有效期" :visible.sync="dialogValidity" @close="validityHide(scope.row)" @open="validityShow(scope.row)">
+              <el-dialog width="40%" center title="选择栏目有效期" append-to-body :visible.sync="dialogValidity" @close="validityHide(scope.row)" @open="validityShow(scope.row)">
                 <template>
-                  <el-row style="margin-bottom:15px;">
-                    <el-radio v-model="radio" label="1">长期</el-radio>
-                    <el-radio v-model="radio" label="2">自定义</el-radio>
-                  </el-row>  
+                  <template>
+                    <el-radio-group v-model="radio">
+                      <el-radio :label="0">长期</el-radio>
+                      <el-radio :label="1">按时段有效</el-radio>
+                    </el-radio-group>  
+                  </template> 
                 </template>
-                <template v-if="radio == 2">
+                <div style="margin:20px 0 0 20px"></div>
+                <template v-if="radio == 1">
                   <el-row>
                     <el-date-picker
                       value-format="yyyy-MM-dd"
+                      format="yyyy-MM-dd"
                       v-model="validityData"
                       size="mini"
                       type="daterange"
                       range-separator="至"
                       start-placeholder="开始日期"
                       end-placeholder="结束日期"
-                      :picker-options="pickerOptions0">
+                      :picker-options="pickerOptions">
                     </el-date-picker>
                   </el-row>  
                 </template>
                 <div slot="footer" class="dialog-footer">
-                  <el-button size="mini" type="primary" @click="dialogValidity = false">取消</el-button>
-                  <el-button size="mini" type="danger" @click="saveValidity(scope.row)">确定</el-button>
+                  <el-button size="mini" @click="dialogValidity = false">取消</el-button>
+                  <el-button size="mini" type="primary" @click="validitySave(scope.row)">确定</el-button>
                 </div>
               </el-dialog>
             </template>
@@ -133,7 +140,6 @@
         <el-table-column label="播放内容" prop="content">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
-              <!-- <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(0,scope.row.channelId)">查看</a> -->
               <el-input @focus="selectContent(scope.$index)" v-model="scope.row.multipleTable" placeholder="选择播放内容" readonly size="mini"></el-input>
               <el-dialog center title="选择内容" :visible.sync="dialogContent" @open="show(scope.row)" @close="close">
                 <el-table ref="gr" @selection-change="selectCheckbox" :data="playContendata" style="width: 100%" border stripe size="mini">
@@ -157,13 +163,13 @@
               </el-dialog>
             </template>
             <template v-else>
-              <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(0,scope.row.channelId)">查看</a>
+              <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a>
             </template>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
@@ -178,7 +184,97 @@
         ref="channelForm" 
         :model="channelForm" 
         status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="播放时段" prop="play_start_time">
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="学校ID">
+              <el-input v-model="channelForm.schoolId" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="播放时段" prop="playTime">
+              <el-time-picker
+                style="width:100%;"
+                is-range
+                format="HH:mm:ss"
+                value-format="HH:mm:ss"
+                v-model="channelForm.playTime"
+                size="mini"
+                :clearable="false"
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                placeholder="选择时间范围">
+              </el-time-picker>                
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="时间段选择" prop="validTime">
+              <el-date-picker
+                :disabled="channelForm.validType === 0"
+                style="width:100%;"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="channelForm.validTime"
+                size="mini"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions">
+              </el-date-picker>                
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="栏目名称" prop="channelId">
+              <el-select v-model="channelForm.channelId" placeholder="请选择" size="mini" style="width:100%;">
+                <el-option v-for="item in channelList" 
+                  :key="item.channelId" 
+                  :value="item.channelId"
+                  :label="item.name">
+                </el-option>
+              </el-select>                  
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="播放优先级" prop="priority">
+              <el-select v-model="channelForm.priority" placeholder="请选择" size="mini" style="width:100%;">
+                <el-option 
+                  v-for="item in priorityList" 
+                  :key="item.value" 
+                  :value="item.value"
+                  :label="item.label">
+                </el-option>
+              </el-select> 
+            </el-form-item>               
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="栏目属性" prop="scrollType">
+              <el-radio-group v-model="channelForm.scrollType">
+                <el-radio :label="0">非滚动</el-radio>
+                <el-radio :label="1">滚动</el-radio>
+              </el-radio-group>
+            </el-form-item>   
+          </el-col>   
+          <el-col :span="12">
+            <el-form-item label="栏目有效期" prop="validType">
+              <el-radio-group v-model="channelForm.validType">
+                <el-radio :label="0">长期</el-radio>
+                <el-radio :label="1">按时段有效</el-radio>
+              </el-radio-group>                            
+            </el-form-item>               
+          </el-col>                 
+        </el-row>
+        <el-row :gutter="20" style="text-align:center">
+          <el-button size="mini">取消</el-button>
+          <el-button size="mini" type="primary">保存</el-button>
+        </el-row>            
+          <!-- <el-form-item label="播放时段" prop="play_start_time">
               <el-time-picker
                 is-range
                 v-model="value4"
@@ -238,14 +334,21 @@
           <el-row style="text-align:center">
               <el-button size="mini" @click="dialogChannel = false">取消</el-button>
               <el-button :loading="btnloading" size="mini" type="primary" @click="addChannelForm('channelForm')">确定</el-button>
-          </el-row>          
+          </el-row>           -->
         </el-form>
       </el-dialog>
     </template>       
    </div> 
 </template>
 <script>
-import { queryChannelAll, querySchoolPlayChannel, addSchoolPlayChannel, updateSchoolPlayChannel, deleteSchoolPlayChannel } from "@/api/content";
+import {
+  queryChannelAll,
+  querySchoolPlayChannel,
+  addSchoolPlayChannel,
+  updateSchoolPlayChannel,
+  deleteSchoolPlayChannel,
+  queryChannelContent
+} from "@/api/content";
 import { queryRegion } from "@/api/school";
 import region from "@/components/region";
 import Mixin from "@/mixins/priority";
@@ -270,13 +373,20 @@ export default {
       radio: 0,
       schoolList: [],
       value4: hours(),
+      validityData: [],
+      pickerOptions: {
+        disabledDate
+      },
       contentsList: [],
       playContendata: [],
       channelList: [],
       query: {
-        schoolId: null
+        schoolId: 2
       },
-      channelForm: {},
+      channelForm: {
+        scrollType: 0,
+        validType: 0
+      },
       rules: {},
       tableData: []
     };
@@ -292,13 +402,27 @@ export default {
     close() {},
     toggleSelection() {},
     selectCheckbox() {},
-    setTableEditState(tableData) {
+    setEditState(row, params) {
+      for (let o in params) {
+        this.$set(row, o, params[o])
+      }
+    },
+    setEditStateAll(tableData, params) {
       if (Array.isArray(tableData)) {
         tableData.forEach((e, v) => {
           if (!e.show) {
-            this.$set(e, 'show', false);
-            this.$set(e, 'state', 0);
+            for (let o in params) {
+              this.$set(e, o, params[o]);
+            } 
           }
+        });
+      }
+    },
+    delEditState(tableData) {
+      if (Array.isArray(tableData)) {
+        tableData.forEach((e, v) => {
+          this.$delete(e, 'show');
+          this.$delete(e, 'state');
         });
       }
     },
@@ -309,12 +433,53 @@ export default {
     },
     handleEdit(index, row) {
       let tableData = this.tableData;
-      this.$set(row, 'show', true);
-      this.$set(row, 'state', 1);
-      this.setTableEditState(tableData);
+      this.setEditState(row, { show: true, state: 1 });
+      this.setEditStateAll(tableData, { show: false, state: 0 });
+      this.value4[0] = row.playStartTime;
+      this.value4[1] = row.playEndTime;
     },
-    handleDelete(index, row) {
-
+    handleDelete(index, row) {},
+    handleSave(index, row) {
+      this.$confirm(`确定要保存吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {})
+        .catch(error => {
+          this.delEditState(this.tableData);
+          return false;
+        });
+    },
+    //赋值自定义有效期时间
+    validityShow(row) {},
+    validityHide() {
+      let that = this;
+      setTimeout(() => {
+        that.validityData = [];
+      });
+    },
+    //保存有效期选择
+    validitySave(row) {
+      let radio = this.radio;
+      if (radio) {
+        row.validStartTime = this.validityData[0];
+        row.validEndTime = this.validityData[1];
+        row.validType = 1;
+      } else {
+        row.validType = 0;
+        row.validStartTime = "";
+        row.validEndTime = "";
+      }
+      this.dialogValidity = false;
+    },
+    validitySelect(row) {
+      this.dialogValidity = true;
+      if (row.validType) {
+        this.validityData.push(row.validStartTime);
+        this.validityData.push(row.validEndTime);
+      }
+      return row.validType === 0 ? (this.radio = 0) : (this.radio = 1);
     },
     addChannelForm() {},
     lastChange(value) {
@@ -326,7 +491,11 @@ export default {
           return false;
         }
       });
-    },    
+    },
+    viewChannelContent(row) {
+      let { channelId, schoolId } = row;
+      this.queryChannelContentAction({ channelId, schoolId });
+    },
     //查询栏目名称
     queryChannelInner() {
       queryChannelAll({}).then(res => {
@@ -334,18 +503,36 @@ export default {
           this.channelList = res.data;
         }
       });
-    },    
+    },
+    //查询频道对应内容列表
+    queryChannelContentAction(params = {}) {
+      queryChannelContent(params).then(res => {
+        console.log(res);
+      })
+    },
+    //新增学校播放频道
+    addTable(params = {}) {
+      addSchoolPlayChannel(params).then(res => {
+        console.log(res);
+      })
+    },
     //显示学校播放表单列表
     createTable() {
       querySchoolPlayChannel(this.query).then(res => {
         if (res.errorCode === 0) {
           this.tableData = res.data;
         }
-      })
+      });
     },
     //编辑学校播放频道
     updateTable(params = {}) {
       updateSchoolPlayChannel(params).then(res => {
+        console.log(res);
+      });
+    },
+    //删除学校播放频道
+    deleteTable(params = {}) {
+      deleteSchoolPlayChannel(params).then(res => {
         console.log(res);
       })
     }

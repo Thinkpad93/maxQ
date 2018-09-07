@@ -4,7 +4,7 @@
         v-for="tag in tagList" 
         :key="tag.path" 
         :to="tag.path">
-        {{ tag.name }}
+        {{ tag.meta.title }}
         <template v-if="tag.path !== '/home/index'">
           <i class='el-icon-close' @click.prevent.stop="closeTag(tag)"></i>
         </template>
