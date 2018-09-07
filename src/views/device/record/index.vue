@@ -57,10 +57,11 @@
           <el-pagination
             background
             small
+            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="query.page"
             :page-size="query.pageSize"
-            layout="total, prev, pager, next, jumper"
+            layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount">
           </el-pagination> 
       </div>   
@@ -242,6 +243,10 @@ export default {
       }
       this.createTable();
     },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.createTable();
+    },
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.createTable();
@@ -361,8 +366,11 @@ export default {
     //删除检修记录
     deleteTable(repairId) {
       deleteDeviceRepair({ repairId }).then(res => {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable(this.query);
+        if (res.errorCode === 0) {
+          this.$message({ message: `${res.errorMsg}`, type: "success" });
+          this.query.page = 1; //从第一页开始查起
+          this.createTable(this.query);
+        }
       });
     }
   },

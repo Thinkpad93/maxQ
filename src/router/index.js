@@ -6,16 +6,12 @@ Vue.use(Router);
 
 
 export const constantRouterMap = [{
-    path: '/',
-    component: Layout,
-  },
-  {
     path: '/login',
     component: () =>
       import ('@/views/login'),
   },
   {
-    path: '/home',
+    path: '/',
     component: Layout,
     redirect: '/home/index',
     children: [{
@@ -166,13 +162,43 @@ export const constantRouterMap = [{
         }
       },
       {
-        path: '/content/playform',
-        name: 'playform',
+        path: '/content/trial',
+        name: 'trial',
         component: () =>
-          import ('@/views/content/playform'),
+          import ('@/views/content/trial'),
         meta: {
           requiresAuth: true,
-          title: "学校播放表单"
+          title: "内容初审"
+        }
+      },
+      {
+        path: '/content/review',
+        name: 'review',
+        component: () =>
+          import ('@/views/content/review'),
+        meta: {
+          requiresAuth: true,
+          title: "内容复审"
+        }
+      },
+      {
+        path: '/content/final',
+        name: 'final',
+        component: () =>
+          import ('@/views/content/final'),
+        meta: {
+          requiresAuth: true,
+          title: "内容终审"
+        }
+      },
+      {
+        path: '/content/prerelease',
+        name: 'prerelease',
+        component: () =>
+          import ('@/views/content/prerelease'),
+        meta: {
+          requiresAuth: true,
+          title: "预发布"
         }
       },
       {
@@ -184,7 +210,17 @@ export const constantRouterMap = [{
           requiresAuth: true,
           title: "内容发布"
         }
-      }
+      },
+      {
+        path: '/content/playform',
+        name: 'playform',
+        component: () =>
+          import ('@/views/content/playform'),
+        meta: {
+          requiresAuth: true,
+          title: "学校播放表单"
+        }
+      },
     ]
   },
   {

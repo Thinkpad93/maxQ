@@ -2,13 +2,13 @@
   <div class="wrapper">
     <el-container style="height:100vh;" class="is-vertical">
       <!-- 主体 顶栏 -->
-      <q-header @toggle="handleToggle" />
+      <qx-header @toggle="handleToggle" />
       <el-container>
         <!-- 主体 侧边栏 -->
-        <q-aside :collapse="collapse" :width="left" />
+        <qx-aside :collapse="collapse" :width="left" />
         <!-- 主体 内容 -->
         <el-main id="main">
-            <q-tags />
+            <qx-tags />
             <transition name="fade-transform" mode="out-in">
                 <keep-alive>
                     <router-view :key="$route.fullPath"/>
@@ -20,16 +20,16 @@
   </div>  
 </template>
 <script>
-import qheader from "./components/headers";
-import qaside from "./components/asides";
-import qtags from "./components/tags";
+import qxheader from "./components/headers";
+import qxaside from "./components/asides";
+import qxtags from "./components/tags";
 
 export default {
   name: "layout",
   components: {
-    "q-header": qheader,
-    "q-aside": qaside,
-    "q-tags": qtags
+    "qx-header": qxheader,
+    "qx-aside": qxaside,
+    "qx-tags": qxtags
   },
   data() {
     return {

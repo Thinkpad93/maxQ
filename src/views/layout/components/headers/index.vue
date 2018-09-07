@@ -2,10 +2,11 @@
    <el-header id="header">
      <!-- <h1 class="h1">
        <img src="../../../../images/all.png"></img>  
-     </h1>   
+     </h1>  
+     --> 
      <div class="toggle-aside" @click="toggle">
        <i class="icon iconfont icon-weibiaoti26"></i>
-     </div> -->
+     </div> 
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
           {{ userInfo.name }}

@@ -1,8 +1,8 @@
 <template>
-  <el-aside id="aside" style="width:200px;background-color: #545c64;">
+  <el-aside id="aside" :style="{ width: width + 'px' }" style="background-color: #545c64">
     <el-menu 
     class="el-menu-vertical-demo" 
-    background-color="#545c64" 
+    background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b"
     router 
@@ -42,6 +42,10 @@
           <el-menu-item index="/content/columntpl">栏目模板</el-menu-item>
           <el-menu-item index="/content/upload">我的上传</el-menu-item>
           <el-menu-item index="/content/poster">海报在线编辑</el-menu-item>
+          <el-menu-item index="/content/trial">内容初审</el-menu-item>
+          <el-menu-item index="/content/review">内容复审</el-menu-item>
+          <el-menu-item index="/content/final">内容终审</el-menu-item>
+          <el-menu-item index="/content/prerelease">预发布</el-menu-item>
           <el-menu-item index="/content/release">内容发布</el-menu-item>
           <el-menu-item index="/content/playform">学校播放表单</el-menu-item>
         </el-menu-item-group>    
@@ -73,7 +77,8 @@ export default {
   name: "asides",
   props: {
     width: {
-      type: Number
+      type: Number,
+      default: 200
     },
     collapse: {
       type: Boolean,
@@ -90,6 +95,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+#aside {
+  transition: width .6s;
+}
 // #aside {
 //   position: fixed;
 //   top: 60px;

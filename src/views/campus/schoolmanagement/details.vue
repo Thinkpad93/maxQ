@@ -91,12 +91,8 @@
                     </el-table>
                </template>
                <el-row :gutter="10">
-                   <el-col :span="12">
-                       <div class="qx-honour"
-                        v-for="(item, index) in info.honourImg" :key="index"
-                        :style="{ backgroundImage: `url(${item})` }">
-                        
-                        </div>
+                   <el-col :span="12" v-for="(item, index) in info.honourImg" :key="index">
+                       <div class="qx-honour" :style="{ backgroundImage: `url(${item.smallUrl})` }"></div>
                    </el-col>
                </el-row>
            </div>
@@ -193,7 +189,7 @@ export default {
 .qx-honour {
   width: 446px;  
   height: 240px;  
-  display: table-cell;
+  margin-top: 10px;
   background-size: cover;
 }
 </style>
