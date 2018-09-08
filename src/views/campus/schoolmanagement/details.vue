@@ -100,7 +100,7 @@
    </div> 
 </template>
 <script>
-import { querySchoolInfo } from "@/api/school";
+import service from "@/api";
 export default {
   name: "schoolDetails",
   data() {
@@ -110,16 +110,15 @@ export default {
     };
   },
   methods: {
-    schoolInfo(id) {
-      querySchoolInfo({ schoolId: id }).then(res => {
-        if (res.errorCode === 0) {
-          this.info = Object.assign({}, res.data);
-        }
-      });
+    async schoolInfo(id) {
+      let res = await service.querySchoolInfo({ schoolId: id });
+      if (res.errorCode === 0) {
+        this.info = Object.assign({}, res.data);
+      }
     }
   },
   mounted() {
-    this.schoolInfo(this.$route.params.schoolId);
+    this.schoolInfo(this.schoolId);
   }
 };
 </script>
@@ -127,7 +126,7 @@ export default {
 .qx-card {
   color: rgba(0, 0, 0, 0.65);
   background: #fff;
-  border-radius: 2px;  
+  border-radius: 2px;
   position: relative;
 }
 .qx-card-head {
@@ -136,59 +135,59 @@ export default {
   min-height: 48px;
   padding: 0 32px;
   border-bottom: 1px solid #e8e8e8;
-  border-radius: 2px 2px 0 0;  
+  border-radius: 2px 2px 0 0;
 }
 .qx-card-head-wrapper {
-  display: flex;  
+  display: flex;
 }
 .qx-card-head-title {
   display: inline-block;
   flex: 1 1;
   overflow: hidden;
   padding: 16px 0;
-  text-overflow: ellipsis; 
-  white-space: nowrap;  
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .qx-card-body {
-  padding: 24px 32px;  
-  transition: padding .3s;
+  padding: 24px 32px;
+  transition: padding 0.3s;
 }
 .qx-trem {
-  display: table-cell;   
+  display: table-cell;
   white-space: nowrap;
   line-height: 20px;
   padding-bottom: 16px;
-  color: rgba(0, 0, 0, 0.85);  
+  color: rgba(0, 0, 0, 0.85);
   &::after {
     content: ":";
     margin: 0 8px 0 2px;
     position: relative;
-    top: -.5px;      
+    top: -0.5px;
   }
 }
 .qx-detail {
   display: table-cell;
   line-height: 22px;
   padding-bottom: 16px;
-  color: rgba(0, 0, 0, 0.65);  
+  color: rgba(0, 0, 0, 0.65);
   span {
-    color: #fff;  
+    color: #fff;
     padding: 1px 10px;
     font-size: 12px;
     margin-right: 3px;
     display: inline-block;
     background: -webkit-gradient(
-    linear,
-    0% 0%,
-    0% 100%,
-    from(#3c8ce7),
-    to(#0396ff)
-  );  
+      linear,
+      0% 0%,
+      0% 100%,
+      from(#3c8ce7),
+      to(#0396ff)
+    );
   }
 }
 .qx-honour {
-  width: 446px;  
-  height: 240px;  
+  width: 446px;
+  height: 240px;
   margin-top: 10px;
   background-size: cover;
 }

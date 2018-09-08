@@ -341,15 +341,7 @@
    </div> 
 </template>
 <script>
-import {
-  queryChannelAll,
-  querySchoolPlayChannel,
-  addSchoolPlayChannel,
-  updateSchoolPlayChannel,
-  deleteSchoolPlayChannel,
-  queryChannelContent
-} from "@/api/content";
-import { queryRegion } from "@/api/school";
+import service from "@/api";
 import region from "@/components/region";
 import Mixin from "@/mixins/priority";
 import { disabledDate, hours } from "@/utils/tools";

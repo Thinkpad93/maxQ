@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" border stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
         <el-table-column :resizable="false" label="日志id" prop="logId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="设备id" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
@@ -26,25 +26,11 @@
           </el-table-column>
         <el-table-column :resizable="false" label="日志时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
       </el-table>        
-    </template>  
-    <!-- 分页 -->
-    <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, prev, pager, next, jumper"
-            :total="tableData.length">
-          </el-pagination> 
-      </div>   
-    </template>       
+    </template>      
   </div>  
 </template>
 <script>
-import { showDeviceRunLog } from "@/api/device";
+import service from "@/api";
 export default {
   name: "runLog",
   data() {
@@ -57,33 +43,20 @@ export default {
       tableData: []
     };
   },
-  computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
-  },  
   methods: {
-    handleCurrentChange(curr) {
-      this.query.page = curr;
-      this.createTable();
-    },     
     //显示设备运行日志
-    createTable() {
+    async createTable() {
       this.loading = true;
-      showDeviceRunLog(this.query).then(res => {
-        if (res.errorCode === 0) {
-          this.loading = false;
-          this.tableData = res.data;
-        }
-      }).catch(error => {
+      let res = await service.showDeviceRunlog(this.query);
+      if (res.errorCode === 0) {
         this.loading = false;
-      }); 
+        this.tableData = res.data;
+      }
     }
   },
   mounted() {
     this.createTable();
-  }    
+  }
 };
 </script>
 <style lang="less" scoped>

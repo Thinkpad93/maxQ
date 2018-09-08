@@ -168,13 +168,7 @@
   </div>  
 </template>
 <script>
-import {
-  addDeviceBind,
-  updateDeviceBind,
-  deleteDeviceBind,
-  showDeviceList
-} from "@/api/device";
-import { queryLabel, queryRegion, queryProvinceCityRegionBySchoolId } from "@/api/school";
+import service from "@/api";
 import Mixin from "../mixin/binding";
 import region from "@/components/region";
 
@@ -289,75 +283,62 @@ export default {
           return false;
         }
       });
-    }, 
+    },
     //加载学校数据
-    lastChange(value) {
+    async lastChange(value) {
       this.addForm.regionId = value;
       let last = value[value.length - 1];
-      queryRegion({ queryId: last, queryType: 3 }).then(res => {
-        if (res.errorCode === 0) {
-          this.schoolList = res.data;
-        } else {
-          return false;
-        }
-      });
+      let res = await service.queryRegion({ queryId: last, queryType: 3 });
+      if (res.errorCode === 0) {
+        this.schoolList = res.data;
+      }else {
+        return false;
+      }
     },
     //根据学校Id查询区域
-    regionBySchoolId(schoolId) {
-      queryProvinceCityRegionBySchoolId({ schoolId }).then(res => {
-        if (res.errorCode === 0) {
-          let { province, city, region } = res.data[0];
-          this.selected = `${province} / ${city} / ${region}`;
-        }
-      });
+    async regionBySchoolId(schoolId) {
+      let res = await service.queryProvinceCityRegionBySchoolId({ schoolId });
+      if (res.errorCode === 0) {
+        let { province, city, region } = res.data[0];
+        this.selected = `${province} / ${city} / ${region}`;
+      }
     },
     //查询标签
-    getLabel() {
-      queryLabel({ queryType: 3 }).then(res => {
-        if (res.errorCode === 0) {
-          this.labelsList = res.data;
-        }
-      });
+    async getLabel() {
+      let res = await service.queryLabel({ queryType: 3 });
+      if (res.errorCode === 0) {
+        this.labelsList = res.data;
+      }
     },
     //显示设备列表
-    createTable() {
+    async createTable() {
       this.loading = true;
-      showDeviceList(this.query)
-        .then(res => {
-          if (res.errorCode === 0) {
-            let data = res.data.data;
-            if (!Array.isArray(data)) {
-              data = [];
-            } else {
-              this.tableData = data;
-            }
-            this.loading = false;
-            this.totalCount = res.data.totalCount;
-          } else if (res.errorCode === 1) {
-            this.loading = false;
-            this.$message({ message: `${res.errorMsg}`, type: "warning" });
-          }
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+      let res = await service.showDeviceList(this.query);
+      if (res.errorCode === 0) {
+        let data = res.data.data;
+        if (!Array.isArray(data)) {
+          data = [];
+        }
+        this.loading = false;
+        this.totalCount = res.data.totalCount;
+        this.tableData = data;
+      } else if (res.errorCode === 1) {
+        this.loading = false;
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
+      }
     },
     //新增设备绑定
-    addTable(params = {}) {
-      addDeviceBind(params).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogAdd = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        } else if (res.errorCode === -1) {
-          this.$message({ message: `${res.errorMsg}`, type: "warning" });
-          return false;
-        } else if (res.errorCode === 1) {
-          //MAC码已存在
-          this.$message({ message: `${res.errorMsg}`, type: "warning" });
-          return false;          
-        }
-      });
+    async addTable(params = {}) {
+      let res = await service.addDeviceBind(params);
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.dialogAdd = false;
+        this.createTable();
+      } else if (res.errorCode === 1) {
+        //MAC码已存在
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
+        return false;
+      }
     },
     //编辑设备绑定
     updateTable(params = {}) {
@@ -371,13 +352,12 @@ export default {
       });
     },
     //删除设备绑定
-    deleteTable(deviceId) {
-      deleteDeviceBind({ deviceId }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
-      });
+    async deleteTable(deviceId) {
+      let res = await service.deleteDeviceBind({ deviceId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     }
   },
   mounted() {

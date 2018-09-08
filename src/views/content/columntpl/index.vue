@@ -328,18 +328,7 @@
    </div> 
 </template>
 <script>
-import {
-  queryChannelAll,
-  queryChannelTemplate,
-  queryChannelTemplateDetail,
-  addChannelTemplate,
-  addChannelTemplateDetail,
-  updateChannelTemplate,
-  updateDefaultTemplate,
-  updateChannelTemplateDetail,
-  deleteChannelTemplate,
-  deleteChannelTemplateDetail
-} from "@/api/content";
+import service from "@/api";
 import Mixin from "@/mixins/priority";
 import { disabledDate, hours } from "@/utils/tools";
 
@@ -437,7 +426,7 @@ export default {
     },
     show() {},
     close() {
-      this.resetForm('tplDetailform');
+      this.resetForm("tplDetailform");
     },
     selectChannelName(value) {
       let obj = {};
@@ -446,16 +435,14 @@ export default {
     },
     handleEdit(row) {
       this.dialogEdit = true;
-      //this.tpleditform = Object.assign({}, row);
       this.tplDetailform.templateId = row.templateId;
-      //this.tpleditDetailform.templateId = row.templateId;
       this.queryChannelTemplateDetailAction(row.templateId, "edit");
     },
     handleDetail(row) {
       this.dialogDetail = true;
       this.tplDetailform.templateId = row.templateId;
     },
-    handleDel(index,row) {
+    handleDel(index, row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
@@ -463,7 +450,7 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteChannelTemplateAction(index,row.templateId);
+          that.deleteChannelTemplateAction(index, row.templateId);
         })
         .catch(error => {
           return false;
@@ -541,11 +528,11 @@ export default {
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
-      this.createTable();      
+      this.createTable();
     },
     handleCurrentChange(curr) {
       this.query.page = curr;
-      this.createTable();      
+      this.createTable();
     },
     addTemplate(formName) {
       this.$refs[formName].validate(valid => {
@@ -554,19 +541,6 @@ export default {
         }
       });
     },
-    // editTemplate(formName) {
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       console.log(this.tpleditform);
-    //       let { name, description, templateId } = this.tpleditform;
-    //       this.updateChannelTemplateAction({
-    //         name,
-    //         description,
-    //         templateId
-    //       });
-    //     }
-    //   });
-    // },
     //表单重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -601,12 +575,7 @@ export default {
       });
     },
     //赋值自定义有效期时间
-    validityShow(row) {
-      // if (row.validType) {
-      //   this.validityData.push(row.validStartTime);
-      //   this.validityData.push(row.validEndTime);
-      // }      
-    },
+    validityShow(row) {},
     validityHide() {
       let that = this;
       setTimeout(() => {
@@ -620,7 +589,7 @@ export default {
         row.validStartTime = this.validityData[0];
         row.validEndTime = this.validityData[1];
         row.validType = 1;
-      }else {
+      } else {
         row.validType = 0;
         row.validStartTime = "";
         row.validEndTime = "";
@@ -636,26 +605,23 @@ export default {
       return row.validType === 0 ? (this.radio = 0) : (this.radio = 1);
     },
     //查询栏目名称
-    queryChannelInner() {
-      queryChannelAll({}).then(res => {
-        if (res.errorCode === 0) {
-          this.channelList = res.data;
-        }
-      });
+    async queryChannelInner() {
+      let res = await service.queryChannelAll({});
+      if (res.errorCode === 0) {
+        this.channelList = res.data;
+      }
     },
     //新增栏目模板
-    addChannelTemplateAction(params = {}) {
-      addChannelTemplate(params).then(res => {
-        if (res.errorCode === 0) {
-          //添加成功后在进行添加详细项
-          //this.tplDetailform.templateId = res.data.templateId;3
-          this.dialogAdd = false;
-          this.createTable();
-          this.resetForm('tplform');
-        } else if (res.errorCode === 1) {
-          this.$message({ message: `${res.errorMsg}`, type: "warning" });
-        }
-      });
+    async addChannelTemplateAction(params = {}) {
+      let res = await service.addChannelTemplate(params);
+      if (res.errorCode === 0) {
+        //添加成功后在进行添加详细项
+        this.dialogAdd = false;
+        this.createTable();
+        this.resetForm("tplform");
+      } else if (res.errorCode === 1) {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
+      }
     },
     //编辑栏目模板
     updateChannelTemplateAction(params) {
@@ -664,93 +630,80 @@ export default {
       });
     },
     //删除栏目模板
-    deleteChannelTemplateAction(index,templateId) {
-      deleteChannelTemplate({ templateId }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          //this.createTable();
-          this.tableData.splice(index, 1);
-        }
-      });
+    async deleteChannelTemplateAction(index, templateId) {
+      let res = await service.deleteChannelTemplate({ templateId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+        //this.tableData.splice(index, 1);
+      }
     },
     //删除栏目模板详细项
-    deleteChannelTemplateDetailAction(id) {
-      deleteChannelTemplateDetail({ id }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.queryChannelTemplateDetailAction(
-            this.tplDetailform.templateId,
-            "edit"
-          );
-        }
-      });
+    async deleteChannelTemplateDetailAction(id) {
+      let res = await service.deleteChannelTemplateDetail({ id });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryChannelTemplateDetailAction(
+          this.tplDetailform.templateId,
+          "edit"
+        );
+      }
     },
     //新增栏目模板详细项
-    addChannelTemplateDetailAction(params = {}) {
-      addChannelTemplateDetail(params).then(res => {
-        if (res.errorCode === 0) {
-          let channelName = this.channelName;
-          let { templateId, ...z } = params;
-          this.tplAddData.push(
-            Object.assign({}, z, {
-              channelName
-            })
-          );
-          // if (this.is === 1) {
-          //   this.queryChannelTemplateDetailAction(
-          //     this.tpleditform.templateId,
-          //     "edit"
-          //   );
-          // }
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-        }
-      });
+    async addChannelTemplateDetailAction(params = {}) {
+      let res = await service.addChannelTemplateDetail(params);
+      if (res.errorCode === 0) {
+        let channelName = this.channelName;
+        let { templateId, ...z } = params;
+        this.tplAddData.push(
+          Object.assign({}, z, {
+            channelName
+          })
+        );
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }
     },
     //修改栏目模板详细项
-    updateChannelTemplateDetailAction(params = {}) {
-      updateChannelTemplateDetail(params).then(res => {
-        if (res.errorCode === 0) {
-          this.queryChannelTemplateDetailAction(
-            this.tplDetailform.templateId,
-            "edit"
-          );
-        }
-      });
+    async updateChannelTemplateDetailAction(params = {}) {
+      let res = await service.updateChannelTemplateDetail(params);
+      if (res.errorCode === 0) {
+        this.queryChannelTemplateDetailAction(
+          this.tplDetailform.templateId,
+          "edit"
+        );
+      }
     },
     //查询栏目模板详细
-    queryChannelTemplateDetailAction(templateId, str) {
-      queryChannelTemplateDetail({ templateId }).then(res => {
-        if (res.errorCode === 0) {
-          if (str === "view") {
-            this.viewTableData = res.data;
-          } else {
-            this.tplEditData = res.data;
-          }
+    async queryChannelTemplateDetailAction(templateId, str) {
+      let res = await service.queryChannelTemplateDetail({ templateId });
+      if (res.errorCode === 0) {
+        if (str === "view") {
+          this.viewTableData = res.data;
+        } else {
+          this.tplEditData = res.data;
         }
-      });
+      }
     },
     //显示栏目模板列表
-    createTable() {
-      queryChannelTemplate(this.query).then(res => {
-        if (res.errorCode === 0) {
-          let data = res.data.data;
-          if (!Array.isArray(data)) {
-            data = [];
-          } else {
-            this.tableData = data;
-          }
-          this.totalCount = res.data.totalCount;
+    async createTable() {
+      let res = await service.queryChannelTemplate(this.query);
+      if (res.errorCode === 0) {
+        let data = res.data.data;
+        if (!Array.isArray(data)) {
+          data = [];
+        } else {
+          this.tableData = data;
         }
-      });
+        this.totalCount = res.data.totalCount;
+      }
     },
     //设置默认栏目模板
-    updateDefaultTemplateAction(templateId) {
-      updateDefaultTemplate({ templateId, type: 1 }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
-      });
+    async updateDefaultTemplateAction(templateId) {
+      let res = await service.updateDefaultTemplate({ templateId, type: 1 });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     }
   },
   mounted() {

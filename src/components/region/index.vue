@@ -12,7 +12,7 @@
   </div>  
 </template>
 <script>
-import { findAll } from "@/api/school";
+import service from "@/api";
 export default {
   name: "region",
   props: {
@@ -30,7 +30,6 @@ export default {
   data() {
     return {
       allData: [],
-      //selected: [],
       propss: {
         value: "id",
         label: "name",
@@ -51,12 +50,16 @@ export default {
       // }
     },
     //初始化查询省市区所有数据
-    init() {
-      findAll({}).then(res => {
-        if (res.errorCode === 0) {
-          this.allData = res.data;
-        }
-      });
+    async init() {
+      let res = await service.findAll({});
+      if (res.errorCode === 0) {
+        this.allData = res.data;
+      }
+      // findAll({}).then(res => {
+      //   if (res.errorCode === 0) {
+      //     this.allData = res.data;
+      //   }
+      // });
     },   
   },
   mounted() {

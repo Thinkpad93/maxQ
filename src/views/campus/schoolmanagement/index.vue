@@ -7,9 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-
                 <region @last="lastChange"></region>
-
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClear">
@@ -36,8 +34,6 @@
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-
-            <!-- <span style="color:#409EFF;cursor:pointer;" @click="handleDetails(scope.row)">{{ scope.row.name }}</span> -->
             <router-link style="color:#409EFF" 
               :to="{path: `/school/details/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
           </template>                    
@@ -489,18 +485,7 @@
   </div>  
 </template>
 <script>
-import {
-  showSchoolList,
-  addSchool,
-  updateSchool,
-  querySchoolInfo,
-  querySchoolCategory,
-  queryLabel,
-  queryRegion,
-  findRegion,
-  addImage
-} from "@/api/school";
-import { queryChannelTemplateAll } from "@/api/content";
+import service from "@/api";
 import region from "@/components/region";
 export default {
   name: "schoolManagement",
@@ -509,7 +494,7 @@ export default {
   },
   data() {
     return {
-      setected: [1,1,1],
+      setected: [1, 1, 1],
       fullscreenLoading: false,
       loading: false,
       dialogAdd: false,
@@ -575,7 +560,7 @@ export default {
     tableHeight() {
       return window.innerHeight - 255;
     }
-  },  
+  },
   methods: {
     //新增联系人
     addlinkMan(flags) {
@@ -633,21 +618,17 @@ export default {
     editorForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { propertyName, typeName, regionId, postTime, ...args } = this.edit;
+          let {
+            propertyName,
+            typeName,
+            regionId,
+            postTime,
+            ...args
+          } = this.edit;
           let obj = Object.assign({}, args, {
             regionId: regionId[regionId.length - 1]
           });
           this.updateSchoolAction(obj);
-        } else {
-          return false;
-        }
-      });
-    },
-    lastChange(value) {
-      let last = value[value.length - 1];
-      queryRegion({ queryId: last, queryType: 3 }).then(res => {
-        if (res.errorCode === 0) {
-          this.schoolList = res.data;
         } else {
           return false;
         }
@@ -668,7 +649,11 @@ export default {
     //上传成功后的函数 新增
     handleImageSuccess(response, file, fileList) {
       let schoolImage = this.addForm.schoolImage;
-      let imgObj = { imageUrl: response.data.url, smallUrl: response.data.smallUrl, type: response.data.type };
+      let imgObj = {
+        imageUrl: response.data.url,
+        smallUrl: response.data.smallUrl,
+        type: response.data.type
+      };
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
           schoolImage[0] = Object.assign({}, imgObj);
@@ -682,20 +667,28 @@ export default {
     //上传成功后的函数 编辑
     handleEditImageSuccess(response, file, fileList) {
       let schoolImage = this.edit.schoolImage;
-      let imgObj = { imageUrl: response.data.url, smallUrl: response.data.smallUrl, type: response.data.type };
+      let imgObj = {
+        imageUrl: response.data.url,
+        smallUrl: response.data.smallUrl,
+        type: response.data.type
+      };
       let type = response.data.type;
       if (response.errorCode === 0) {
         if (response.data.type == "0") {
           if (schoolImage.lenght) {
-            schoolImage[0] = Object.assign({}, imgObj, { imageId: schoolImage[0].imageId });
-          }else {
+            schoolImage[0] = Object.assign({}, imgObj, {
+              imageId: schoolImage[0].imageId
+            });
+          } else {
             schoolImage[0] = Object.assign({}, imgObj);
           }
           this.editImageUrl3 = `url(${response.data.url})`;
-        }else if (response.data.type == "1") {
+        } else if (response.data.type == "1") {
           if (schoolImage.lenght) {
-            schoolImage[1] = Object.assign({}, imgObj, { imageId: schoolImage[1].imageId });
-          }else {
+            schoolImage[1] = Object.assign({}, imgObj, {
+              imageId: schoolImage[1].imageId
+            });
+          } else {
             schoolImage[1] = Object.assign({}, imgObj);
           }
           this.editImageUrl4 = `url(${response.data.url})`;
@@ -703,94 +696,98 @@ export default {
       }
     },
     beforeImageUpload(file) {},
+    async lastChange(value) {
+      let last = value[value.length - 1];
+      let res = await service.queryRegion({ queryId: last, queryType: 3 });
+      if (res.errorCode === 0) {
+        this.schoolList = res.data;
+      } else {
+        return false;
+      }
+    },
     //根据区域ID查省市
-    getFindRegion(regionId) {
-      findRegion({ regionId }).then(res => {
-        if (res.errorCode === 0) {
-          this.edit.regionId = [res.data.province,res.data.city,res.data.region];
-        }
-      });
+    async getFindRegion(regionId) {
+      let res = await service.findRegion({ regionId });
+      if (res.errorCode === 0) {
+        this.edit.regionId = [
+          res.data.province,
+          res.data.city,
+          res.data.region
+        ];
+      }
     },
     //查询栏目模板
-    getChannelTemplate() {
-      queryChannelTemplateAll({}).then(res => {
-          if (res.errorCode === 0) {
-            this.templateidList = res.data;
-          }
-        }
-      );
+    async getChannelTemplate() {
+      let res = await service.queryChannelTemplateAll({});
+      if (res.errorCode === 0) {
+        this.templateidList = res.data;
+      }
     },
     //查询标签
-    getLabel() {
-      queryLabel({ queryType: 1 }).then(res => {
-        if (res.errorCode === 0) {
-          this.labelsList = res.data;
-        }
-      });
+    async getLabel() {
+      let res = await service.queryLabel({ queryType: 1 });
+      if (res.errorCode === 0) {
+        this.labelsList = res.data;
+      }
     },
     //查询学校类别
-    getSchoolCateg(params = {}) {
-      querySchoolCategory(params).then(res => {
-        if (res.errorCode === 0) {
-          if (params.queryType) {
-            this.typeidList = res.data;
-          } else {
-            this.propertyidList = res.data;
-          }
+    async getSchoolCateg(params = {}) {
+      let res = await service.querySchoolCategory(params);
+      if (res.errorCode === 0) {
+        if (params.queryType) {
+          this.typeidList = res.data;
+        } else {
+          this.propertyidList = res.data;
         }
-      });
-    },
-    //查询学校信息
-    getSchoolInfo(schoolId) {
-      querySchoolInfo({ schoolId }).then(res => {
-        console.log(res);
-      });
+      }
     },
     //新增学校
-    addSchoolAction(params = {}) {
-      addSchool(params, {
-        headers: { "content-type": "application/json;charset=utf-8" }
-      }).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogAdd = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
+    async addSchoolAction(params = {}) {
+      let res = await service.addSchool(params, {
+        header: { "content-type": "application/json;charset=utf-8" }
       });
+      if (res.errorCode === 0) {
+        this.dialogAdd = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
+      // addSchool(params, {
+      //   headers: { "Content-Type": "application/json;charset=utf-8" }
+      // }).then(res => {
+      //   if (res.errorCode === 0) {
+      //     this.dialogAdd = false;
+      //     this.$message({ message: `${res.errorMsg}`, type: "success" });
+      //     this.createTable();
+      //   }
+      // });
     },
     //编辑学校
-    updateSchoolAction(params = {}) {
-      updateSchool(params, {
+    async updateSchoolAction(params = {}) {
+      let res = await service.updateSchool(params, {
         headers: { "content-type": "application/json;charset=utf-8" }
-      }).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogEdit = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
       });
+      if (res.errorCode === 0) {
+        this.dialogEdit = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     },
     //显示学校列表
-    createTable() {
+    async createTable() {
       this.loading = true;
-      showSchoolList(this.query)
-        .then(res => {
-          if (res.errorCode === 0) {
-            let data = res.data.data;
-            if (!Array.isArray(data)) {
-              data = [];
-            } else {
-              this.tableData = data;
-            }            
-            this.loading = false;
-            this.totalCount = res.data.totalCount;
-          } else if (res.errorCode === -1) {
-            this.loading = false;
-          }
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+      let res = await service.showSchoolList(this.query);
+      if (res.errorCode === 0) {
+        let data = res.data.data;
+        if (!Array.isArray(data)) {
+          data = [];
+        } else {
+          this.tableData = data;
+        }
+        this.loading = false;
+        this.totalCount = res.data.totalCount;
+      } else if (res.errorCode === -1) {
+        this.loading = false;
+      }
     }
   },
   mounted() {

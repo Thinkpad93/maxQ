@@ -111,7 +111,7 @@
 </template>
 <script>
 import { swiper, swiperSlide } from "vue-awesome-swiper";
-import { queryChannelAll, uploadContent, queryContentTemplate } from "@/api/content";
+import service from "@/api";
 export default {
   name: "uploadAdd",
   components: {

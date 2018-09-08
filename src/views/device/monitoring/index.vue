@@ -97,12 +97,7 @@
   </div>  
 </template>
 <script>
-import {
-  showDeviceStatus,
-  showDeviceDetail,
-  sendDeviceCommand
-} from "@/api/device";
-import { queryRegion } from "@/api/school";
+import service from "@/api";
 import region from "@/components/region";
 export default {
   name: "monitoring",
@@ -209,36 +204,32 @@ export default {
     },
     handleMon() {},
     //显示设备详情
-    showDevice(deviceId) {
-      showDeviceDetail({ deviceId }).then(res => {
-        if (res.errorCode === 0) {
-          this.viewDevice = res.data[0];
-          this.dialogView = true;
-        }
-      });
+    async showDevice(deviceId) {
+      let res = await service.showDeviceDetail({ deviceId });
+      if (res.errorCode === 0) {
+        this.viewDevice = res.data[0];
+        this.dialogView = true;
+      }
     },
     //显示设备状态列表
-    createTable() {
-      showDeviceStatus(this.query).then(res => {
-        if (res.errorCode === 0) {
-          let data = res.data.data;
-          if (!Array.isArray(data)) {
-            data = [];
-          } else {
-            this.tableData = data;
-          }
-          //this.totalCount = res.data.totalCount;
+    async createTable() {
+      let res = await service.showDeviceStatus(this.query);
+      if (res.errorCode === 0) {
+        let data = res.data.data;
+        if (!Array.isArray(data)) {
+          data = [];
+        } else {
+          this.tableData = data;
         }
-      });
+      }
     },
     //发送设备命令
-    sendDeviceDirective(params = {}, item) {
-      sendDeviceCommand(params).then(res => {
-        if (res.errorCode === 0) {
-          this.$set(item, "loading", false);
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-        }
-      });
+    async sendDeviceDirective(params = {}, item) {
+      let res = await service.sendDeviceCommand(params);
+      if (res.errorCode === 0) {
+        this.$set(item, "loading", false);
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }
     }
   },
   mounted() {

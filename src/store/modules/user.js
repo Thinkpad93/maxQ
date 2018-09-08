@@ -1,6 +1,8 @@
-import { userLogin } from '@/api/login';
+import {
+  userLogin
+} from '@/api/login';
 import '@/mock/login';
-import db from '@/utils/db';
+import db from '@/libs/db';
 
 
 
@@ -15,7 +17,7 @@ const state = {
   // 用户名
   userInfo: {
     name: ''
-  } 
+  }
 };
 const getters = {};
 const mutations = {
@@ -27,12 +29,14 @@ const mutations = {
       this.commit('save', info);
     }
   },
-  
+
   //将用户名保存到数据库
   save(state, key) {
     const row = Object.assign(db.get('userInfo').write(), key);
     if (Object.keys(row)) {
-      db.set('userInfo', { name: row.name }).write();
+      db.set('userInfo', {
+        name: row.name
+      }).write();
     }
   },
 
@@ -45,13 +49,16 @@ const mutations = {
 };
 const actions = {
   // 用户登陆
-  adminLogin({ commit , state }, userInfo) {
+  adminLogin({
+    commit,
+    state
+  }, userInfo) {
     return new Promise((resolve, reject) => {
       userLogin(userInfo).then(res => {
         resolve(res)
         commit('setUserInfo', userInfo);
       }).catch(error => {
-        reject();  
+        reject();
       })
     })
   }

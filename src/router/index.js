@@ -46,7 +46,7 @@ export const constantRouterMap = [{
           import ('@/views/device/monitoring'),
         meta: {
           requiresAuth: true,
-          title: "设备列表"
+          title: "设备监控"
         }
       },
       {

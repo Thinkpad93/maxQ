@@ -27,6 +27,7 @@
             <el-table-column width="200" label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>        
@@ -68,12 +69,7 @@
   </div>      
 </template>
 <script>
-import {
-  queryChannel,
-  addChannel,
-  updateChannel,
-  deleteChannel
-} from "@/api/content";
+import service from "@/api";
 export default {
   name: "column",
   data() {
@@ -134,6 +130,19 @@ export default {
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
     },
+    handleDel(row) {
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deleteTable(row.channelId);
+        })
+        .catch(error => {
+          return false;
+        });      
+    },
     handleSizeChange(size) {
       this.query.pageSize = size;
       this.createTable();
@@ -148,8 +157,8 @@ export default {
           let { postTime, ...args } = this.form;
           if (postTime && args.channelId) {
             this.updateTable(args);
-          }else {
-            this.addTable(this.form); 
+          } else {
+            this.addTable(this.form);
           }
         }
       });
@@ -158,44 +167,41 @@ export default {
       this.$refs[formName].resetFields();
     },
     //显示栏目列表
-    createTable() {
-      queryChannel(this.query).then(res => {
-        if (res.errorCode === 0) {
-          this.tableData = res.data.data;
-          this.totalCount = res.data.totalCount;
-        }
-      });
+    async createTable() {
+      let res = await service.queryChannel(this.query);
+      if (res.errorCode === 0) {
+        this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
+      }
     },
     //新增栏目
-    addTable(params = {}) {
-      addChannel(params).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogFormVisible = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-          this.resetForm("formRef");
-        } else if (res.errorCode === 1) {
-          this.$message({ message: `${res.errorMsg}`, type: "warning" });
-        }
-      });
+    async addTable(params = {}) {
+      let res = await service.addChannel(params);
+      if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+        this.resetForm("formRef");
+      } else if (res.errorCode === 1) {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
+      }
     },
     //编辑栏目
-    updateTable(params = {}) {
-      updateChannel(params).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogFormVisible = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
-      });
+    async updateTable(params = {}) {
+      let res = await service.updateChannel(params);
+      if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     },
     //删除栏目
-    deleteTable(channelId) {
-      deleteChannel({ channelId }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-        }
-      });
+    async deleteTable(channelId) {
+      let res = await service.deleteChannel({ channelId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     }
   },
   mounted() {

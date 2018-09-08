@@ -46,7 +46,7 @@
     </div>
 </template>
 <script>
-import { queryContentTemplate } from "@/api/content";
+import service from "@/api";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
 export default {
   name: "poster",

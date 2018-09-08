@@ -47,10 +47,6 @@
                   <el-tag size="mini" v-else-if="scope.row.type === 1">特色</el-tag>
                   <el-tag size="mini" v-else-if="scope.row.type === 2">商圈</el-tag>
                   <el-tag size="mini" v-else="scope.row.type === 3">冠名企业</el-tag>
-                  <!-- <p v-if="scope.row.type === 0">缺省</p>
-                  <p v-else-if="scope.row.type === 1">特色</p>
-                  <p v-else-if="scope.row.type === 2">商圈</p>
-                  <p v-else="scope.row.type === 3">冠名企业</p> -->
                 </template>
               </template>
             </el-table-column>
@@ -97,7 +93,7 @@
    </div> 
 </template>
 <script>
-import { queryLabel, addLabel, deleteLabel } from "@/api/school";
+import service from "@/api";
 export default {
   name: "tag",
   data() {
@@ -132,7 +128,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },    
+    },
     handleItemChange(val) {},
     handleEdit(row) {},
     handleDel(row) {
@@ -151,34 +147,31 @@ export default {
     },
     handleSave(index, row) {},
     //查询标签列表
-    createTable() {
+    async createTable() {
       this.loading = true;
-      queryLabel({ queryType: 0 }).then(res => {
-        if (res.errorCode === 0) {
-          this.loading = false;
-          this.tableData = res.data;
-        }
-      });
+      let res = await service.queryLabel({ queryType: 0 });
+      if (res.errorCode === 0) {
+        this.loading = false;
+        this.tableData = res.data;
+      }
     },
     //新增标签
-    addTable(params = {}) {
-      addLabel(params).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogAdd = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.resetForm('addForm');
-          this.createTable();
-        }
-      });
+    async addTable(params = {}) {
+      let res = await service.addLabel(params);
+      if (res.errorCode === 0) {
+        this.dialogAdd = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.resetForm("addForm");
+        this.createTable();
+      }
     },
     //删除标签
-    deleteTable(labelId) {
-      deleteLabel({ labelId }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
-      });
+    async deleteTable(labelId) {
+      let res = await service.deleteLabel({ labelId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     }
   },
   mounted() {

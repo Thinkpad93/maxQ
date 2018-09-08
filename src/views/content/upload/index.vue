@@ -92,7 +92,7 @@
    </div> 
 </template>
 <script>
-import { queryContentList, deleteContent } from "@/api/content";
+import service from "@/api";
 export default {
   name: "upload",
   data() {

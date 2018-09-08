@@ -158,13 +158,7 @@
   </div>  
 </template>
 <script>
-import {
-  showRepairList,
-  addDeviceRepair,
-  updateDeviceRepair,
-  deleteDeviceRepair
-} from "@/api/device";
-import { queryRegion } from "@/api/school";
+import service from "@/api";
 import region from "@/components/region";
 export default {
   name: "record",
@@ -303,75 +297,70 @@ export default {
             schoolName,
             postTime,
             deviceId,
-            ...z
+            ...args
           } = this.edit;
-          this.updateTable(z);
+          this.updateTable(args);
         } else {
           return false;
         }
       });
     },
-    lastChange(value) {
+    async lastChange(value) {
       this.addForm.regionId = value;
       let last = value[value.length - 1];
-      queryRegion({ queryId: last, queryType: 3 }).then(res => {
-        if (res.errorCode === 0) {
-          this.schoolList = res.data;
-        } else {
-          return false;
-        }
-      });
+      let res = await service.queryRegion({ queryId: last, queryType: 3 });
+      if (res.errorCode === 0) {
+        this.schoolList = res.data;
+      } else {
+        return false;
+      }
     },
     //显示检修列表
-    createTable() {
+    async createTable() {
       this.loading = true;
-      showRepairList(this.query).then(res => {
-        if (res.errorCode === 0) {
-          let data = res.data.data;
-          if (!Array.isArray(data)) {
-            data = [];
-          } else {
-            this.tableData = data;
-          }
-          this.loading = false;
-          this.totalCount = res.data.totalCount;
+      let res = await service.showRepairList(this.query);
+      if (res.errorCode === 0) {
+        let data = res.data.data;
+        if (!Array.isArray(data)) {
+          data = [];
+        } else {
+          this.tableData = data;
         }
-      });
+        this.loading = false;
+        this.totalCount = res.data.totalCount;
+      }
     },
     //新增检修记录
-    addTable(params = {}) {
-      addDeviceRepair(params).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogAdd = false;
-          this.btnloading = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable(this.query);
-        } else {
-          this.btnloading = false;
-          this.$message({ message: `${res.errorMsg}`, type: "error" });
-        }
-      });
+    async addTable(params = {}) {
+      let res = await service.addDeviceRepair(params);
+      if (res.errorCode === 0) {
+        this.dialogAdd = false;
+        this.btnloading = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable(this.query);
+      } else {
+        this.btnloading = false;
+        this.$message({ message: `${res.errorMsg}`, type: "error" });
+      }
     },
     //编辑检修记录
-    updateTable(params = {}) {
-      updateDeviceRepair(params).then(res => {
-        if (res.errorCode === 0) {
-          this.dialogEdit = false;
-          this.btnloading = false;
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable(this.query);
-        }
-      });
+    async updateTable(params = {}) {
+      let res = await service.updateDeviceRepair(params);
+      if (res.errorCode === 0) {
+        this.dialogEdit = false;
+        this.btnloading = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable(this.query);
+      }
     },
     //删除检修记录
-    deleteTable(repairId) {
-      deleteDeviceRepair({ repairId }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.query.page = 1; //从第一页开始查起
-          this.createTable(this.query);
-        }
-      });
+    async deleteTable(repairId) {
+      let res = await service.deleteDeviceRepair({ repairId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.query.page = 1; //从第一页开始查起
+        this.createTable(this.query);
+      }
     }
   },
   mounted() {

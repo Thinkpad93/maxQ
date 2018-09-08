@@ -26,8 +26,8 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-import { userLogin } from "@/api/login";
-import "@/mock/login";
+//import { userLogin } from "@/api/login";
+//import "@/mock/login";
 
 export default {
   name: "login",
