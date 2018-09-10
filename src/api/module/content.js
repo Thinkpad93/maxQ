@@ -122,25 +122,25 @@ export function queryChannelContent(params) {
 }
 //查询我的上传列表
 export function queryContentList(params) {
-  return ax.post('/action/mod-xiaojiao/channel/queryContentList.do', params)
+  return ax.post('/action/mod-xiaojiao/channel/content/queryContentList.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //删除我的上传内容
 export function deleteContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/deleteContent.do', params)
+  return ax.post('/action/mod-xiaojiao/channel/content/deleteContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //上传内容
 export function uploadContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/uploadContent.do', params)
+  return ax.post('/action/mod-xiaojiao/channel/content/uploadContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //显示内容模板列表
 export function queryContentTemplate(params) {
-  return ax.post('/action/mod-xiaojiao/channel/queryContentTemplate.do', params)
+  return ax.post('/action/mod-xiaojiao/channel/content/queryContentTemplate.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
@@ -151,44 +151,44 @@ export function addContentTemplate(params) {
     .catch(e => console.log(e));
 }
 //查询审核内容列表
-export function querycheckContentList(params) {
-  return ax.post('/action/mod-xiaojiao/channel/querycheckContentList.do', params)
+export function queryCheckContentList(params) {
+  return ax.post('/action/mod-xiaojiao/channel/check/queryCheckContentList.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //审核内容
 export function checkContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/checkContent.do', params)
+  return ax.post('/action/mod-xiaojiao/channel/check/checkContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //进行内容预发布
 export function prepublishContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/prepublishContent.do', params)
+  return ax.post('/action/mod-xiaojiao/content/prePublish/prepublishContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //内容发布详细查询
 export function queryPublishContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/queryPublishContent.do', params)
+  return ax.post('/action/mod-xiaojiao/content/prePublish/queryPublishContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //查询终审通过内容
 export function queryCheckedContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/queryCheckedContent.do', params)
+  return ax.post('/action/mod-xiaojiao/content/queryCheckedContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //进行内容正式发布
 export function publishContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/publishContent.do', params)
+  return ax.post('/action/mod-xiaojiao/content/prePublish/publishContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //查询预发布内容列表
-export function queryPrepublishContentList(params) {
-  return ax.post('/action/mod-xiaojiao/channel/queryPrepublishContentList.do', params)
+export function queryPublishContentList(params) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/queryPublishContentList.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

@@ -10,8 +10,20 @@ git remote add origin git@github.com:Thinkpad93/maxQ.git
 git push -u origin master
 
 ```
-> 状态码解释
 
+> 代码
+
+``` javascript
+
+// 这里就拿到了iframe的对象
+//console.log(this.$refs.iframe);
+// 这里就拿到了iframe的window对象
+//console.log(this.$refs.iframe.contentWindow);
+
+```
+
+
+> 状态码解释
 * 415
 * 400 后台
 * 404
@@ -25,5 +37,6 @@ git push -u origin master
 * 对于没有做修改的情况下，避免提交到后台去
 * 海报编辑页面逻辑
 * 海报模板需要缩略图或者名称
+* 海报模板宽高是 1080*1590 默认等比缩放
 
 

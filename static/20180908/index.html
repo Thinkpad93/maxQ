@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登革热传播途径</title>
+    <link rel="stylesheet" href="normalize.css">
+    <!-- <link media="screen and (min-width:1000px)" rel="stylesheet" href="style.css"> -->
+    <link media="screen and (min-width:500px)" rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="root">
+        <main class="main">
+            <section class="component">
+                <p contenteditable="true" v-for="(item, index) in contentDetail" :key="index">
+                    {{ item.componentValue }}
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+<script src="./js/vue.min.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/index.js"></script>
+</html>

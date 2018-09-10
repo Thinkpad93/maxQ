@@ -494,7 +494,6 @@ export default {
   },
   data() {
     return {
-      setected: [1, 1, 1],
       fullscreenLoading: false,
       loading: false,
       dialogAdd: false,
@@ -751,15 +750,6 @@ export default {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.createTable();
       }
-      // addSchool(params, {
-      //   headers: { "Content-Type": "application/json;charset=utf-8" }
-      // }).then(res => {
-      //   if (res.errorCode === 0) {
-      //     this.dialogAdd = false;
-      //     this.$message({ message: `${res.errorMsg}`, type: "success" });
-      //     this.createTable();
-      //   }
-      // });
     },
     //编辑学校
     async updateSchoolAction(params = {}) {

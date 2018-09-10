@@ -117,14 +117,14 @@ export default {
   components: {
     swiper,
     swiperSlide
-  },  
+  },
   data() {
     return {
       disabled: 0,
       swiperOption: {
         spaceBetween: 10,
-        slidesPerView: 10,
-      },      
+        slidesPerView: 10
+      },
       swiperSlides: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       query: {
         schoolId: 2,
@@ -220,34 +220,45 @@ export default {
             return false;
           }
           if (contentType === 0) {
-
           }
         }
       });
     },
     //显示内容模板列表
-    queryContentTemplateAction(showType) {
-      queryContentTemplate({ showType }).then(res => {
-        console.log(res);
-        if (res.errorCode === 0) {
-          this.posterList = res.data;
-        }
-      });
-    },     
+    async queryContentTemplateAction(showType) {
+      let res = await service.queryContentTemplate({ showType });
+      if (res.errorCode === 0) {
+        this.posterList = res.data;
+      }
+      // queryContentTemplate({ showType }).then(res => {
+      //   console.log(res);
+      //   if (res.errorCode === 0) {
+      //     this.posterList = res.data;
+      //   }
+      // });
+    },
     //查询栏目名称
-    queryChannelInner() {
-      queryChannelAll({}).then(res => {
-        if (res.errorCode === 0) {
-          this.channelList = res.data;
-        }
-      });
+    async queryChannelInner() {
+      let res = await service.queryChannelAll({});
+      if (res.errorCode === 0) {
+        this.channelList = res.data;
+      }
+      // queryChannelAll({}).then(res => {
+      //   if (res.errorCode === 0) {
+      //     this.channelList = res.data;
+      //   }
+      // });
     },
     //上传内容
-    uploadContentAction(params = {}) {
-      uploadContent(params).then(res => {
-        console.log(res);
-      });
-    },
+    async uploadContentAction(params = {}) {
+      let res = await service.uploadContent(params);
+      if (res.errorCode === 0) {
+
+      }
+      // uploadContent(params).then(res => {
+      //   console.log(res);
+      // });
+    }
   },
   mounted() {
     this.queryChannelInner();
@@ -314,7 +325,16 @@ h3 {
   overflow: hidden;
   border: 1px dashed #d9d9d9;
   background-size: 60px 60px;
-  background-image: -webkit-linear-gradient(135deg,#f6f6f6 25%,transparent 25%,transparent 50%,#f6f6f6 50%,#f6f6f6 75%,transparent 75%,transparent);
+  background-image: -webkit-linear-gradient(
+    135deg,
+    #f6f6f6 25%,
+    transparent 25%,
+    transparent 50%,
+    #f6f6f6 50%,
+    #f6f6f6 75%,
+    transparent 75%,
+    transparent
+  );
   video {
     width: 100%;
     height: 100%;
