@@ -12,14 +12,16 @@
 <body>
     <div id="root">
         <main class="main">
-            <section class="component">
-                <p contenteditable="true" v-for="(item, index) in contentDetail" :key="index">
-                    {{ item.componentValue }}
-                </p>
-            </section>
+            <div class="component">
+                <v-edit-div v-model='item.componentValue' v-for="(item,index) in contentDetail" :key="index"></v-edit-div>
+            </div>
+            
         </main>
     </div>
 </body>
+<template id="tpl">
+    <div :contenteditable="canEdit" v-html="innerText" @input="changeText" @blur="isLocked = false" @focus="isLocked = true"></div>
+</template>
 <script src="./js/vue.min.js"></script>
 <script src="./js/axios.min.js"></script>
 <script src="./js/index.js"></script>

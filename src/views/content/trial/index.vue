@@ -66,9 +66,12 @@ export default {
     async createTable() {
       let res = await service.querycheckContentList(this.query);
       if (res.errorCode === 0) {
-        
+          
       }
     }
+  },
+  mounted() {
+    this.createTable();
   }
 };
 </script>

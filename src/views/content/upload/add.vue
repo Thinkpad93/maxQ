@@ -44,14 +44,10 @@
                                         :value="item.value">
                                     </el-option>                  
                                 </el-select>   
-                                <!-- <a href="javascript:;" 
-                                        class="poster-a" 
-                                        style="color:#409EFF" 
-                                        v-if="query.contentTemplateId" @click="posterEditAction">请选择海报编辑</a>                               -->
                             </el-form-item>  
                             <el-form-item label="内容模板选择">
-                                <el-select v-model="query.contentTemplateId" clearable placeholder="请选择内容模板选择" @change="handleChange">
-                                  <el-option v-for="item in contentTemplateIdList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                <el-select v-model="query.templateId" clearable placeholder="请选择内容模板选择" @change="handlePoster">
+                                  <el-option v-for="item in posterList" :key="item.templateId" :label="item.title" :value="item.templateId"></el-option>
                                 </el-select>
                             </el-form-item> 
                             <el-form-item label="视频上传" prop="videoUrl">
@@ -59,11 +55,12 @@
                                     class="upload-video"
                                     ref="upload" 
                                     name="file"
-                                    :disabled="disabled === 1"
-                                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                                    :disabled="disabled === 0"
+                                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                                     accept="video/mp4,video/flv,video/mov"
-                                    :on-success="handleVideoSuccess">
-                                    <el-button :disabled="disabled === 1" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取视频</el-button>
+                                    :on-success="handleVideoSuccess"
+                                    :before-remove="beforeRemove">
+                                    <el-button :disabled="disabled === 0" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取视频</el-button>
                                 </el-upload>                                
                             </el-form-item>  
                             <el-form-item label="视频预览">
@@ -75,57 +72,43 @@
                             </el-form-item>                                                                                                               
                         </template> 
                         <template v-else>
-                            <el-form-item label="文字内容" prop="contentDetail">
-                                <el-input type="textarea" v-model="query.contentDetail" :rows="5" placeholder="请输入内容作者"></el-input>
+                            <el-form-item label="文字内容" prop="componentValue">
+                                <el-input type="textarea" v-model="query.componentValue" :rows="5" placeholder="请输入内容作者"></el-input>
                             </el-form-item>  
                         </template>   
                         <el-form-item label="播放时长" prop="duration">
-                            <el-time-picker v-model="query.duration" placeholder="选择播放时长" style="width: 100%;"></el-time-picker>
+                            <el-time-picker 
+                              format="HH:mm:ss"
+                              value-format="HH:mm:ss"                            
+                              v-model="query.duration" 
+                              placeholder="选择播放时长" 
+                              style="width: 100%;">
+                            </el-time-picker>
                         </el-form-item>                                                                                                                                               
                         <el-form-item>
                             <el-button size="mini" type="primary" @click="upload('query')">上传</el-button>
                         </el-form-item>                        
                     </el-form>
                </el-col>
-               <!-- <el-col :span="16">
-                  <h3>海报模板编辑选择</h3>
-                  <el-row :gutter="10">
-                    <el-col :span="20" :offset="2">
-                      <swiper :options="swiperOption" ref="pSwiper">
-                          <swiper-slide v-for="(slide, index) in swiperSlides" :key="index">
-                            <img src="@/images/unlc913q91edsg.png" alt="">
-                          </swiper-slide>
-                      </swiper>                      
-                    </el-col>
-                  </el-row>
-                  <el-row :gutter="10">
-                      <div class="element-box">
-                        <iframe ref="iframe" src="../static/poster1.html"></iframe>
-                      </div>
-                      <div class="page-manage"></div>
-                  </el-row>                  
-               </el-col> -->
+               <el-col :span="16">
+                 <h3>海报模板缩略展示</h3>
+                 <el-row :gutter="10">
+                   <img :src="img" alt="" v-if="img">
+                 </el-row>
+               </el-col>
            </el-row>
        </div>
    </div> 
 </template>
 <script>
-import { swiper, swiperSlide } from "vue-awesome-swiper";
 import service from "@/api";
 export default {
   name: "uploadAdd",
-  components: {
-    swiper,
-    swiperSlide
-  },
   data() {
     return {
       disabled: 0,
-      swiperOption: {
-        spaceBetween: 10,
-        slidesPerView: 10
-      },
-      swiperSlides: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      posterList: [],
+      img: "",
       query: {
         schoolId: 2,
         title: "",
@@ -133,26 +116,24 @@ export default {
         channelId: null,
         belongTo: 1,
         videoUrl: null,
-        showType: null,
+        showType: 0,
+        templateId: null,
         contentProperty: 0,
-        contentTemplateId: null,
         contentType: 0,
-        duration: ""
+        duration: "",
+        componentValue: ""
       },
       validityData: [],
       rules: {
         title: [{ required: true, message: "请输入内容标题", trigger: "blur" }],
-        contentDetail: [
-          { required: true, message: "请输入栏目模板名称", trigger: "blur" }
+        componentValue: [
+          { required: true, message: "请输入文字内容", trigger: "blur" }
         ],
         author: [
           { required: true, message: "请输入内容作者", trigger: "blur" }
         ],
         channelId: [
           { required: true, message: "请选择栏目名称", trigger: "blur" }
-        ],
-        showType: [
-          { required: true, message: "请选择展示类型方式", trigger: "blur" }
         ],
         contentTemplateId: [
           { required: true, message: "请输入栏目模板名称", trigger: "blur" }
@@ -170,12 +151,6 @@ export default {
         { value: 1, label: "上视频下海报方式" },
         { value: 2, label: "上海报下视频方式" }
       ],
-      contentTemplateIdList: [
-        { value: 1, label: "秋季多吃冷眼食物" },
-        { value: 2, label: "火灾发生三要素" },
-        { value: 3, label: "日常交通安全" },
-        { value: 4, label: "周易" }
-      ],
       channelList: []
     };
   },
@@ -184,28 +159,32 @@ export default {
       return window.innerHeight - 110;
     }
   },
-  watch: {},
   methods: {
     handleRadio(value) {
       this.$refs.query.clearValidate();
     },
     handleChange(value) {
-      if (value === 0) {
+      if (value === 1 || value === 2) {
         this.disabled = 1;
-      } else {
+      }else {
         this.disabled = 0;
       }
+      this.queryContentTemplateAction(value);
+    },
+    handlePoster(value) {
+      let obj = this.posterList.find(item => item.contentId === value);
+      this.img = obj.smallUrl;
     },
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         this.query.videoUrl = response.data.url;
       }
     },
+    beforeRemove(file, fileList) {
+      return false;
+    },
     posterEditAction() {
       this.$router.push({ path: "/content/poster" });
-      //this.$router.push({ path: `/content/poster/${field}` });
-      //this.$router.push({ name: 'poster', params: { id: `${field}` } });
-      //this.$router.push({ path: "poster", query: { id: `${field}` } });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -213,14 +192,22 @@ export default {
     upload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let obj;
-          let { videoUrl, contentType, ...args } = this.query;
-          if (videoUrl === null) {
+          console.log(this.query);
+          let obj = {};
+          let { showType, contentType, componentValue, ...args } = this.query;
+          if (args.videoUrl === null) {
             this.$message({ message: `请上传视频`, type: "warning" });
             return false;
           }
+          //全屏播放 
           if (contentType === 0) {
+            obj = Object.assign({}, args, { contentType });
           }
+          //滚动播放
+          if (contentType === 1) {
+            obj = Object.assign({}, args, { componentValue });
+          }
+          //this.uploadContentAction(args);
         }
       });
     },
@@ -230,12 +217,6 @@ export default {
       if (res.errorCode === 0) {
         this.posterList = res.data;
       }
-      // queryContentTemplate({ showType }).then(res => {
-      //   console.log(res);
-      //   if (res.errorCode === 0) {
-      //     this.posterList = res.data;
-      //   }
-      // });
     },
     //查询栏目名称
     async queryChannelInner() {
@@ -243,11 +224,6 @@ export default {
       if (res.errorCode === 0) {
         this.channelList = res.data;
       }
-      // queryChannelAll({}).then(res => {
-      //   if (res.errorCode === 0) {
-      //     this.channelList = res.data;
-      //   }
-      // });
     },
     //上传内容
     async uploadContentAction(params = {}) {
@@ -255,26 +231,15 @@ export default {
       if (res.errorCode === 0) {
 
       }
-      // uploadContent(params).then(res => {
-      //   console.log(res);
-      // });
     }
   },
   mounted() {
     this.queryChannelInner();
-    //this.queryContentTemplateAction(0);
+    this.queryContentTemplateAction(0);
   }
 };
 </script>
 <style lang="less">
-@import "swiper/dist/css/swiper.css";
-.swiper-container {
-  height: 100px;
-}
-.swiper-slide {
-  cursor: pointer;
-  background-color: #ccc;
-}
 .element-box {
   width: 400px;
   height: 700px;

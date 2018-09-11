@@ -34,15 +34,16 @@
             element-loading-spinner="el-icon-loading"
             element-loading-background="rgba(0, 0, 0, 0.6)">
             <!-- ../static/20180908/index.html -->
-              <iframe id="posterFrame" ref="iframe" :src="posterObj.posterUrl" @load="loadSuccess"></iframe>
-              <div class="null" v-if="!posterObj.posterUrl">选择海报模板编辑</div>
+              
+              <iframe id="posterFrame" ref="iframe" :src="src" @load="loadSuccess"></iframe>
+              <div class="null" v-if="!src">选择海报模板编辑</div>
               <!-- 如果有多页海报模板 -->
-              <!-- <div class="page-manage">
+              <div class="page-manage">
                 <el-button-group>
                   <el-button :disabled="btnLoading === 0" size="mini" type="primary" icon="el-icon-arrow-left">上一页</el-button>
                   <el-button :disabled="btnLoading === 0" size="mini" type="primary">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
                 </el-button-group>
-              </div> -->
+              </div>
               <!-- 保存修改 -->
               <div class="handleSave">
                 <el-button :disabled="btnLoading === 0" size="mini" type="primary" @click="handleSaveChange">保存</el-button>
@@ -61,6 +62,8 @@ export default {
     return {
       loading: false,
       btnLoading: 0,
+      isLoad: false,
+      src: "",
       posterObj: {},
       iframeWin: {},
       query: {
@@ -75,24 +78,29 @@ export default {
       ]
     };
   },
+  watch: {
+    $route(news, old) {
+      if (this.$route.fullPath === news.fullPath) {
+        this.isLoad = true;
+      }
+    }
+  },
   methods: {
     //加载海报模板
     handleChange(value) {
-      this.queryContentTemplateAction(value);
+      this.query.showType = value;
+      this.queryContentTemplateAction(this.query);
     },
     handlePoster(obj) {
-      if (obj.posterUrl === this.posterObj.posterUrl) {
-        return;
-      }
+      // if (obj.posterUrl === this.src) {
+      //   return;
+      // }
       this.posterObj = Object.assign({}, obj);
+      this.src = obj.posterUrl;
       this.btnLoading = 1;
-      setTimeout(() => {
-        this.iframeWin.postMessage({ cmd: 'get', params: { contentId: this.posterObj.contentId } }, "*");
-      }, 1000);
+      this.handleSend(obj);
     },
-    loadSuccess() {
-      
-    },
+    loadSuccess() {},
     //保存修改
     handleSaveChange() {
       this.$confirm(`确定保存吗?`, "提示", {
@@ -101,17 +109,29 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.iframeWin.postMessage({ cmd: 'save', params: {} }, "*");
+          this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
         })
         .catch(error => {
           return false;
         });
     },
+    handleSend(obj) {
+      setTimeout(() => {
+        this.iframeWin.postMessage(
+          { cmd: "get", params: { contentId: obj.contentId } },
+          "http://192.168.18.106:8080"
+        );
+      }, 1000);
+    },
     async handleMessage(event) {
       let data = event.data;
-      if (data.errorCode === 0) {
-        this.btnLoading = 0;
-        this.$message({ message: `${data.errorMsg}`, type: "success" });
+      switch (data.cmd) {
+        case "success":
+          this.$message({
+            message: `${data.params.errorMsg}`,
+            type: "success"
+          });
+          break;
       }
     },
     //显示内容模板列表
@@ -122,11 +142,15 @@ export default {
       }
     }
   },
-  computed: {},
   mounted() {
     this.queryContentTemplateAction(this.query);
-    this.iframeWin = this.$refs.iframe.contentWindow;
     window.addEventListener("message", this.handleMessage);
+  },
+  activated() {
+    this.iframeWin = this.$refs.iframe.contentWindow;
+    if (this.isLoad) {
+      this.handleSend(this.posterObj);
+    }
   }
 };
 </script>

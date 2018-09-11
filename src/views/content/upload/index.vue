@@ -130,7 +130,9 @@ export default {
     handleCurrentChange() {},
     handleEdit(row) {
       //this.$router.push({ name: 'uploadContentEdit', params: row });
-      this.$router.push({ path: `/content/uploadContentEdit/${row.contentId}` });
+      this.$router.push({
+        path: `/content/uploadContentEdit/${row.contentId}`
+      });
     },
     handleDel(row) {
       let that = this;
@@ -149,27 +151,41 @@ export default {
     uoloadAction() {
       this.$router.push({ path: "/content/uploadContent" });
     },
-    createTable() {
-      queryContentList(this.query).then(res => {
-        console.log(res);
-        if (res.errorCode === 0) {
-          let data = res.data.data;
-          if (!Array.isArray(data)) {
-            data = [];
-          } else {
-            this.tableData = data;
-          }
-          this.totalCount = res.data.totalCount;
+    async createTable() {
+      let res = await service.queryContentList(this.query);
+      if (res.errorCode === 0) {
+        let data = res.data.data;
+        if (!Array.isArray(data)) {
+          data = [];
+        } else {
+          this.tableData = data;
         }
-      });
+        this.totalCount = res.data.totalCount;
+      }
+      // queryContentList(this.query).then(res => {
+      //   if (res.errorCode === 0) {
+      //     let data = res.data.data;
+      //     if (!Array.isArray(data)) {
+      //       data = [];
+      //     } else {
+      //       this.tableData = data;
+      //     }
+      //     this.totalCount = res.data.totalCount;
+      //   }
+      // });
     },
-    deleteTable(contentId) {
-      deleteContent({ contentId }).then(res => {
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
-      });
+    async deleteTable(contentId) {
+      let res = await service.deleteContent({ contentId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
+      // deleteContent({ contentId }).then(res => {
+      //   if (res.errorCode === 0) {
+      //     this.$message({ message: `${res.errorMsg}`, type: "success" });
+      //     this.createTable();
+      //   }
+      // });
     }
   },
   mounted() {

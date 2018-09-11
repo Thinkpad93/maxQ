@@ -144,6 +144,9 @@ export default {
         });      
     },
     handleSizeChange(size) {
+      if (size > this.totalCount) {
+        return;
+      }
       this.query.pageSize = size;
       this.createTable();
     },

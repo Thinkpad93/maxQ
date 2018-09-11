@@ -291,7 +291,7 @@ export default {
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
       if (res.errorCode === 0) {
         this.schoolList = res.data;
-      }else {
+      } else {
         return false;
       }
     },
@@ -341,15 +341,14 @@ export default {
       }
     },
     //编辑设备绑定
-    updateTable(params = {}) {
-      updateDeviceBind(params).then(res => {
+    async updateTable(params = {}) {
+      let res = await service.updateDeviceBind(params);
+      if (res.errorCode === 0) {
         this.dialogEdit = false;
         this.btnloading = false;
-        if (res.errorCode === 0) {
-          this.$message({ message: `${res.errorMsg}`, type: "success" });
-          this.createTable();
-        }
-      });
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
+      }
     },
     //删除设备绑定
     async deleteTable(deviceId) {
