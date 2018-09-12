@@ -25,29 +25,32 @@
                                         :value="item.value">
                                     </el-option>
                                 </el-select>
-                            </el-form-item>  
-                            <el-form-item label="栏目名称" prop="channelId">
-                                <el-select v-model="query.channelId" placeholder="请选择" style="width: 100%;">
-                                    <el-option v-for="item in channelList" 
-                                        :key="item.channelId" 
-                                        :value="item.channelId"
-                                        :label="item.name">
-                                    </el-option>
-                                </el-select>      
-                            </el-form-item>  
+                            </el-form-item> 
+                            <!-- 有上传学校和上传促进会 默认上传学校时不需要选择栏目 -->
+                            <template v-if="!query.belongTo"> 
+                              <el-form-item label="所属栏目" prop="channelId">
+                                  <el-select v-model="query.channelId" placeholder="请选择" style="width: 100%;">
+                                      <el-option v-for="item in channelList" 
+                                          :key="item.channelId" 
+                                          :value="item.channelId"
+                                          :label="item.name">
+                                      </el-option>
+                                  </el-select>      
+                              </el-form-item>  
+                            </template>
                             <el-form-item label="展示类型" prop="showType">
-                                <el-select v-model="query.showType" clearable placeholder="请选择内容模板" @change="handleChange">
+                                <el-select v-model="query.showType" placeholder="请选择内容模板" @change="handleChange">
                                     <el-option
-                                        v-for="item in contentTemplateList"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                      v-for="item in contentTemplateList"
+                                      :key="item.value"
+                                      :label="item.label"
+                                      :value="item.value">
                                     </el-option>                  
                                 </el-select>   
                             </el-form-item>  
-                            <el-form-item label="内容模板选择">
-                                <el-select v-model="query.templateId" clearable placeholder="请选择内容模板选择" @change="handlePoster">
-                                  <el-option v-for="item in posterList" :key="item.templateId" :label="item.title" :value="item.templateId"></el-option>
+                            <el-form-item label="内容模板" prop="templateId">
+                                <el-select v-model="query.templateId" placeholder="请选择内容模板选择" @change="handlePoster">
+                                  <el-option v-for="item in posterList" :key="item.contentId" :label="item.title" :value="item.templateId"></el-option>
                                 </el-select>
                             </el-form-item> 
                             <el-form-item label="视频上传" prop="videoUrl">
@@ -78,10 +81,10 @@
                         </template>   
                         <el-form-item label="播放时长" prop="duration">
                             <el-time-picker 
-                              format="HH:mm:ss"
-                              value-format="HH:mm:ss"                            
+                              format="mm:ss"
+                              value-format="mm:ss"                            
                               v-model="query.duration" 
-                              placeholder="选择播放时长" 
+                              placeholder="选择分秒" 
                               style="width: 100%;">
                             </el-time-picker>
                         </el-form-item>                                                                                                                                               
@@ -91,10 +94,20 @@
                     </el-form>
                </el-col>
                <el-col :span="16">
-                 <h3>海报模板缩略展示</h3>
-                 <el-row :gutter="10">
-                   <img :src="img" alt="" v-if="img">
-                 </el-row>
+                 <div class="element-box">
+                    <iframe id="posterFrame" ref="iframe" :src="url" @load="loadSuccess"></iframe>
+                    <!-- 如果有多页海报模板 -->
+                    <div class="page-manage">
+                      <el-button-group>
+                        <el-button :disabled="btnLoading === 0" size="mini" type="primary" icon="el-icon-arrow-left">上一页</el-button>
+                        <el-button :disabled="btnLoading === 0" size="mini" type="primary">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+                      </el-button-group>
+                    </div>                    
+                    <!-- 保存修改 -->
+                    <div class="handleSave">
+                      <el-button :disabled="btnLoading === 0" size="mini" type="primary" @click="handleSaveChange">保存</el-button>
+                    </div>                   
+                 </div>
                </el-col>
            </el-row>
        </div>
@@ -107,20 +120,22 @@ export default {
   data() {
     return {
       disabled: 0,
+      btnLoading: 0,
       posterList: [],
-      img: "",
+      url: "",
+      contentId: null,
       query: {
         schoolId: 2,
         title: "",
         author: "",
         channelId: null,
         belongTo: 1,
-        videoUrl: null,
+        videoUrl: "",
         showType: 0,
         templateId: null,
         contentProperty: 0,
         contentType: 0,
-        duration: "",
+        duration: 0,
         componentValue: ""
       },
       validityData: [],
@@ -135,8 +150,8 @@ export default {
         channelId: [
           { required: true, message: "请选择栏目名称", trigger: "blur" }
         ],
-        contentTemplateId: [
-          { required: true, message: "请输入栏目模板名称", trigger: "blur" }
+        templateId: [
+          { required: true, message: "请选择内容模板", trigger: "blur" }
         ],
         duration: [
           { required: true, message: "请选择播放时长", trigger: "blur" }
@@ -160,20 +175,23 @@ export default {
     }
   },
   methods: {
+    loadSuccess() {},
+    handleSaveChange() {},
     handleRadio(value) {
       this.$refs.query.clearValidate();
     },
     handleChange(value) {
       if (value === 1 || value === 2) {
         this.disabled = 1;
-      }else {
+      } else {
         this.disabled = 0;
       }
+      this.query.templateId = null;
       this.queryContentTemplateAction(value);
     },
     handlePoster(value) {
-      let obj = this.posterList.find(item => item.contentId === value);
-      this.img = obj.smallUrl;
+      //let obj = this.posterList.find(item => item.contentId === value);
+      //this.img = obj.smallUrl;
     },
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
@@ -192,22 +210,12 @@ export default {
     upload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.query);
-          let obj = {};
-          let { showType, contentType, componentValue, ...args } = this.query;
-          if (args.videoUrl === null) {
+          let { showType, videoUrl } = this.query;
+          if (videoUrl === "" && showType !== 0) {
             this.$message({ message: `请上传视频`, type: "warning" });
             return false;
           }
-          //全屏播放 
-          if (contentType === 0) {
-            obj = Object.assign({}, args, { contentType });
-          }
-          //滚动播放
-          if (contentType === 1) {
-            obj = Object.assign({}, args, { componentValue });
-          }
-          //this.uploadContentAction(args);
+          this.uploadContentAction(this.query);
         }
       });
     },
@@ -229,27 +237,53 @@ export default {
     async uploadContentAction(params = {}) {
       let res = await service.uploadContent(params);
       if (res.errorCode === 0) {
+        this.resetForm("query");
+        this.$confirm(`上传内容成功，你是否要编辑内容模板?`, "提示", {
+          confirmButtonText: "好的",
+          cancelButtonText: "不用",
+          type: "success"
+        }).then(() => {
+          console.log(res.data);
+          this.url = res.data.url;
+          this.contentId = res.data.contentId;
+          //console.log(this.poster);
+        }).catch(() => {
 
+        })
       }
     }
   },
   mounted() {
-    this.queryChannelInner();
+    if (this.query.belongTo === 0) {
+      this.queryChannelInner();
+    }
     this.queryContentTemplateAction(0);
   }
 };
 </script>
 <style lang="less">
 .element-box {
-  width: 400px;
-  height: 700px;
-  border-radius: 6px;
-  margin: 10px auto;
+  width: 500px;
+  height: 736px;
+  margin: 30px auto 10px auto;
   position: relative;
-  overflow: hidden;
   background-color: #fff;
   box-shadow: 0 4px 20px 0 rgba(28, 31, 33, 0.1);
 }
+.handleSave {
+  position: absolute;
+  right: 0;
+  top: -30px;
+  z-index: 100;
+}
+
+.page-manage {
+  position: absolute;
+  left: 0;
+  top: -30px;
+  z-index: 100;
+}
+
 .upload-add {
   background-color: #fff;
   padding: 20px;

@@ -116,7 +116,7 @@ export default {
         schoolId: 0,
         status: 0,
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       options: [
         {

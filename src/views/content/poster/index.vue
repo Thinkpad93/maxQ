@@ -34,7 +34,6 @@
             element-loading-spinner="el-icon-loading"
             element-loading-background="rgba(0, 0, 0, 0.6)">
             <!-- ../static/20180908/index.html -->
-              
               <iframe id="posterFrame" ref="iframe" :src="src" @load="loadSuccess"></iframe>
               <div class="null" v-if="!src">选择海报模板编辑</div>
               <!-- 如果有多页海报模板 -->

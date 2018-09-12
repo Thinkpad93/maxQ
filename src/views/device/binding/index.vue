@@ -199,7 +199,7 @@ export default {
       query: {
         schoolId: 0,
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0,
       //分页

@@ -36,7 +36,12 @@
                       <span style="color:#409EFF">{{ scope.row.title }}</span>
                   </template>
               </el-table-column>
-              <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
+                  <template slot-scope="scope">
+                      <p v-if="scope.row.channelName == null">无</p>
+                      <p v-else>{{ scope.row.channelName }}</p>
+                  </template>
+              </el-table-column>
               <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
                       <p v-if="scope.row.contentType === 0">全屏播放</p>
@@ -60,7 +65,7 @@
               </el-table-column>
               <el-table-column :resizable="false" label="审核状态" prop="verifyStatus" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <p v-if="scope.row.verifyStatus === 0" style="color:#409EFF">初始</p>
+                      <p v-if="scope.row.verifyStatus === 0" style="color:#409EFF">初审</p>
                       <p v-else-if="scope.row.verifyStatus === 1" style="color:#67C23A;">审核通过</p>
                       <p v-else style="color:#F56C6C;">审核不通过</p>
                   </template>
@@ -68,7 +73,9 @@
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column label="操作">
                   <template slot-scope="scope">
-                      <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+                    <router-link style="color:#409EFF" 
+              :to="{path: `/content/uploadContentEdit/${scope.row.contentId}`}" v-if="scope.row.verifyStatus === 2">编辑</router-link>
+                      <!-- <el-button size="mini" type="text" @click="handleEdit(scope.row)" v-if="scope.row.verifyStatus === 2">编辑</el-button> -->
                       <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
                   </template>
               </el-table-column>
@@ -104,7 +111,7 @@ export default {
         checkStage: 4,
         title: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0,
       checkStageList: [
@@ -128,12 +135,11 @@ export default {
     },
     handleSizeChange() {},
     handleCurrentChange() {},
-    handleEdit(row) {
-      //this.$router.push({ name: 'uploadContentEdit', params: row });
-      this.$router.push({
-        path: `/content/uploadContentEdit/${row.contentId}`
-      });
-    },
+    // handleEdit(row) {
+    //   this.$router.push({
+    //     path: `/content/uploadContentEdit/${row.contentId}`
+    //   });
+    // },
     handleDel(row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
@@ -153,6 +159,7 @@ export default {
     },
     async createTable() {
       let res = await service.queryContentList(this.query);
+      console.log(res);
       if (res.errorCode === 0) {
         let data = res.data.data;
         if (!Array.isArray(data)) {
@@ -162,33 +169,18 @@ export default {
         }
         this.totalCount = res.data.totalCount;
       }
-      // queryContentList(this.query).then(res => {
-      //   if (res.errorCode === 0) {
-      //     let data = res.data.data;
-      //     if (!Array.isArray(data)) {
-      //       data = [];
-      //     } else {
-      //       this.tableData = data;
-      //     }
-      //     this.totalCount = res.data.totalCount;
-      //   }
-      // });
     },
+    //删除上传内容
     async deleteTable(contentId) {
       let res = await service.deleteContent({ contentId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.createTable();
       }
-      // deleteContent({ contentId }).then(res => {
-      //   if (res.errorCode === 0) {
-      //     this.$message({ message: `${res.errorMsg}`, type: "success" });
-      //     this.createTable();
-      //   }
-      // });
     }
   },
-  mounted() {
+  mounted() {},
+  activated() {
     this.createTable();
   }
 };

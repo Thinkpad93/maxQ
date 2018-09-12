@@ -694,7 +694,14 @@ export default {
         }
       }
     },
-    beforeImageUpload(file) {},
+    //图片上传大小限制为2M
+    beforeImageUpload(file) {
+       const isLt2M = file.size / 1024 / 1024 < 2;
+       if (!isLt2M) {
+         this.$message.error('图片大小不能超过2MB!');
+       }
+       return isLt2M;
+    },
     async lastChange(value) {
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });

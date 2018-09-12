@@ -138,6 +138,19 @@ export function uploadContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//查询编辑内容
+export function queryContentByContentId(params) {
+  return ax.post('/action/mod-xiaojiao/channel/content/queryContentByContentId.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//编辑上传内容
+export function updateContent(params) {
+  return ax.post('/action/mod-xiaojiao/channel/content/updateContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+
 //显示内容模板列表
 export function queryContentTemplate(params) {
   return ax.post('/action/mod-xiaojiao/channel/content/queryContentTemplate.do', params)
