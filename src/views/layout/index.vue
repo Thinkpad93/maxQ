@@ -2,13 +2,13 @@
   <div class="wrapper">
     <el-container style="height:100vh;" class="is-vertical">
       <!-- 主体 顶栏 -->
-      <qx-header @toggle="handleToggle" />
+      <qx-header></qx-header>
       <el-container>
         <!-- 主体 侧边栏 -->
-        <qx-aside :collapse="collapse" :width="left" />
+        <qx-aside></qx-aside>
         <!-- 主体 内容 -->
         <el-main id="main">
-            <qx-tags />
+            <qx-tags></qx-tags>
             <transition name="fade-transform" mode="out-in">
                 <keep-alive>
                     <router-view :key="$route.fullPath"/>
@@ -32,22 +32,9 @@ export default {
     "qx-tags": qxtags
   },
   data() {
-    return {
-      left: 200,
-      collapse: false
-    };
+    return {};
   },
-  methods: {
-    handleToggle() {
-      if (!this.collapse) {
-        this.left = 64;
-        this.collapse = true;
-      } else {
-        this.left = 200;
-        this.collapse = false;
-      }
-    }
-  }
+  methods: {},
 };
 </script>
 <style lang="less" scoped>

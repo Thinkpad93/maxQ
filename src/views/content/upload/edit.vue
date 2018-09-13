@@ -79,11 +79,11 @@
                                 <el-input type="textarea" v-model="query.componentValue" :rows="5" placeholder="请输入内容作者"></el-input>
                             </el-form-item>  
                         </template>   
-                        <el-form-item label="播放时长" prop="duration">
+                        <el-form-item label="播放时长" prop="durationTime">
                             <el-time-picker 
                               format="mm:ss"
                               value-format="mm:ss"                            
-                              v-model="query.duration" 
+                              v-model="query.durationTime" 
                               placeholder="选择分秒" 
                               style="width: 100%;">
                             </el-time-picker>
@@ -138,7 +138,7 @@ export default {
         templateId: [
           { required: true, message: "请选择内容模板", trigger: "blur" }
         ],
-        duration: [
+        durationTime: [
           { required: true, message: "请选择播放时长", trigger: "blur" }
         ]
       },
@@ -226,16 +226,20 @@ export default {
       let res = await service.uploadContent(params);
       if (res.errorCode === 0) {
         this.resetForm("query");
-        this.$confirm(`上传内容成功，你是否要编辑内容模板?`, "提示", {
-          confirmButtonText: "好的",
-          cancelButtonText: "不用",
-          type: "success"
-        }).then(() => {
-          this.url = res.data.url;
-          this.contentId = res.data.contentId;
-        }).catch(() => {
-
-        })
+        if (this.query.contentType === 0) {
+          this.$confirm(`内容保存成功，你是否要编辑内容模板?`, "提示", {
+            confirmButtonText: "好的",
+            cancelButtonText: "不用",
+            type: "success"
+          })
+            .then(() => {
+              this.url = res.data.url;
+              this.contentId = res.data.contentId;
+            })
+            .catch(() => {});
+        }else {
+          this.$message({ message: `内容保存成功`, type: "success" });
+        }
       }
     }
   },

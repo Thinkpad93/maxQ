@@ -10,7 +10,7 @@
     default-active="/home" 
     @open="handleOpen" 
     @close="handleClose" 
-    :collapse="collapse" 
+    :collapse="collapse"
     :collapse-transition="true">
       <el-menu-item index="/home/index">
         <i class="el-icon-menu"></i>
@@ -41,7 +41,7 @@
           <el-menu-item index="/content/index">栏目管理</el-menu-item>
           <el-menu-item index="/content/columntpl">栏目模板</el-menu-item>
           <el-menu-item index="/content/upload">我的上传</el-menu-item>
-          <el-menu-item index="/content/poster">海报在线编辑</el-menu-item>
+          <!-- <el-menu-item index="/content/poster">海报在线编辑</el-menu-item> -->
           <el-menu-item index="/content/trial">内容初审</el-menu-item>
           <el-menu-item index="/content/review">内容复审</el-menu-item>
           <el-menu-item index="/content/final">内容终审</el-menu-item>
@@ -73,24 +73,24 @@
   </el-aside>  
 </template>
 <script>
+import bus from "@/utils/bus";
 export default {
   name: "asides",
-  props: {
-    width: {
-      type: Number,
-      default: 200
-    },
-    collapse: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
-    return {};
+    return {
+      width: 200,
+      collapse: false
+    };
   },
   methods: {
     handleOpen() {},
     handleClose() {}
+  },
+  mounted() {
+    bus.$on('collapse', msg => {
+      this.collapse = msg;
+      return this.collapse ? this.width = 64 : this.width = 200;
+    });
   }
 };
 </script>

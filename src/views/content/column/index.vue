@@ -52,7 +52,7 @@
       <el-dialog 
         center top="40px" 
         title="" :visible.sync="dialogFormVisible" @close="close">
-        <el-form :rules="rules" ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
+        <el-form :rules="rules" ref="formRef" :model="form" status-icon size="mini" :label-width="formLabelWidth">
           <el-form-item label="栏目名称" prop="name">
             <el-input v-model="form.name" placeholder="请输入栏目名称"></el-input>
           </el-form-item>

@@ -4,7 +4,7 @@
        <img src="../../../../images/all.png"></img>  
      </h1>  
      --> 
-     <div class="toggle-aside" @click="toggle">
+     <div class="toggle-aside" @click="collapseChage">
        <i class="icon iconfont icon-weibiaoti26"></i>
      </div> 
       <el-dropdown class="us" @command="handleCommand">
@@ -20,12 +20,15 @@
    </el-header>   
 </template>
 <script>
+import bus from "@/utils/bus";
 import { mapState } from "vuex";
 
 export default {
   name: "headers",
   data() {
-    return {};
+    return {
+      collapse: false,
+    };
   },
   computed: {
     ...mapState({
@@ -33,8 +36,10 @@ export default {
     })
   },
   methods: {
-    toggle() {
-      this.$emit("toggle");
+    collapseChage() {
+      //this.$emit("toggle");
+      this.collapse = !this.collapse;
+      bus.$emit('collapse', this.collapse);
     },
     handleCommand(command) {
       this.$message('click on item ' + command);

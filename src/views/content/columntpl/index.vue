@@ -548,13 +548,13 @@ export default {
     addTablerow(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.tplDetailform.templateId == null) {
-            this.$message({
-              message: `请先添加栏目模板生成模板ID`,
-              type: "warning"
-            });
-            return false;
-          }
+          // if (this.tplDetailform.templateId == null) {
+          //   this.$message({
+          //     message: `请先添加栏目模板生成模板ID`,
+          //     type: "warning"
+          //   });
+          //   return false;
+          // }
           let channelName = this.channelName;
           let { playTime, validTime, ...z } = this.tplDetailform;
           let validStartTime = "";

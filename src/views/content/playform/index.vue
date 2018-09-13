@@ -178,12 +178,12 @@
     </template>   
     <!-- 新增学校播放频道 -->
     <template>
-      <el-dialog center top="40px" title="新增学校播放频道" :visible.sync="dialogChannel" :modal-append-to-body="false">
+      <el-dialog center top="40px" title="新增学校播放频道" :visible.sync="dialogChannel">
         <el-form 
         :rules="rules" 
         ref="channelForm" 
         :model="channelForm" 
-        status-icon size="small" :label-width="formLabelWidth">
+        status-icon size="mini" :label-width="formLabelWidth">
         <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item label="学校ID">
@@ -200,7 +200,6 @@
                 format="HH:mm:ss"
                 value-format="HH:mm:ss"
                 v-model="channelForm.playTime"
-                size="mini"
                 :clearable="false"
                 range-separator="至"
                 start-placeholder="开始时间"
@@ -217,7 +216,6 @@
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="channelForm.validTime"
-                size="mini"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
@@ -230,7 +228,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="栏目名称" prop="channelId">
-              <el-select v-model="channelForm.channelId" placeholder="请选择" size="mini" style="width:100%;">
+              <el-select v-model="channelForm.channelId" placeholder="请选择" style="width:100%;">
                 <el-option v-for="item in channelList" 
                   :key="item.channelId" 
                   :value="item.channelId"
@@ -241,7 +239,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="播放优先级" prop="priority">
-              <el-select v-model="channelForm.priority" placeholder="请选择" size="mini" style="width:100%;">
+              <el-select v-model="channelForm.priority" placeholder="请选择" style="width:100%;">
                 <el-option 
                   v-for="item in priorityList" 
                   :key="item.value" 
@@ -271,70 +269,9 @@
           </el-col>                 
         </el-row>
         <el-row :gutter="20" style="text-align:center">
-          <el-button size="mini">取消</el-button>
-          <el-button size="mini" type="primary">保存</el-button>
+          <el-button size="mini" @click="dialogChannel = false">取消</el-button>
+          <el-button size="mini" type="primary" @click="addChannelForm('channelForm')">保存</el-button>
         </el-row>            
-          <!-- <el-form-item label="播放时段" prop="play_start_time">
-              <el-time-picker
-                is-range
-                v-model="value4"
-                size="mini"
-                range-separator="至"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-                placeholder="选择时间范围" style="width:300px;">
-              </el-time-picker>             
-          </el-form-item>
-          <el-form-item label="优先级" prop="priority">
-              <el-select v-model="channelForm.priority" placeholder="请选择" size="mini" style="width:300px;">
-                <el-option 
-                  v-for="item in priorityList" 
-                  :key="item.value" 
-                  :value="item.value"
-                  :label="item.label">
-                </el-option>
-              </el-select>            
-          </el-form-item>     
-          <el-form-item label="播放内容" prop="contents">
-              <el-select v-model="channelForm.contents" multiple collapse-tags placeholder="请选择播放内容" style="width:300px;">
-                <el-option
-                  v-for="item in contentsList"
-                  :key="item.contentId"
-                  :label="item.title"
-                  :value="item.contentId">
-                </el-option>
-              </el-select>                 
-          </el-form-item>   
-          <template v-if="channelForm.valid_type === 1">
-            <el-form-item label="栏目有效期" prop="program_valid">
-              <el-date-picker
-                value-format="yyyy-MM-dd"
-                v-model="validityData"
-                size="mini"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions0" style="width:300px;">
-              </el-date-picker>
-            </el-form-item>
-          </template>            
-          <el-form-item label="滚动类型" prop="scroll_type">
-              <el-radio-group v-model="channelForm.scroll_type">
-                <el-radio :label="0">非滚动</el-radio>
-                <el-radio :label="1">滚动</el-radio>
-              </el-radio-group>            
-          </el-form-item>
-          <el-form-item label="有效期" prop="valid_type">
-              <el-radio-group v-model="channelForm.valid_type">
-                <el-radio :label="0">长期有效</el-radio>
-                <el-radio :label="1">按时段有效</el-radio>
-              </el-radio-group>              
-          </el-form-item>
-          <el-row style="text-align:center">
-              <el-button size="mini" @click="dialogChannel = false">取消</el-button>
-              <el-button :loading="btnloading" size="mini" type="primary" @click="addChannelForm('channelForm')">确定</el-button>
-          </el-row>           -->
         </el-form>
       </el-dialog>
     </template>       
@@ -376,8 +313,10 @@ export default {
         schoolId: 2
       },
       channelForm: {
+        schoolId: 2,
         scrollType: 0,
-        validType: 0
+        validType: 0,
+        contents: []
       },
       rules: {},
       tableData: []
@@ -489,44 +428,41 @@ export default {
       this.queryChannelContentAction({ channelId, schoolId });
     },
     //查询栏目名称
-    queryChannelInner() {
-      queryChannelAll({}).then(res => {
+    async queryChannelInner() {
+      let res = await service.queryChannelAll({});
         if (res.errorCode === 0) {
           this.channelList = res.data;
-        }
-      });
+        }      
     },
     //查询频道对应内容列表
-    queryChannelContentAction(params = {}) {
-      queryChannelContent(params).then(res => {
-        console.log(res);
-      })
+    async queryChannelContentAction(params = {}) {
+      let res = await service.queryChannelContent(params);
+      console.log(res);
     },
     //新增学校播放频道
-    addTable(params = {}) {
-      addSchoolPlayChannel(params).then(res => {
-        console.log(res);
-      })
+    async addTable(params = {}) {
+      let res = await service.addSchoolPlayChannel(params);
     },
     //显示学校播放表单列表
-    createTable() {
-      querySchoolPlayChannel(this.query).then(res => {
+    async createTable() {
+      let res = await service.querySchoolPlayChannel(this.query);
         if (res.errorCode === 0) {
           this.tableData = res.data;
-        }
-      });
+        }      
     },
     //编辑学校播放频道
-    updateTable(params = {}) {
-      updateSchoolPlayChannel(params).then(res => {
-        console.log(res);
-      });
+    async updateTable(params = {}) {
+      let res = await service.updateSchoolPlayChannel(params);
+      if (res.errorCode === 0) {
+
+      }
     },
     //删除学校播放频道
-    deleteTable(params = {}) {
-      deleteSchoolPlayChannel(params).then(res => {
-        console.log(res);
-      })
+    async deleteTable(params = {}) {
+      let res = await service.deleteSchoolPlayChannel(params);
+      if (res.errorCode === 0) {
+
+      }
     }
   },
   mounted() {
