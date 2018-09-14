@@ -1,4 +1,4 @@
-import ax from '../axios'
+import ax from '../axios';
 
 //查询栏目
 export function queryChannel(params) {
@@ -102,6 +102,13 @@ export function addSchoolPlayChannel(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//查询频道对应内容列表
+export function queryPlayContent(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/queryPlayContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+
 //编辑学校播放频道
 export function updateSchoolPlayChannel(params) {
   return ax.post('/action/mod-xiaojiao/content/schoolPlay/updateSchoolPlayChannel.do', params)

@@ -20,8 +20,8 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small" v-loading="loading">
-            <el-table-column width="300" label="栏目编号" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
+            <el-table-column width="300" label="栏目ID" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column width="200" label="操作">
@@ -34,18 +34,12 @@
     </template>
     <!-- 分页 -->
     <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination> 
-      </div>   
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
     </template>      
     <!-- 新增 or 编辑 -->
     <template>
@@ -70,8 +64,12 @@
 </template>
 <script>
 import service from "@/api";
+import pagination from "@/components/pagination";
 export default {
   name: "column",
+  components: {
+    'qx-pagination': pagination
+  },
   data() {
     return {
       dialogEdit: false,
@@ -83,7 +81,7 @@ export default {
       query: {
         channelName: "",
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       form: {
         name: "",
@@ -109,6 +107,10 @@ export default {
   },
   watch: {},
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },
     search() {
       let page = this.query.page;
       if (!this.query.channelName.length) {
@@ -142,17 +144,6 @@ export default {
         .catch(error => {
           return false;
         });      
-    },
-    handleSizeChange(size) {
-      if (size > this.totalCount) {
-        return;
-      }
-      this.query.pageSize = size;
-      this.createTable();
-    },
-    handleCurrentChange(curr) {
-      this.query.page = curr;
-      this.createTable();
     },
     formAction(formName) {
       this.$refs[formName].validate(valid => {

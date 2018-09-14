@@ -8,7 +8,7 @@
         <qx-aside></qx-aside>
         <!-- 主体 内容 -->
         <el-main id="main">
-            <qx-tags></qx-tags>
+            <qx-tabs></qx-tabs>
             <transition name="fade-transform" mode="out-in">
                 <keep-alive>
                     <router-view :key="$route.fullPath"/>
@@ -22,14 +22,14 @@
 <script>
 import qxheader from "./components/headers";
 import qxaside from "./components/asides";
-import qxtags from "./components/tags";
+import qxtabs from "./components/tags";
 
 export default {
   name: "layout",
   components: {
     "qx-header": qxheader,
     "qx-aside": qxaside,
-    "qx-tags": qxtags
+    "qx-tabs": qxtabs
   },
   data() {
     return {};

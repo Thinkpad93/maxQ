@@ -7,7 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @last="lastChange"></region>
+                <qx-region @last="lastChange"></qx-region>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
@@ -70,7 +70,7 @@
        <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="regionId">
-              <region @last="lastChange" v-model="addForm.regionId"></region>
+              <qx-region @last="lastChange" v-model="addForm.regionId"></qx-region>
             </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
                <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
@@ -176,7 +176,7 @@ export default {
   name: "binding",
   mixins: [Mixin],
   components: {
-    region
+    'qx-region': region
   },
   data() {
     return {

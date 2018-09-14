@@ -44,10 +44,6 @@ export default {
       if (Array.isArray(value)) {
         this.$emit('last', value);
       }
-      // if (value.length >= 3) {
-      //   let last = value[value.length -  1]; // 区
-      //   this.$emit('last', last);
-      // }
     },
     //初始化查询省市区所有数据
     async init() {
@@ -55,11 +51,6 @@ export default {
       if (res.errorCode === 0) {
         this.allData = res.data;
       }
-      // findAll({}).then(res => {
-      //   if (res.errorCode === 0) {
-      //     this.allData = res.data;
-      //   }
-      // });
     },   
   },
   mounted() {

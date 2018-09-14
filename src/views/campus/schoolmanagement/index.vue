@@ -62,18 +62,12 @@
     </template>  
     <!-- 分页 -->
     <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination> 
-      </div>   
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
     </template>      
     <!-- 新增 -->
     <template>
@@ -487,10 +481,12 @@
 <script>
 import service from "@/api";
 import region from "@/components/region";
+import pagination from "@/components/pagination";
 export default {
   name: "schoolManagement",
   components: {
-    region
+    region,
+    'qx-pagination': pagination
   },
   data() {
     return {
@@ -504,7 +500,7 @@ export default {
       query: {
         schoolId: 0,
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       totalCount: 0,
       schoolId: null,
@@ -560,7 +556,11 @@ export default {
       return window.innerHeight - 255;
     }
   },
-  methods: {
+  methods: {    
+    pageChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },    
     //新增联系人
     addlinkMan(flags) {
       let addLinkMan = this.addForm.linkMan;
@@ -577,14 +577,6 @@ export default {
       } else {
         this.createTable();
       }
-    },
-    handleSizeChange(size) {
-      this.query.pageSize = size;
-      this.createTable();
-    },
-    handleCurrentChange(curr) {
-      this.query.page = curr;
-      this.createTable();
     },
     handleEdit(row) {
       this.dialogEdit = true;

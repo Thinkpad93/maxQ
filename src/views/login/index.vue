@@ -46,24 +46,17 @@ export default {
   },
   methods: {
     submit() {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           this.loading = true;
-          this.login();
+          let res = await this.$store.dispatch('login', this.form);
+          //console.log(res);
           // this.$store.dispatch('adminLogin', this.form).then(res => {
           //   this.$router.push({ path:'/home' });
           // })
         }
       });
     },
-    login() {
-      userLogin(this.form).then(res => {
-        if (res.status === 200) {
-          this.$store.dispatch('loginAction', this.form);
-          this.$router.push({ path: "/home" });
-        }
-      });
-    }
   },
   created() {
     console.log(this.$store);

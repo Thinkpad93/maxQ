@@ -1,12 +1,12 @@
 <template>
-  <div class="tags-contaier">
+  <div class="tabs-contaier">
     <router-link 
-        v-for="tag in tagList" 
-        :key="tag.path" 
-        :to="tag.path">
-        {{ tag.meta.title }}
-        <template v-if="tag.path !== '/home/index'">
-          <i class='el-icon-close' @click.prevent.stop="closeTag(tag)"></i>
+        v-for="tab in tabList" 
+        :key="tab.path" 
+        :to="tab.path">
+        {{ tab.meta.title }}
+        <template v-if="tab.path !== '/home/index'">
+          <i class='el-icon-close' @click.prevent.stop="closeTag(tab)"></i>
         </template>
     </router-link>      
   </div>  
@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     ...mapState({
-      tagList: state => state.tag.tagList
+      tabList: state => state.tag.tabList
     }),
   },
   methods: {
@@ -41,14 +41,14 @@ export default {
     isActive(route) {
       return route.name === this.$route.name;
     },    
-    closeTag(tag) {
-      this.$store.dispatch("close", tag).then(res => {
-        if (tag.path === this.$route.path) {
+    closeTag(tab) {
+      this.$store.dispatch("close", tab).then(res => {
+        if (tab.path === this.$route.path) {
           const latestView = res.slice(-1)[0];
           if (latestView) {
             this.$router.push(latestView);
           } else {
-            this.$router.push("/home");
+            this.$router.push("/");
           }
         }
       });
@@ -60,7 +60,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.tags-contaier {
+.tabs-contaier {
   position: absolute;
   left: 0;
   top: 0;

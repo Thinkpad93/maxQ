@@ -9,11 +9,11 @@
      </div> 
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
-          {{ userInfo.name }}
+          <!-- {{ userInfo.name }} -->
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人信息</el-dropdown-item>
+          <!-- <el-dropdown-item>个人信息</el-dropdown-item> -->
           <el-dropdown-item>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>     
@@ -31,13 +31,12 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      userInfo: state => state.userInfo
-    })
+    // ...mapState({
+    //   userInfo: state => state.userInfo
+    // })
   },
   methods: {
     collapseChage() {
-      //this.$emit("toggle");
       this.collapse = !this.collapse;
       bus.$emit('collapse', this.collapse);
     },
