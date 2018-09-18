@@ -36,6 +36,7 @@
           <template slot-scope="scope">
             <template v-if="scope.row.show">
               <el-time-picker
+                @change="handleChangeTime"
                 is-range
                 format="HH:mm:ss"
                 value-format="HH:mm:ss"                
@@ -292,6 +293,7 @@ export default {
       radio: 0,
       schoolList: [],
       value4: hours(),
+      isChangeTime: false, //用户是否修改了播放时段
       validityData: [],
       pickerOptions: {
         disabledDate
@@ -303,7 +305,7 @@ export default {
         schoolId: 77
       },
       channelForm: {
-        schoolId: 2,
+        schoolId: 77,
         scrollType: 0,
         validType: 0,
         contents: []
@@ -350,39 +352,7 @@ export default {
     },
     close() {
       this.$nextTick(() => {
-        // let countCheckbox = this.countCheckbox;
-        // let playContendata = this.playContendata;
-        // let row = [];
-        // if (!countCheckbox.length) {
-        //   this.$refs.playCon.clearSelection();
-        // } else {
-        //   for (let i = 0; i < countCheckbox.length; i++) {
-        //     for (let j = 0; j < playContendata.length; j++) {
-        //       if (countCheckbox[i].contentId === playContendata[j].contentId) {
-        //       }
-        //     }
-        //   }
-        // }
-        // if (!this.countCheckbox.length) {
-        //   this.$refs.playCon.clearSelection();
-        // } else {
-        //   let playContendata = this.playContendata;
-        //   playContendata.forEach(row => {
-        //     if (!row.status) {
-        //       this.$refs.playCon.toggleRowSelection(row);
-        //     }
-        //   });
-        // }
       });
-      //this.countCheckbox = [];
-      // this.$nextTick(() => {
-      //   let playContendata = this.playContendata;
-      //   playContendata.forEach(row => {
-      //     if (!row.status) {
-      //       this.$refs.playCon.toggleRowSelection(row);
-      //     }
-      //   });
-      // });
     },
     toggleSelection() {
       this.dialogContent = false;
@@ -413,6 +383,9 @@ export default {
           this.$delete(e, "state");
         });
       }
+    },
+    handleChangeTime(value) {
+      this.isChangeTime = true;
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
@@ -466,10 +439,14 @@ export default {
           return { contentId: item.contentId, status: item.status };
         });
       }
+      if (this.isChangeTime) {
+        args.playStartTime = this.value4[0];
+        args.playEndTime = this.value4[1];
+      }
       obj = Object.assign({}, args, {
         contents: content.concat(one)
       });
-      this.btnloading = true;
+      this.saveloading = true;
       this.updateTable(obj);
     },
     //赋值自定义有效期时间
@@ -505,9 +482,10 @@ export default {
     addChannelForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { playTime, validTime, ...args } = this.channelForm;
+          let { playTime, validTime, contents, ...args } = this.channelForm;
           let obj = {};
           let validObj = {};
+          let one = [];
           if (args.validType === 1) {
             validObj = {
               validStartTime: validTime[0],
@@ -516,11 +494,17 @@ export default {
           } else {
             validObj = { validStartTime: "", validEndTime: "" };
           }
+          this.contentsList.forEach(oldItem => {
+            if (contents.find(newItem => { return oldItem.contentId == newItem })) {
+              one.push({ contentId: oldItem.contentId, status: oldItem.status });
+            }
+          });
           obj = Object.assign({}, args, {
+            contents: one,
             playStartTime: playTime[0],
             playEndTime: playTime[1],
-            ...validObj
-          });
+            ...validObj,
+          });      
           this.addTable(obj);
         }
       });
@@ -581,7 +565,7 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        this.btnloading = false;
+        this.saveloading = false;
         this.disabled = 0;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.createTable();
