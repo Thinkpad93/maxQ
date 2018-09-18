@@ -59,7 +59,7 @@
                                     ref="upload" 
                                     name="file"
                                     :disabled="disabled === 0"
-                                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
+                                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                                     accept="video/mp4,video/flv,video/mov"
                                     :on-success="handleVideoSuccess"
                                     :before-remove="beforeRemove">

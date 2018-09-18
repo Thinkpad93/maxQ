@@ -21,13 +21,13 @@
     <!-- 表格数据 -->
     <template>
         <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
-            <el-table-column label="栏目模板ID" prop="templateId" width="200"></el-table-column>
-            <el-table-column label="栏目模板" prop="name">
+            <el-table-column label="栏目模板ID" prop="templateId" width="200" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column label="栏目模板" prop="name" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
                   <span style="color:#409EFF">{{ scope.row.name }}</span>
                 </template>                    
             </el-table-column>
-            <el-table-column label="栏目模板描述" prop="description"></el-table-column>
+            <el-table-column label="栏目模板描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" @click="handleDetail(scope.row)">新增模板详细</el-button>
@@ -46,19 +46,13 @@
     </template>  
     <!-- 分页 -->
     <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination> 
-      </div>   
-    </template>      
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
+    </template>        
     <!-- 新增栏目模板 -->
     <template>
       <el-dialog center top="40px" title="新增栏目模板" :visible.sync="dialogAdd">
@@ -329,11 +323,16 @@
 </template>
 <script>
 import service from "@/api";
+import pagination from "@/components/pagination";
+
 import Mixin from "@/mixins/priority";
 import { disabledDate, hours } from "@/utils/tools";
 
 export default {
   name: "columnTpl",
+  components: {
+    'qx-pagination': pagination
+  },  
   mixins: [Mixin],
   data() {
     return {
@@ -357,7 +356,7 @@ export default {
       query: {
         templateName: "",
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       totalCount: 0, //分页总数
       rules: {
@@ -417,6 +416,10 @@ export default {
     }
   },
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },    
     search() {},
     addShow() {
       this.is = 0;
@@ -525,14 +528,6 @@ export default {
           }
         });
       }
-    },
-    handleSizeChange(size) {
-      this.query.pageSize = size;
-      this.createTable();
-    },
-    handleCurrentChange(curr) {
-      this.query.page = curr;
-      this.createTable();
     },
     addTemplate(formName) {
       this.$refs[formName].validate(valid => {

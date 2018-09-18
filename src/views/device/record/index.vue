@@ -6,7 +6,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @last="lastChange"></region>
+                <qx-region @last="lastChange"></qx-region>
               </el-form-item>              
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
@@ -53,25 +53,19 @@
     </template> 
     <!-- 分页 -->
     <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination> 
-      </div>   
-    </template>     
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
+    </template>    
     <!-- 新增检修记录 -->
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
-            <region @last="lastChange" v-model="addForm.regionId"></region>
+            <qx-region @last="lastChange" v-model="addForm.regionId"></qx-region>
           </el-form-item>    
           <el-form-item label="学校名称" prop="schoolId">
             <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
@@ -159,11 +153,13 @@
 </template>
 <script>
 import service from "@/api";
+import pagination from "@/components/pagination";
 import region from "@/components/region";
 export default {
   name: "record",
   components: {
-    region
+    'qx-region': region,
+    'qx-pagination': pagination
   },
   data() {
     return {
@@ -223,6 +219,10 @@ export default {
     }
   },
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },      
     show() {},
     close() {},
     //搜索
@@ -235,14 +235,6 @@ export default {
       if (page > 1) {
         this.query.page = 1;
       }
-      this.createTable();
-    },
-    handleSizeChange(size) {
-      this.query.pageSize = size;
-      this.createTable();
-    },
-    handleCurrentChange(curr) {
-      this.query.page = curr;
       this.createTable();
     },
     handleRegion(list) {

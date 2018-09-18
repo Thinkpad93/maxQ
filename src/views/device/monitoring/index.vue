@@ -6,7 +6,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @last="lastChange"></region>
+                <qx-region @last="lastChange"></qx-region>
               </el-form-item>  
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
@@ -102,7 +102,7 @@ import region from "@/components/region";
 export default {
   name: "monitoring",
   components: {
-    region
+    'qx-region': region
   },
   data() {
     return {
@@ -149,14 +149,14 @@ export default {
         this.createTable();
       }
     },
-    lastChange(value) {
-      queryRegion({ queryId: value, queryType: 3 }).then(res => {
-        if (res.errorCode === 0) {
-          this.schoolList = res.data;
-        } else {
-          return false;
-        }
-      });
+    async lastChange(value) {
+      let last = value[value.length - 1];
+      let res = await service.queryRegion({ queryId: last, queryType: 3 });
+      if (res.errorCode === 0) {
+        this.schoolList = res.data;
+      } else {
+        return false;
+      }
     },
     handleSchool(value) {
       this.query.schoolId = value;
@@ -179,15 +179,6 @@ export default {
       setTimeout(() => {
         that.sendDeviceDirective(params, item);
       }, 1000);
-      // this.$confirm("您确定要对设备进行重启操作?", "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // }).then(() => {
-      //   sendDeviceCommand().then
-      // }).catch(error => {
-      //   return false;
-      // })
     },
     handleUpdate(item) {
       let that = this;

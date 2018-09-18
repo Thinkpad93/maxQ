@@ -230,7 +230,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl1 }"
                     class="upload-image"
-                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -249,7 +249,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl2 }"
                     class="upload-image"
-                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -431,7 +431,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl3 }"
                     class="upload-image"
-                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -450,7 +450,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl4 }"
                     class="upload-image"
-                    action="http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -500,7 +500,7 @@ export default {
       query: {
         schoolId: 0,
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0,
       schoolId: null,
@@ -742,7 +742,7 @@ export default {
     //新增学校
     async addSchoolAction(params = {}) {
       let res = await service.addSchool(params, {
-        header: { "content-type": "application/json;charset=utf-8" }
+        headers: {'Content-Type': 'application/json'}
       });
       if (res.errorCode === 0) {
         this.dialogAdd = false;
@@ -753,7 +753,7 @@ export default {
     //编辑学校
     async updateSchoolAction(params = {}) {
       let res = await service.updateSchool(params, {
-        headers: { "content-type": "application/json;charset=utf-8" }
+        headers: {'Content-Type': 'application/json'}
       });
       if (res.errorCode === 0) {
         this.dialogEdit = false;

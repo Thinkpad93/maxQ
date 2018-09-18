@@ -15,10 +15,7 @@ import '@/iconfont/iconfont.css';
 
 
 
-Vue.use(Element, {
-  size: 'samll',
-  zIndex: 3000
-});
+Vue.use(Element);
 
 
 Vue.config.productionTip = false;

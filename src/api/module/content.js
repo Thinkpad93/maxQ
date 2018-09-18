@@ -97,8 +97,8 @@ export function querySchoolPlayChannel(params) {
     .catch(e => console.log(e));
 }
 //新增学校播放频道
-export function addSchoolPlayChannel(params) {
-  return ax.post('/action/mod-xiaojiao/content/schoolPlay/addSchoolPlayChannel.do', params)
+export function addSchoolPlayChannel(params, config) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/addSchoolPlayChannel.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
@@ -110,8 +110,8 @@ export function queryPlayContent(params) {
 }
 
 //编辑学校播放频道
-export function updateSchoolPlayChannel(params) {
-  return ax.post('/action/mod-xiaojiao/content/schoolPlay/updateSchoolPlayChannel.do', params)
+export function updateSchoolPlayChannel(params, config) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/updateSchoolPlayChannel.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

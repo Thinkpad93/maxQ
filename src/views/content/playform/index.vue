@@ -21,8 +21,8 @@
               </el-form-item>           
               <el-form-item>
                 <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                <el-button :disabled="disabled === 1" type="primary">更新播放表单</el-button>
                 <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="dialogChannel = true">新增</el-button>
+                <el-button :disabled="disabled === 1" type="primary">更新播放表单</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -142,19 +142,6 @@
           <template slot-scope="scope">
             <template v-if="scope.row.show">
               <p class="simInput" @click="dialogContent = true">查看播放内容</p>
-              <!-- <el-input @input="dialogContent = true" placeholder="查看播放内容" readonly size="mini"></el-input> -->
-              <el-dialog :close-on-click-modal="false" center title="播放内容" :visible.sync="dialogContent" @open="show(scope.row)" @close="close">
-                <el-table ref="playCon" @selection-change="selectCheckbox" :data="playContendata" style="width: 100%" border stripe size="mini">
-                  <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column property="title" label="播放内容"></el-table-column>
-                  <el-table-column property="postTime" label="发布时间"></el-table-column>
-                  <el-table-column property="duration" label="单次播放时长"></el-table-column>
-                </el-table>
-                <div slot="footer" class="dialog-footer">
-                  <el-button size="mini" @click="dialogContent = false">取消</el-button>
-                  <el-button size="mini" type="primary" @click="toggleSelection">确定</el-button>
-                </div>
-              </el-dialog>
             </template>
             <template v-else>
               <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a>
@@ -163,13 +150,30 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
+            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </template>   
+    <!-- 播放内容 -->
+    <template>
+      <el-dialog :close-on-click-modal="false" center title="播放内容" :visible.sync="dialogContent" @open="show" @close="close">
+        <el-table ref="playCon" 
+          @selection-change="selectCheckbox" 
+          :data="playContendata" style="width: 100%" border stripe size="mini">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column property="title" label="播放内容"></el-table-column>
+          <el-table-column property="postTime" label="发布时间"></el-table-column>
+          <el-table-column property="duration" label="单次播放时长"></el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" @click="dialogContent = false">取消</el-button>
+          <el-button size="mini" type="primary" @click="toggleSelection">确定</el-button>
+        </div>
+      </el-dialog>      
+    </template>
     <!-- 新增学校播放频道 -->
     <template>
       <el-dialog center top="40px" title="新增学校播放频道" :visible.sync="dialogChannel">
@@ -332,14 +336,54 @@ export default {
       this.createTable();
     },
     show() {
-      let countCheckbox = this.countCheckbox;
-      if (!countCheckbox.length) {
-        this.$nextTick(() => {
-          this.$refs.playCon.toggleAllSelection();
-        });
-      }
+      this.$nextTick(() => {
+        let countCheckbox = this.countCheckbox;
+        let playContendata = this.playContendata;
+        if (!countCheckbox.length) {
+          playContendata.forEach(row => {
+            if (!row.status) {
+              this.$refs.playCon.toggleRowSelection(row);
+            }
+          });
+        }
+      });
     },
-    close() {},
+    close() {
+      this.$nextTick(() => {
+        // let countCheckbox = this.countCheckbox;
+        // let playContendata = this.playContendata;
+        // let row = [];
+        // if (!countCheckbox.length) {
+        //   this.$refs.playCon.clearSelection();
+        // } else {
+        //   for (let i = 0; i < countCheckbox.length; i++) {
+        //     for (let j = 0; j < playContendata.length; j++) {
+        //       if (countCheckbox[i].contentId === playContendata[j].contentId) {
+        //       }
+        //     }
+        //   }
+        // }
+        // if (!this.countCheckbox.length) {
+        //   this.$refs.playCon.clearSelection();
+        // } else {
+        //   let playContendata = this.playContendata;
+        //   playContendata.forEach(row => {
+        //     if (!row.status) {
+        //       this.$refs.playCon.toggleRowSelection(row);
+        //     }
+        //   });
+        // }
+      });
+      //this.countCheckbox = [];
+      // this.$nextTick(() => {
+      //   let playContendata = this.playContendata;
+      //   playContendata.forEach(row => {
+      //     if (!row.status) {
+      //       this.$refs.playCon.toggleRowSelection(row);
+      //     }
+      //   });
+      // });
+    },
     toggleSelection() {
       this.dialogContent = false;
     },
@@ -374,8 +418,6 @@ export default {
       let schoolId = this.channelForm.schoolId;
       this.queryChannelContentAction({ schoolId, channelId: value });
     },
-    handleRegion() {},
-    handleSchool() {},
     handleClearSchool() {
       this.query.schoolId = null;
     },
@@ -403,22 +445,32 @@ export default {
           return false;
         });
     },
-    handleSave(index, row) {
-      console.log(row);
-      this.saveloading = true;
-      // this.$confirm(`确定要保存吗?`, "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // })
-      //   .then(() => {
-
-      //   })
-      //   .catch(error => {
-      //     this.disabled = 0;
-      //     this.delEditState(this.tableData);
-      //     return false;
-      //   });
+    handleSave(row) {
+      var countCheckbox = this.countCheckbox; //选中的数据
+      var playContendata = this.playContendata.slice();
+      var { show, state, channelName, postTime, ...args } = row;
+      var content = [];
+      var one = [];
+      var obj = {};
+      if (countCheckbox.length) {
+        content = countCheckbox.map(item => {
+          return { contentId: item.contentId, status: 0 };
+        });
+        playContendata.forEach(oldItem => {
+          if (!content.find(newItem => { return oldItem.contentId == newItem.contentId })) {
+            one.push({ contentId: oldItem.contentId, status: 1 });
+          }
+        });
+      } else {
+        content = playContendata.map(item => {
+          return { contentId: item.contentId, status: item.status };
+        });
+      }
+      obj = Object.assign({}, args, {
+        contents: content.concat(one)
+      });
+      this.btnloading = true;
+      this.updateTable(obj);
     },
     //赋值自定义有效期时间
     validityShow(row) {},
@@ -473,15 +525,15 @@ export default {
         }
       });
     },
-    lastChange(value) {
+    //加载学校数据
+    async lastChange(value) {
       let last = value[value.length - 1];
-      queryRegion({ queryId: last, queryType: 3 }).then(res => {
-        if (res.errorCode === 0) {
-          this.schoolList = res.data;
-        } else {
-          return false;
-        }
-      });
+      let res = await service.queryRegion({ queryId: last, queryType: 3 });
+      if (res.errorCode === 0) {
+        this.schoolList = res.data;
+      } else {
+        return false;
+      }
     },
     viewChannelContent(row) {
       let { channelId, schoolId } = row;
@@ -507,7 +559,9 @@ export default {
     },
     //新增学校播放频道
     async addTable(params = {}) {
-      let res = await service.addSchoolPlayChannel(params);
+      let res = await service.addSchoolPlayChannel(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
         this.dialogChannel = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
@@ -523,8 +577,14 @@ export default {
     },
     //编辑学校播放频道
     async updateTable(params = {}) {
-      let res = await service.updateSchoolPlayChannel(params);
+      let res = await service.updateSchoolPlayChannel(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.btnloading = false;
+        this.disabled = 0;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.createTable();
       }
     },
     //删除学校播放频道

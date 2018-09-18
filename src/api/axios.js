@@ -13,8 +13,8 @@ const ax = axios.create({
 ax.interceptors.request.use(config => {
   console.log("请求拦截器");
   console.log(config);
-  if (config.headers['Content-Type'] === "application/json;charset=utf-8") {
-    config.data = JSON.stringify(config.data);
+  if (config.headers['Content-Type'] === "application/json") {
+    //...
   } else {
     config.data = qs.stringify(config.data, {
       indices: false

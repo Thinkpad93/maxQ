@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Layout from '@/views/layout/index';
 
+//const Layout = () => import('@/views/layout');
+
 Vue.use(Router);
 
 

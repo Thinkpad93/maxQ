@@ -53,12 +53,6 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
-                <!-- <template v-if="scope.row.show">
-                  <el-button size="mini" type="success" @click="handleSave(scope.$index, scope.row)">保存</el-button>
-                </template>
-                <template v-else>
-                  <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                </template> -->
               </template>
             </el-table-column>
          </el-table>
@@ -66,12 +60,12 @@
      <!-- 新增 -->
      <template>
        <el-dialog center top="40px" title="新增标签" :visible.sync="dialogAdd" :modal-append-to-body="false">
-         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
+         <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="标签名称" prop="name">
-              <el-input v-model="addForm.name" placeholder="请输入标签名称"></el-input>
+              <el-input v-model="form.name" placeholder="请输入标签名称"></el-input>
             </el-form-item>  
             <el-form-item label="标签类型" prop="type">
-              <el-select v-model="addForm.type" clearable filterable placeholder="选择标签类型">
+              <el-select v-model="form.type" clearable filterable placeholder="选择标签类型">
                 <el-option
                     v-for="item in labelsType"
                     :key="item.id"
@@ -81,11 +75,11 @@
               </el-select>
             </el-form-item>                 
             <el-form-item label="标签描述" prop="description">
-              <el-input type="textarea" v-model="addForm.description" :rows="5" placeholder="请输入标签描述"></el-input>
+              <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入标签描述"></el-input>
             </el-form-item> 
             <el-row style="text-align:center">
               <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-              <el-button size="mini" type="primary" @click="addsForm('addForm')">确定</el-button>
+              <el-button size="mini" type="primary" @click="submitForm('form')">确定</el-button>
             </el-row>                             
          </el-form>
        </el-dialog>
@@ -95,13 +89,13 @@
 <script>
 import service from "@/api";
 export default {
-  name: "tag",
+  name: "tab",
   data() {
     return {
       loading: false,
       dialogAdd: false,
       formLabelWidth: "100px",
-      addForm: {},
+      form: {},
       rules: {
         name: [{ required: true, message: "请输入标签名称", trigger: "blur" }],
         type: [{ required: true, message: "请选择标签类型", trigger: "blur" }],
@@ -119,18 +113,16 @@ export default {
     };
   },
   methods: {
-    addsForm(formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addTable(this.addForm);
+          this.addTable(this.form);
         }
       });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    handleItemChange(val) {},
-    handleEdit(row) {},
     handleDel(row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
@@ -145,7 +137,6 @@ export default {
           return false;
         });
     },
-    handleSave(index, row) {},
     //查询标签列表
     async createTable() {
       this.loading = true;
@@ -161,7 +152,7 @@ export default {
       if (res.errorCode === 0) {
         this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.resetForm("addForm");
+        this.resetForm("form");
         this.createTable();
       }
     },

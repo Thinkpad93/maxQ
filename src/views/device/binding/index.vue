@@ -53,18 +53,13 @@
      </template>    
     <!-- 分页 -->
     <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination> 
-      </div>   
-    </template>    
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
+    </template>     
     <!-- 新增 -->
     <template>
        <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
@@ -169,6 +164,7 @@
 </template>
 <script>
 import service from "@/api";
+import pagination from "@/components/pagination";
 import Mixin from "../mixin/binding";
 import region from "@/components/region";
 
@@ -176,7 +172,8 @@ export default {
   name: "binding",
   mixins: [Mixin],
   components: {
-    'qx-region': region
+    'qx-region': region,
+    'qx-pagination': pagination
   },
   data() {
     return {
@@ -218,6 +215,10 @@ export default {
     }
   },
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },    
     //搜索
     search() {
       let page = this.query.page;
@@ -235,10 +236,6 @@ export default {
     },
     handleClearSchool() {
       this.query.schoolId = 0;
-    },
-    handleCurrentChange(curr) {
-      this.query.page = curr;
-      this.createTable();
     },
     handleEdit(row) {
       this.dialogEdit = true;
