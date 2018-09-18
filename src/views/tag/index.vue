@@ -60,11 +60,15 @@
      <!-- 新增 -->
      <template>
        <el-dialog center top="40px" title="新增标签" :visible.sync="dialogAdd" :modal-append-to-body="false">
-         <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
-            <el-form-item label="标签名称" prop="name">
+         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+            <el-form-item label="标签名称" prop="name" :rules="[
+              { required: true, message: '请输入标签名称', trigger: 'blur' }
+            ]">
               <el-input v-model="form.name" placeholder="请输入标签名称"></el-input>
             </el-form-item>  
-            <el-form-item label="标签类型" prop="type">
+            <el-form-item label="标签类型" prop="type" :rules="[
+              { required: true, message: '请选择标签类型', trigger: 'blur' }
+            ]">
               <el-select v-model="form.type" clearable filterable placeholder="选择标签类型">
                 <el-option
                     v-for="item in labelsType"
@@ -74,7 +78,9 @@
                 </el-option> 
               </el-select>
             </el-form-item>                 
-            <el-form-item label="标签描述" prop="description">
+            <el-form-item label="标签描述" prop="description"  :rules="[
+              { required: true, message: '请输入标签描述', trigger: 'blur' }
+            ]">
               <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入标签描述"></el-input>
             </el-form-item> 
             <el-row style="text-align:center">
@@ -96,13 +102,6 @@ export default {
       dialogAdd: false,
       formLabelWidth: "100px",
       form: {},
-      rules: {
-        name: [{ required: true, message: "请输入标签名称", trigger: "blur" }],
-        type: [{ required: true, message: "请选择标签类型", trigger: "blur" }],
-        description: [
-          { required: true, message: "请输入标签描述", trigger: "blur" }
-        ]
-      },
       labelsType: [
         { id: 0, name: "缺省" },
         { id: 1, name: "特色" },

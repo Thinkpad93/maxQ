@@ -11,12 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/posts': {
-        target: 'https://jsonplaceholder.typicode.com', //目标接口域名
+      '/': {
+        target: 'http://192.168.18.107:8080/qxiao-cms', //目标接口域名
         changeOrigin: true, //是否跨域
         secure: false, //允许https请求
         pathRewrite: {
-          '^/posts': '/posts'
+          '^/': ''
         }
       }
     },

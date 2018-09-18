@@ -83,25 +83,23 @@
       </template>
     <!-- 分页 -->
     <template>
-      <div class="pagination" v-if="tableData.length">   
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="query.page"
-            :page-size="query.pageSize"
-            layout="total, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination> 
-      </div>   
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
     </template>          
    </div> 
 </template>
 <script>
 import service from "@/api";
+import pagination from "@/components/pagination";
 export default {
   name: "upload",
+  components: {
+    'qx-pagination': pagination
+  },  
   data() {
     return {
       dialogAdd: false,
@@ -130,6 +128,10 @@ export default {
     }
   },
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.createTable();
+    },    
     search() {
       this.createTable();
     },

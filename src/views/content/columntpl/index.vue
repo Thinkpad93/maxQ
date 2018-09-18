@@ -73,7 +73,7 @@
 
     <!-- 新增栏目模板详细项 -->
     <template>
-      <el-dialog width="80%" center top="0px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
+      <el-dialog width="70%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
         <el-form :rules="rules2" ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="20">
             <el-col :span="12">
@@ -201,7 +201,7 @@
     </template> 
     <!-- 编辑栏目模板详细项 -->
     <template>
-      <el-dialog width="80%" title="编辑栏目模板详细项" center top="0px" :visible.sync="dialogEdit">
+      <el-dialog width="70%" title="编辑栏目模板详细项" center top="40px" :visible.sync="dialogEdit">
         <!-- <el-alert title="已有的模板详细项" type="success" :closable="false"></el-alert> -->
         <el-table :data="tplEditData"  style="width: 100%" :height="450" stripe size="mini">
           <el-table-column width="400" label="播放时段">

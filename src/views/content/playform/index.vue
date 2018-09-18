@@ -521,7 +521,6 @@ export default {
     },
     viewChannelContent(row) {
       let { channelId, schoolId } = row;
-      //this.queryChannelContentAction({ channelId, schoolId });
     },
     //查询栏目名称
     async queryChannelInner() {

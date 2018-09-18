@@ -140,20 +140,27 @@ export function deleteContent(params) {
     .catch(e => console.log(e));
 }
 //上传内容
-export function uploadContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/content/uploadContent.do', params)
+export function uploadContent(params, config) {
+  return ax.post('/action/mod-xiaojiao/channel/content/uploadContent.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //查询编辑内容
-export function queryContentByContentId(params) {
-  return ax.post('/action/mod-xiaojiao/channel/content/queryContentByContentId.do', params)
+export function queryContentByContentId(params, config) {
+  return ax.post('/action/mod-xiaojiao/channel/content/queryContentByContentId.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //编辑上传内容
 export function updateContent(params) {
   return ax.post('/action/mod-xiaojiao/channel/content/updateContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+
+//查询栏目模板时间段
+export function querySchoolPlayListTime(params) {
+  return ax.post('/action/mod-xiaojiao/channel/content/querySchoolPlayListTime.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
