@@ -98,14 +98,6 @@ export default {
 #aside {
   transition: width .6s;
 }
-// #aside {
-//   position: fixed;
-//   top: 60px;
-//   left: 0;
-//   height: 100%;
-//   overflow: hidden;
-//   background-color: #ebf1f6;
-// }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;

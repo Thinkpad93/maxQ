@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <template>
-      <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" stripe size="mini">
         <el-table-column :resizable="false" label="日志id" prop="logId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="设备id" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
@@ -35,7 +35,6 @@ export default {
   name: "runLog",
   data() {
     return {
-      loading: false,
       query: {
         schoolId: 0
       },
@@ -46,10 +45,8 @@ export default {
   methods: {
     //显示设备运行日志
     async createTable() {
-      this.loading = true;
       let res = await service.showDeviceRunlog(this.query);
       if (res.errorCode === 0) {
-        this.loading = false;
         this.tableData = res.data;
       }
     }

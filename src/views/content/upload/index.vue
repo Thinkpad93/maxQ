@@ -29,7 +29,7 @@
       </template> 
       <!-- 上传列表 -->
       <template>
-          <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="mini" v-loading="loading">
+          <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="mini">
               <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
@@ -103,7 +103,6 @@ export default {
   data() {
     return {
       dialogAdd: false,
-      loading: false,
       query: {
         schoolId: 0,
         checkStage: 4,

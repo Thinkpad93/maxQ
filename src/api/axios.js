@@ -1,18 +1,27 @@
 import axios from 'axios';
 import qs from 'qs';
 import {
-  AXIOS_DEFAULT_CONFIG
-} from '@/config';
+  Loading
+} from 'element-ui';
 
-const ax = axios.create({
-  baseURL: AXIOS_DEFAULT_CONFIG.baseURL,
-  timeout: AXIOS_DEFAULT_CONFIG.timeout
+let loading;
+
+// import {
+//   AXIOS_DEFAULT_CONFIG
+// } from '@/config';
+
+const service = axios.create({
+  baseURL: "http://192.168.18.107:8080/qxiao-cms/",
+  timeout: 5000
 });
 
 //请求拦截器
-ax.interceptors.request.use(config => {
+service.interceptors.request.use(config => {
   console.log("请求拦截器");
   console.log(config);
+  loading = Loading.service({
+    text: '玩命加载中',
+  });
   if (config.headers['Content-Type'] === "application/json") {
     //...
   } else {
@@ -27,13 +36,15 @@ ax.interceptors.request.use(config => {
 
 
 // 响应拦截器
-ax.interceptors.response.use(config => {
+service.interceptors.response.use(config => {
   console.log("响应拦截器");
   console.log(config);
+  loading.close();
   return config;
 }, error => {
+  loading.close();
   return Promise.reject(error);
 });
 
 
-export default ax;
+export default service;

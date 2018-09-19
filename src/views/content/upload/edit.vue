@@ -5,7 +5,7 @@
                <el-col :span="8">
                     <el-form ref="query" :model="query" size="mini" label-width="100px" label-position="left">
                         <el-form-item label="内容类型">
-                            <el-radio-group v-model="query.contentType" disabled @change="handleRadio">
+                            <el-radio-group v-model="query.contentType" disabled>
                                 <el-radio-button :label="0" size="mini">全屏播放</el-radio-button>
                                 <el-radio-button :label="1" size="mini">滚动播放</el-radio-button>
                             </el-radio-group>
@@ -43,7 +43,7 @@
                               </el-form-item>  
                             </template>
                             <el-form-item label="展示类型" prop="showType">
-                                <el-select style="width: 100%;" v-model="query.showType" disabled placeholder="请选择内容模板" @change="handleChange">
+                                <el-select style="width: 100%;" v-model="query.showType" disabled placeholder="请选择内容模板">
                                     <el-option
                                       v-for="item in contentTemplateList"
                                       :key="item.value"
@@ -55,26 +55,44 @@
                             <el-form-item label="内容模板" prop="templateId" :rules="[
                               { required: true, message: '请选择内容模板', trigger: 'blur' }
                             ]">
-                                <el-select style="width: 100%;" v-model="query.templateId" disabled placeholder="请选择内容模板选择" @change="handlePoster">
+                                <el-select style="width: 100%;" v-model="query.templateId" disabled placeholder="请选择内容模板选择">
                                   <el-option v-for="item in posterList" :key="item.contentId" :label="item.title" :value="item.templateId"></el-option>
                                 </el-select>
                             </el-form-item> 
+                            <el-form-item label="图片上传" prop="imageUrl">
+                                <el-upload
+                                  ref="upload"
+                                  name="honorImage"
+                                  :disabled="disabledImg === 0"
+                                  action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                                  :multiple="false"
+                                  accept="image/jpeg,image/gif,image/png,image/bmp"
+                                  :limit="2"
+                                  :file-list="imageFileList"
+                                  :on-remove="handleRemove" 
+                                  :before-remove="handleRemove"
+                                  :on-preview="handlePreviewImg"
+                                  :on-success="handleImageSuccess">
+                                  <el-button :disabled="disabledImg === 0" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取图片</el-button>
+                                  <span class="el-upload__tip" slot="tip" style="margin-left:10px;">上传1080*1590的图片，不超过2MB</span>
+                                </el-upload>
+                            </el-form-item>                            
                             <el-form-item label="视频上传" prop="videoUrl">
                                 <el-upload 
                                     class="upload-video"
                                     ref="upload" 
                                     name="file"
-                                    :disabled="disabled === 0"
+                                    :disabled="disabledVideo === 0"
                                     action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                                     accept="video/mp4,video/flv,video/mov"
-                                    :on-success="handleVideoSuccess"
-                                    :before-remove="beforeRemove">
-                                    <el-button :disabled="disabled === 0" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取视频</el-button>
-                                </el-upload>                                
-                            </el-form-item>  
-                            <el-form-item label="视频预览">
-                                <a href="javascript:;" style="color:#409EFF" @click="handleVideoView">点击查看</a>
-                            </el-form-item>                                                                                                               
+                                    :on-remove="handleRemove" 
+                                    :before-remove="handleRemove"
+                                    :on-preview="handlePreviewVideo"
+                                    :on-success="handleVideoSuccess">
+                                    <el-button :disabled="disabledVideo === 0" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取视频</el-button>
+                                    <span class="el-upload__tip" slot="tip" style="margin-left:10px;">视频大小不超过100MB</span>
+                                </el-upload>                              
+                            </el-form-item>                                                                                                           
                         </template> 
                         <template v-else>
                             <el-form-item label="文字内容" prop="componentValue" :rules="[
@@ -117,6 +135,14 @@
                </el-col>
            </el-row>
        </div>
+      <!-- 图片查看 -->
+      <template>
+        <el-dialog center top="40px" :visible.sync="dialogViewImg">
+          <div class="views-image" v-if="query.imageUrl">
+            <img :src="query.imageUrl" width="1080" height="1590">
+          </div>
+        </el-dialog>
+      </template> 
       <!-- 视频查看 --> 
       <template>
         <el-dialog center top="40px" :visible.sync="dialogViewVideo">
@@ -133,13 +159,18 @@ export default {
   name: "uploadAdd",
   data() {
     return {
-      disabled: 1,
+      disabledImg: 0,
+      disabledVideo: 0,
+      disabled: 1,      
       btnLoading: 0,
       dialogViewVideo: false,
+      dialogViewImg: false,
+      imageFileList: [],
       posterList: [],
+      channelList: [],
+      schoolPlayTime: [],      
       contentId: null,
       query: {},
-      validityData: [],
       contentPropertyList: [
         { value: 0, label: "原创" },
         { value: 1, label: "摘要" }
@@ -151,76 +182,42 @@ export default {
         { value: 3, label: "纯图片" },
         { value: 4, label: "上视频下图片" },
         { value: 5, label: "上图片下视频" }
-      ],
-      channelList: [],
-      schoolPlayTime: []
+      ]
     };
   },
-  computed: {
-    Height() {
-      return window.innerHeight - 110;
-    }
-  },
+  computed: {},
   methods: {
     loadSuccess() {},
     handleSaveChange() {},
-    handleRadio(value) {
-      this.query.contentType = value;
-      let params = { schoolId: this.query.schoolId, contentType: this.query.contentType };
-      this.$refs.query.clearValidate();
-    },
-    handleChange(value) {
-      if (value === 1 || value === 2 || value === 4 || value === 5) {
-        this.disabled = 1;
-      } else {
-        this.disabled = 0;
-      }
-      this.query.templateId = null;
-      this.queryContentTemplateAction(value);
-    },
-    handlePoster(value) {
-      //let obj = this.posterList.find(item => item.contentId === value);
-      //this.img = obj.smallUrl;
-    },
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         this.query.videoUrl = response.data.url;
       }
     },
-    handleVideoView() {
-      if (this.query.videoUrl) {
-        this.dialogViewVideo = true;
-      }else {
-        this.$message({ message: `没有视频，你可以选择上传视频`, type: "warning" });  
-      }
-    },
-    beforeRemove(file, fileList) {
+    handleRemove(file, fileList) {
       return false;
     },
-    posterEditAction() {
-      this.$router.push({ path: "/content/poster" });
+    handlePreviewImg(file) {
+      this.dialogViewImg = true;
     },
+    handlePreviewVideo(file) {
+      this.dialogViewVideo = true;
+    },   
+    handleImageSuccess(response, file, fileList) {
+      console.log(response);
+      if (response.errorCode === 0) {
+        this.query.imageUrl = response.data.url;
+        this.query.imageName = response.data.imageName;
+      }      
+    },         
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     upload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let obj = {};
-          let channelId = [];
-          let rolling = "";
-          let { showType, playTime, ...args } = this.query;
-          if (this.query.videoUrl === "" && showType !== 0) {
-            this.$message({ message: `请上传视频`, type: "warning" });
-            return false;
-          }
-          this.schoolPlayTime.forEach(oldItem => {
-            if (playTime.find(newItem => oldItem.itemId == newItem)) {
-              channelId.push(oldItem.channelId);
-            }
-          });
-          obj = Object.assign({}, args, { channelId })
-          this.uploadContentAction(obj);
+          let { showType, contnetDetail, duration,posterUrl,templateId,templateTitle, ...args } = this.query;
+          this.updateContentAction(args);
         }
       });
     },
@@ -243,15 +240,26 @@ export default {
       let res = await service.queryContentByContentId({ contentId });
       if (res.errorCode === 0) {
         this.query = res.data;
+        this.imageFileList.push({ name: this.query.imageName, url: this.query.imageUrl });
         this.queryContentTemplateAction(this.query.showType);
-        if (this.query.showType == 0 || this.query.showType == 3) {
-          this.disabled = 0;
+        if (this.query.showType === 1 || this.query.showType === 2 || this.query.showType === 4 || this.query.showType === 5) {
+          this.disabledVideo = 1;
+        }else {
+          this.disabledVideo = 0;
         }
+        if (this.query.showType === 3 || this.query.showType === 4 || valthis.query.showTypeue === 5) {
+          this.disabledImg = 1;
+        }else {
+          this.disabledImg = 0;
+        }        
       }
     },
     //上传内容编辑
     async updateContentAction(params = {}) {
-      let res = service.updateContent(params);
+      let res = await service.updateContent(params);
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }
     }
   },
   mounted() {

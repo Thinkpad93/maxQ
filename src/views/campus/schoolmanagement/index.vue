@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-loading.fullscreen.lock="fullscreenLoading">
+  <div class="page">
     <!-- 表单 -->
     <template>
       <el-row :gutter="10">
@@ -30,7 +30,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -230,7 +230,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl1 }"
                     class="upload-image"
-                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -249,7 +249,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl2 }"
                     class="upload-image"
-                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -431,7 +431,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl3 }"
                     class="upload-image"
-                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -450,7 +450,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl4 }"
                     class="upload-image"
-                    action="http://192.168.18.114:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -490,8 +490,6 @@ export default {
   },
   data() {
     return {
-      fullscreenLoading: false,
-      loading: false,
       dialogAdd: false,
       dialogEdit: false,
       dialogView: false,
@@ -763,7 +761,6 @@ export default {
     },
     //显示学校列表
     async createTable() {
-      this.loading = true;
       let res = await service.showSchoolList(this.query);
       if (res.errorCode === 0) {
         let data = res.data.data;
@@ -772,10 +769,8 @@ export default {
         } else {
           this.tableData = data;
         }
-        this.loading = false;
         this.totalCount = res.data.totalCount;
       } else if (res.errorCode === -1) {
-        this.loading = false;
       }
     }
   },

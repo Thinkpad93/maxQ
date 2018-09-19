@@ -29,7 +29,7 @@
     </template>     
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
           <el-table-column :resizable="false" width="100" label="序号" prop="repairId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
             <template slot-scope="scope">
@@ -163,7 +163,6 @@ export default {
   },
   data() {
     return {
-      loading: false,
       dialogAdd: false,
       dialogEdit: false,
       btnloading: false,

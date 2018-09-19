@@ -20,7 +20,7 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
+        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
             <el-table-column label="栏目模板ID" prop="templateId" width="200" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="栏目模板" prop="name" :show-overflow-tooltip="true">
                 <template slot-scope="scope">
@@ -341,7 +341,6 @@ export default {
       dialogDetail: false,
       dialogView: false,
       dialogValidity: false,
-      loading: false,
       disabled: 0,
       is: null, //判断是新增窗口还是编辑窗口
       formLabelWidth: "100px",

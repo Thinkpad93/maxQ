@@ -12,7 +12,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" stripe size="small" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" stripe size="small">
         <el-table-column label="内容编号" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" :show-overflow-tooltip="true"></el-table-column>
@@ -31,7 +31,6 @@ export default {
   name: "release",
   data() {
     return {
-      loading: false,
       activeName: 'first',
       tableData: []
     };

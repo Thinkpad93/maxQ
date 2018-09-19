@@ -31,7 +31,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" stripe size="mini">
         <el-table-column width="400" label="播放时段">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
@@ -283,7 +283,6 @@ export default {
       dialogAdd: false,
       dialogValidity: false,
       dialogContent: false,
-      loading: false,
       btnloading: false,
       saveloading: false,
       dialogChannel: false,

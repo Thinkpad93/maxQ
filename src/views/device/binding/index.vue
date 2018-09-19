@@ -30,7 +30,7 @@
     </template>
      <!-- 表格数据 -->
      <template>
-       <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small" v-loading="loading">
+       <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
          <el-table-column :resizable="false" label="设备ID" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
            <template slot-scope="scope">
@@ -177,7 +177,6 @@ export default {
   },
   data() {
     return {
-      loading: false,
       dialogAdd: false,
       dialogView: false,
       dialogEdit: false,
@@ -309,18 +308,15 @@ export default {
     },
     //显示设备列表
     async createTable() {
-      this.loading = true;
       let res = await service.showDeviceList(this.query);
       if (res.errorCode === 0) {
         let data = res.data.data;
         if (!Array.isArray(data)) {
           data = [];
         }
-        this.loading = false;
         this.totalCount = res.data.totalCount;
         this.tableData = data;
       } else if (res.errorCode === 1) {
-        this.loading = false;
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
