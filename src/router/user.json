@@ -1,0 +1,21 @@
+{
+  "userPermission": {
+    "router": [{
+      "path": "/",
+      "component": "Layout",
+      "redirect": "/home/index",
+      "children": [{
+        "path": "/home/index",
+        "name": "home",
+        "component": "table/index",
+        "meta": {
+          "title": "首页"
+        }
+      }]
+    }],
+    "roleId": 1,
+    "userId": 10003,
+    "nickname": "超级用户",
+    "roleName": "管理员"
+  }
+}

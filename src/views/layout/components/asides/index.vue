@@ -22,7 +22,7 @@
       </el-menu-item>         
       <el-submenu index="2">
         <template slot="title">
-          <i class="el-icon-loading"></i>
+          <i class="el-icon-menu"></i>
           <span>设备管理</span>
         </template>
         <el-menu-item-group>
@@ -34,13 +34,13 @@
       </el-submenu>
       <el-submenu index="3">
         <template slot="title">
-          <i class="el-icon-loading"></i>
+          <i class="el-icon-menu"></i>
           <span>内容管理</span>
         </template>    
         <el-menu-item-group>
           <el-menu-item index="/content/index">栏目管理</el-menu-item>
           <el-menu-item index="/content/columntpl">栏目模板</el-menu-item>
-          <el-menu-item index="/content/upload">我的上传</el-menu-item>
+          <el-menu-item index="/content/upload">内容上传</el-menu-item>
           <!-- <el-menu-item index="/content/poster">海报在线编辑</el-menu-item> -->
           <el-menu-item index="/content/trial">内容初审</el-menu-item>
           <el-menu-item index="/content/review">内容复审</el-menu-item>
@@ -52,7 +52,7 @@
       </el-submenu>
       <el-submenu index="4">
         <template slot="title">
-          <i class="el-icon-loading"></i>
+          <i class="el-icon-menu"></i>
           <span>校区管理</span>
         </template>
         <el-menu-item-group>
@@ -61,7 +61,7 @@
       </el-submenu>
       <el-submenu index="5">
         <template slot="title">
-          <i class="el-icon-loading"></i>
+          <i class="el-icon-menu"></i>
           <span>用户管理</span>
         </template>
         <el-menu-item-group>

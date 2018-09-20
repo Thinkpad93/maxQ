@@ -1,27 +1,23 @@
 <template>
    <div data-page="login">
-      <el-row :gutter="10">
-        <el-col :span="5" :offset="9">
-          <el-form :rules="rules" ref="form" :model="form">
-            <!-- <el-form-item>
-                <h3>欢迎登录Q校网</h3>
-            </el-form-item> -->
-            <el-form-item prop="name">
-                <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名">
-                    <i slot="prefix" class="el-input__icon el-icon-date"></i>
-                </el-input>
-            </el-form-item>           
-            <el-form-item prop="password">
-                <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码">
-                    <i slot="prefix" class="el-input__icon el-icon-setting"></i>
-                </el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button :loading="loading" style="width:100%;" type="primary" @click="submit">登陆</el-button>
-            </el-form-item>               
-          </el-form>           
-        </el-col>
-      </el-row>
+      <div class="user-login">
+        <h3 style="text-align:center;margin-bottom:25px;">欢迎登录Q校网</h3>
+        <el-form :rules="rules" ref="form" :model="form" style="width: 360px;">
+          <el-form-item prop="name">
+            <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名">
+              <i slot="prefix" class="el-input__icon el-icon-date"></i>
+            </el-input>
+          </el-form-item>           
+          <el-form-item prop="password">
+            <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码">
+              <i slot="prefix" class="el-input__icon el-icon-setting"></i>
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button :loading="loading" style="width:100%;" type="primary" @click="submit">登 陆</el-button>
+          </el-form-item>               
+        </el-form>     
+      </div>        
    </div> 
 </template>
 <script>
@@ -45,11 +41,19 @@ export default {
     };
   },
   methods: {
+    ...mapActions('account', [
+      'login'
+    ]),
     submit() {
       this.$refs.form.validate(async valid => {
         if (valid) {
           this.loading = true;
-          let res = await this.$store.dispatch('login', this.form);
+          this.login({
+            vm: this,
+            name: this.form.name,
+            password: this.form.password
+          });
+          //let res = await this.$store.dispatch('login', this.form);
           //console.log(res);
           // this.$store.dispatch('adminLogin', this.form).then(res => {
           //   this.$router.push({ path:'/home' });
@@ -90,5 +94,12 @@ div[data-page="login"] {
     font-size: 20px;
     text-align: center;
   }
+}
+.user-login {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  z-index: 10;
+  transform: translate(-50%,0%);
 }
 </style>

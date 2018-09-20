@@ -85,6 +85,8 @@
                                     :disabled="disabledVideo === 0"
                                     action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                                     accept="video/mp4,video/flv,video/mov"
+                                    :limit="2"
+                                    :file-list="videoFileList"
                                     :on-remove="handleRemove" 
                                     :before-remove="handleRemove"
                                     :on-preview="handlePreviewVideo"
@@ -98,7 +100,7 @@
                             <el-form-item label="文字内容" prop="componentValue" :rules="[
                               { required: true, message: '请输入文字内容', trigger: 'blur' }
                             ]">
-                                <el-input type="textarea" v-model="query.componentValue" :rows="5" placeholder="请输入内容作者"></el-input>
+                                <el-input type="textarea" v-model="query.componentValue" :rows="5" placeholder="请输入文字内容"></el-input>
                             </el-form-item>  
                         </template>   
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
@@ -166,6 +168,7 @@ export default {
       dialogViewVideo: false,
       dialogViewImg: false,
       imageFileList: [],
+      videoFileList: [],
       posterList: [],
       channelList: [],
       schoolPlayTime: [],      
@@ -204,7 +207,6 @@ export default {
       this.dialogViewVideo = true;
     },   
     handleImageSuccess(response, file, fileList) {
-      console.log(response);
       if (response.errorCode === 0) {
         this.query.imageUrl = response.data.url;
         this.query.imageName = response.data.imageName;
@@ -213,6 +215,7 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    //编辑上传
     upload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -240,14 +243,19 @@ export default {
       let res = await service.queryContentByContentId({ contentId });
       if (res.errorCode === 0) {
         this.query = res.data;
-        this.imageFileList.push({ name: this.query.imageName, url: this.query.imageUrl });
         this.queryContentTemplateAction(this.query.showType);
+        if (this.query.imageName) {
+          this.imageFileList.push({ name: this.query.imageName, url: this.query.imageUrl });
+        }
+        if (this.query.videoUrl) {
+          this.videoFileList.push({ name: "点击查看", url: this.query.videoUrl });
+        }
         if (this.query.showType === 1 || this.query.showType === 2 || this.query.showType === 4 || this.query.showType === 5) {
           this.disabledVideo = 1;
         }else {
           this.disabledVideo = 0;
         }
-        if (this.query.showType === 3 || this.query.showType === 4 || valthis.query.showTypeue === 5) {
+        if (this.query.showType === 3 || this.query.showType === 4 || this.query.showTypeue === 5) {
           this.disabledImg = 1;
         }else {
           this.disabledImg = 0;

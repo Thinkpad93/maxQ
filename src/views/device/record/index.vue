@@ -63,11 +63,15 @@
     <!-- 新增检修记录 -->
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
-        <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="区域选择" prop="regionId">
+        <el-form ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
+          <el-form-item label="区域选择" prop="regionId" :rules="[
+            { required: true, message: '请选择区域', trigger: 'blur' }
+          ]">
             <qx-region @last="lastChange" v-model="addForm.regionId"></qx-region>
           </el-form-item>    
-          <el-form-item label="学校名称" prop="schoolId">
+          <el-form-item label="学校名称" prop="schoolId" :rules="[
+            { required: true, message: '请输入学校名称', trigger: 'blur' }
+          ]">
             <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
               <el-option
                 v-for="item in schoolList"
@@ -77,7 +81,9 @@
               </el-option> 
             </el-select>              
           </el-form-item>                
-          <el-form-item label="故障时间" prop="faultTime">
+          <el-form-item label="故障时间" prop="faultTime" :rules="[
+            { required: true, message: '请选择故障时间', trigger: 'blur' }
+          ]">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -86,7 +92,9 @@
               placeholder="选择故障时间">
             </el-date-picker>            
           </el-form-item>
-          <el-form-item label="检修时间" prop="repairTime">
+          <el-form-item label="检修时间" prop="repairTime" :rules="[
+            { required: true, message: '请选择检修时间', trigger: 'blur' }
+          ]">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -95,13 +103,19 @@
               placeholder="选择检修时间">
             </el-date-picker>             
           </el-form-item>          
-          <el-form-item label="故障描述" prop="faultDescription">
+          <el-form-item label="故障描述" prop="faultDescription" :rules="[
+            { required: true, message: '请输入故障描述', trigger: 'blur' }
+          ]">
             <el-input type="textarea" v-model="addForm.faultDescription" :rows="4" placeholder="请输入故障描述"></el-input>
           </el-form-item>
-          <el-form-item label="检修结果" prop="repairResult">
+          <el-form-item label="检修结果" prop="repairResult" :rules="[
+            { required: true, message: '请输入检修结果', trigger: 'blur' }
+          ]">
             <el-input type="textarea" v-model="addForm.repairResult" :rows="4" placeholder="请输入检修结果"></el-input>
           </el-form-item>
-          <el-form-item label="检修人员" prop="repairMan">
+          <el-form-item label="检修人员" prop="repairMan" :rules="[
+            { required: true, message: '请输入检修人员', trigger: 'blur' }
+          ]">
             <el-input v-model="addForm.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
           <el-row style="text-align:center">
@@ -114,8 +128,10 @@
     <!-- 编辑检修记录 -->
     <template>
       <el-dialog center @open="show" @close="close" top="40px" title="编辑检修记录" :visible.sync="dialogEdit" :modal-append-to-body="false">
-        <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
-          <el-form-item label="故障时间" prop="faultTime">
+        <el-form ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
+          <el-form-item label="故障时间" prop="faultTime" :rules="[
+            { required: true, message: '请选择故障时间', trigger: 'blur' }
+          ]">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -124,7 +140,9 @@
               placeholder="选择故障时间">
             </el-date-picker>   
           </el-form-item>
-          <el-form-item label="检修时间" prop="repairTime">
+          <el-form-item label="检修时间" prop="repairTime" :rules="[
+            { required: true, message: '请选择检修时间', trigger: 'blur' }
+          ]">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -133,13 +151,19 @@
               placeholder="选择检修时间">
             </el-date-picker>               
           </el-form-item>
-          <el-form-item label="故障描述" prop="faultDescription">
+          <el-form-item label="故障描述" prop="faultDescription" :rules="[
+            { required: true, message: '请输入故障描述', trigger: 'blur' }
+          ]">
             <el-input type="textarea" v-model="edit.faultDescription" :rows="4" placeholder="请输入故障描述"></el-input>
           </el-form-item>
-          <el-form-item label="检修结果" prop="repairResult">
+          <el-form-item label="检修结果" prop="repairResult" :rules="[
+            { required: true, message: '请输入检修结果', trigger: 'blur' }
+          ]">
             <el-input type="textarea" v-model="edit.repairResult" :rows="4" placeholder="请输入检修结果"></el-input>
           </el-form-item>
-          <el-form-item label="检修人员" prop="repairMan">
+          <el-form-item label="检修人员" prop="repairMan" :rules="[
+            { required: true, message: '请输入检修人员', trigger: 'blur' }
+          ]">
             <el-input v-model="edit.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
           <el-row style="text-align:center">
@@ -177,33 +201,6 @@ export default {
       schoolId: null,
       //学校名称
       schoolList: [],
-      rules: {
-        regionId: [
-          {
-            required: true,
-            message: "请选择区域",
-            trigger: "blur"
-          }
-        ],
-        schoolId: [
-          { required: true, message: "请输入学校名称", trigger: "blur" }
-        ],
-        faultTime: [
-          { required: true, message: "请选择故障时间", trigger: "blur" }
-        ],
-        repairTime: [
-          { required: true, message: "请选择检修时间", trigger: "blur" }
-        ],
-        faultDescription: [
-          { required: true, message: "请输入故障描述", trigger: "blur" }
-        ],
-        repairResult: [
-          { required: true, message: "请输入检修结果", trigger: "blur" }
-        ],
-        repairMan: [
-          { required: true, message: "请输入检修人员", trigger: "blur" }
-        ]
-      },
       addForm: {
         regionId: []
       },
@@ -249,9 +246,7 @@ export default {
     },
     handleEdit(row) {
       this.dialogEdit = true;
-      this.$nextTick(function() {
-        this.edit = Object.assign({}, row);
-      });
+      this.edit = {...row};
     },
     handleDel(row) {
       let that = this;

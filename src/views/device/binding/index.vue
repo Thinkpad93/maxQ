@@ -241,7 +241,7 @@ export default {
       if (row.labelIds === null) {
         row.labelIds = [];
       }
-      this.edit = Object.assign({}, row);
+      this.edit = {...row};
       this.regionBySchoolId(row.schoolId);
     },
     handleSelect() {},

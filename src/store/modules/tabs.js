@@ -31,7 +31,12 @@ const mutations = {
 };
 
 const actions = {
+  closeTab({
+    commit,
+    state
+  }) {
 
+  }
 };
 
 

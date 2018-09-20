@@ -9,7 +9,7 @@
      </div> 
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
-          <!-- {{ userInfo.name }} -->
+          {{ info.name }}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -31,9 +31,9 @@ export default {
     };
   },
   computed: {
-    // ...mapState({
-    //   userInfo: state => state.userInfo
-    // })
+    ...mapState('user', [
+      'info'
+    ])
   },
   methods: {
     collapseChage() {

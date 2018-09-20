@@ -56,11 +56,15 @@
     <!-- 新增栏目模板 -->
     <template>
       <el-dialog center top="40px" title="新增栏目模板" :visible.sync="dialogAdd">
-        <el-form :rules="rules" ref="tplform" :model="tplform" size="mini" :label-width="formLabelWidth" label-position="left">
-          <el-form-item label="模板名称" prop="name">
+        <el-form ref="tplform" :model="tplform" size="mini" :label-width="formLabelWidth" label-position="left">
+          <el-form-item label="模板名称" prop="name" :rules="[
+            { required: true, message: '请输入栏目模板名称', trigger: 'blur' }
+          ]">
             <el-input v-model="tplform.name" placeholder="请输入模板名称"></el-input>
           </el-form-item>  
-          <el-form-item label="模板描述" prop="description">
+          <el-form-item label="模板描述" prop="description" :rules="[
+            { required: true, message: '请输入栏目模板描述', trigger: 'blur' }
+          ]">
             <el-input type="textarea" v-model="tplform.description" :rows="5" placeholder="请输入模板描述"></el-input>
           </el-form-item>                  
           <el-row style="text-align:center">
@@ -74,7 +78,7 @@
     <!-- 新增栏目模板详细项 -->
     <template>
       <el-dialog width="70%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
-        <el-form :rules="rules2" ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
+        <el-form ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="栏目模板ID">
@@ -84,7 +88,9 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item label="播放时段" prop="playTime" required>
+              <el-form-item label="播放时段" prop="playTime" :rules="[
+            { required: true, message: '请选择播放时段', trigger: 'blur' }
+          ]">
                 <el-time-picker
                   style="width:100%;"
                   is-range
@@ -120,7 +126,9 @@
           </el-row>   
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item label="栏目名称" prop="channelId">
+              <el-form-item label="栏目名称" prop="channelId" :rules="[
+            { required: true, message: '请选择栏目名称', trigger: 'blur' }
+          ]">
                 <el-select v-model="tplDetailform.channelId" placeholder="请选择" size="mini" @change="selectChannelName" style="width:100%;">
                   <el-option v-for="item in channelList" 
                     :key="item.channelId" 
@@ -131,7 +139,9 @@
               </el-form-item>              
             </el-col>
             <el-col :span="6">
-              <el-form-item label="播放优先级" prop="priority">
+              <el-form-item label="播放优先级" prop="priority" :rules="[
+            { required: true, message: '请选择播放优先级', trigger: 'blur' }
+          ]">
                 <el-select v-model="tplDetailform.priority" placeholder="请选择" size="mini" style="width:100%;">
                   <el-option 
                     v-for="item in priorityList" 
@@ -358,28 +368,6 @@ export default {
         pageSize: 10
       },
       totalCount: 0, //分页总数
-      rules: {
-        name: [
-          { required: true, message: "请输入栏目模板名称", trigger: "blur" }
-        ],
-        description: [
-          { required: true, message: "请输入栏目模板描述", trigger: "blur" }
-        ]
-      },
-      rules2: {
-        playTime: [
-          { required: true, message: "请输入栏目模板名称", trigger: "blur" }
-        ],
-        // validTime: [
-        //   { required: true, message: "请输入栏目模板名称", trigger: "blur" }
-        // ],
-        channelId: [
-          { required: true, message: "请输入栏目模板名称", trigger: "blur" }
-        ],
-        priority: [
-          { required: true, message: "请输入栏目模板名称", trigger: "blur" }
-        ]
-      },
       tplform: {
         type: 0
       },

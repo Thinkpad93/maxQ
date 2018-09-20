@@ -55,7 +55,7 @@
                             <el-form-item label="内容模板" prop="templateId" :rules="[
                               { required: true, message: '请选择内容模板', trigger: 'blur' }
                             ]">
-                                <el-select style="width: 100%;" v-model="query.templateId" placeholder="请选择内容模板选择" @change="handlePoster">
+                                <el-select style="width: 100%;" v-model="query.templateId" :disabled="disabledImg === 1" placeholder="请选择内容模板选择" @change="handlePoster">
                                   <el-option v-for="item in posterList" :key="item.contentId" :label="item.title" :value="item.templateId"></el-option>
                                 </el-select>
                             </el-form-item> 
@@ -96,7 +96,7 @@
                             <el-form-item label="文字内容" prop="componentValue" :rules="[
                               { required: true, message: '请输入文字内容', trigger: 'blur' }
                             ]">
-                                <el-input type="textarea" v-model="query.componentValue" :rows="5" placeholder="请输入内容作者"></el-input>
+                                <el-input type="textarea" v-model="query.componentValue" :rows="5" placeholder="请输入文字内容"></el-input>
                             </el-form-item>  
                         </template>   
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
@@ -179,7 +179,7 @@ export default {
       contentId: null,
       contentDetail: [],
       channelList: [],
-      schoolPlayTime: [],      
+      schoolPlayTime: [],
       query: {
         schoolId: 77,
         title: "",
@@ -217,28 +217,34 @@ export default {
     handleSaveChange() {},
     handleRadio(value) {
       this.query.contentType = value;
-      let params = { schoolId: this.query.schoolId, contentType: this.query.contentType };
+      let params = {
+        schoolId: this.query.schoolId,
+        contentType: this.query.contentType
+      };
       this.querySchoolPlayListTimeAction(params);
       this.$refs.query.clearValidate();
     },
     handleChange(value) {
       if (value === 1 || value === 2 || value === 4 || value === 5) {
         this.disabledVideo = 1;
-      }else {
+      } else {
         this.disabledVideo = 0;
       }
       if (value === 3 || value === 4 || value === 5) {
         this.disabledImg = 1;
-      }else {
+      } else {
         this.disabledImg = 0;
       }
-      this.query.templateId = null;
-      this.queryContentTemplateAction(value);
+      //只能在选择海报的形式才加载
+      if (value === 0 || value === 1 || value === 2) {
+        this.query.templateId = null;
+        this.queryContentTemplateAction(value);
+      }
     },
     handlePoster(value) {
       //let obj = this.posterList.find(item => item.contentId === value);
       //this.img = obj.smallUrl;
-    }, 
+    },
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         this.query.videoUrl = response.data.url;
@@ -258,7 +264,7 @@ export default {
       if (response.errorCode === 0) {
         this.query.imageUrl = response.data.url;
         this.query.imageName = response.data.imageName;
-      }      
+      }
     },
     posterEditAction() {
       this.$router.push({ path: "/content/poster" });
@@ -273,13 +279,19 @@ export default {
           let channelId = [];
           let rolling = "";
           let { showType, playTime, ...args } = this.query;
-          if (this.query.videoUrl === "" && (showType == 1 || showType == 2 || showType == 4 || showType == 5)) {
+          if (
+            this.query.videoUrl === "" &&
+            (showType == 1 || showType == 2 || showType == 4 || showType == 5)
+          ) {
             this.$message({ message: `请上传视频`, type: "warning" });
             return false;
           }
-          if (this.query.imageUrl === "" && (showType == 3 || showType == 4 || showType == 5)) {
+          if (
+            this.query.imageUrl === "" &&
+            (showType == 3 || showType == 4 || showType == 5)
+          ) {
             this.$message({ message: `请上传图片`, type: "warning" });
-            return false;            
+            return false;
           }
           this.schoolPlayTime.forEach(oldItem => {
             if (playTime.find(newItem => oldItem.itemId == newItem)) {
@@ -319,7 +331,12 @@ export default {
       });
       if (res.errorCode === 0) {
         this.resetForm("query");
-        if (this.query.contentType === 0 && (this.showType == 0 || this.showType == 1 || showType == 2)) {
+        if (
+          this.query.contentType === 0 &&
+          (this.query.showType == 0 ||
+            this.query.showType == 1 ||
+            this.query.showType == 2)
+        ) {
           this.$confirm(`上传内容成功，你是否要编辑内容模板?`, "提示", {
             confirmButtonText: "好的",
             cancelButtonText: "不用",
@@ -330,7 +347,7 @@ export default {
               this.contentId = res.data[0].contentId;
             })
             .catch(() => {});
-        }else {
+        } else {
           this.$message({ message: `内容上传成功`, type: "success" });
         }
       }

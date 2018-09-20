@@ -19,7 +19,9 @@
                 <template v-if="scope.row.show">
                   <el-input v-model="scope.row.name" size="mini"></el-input>
                 </template>
-                <template v-else>{{ scope.row.name }}</template>
+                <template v-else>
+                  <span style="color:#409EFF">{{ scope.row.name }}</span>
+                </template>
               </template>
             </el-table-column>
             <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
@@ -43,10 +45,10 @@
                   </el-select>   
                 </template>
                 <template v-else>
-                  <el-tag size="mini" v-if="scope.row.type === 0">缺省</el-tag>
-                  <el-tag size="mini" v-else-if="scope.row.type === 1">特色</el-tag>
-                  <el-tag size="mini" v-else-if="scope.row.type === 2">商圈</el-tag>
-                  <el-tag size="mini" v-else="scope.row.type === 3">冠名企业</el-tag>
+                  <span size="mini" v-if="scope.row.type === 0">缺省</span>
+                  <span size="mini" v-else-if="scope.row.type === 1">特色</span>
+                  <span size="mini" v-else-if="scope.row.type === 2">商圈</span>
+                  <span size="mini" v-else>冠名企业</span>
                 </template>
               </template>
             </el-table-column>
