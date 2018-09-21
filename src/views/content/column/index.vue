@@ -108,7 +108,7 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.createTable();
+      this.queryChannel();
     },
     search() {
       let page = this.query.page;
@@ -119,7 +119,7 @@ export default {
       if (page > 1) {
         this.query.page = 1;
       }
-      this.createTable();
+      this.queryChannel();
     },
     close() {
       this.resetForm("formRef");
@@ -138,7 +138,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.deleteTable(row.channelId);
+          this.deleteChannel(row.channelId);
         })
         .catch(error => {
           return false;
@@ -149,9 +149,9 @@ export default {
         if (valid) {
           let { postTime, ...args } = this.form;
           if (postTime && args.channelId) {
-            this.updateTable(args);
+            this.updateChannel(args);
           } else {
-            this.addTable(this.form);
+            this.addChannel(this.form);
           }
         }
       });
@@ -160,7 +160,7 @@ export default {
       this.$refs[formName].resetFields();
     },
     //显示栏目列表
-    async createTable() {
+    async queryChannel() {
       let res = await service.queryChannel(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
@@ -168,37 +168,37 @@ export default {
       }
     },
     //新增栏目
-    async addTable(params = {}) {
+    async addChannel(params = {}) {
       let res = await service.addChannel(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.queryChannel();
         this.resetForm("formRef");
       } else if (res.errorCode === 1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //编辑栏目
-    async updateTable(params = {}) {
+    async updateChannel(params = {}) {
       let res = await service.updateChannel(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.queryChannel();
       }
     },
     //删除栏目
-    async deleteTable(channelId) {
+    async deleteChannel(channelId) {
       let res = await service.deleteChannel({ channelId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.queryChannel();
       }
     }
   },
   mounted() {
-    this.createTable();
+    this.queryChannel();
   }
 };
 </script>

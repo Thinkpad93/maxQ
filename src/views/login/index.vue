@@ -14,7 +14,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" style="width:100%;" type="primary" @click="submit">登 陆</el-button>
+            <el-button style="width:100%;" type="primary" @click="submit">登 陆</el-button>
           </el-form-item>               
         </el-form>     
       </div>        
@@ -22,14 +22,10 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-//import { userLogin } from "@/api/login";
-//import "@/mock/login";
-
 export default {
   name: "login",
   data() {
     return {
-      loading: false,
       form: {
         name: "",
         password: ""
@@ -47,7 +43,6 @@ export default {
     submit() {
       this.$refs.form.validate(async valid => {
         if (valid) {
-          this.loading = true;
           this.login({
             vm: this,
             name: this.form.name,
@@ -80,26 +75,13 @@ div[data-page="login"] {
   height: 100%;
   background-color: rgb(240, 242, 245);
   background-image: url("../../images/TB1kOoAqv1TBuNjy0FjXXajyXXa-600-600.png");
-  background-origin: center center;
-  background-repeat: no-repeat;
-}
-.center-card {
-  padding: 0 15px;
-  position: absolute;
-  left: 50%;
-  top: 30%;
-  z-index: 11;
-  transform: translate(-50%, -30%);
-  h3 {
-    font-size: 20px;
-    text-align: center;
-  }
+  background-origin: 0 0;
 }
 .user-login {
   position: absolute;
   left: 50%;
-  top: 20%;
+  top: 50%;
   z-index: 10;
-  transform: translate(-50%,0%);
+  transform: translate(-50%,-50%);
 }
 </style>

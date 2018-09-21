@@ -7,7 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @last="lastChange"></region>
+                <region @last="queryRegion"></region>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @clear="handleClearSchool">
@@ -145,7 +145,17 @@
               <p class="simInput" @click="dialogContent = true">查看播放内容</p>
             </template>
             <template v-else>
-              <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a>
+              <!-- <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a> -->
+              <el-popover placement="left" trigger="hover">
+                <el-table :data="scope.row.contents" border stripe size="mini">
+                  <el-table-column width="200" property="title" label="播放内容" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <a href="javascript:;" style="color:#409EFF">{{ scope.row.title }}</a>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <a href="javascript:;" style="color:#409EFF" slot="reference">查看</a>
+              </el-popover>
             </template>
           </template>
         </el-table-column>
@@ -301,7 +311,7 @@ export default {
       playContendata: [],
       channelList: [],
       query: {
-        schoolId: 77
+        schoolId: 1
       },
       channelForm: {
         schoolId: 77,
@@ -334,7 +344,7 @@ export default {
       if (this.query.schoolId === null) {
         return;
       }
-      this.createTable();
+      this.querySchoolPlayChannel();
     },
     show() {
       this.$nextTick(() => {
@@ -388,7 +398,7 @@ export default {
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
-      this.queryChannelContentAction({ schoolId, channelId: value });
+      this.queryPlayContent({ schoolId, channelId: value });
     },
     handleClearSchool() {
       this.query.schoolId = null;
@@ -401,7 +411,7 @@ export default {
       this.value4[0] = row.playStartTime;
       this.value4[1] = row.playEndTime;
       this.disabled = 1;
-      this.queryChannelContentAction({ channelId, schoolId }, "edit");
+      this.queryPlayContent({ channelId, schoolId }, "edit");
     },
     handleDelete(index, row) {
       let { itemId, schoolId } = row;
@@ -411,7 +421,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.deleteTable({ itemId, schoolId });
+          this.deleteSchoolPlayChannel({ itemId, schoolId });
         })
         .catch(error => {
           return false;
@@ -446,7 +456,7 @@ export default {
         contents: content.concat(one)
       });
       this.saveloading = true;
-      this.updateTable(obj);
+      this.updateSchoolPlayChannel(obj);
     },
     //赋值自定义有效期时间
     validityShow(row) {},
@@ -504,12 +514,12 @@ export default {
             playEndTime: playTime[1],
             ...validObj,
           });      
-          this.addTable(obj);
+          this.addSchoolPlayChannel(obj);
         }
       });
     },
     //加载学校数据
-    async lastChange(value) {
+    async queryRegion(value) {
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
       if (res.errorCode === 0) {
@@ -522,14 +532,14 @@ export default {
       let { channelId, schoolId } = row;
     },
     //查询栏目名称
-    async queryChannelInner() {
+    async queryChannelAll() {
       let res = await service.queryChannelAll({});
       if (res.errorCode === 0) {
         this.channelList = res.data;
       }
     },
     //查询频道对应内容列表 添加和编辑时有用
-    async queryChannelContentAction(params = {}, str = "add") {
+    async queryPlayContent(params = {}, str = "add") {
       let res = await service.queryPlayContent(params);
       if (res.errorCode === 0) {
         if (str === "add") {
@@ -540,25 +550,25 @@ export default {
       }
     },
     //新增学校播放频道
-    async addTable(params = {}) {
+    async addSchoolPlayChannel(params = {}) {
       let res = await service.addSchoolPlayChannel(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
         this.dialogChannel = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.querySchoolPlayChannel();
       }
     },
     //显示学校播放表单列表
-    async createTable() {
+    async querySchoolPlayChannel() {
       let res = await service.querySchoolPlayChannel(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data;
       }
     },
     //编辑学校播放频道
-    async updateTable(params = {}) {
+    async updateSchoolPlayChannel(params = {}) {
       let res = await service.updateSchoolPlayChannel(params, {
         headers: { "Content-Type": "application/json" }
       });
@@ -566,21 +576,21 @@ export default {
         this.saveloading = false;
         this.disabled = 0;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.querySchoolPlayChannel();
       }
     },
     //删除学校播放频道
-    async deleteTable(params = {}) {
+    async deleteSchoolPlayChannel(params = {}) {
       let res = await service.deleteSchoolPlayChannel(params);
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.querySchoolPlayChannel();
       }
     }
   },
   mounted() {
-    this.createTable();
-    this.queryChannelInner();
+    this.querySchoolPlayChannel();
+    this.queryChannelAll();
   }
 };
 </script>

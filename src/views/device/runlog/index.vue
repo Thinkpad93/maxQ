@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     //显示设备运行日志
-    async createTable() {
+    async showDeviceRunlog() {
       let res = await service.showDeviceRunlog(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data;
@@ -52,7 +52,7 @@ export default {
     }
   },
   mounted() {
-    this.createTable();
+    this.showDeviceRunlog();
   }
 };
 </script>

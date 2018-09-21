@@ -6,7 +6,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <qx-region @last="lastChange"></qx-region>
+                <qx-region @last="queryRegion"></qx-region>
               </el-form-item>              
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
@@ -67,7 +67,7 @@
           <el-form-item label="区域选择" prop="regionId" :rules="[
             { required: true, message: '请选择区域', trigger: 'blur' }
           ]">
-            <qx-region @last="lastChange" v-model="addForm.regionId"></qx-region>
+            <qx-region @last="queryRegion" v-model="addForm.regionId"></qx-region>
           </el-form-item>    
           <el-form-item label="学校名称" prop="schoolId" :rules="[
             { required: true, message: '请输入学校名称', trigger: 'blur' }
@@ -217,7 +217,7 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.createTable();
+      this.showRepairList();
     },      
     show() {},
     close() {},
@@ -231,7 +231,7 @@ export default {
       if (page > 1) {
         this.query.page = 1;
       }
-      this.createTable();
+      this.showRepairList();
     },
     handleRegion(list) {
       if (Array.isArray(list)) {
@@ -256,7 +256,7 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteTable(row.repairId);
+          that.deleteDeviceRepair(row.repairId);
         })
         .catch(error => {
           return false;
@@ -267,7 +267,7 @@ export default {
         if (valid) {
           this.btnloading = true;
           let { regionId, ...args } = this.addForm;
-          this.addTable(args);
+          this.addDeviceRepair(args);
         } else {
           return false;
         }
@@ -285,13 +285,13 @@ export default {
             deviceId,
             ...args
           } = this.edit;
-          this.updateTable(args);
+          this.updateDeviceRepair(args);
         } else {
           return false;
         }
       });
     },
-    async lastChange(value) {
+    async queryRegion(value) {
       this.addForm.regionId = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
@@ -302,7 +302,7 @@ export default {
       }
     },
     //显示检修列表
-    async createTable() {
+    async showRepairList() {
       this.loading = true;
       let res = await service.showRepairList(this.query);
       if (res.errorCode === 0) {
@@ -317,40 +317,40 @@ export default {
       }
     },
     //新增检修记录
-    async addTable(params = {}) {
+    async addDeviceRepair(params = {}) {
       let res = await service.addDeviceRepair(params);
       if (res.errorCode === 0) {
         this.dialogAdd = false;
         this.btnloading = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable(this.query);
+        this.showRepairList(this.query);
       } else {
         this.btnloading = false;
         this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     },
     //编辑检修记录
-    async updateTable(params = {}) {
+    async updateDeviceRepair(params = {}) {
       let res = await service.updateDeviceRepair(params);
       if (res.errorCode === 0) {
         this.dialogEdit = false;
         this.btnloading = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable(this.query);
+        this.showRepairList(this.query);
       }
     },
     //删除检修记录
-    async deleteTable(repairId) {
+    async deleteDeviceRepair(repairId) {
       let res = await service.deleteDeviceRepair({ repairId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.query.page = 1; //从第一页开始查起
-        this.createTable(this.query);
+        this.showRepairList(this.query);
       }
     }
   },
   mounted() {
-    this.createTable();
+    this.showRepairList();
   }
 };
 </script>

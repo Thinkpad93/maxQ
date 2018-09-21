@@ -7,7 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <qx-region @last="lastChange"></qx-region>
+                <qx-region @last="queryRegion"></qx-region>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
@@ -65,7 +65,7 @@
        <el-dialog width="50%" center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="regionId">
-              <qx-region @last="lastChange" v-model="addForm.regionId"></qx-region>
+              <qx-region @last="queryRegion" v-model="addForm.regionId"></qx-region>
             </el-form-item>
             <el-form-item label="学校名称" prop="schoolId">
                <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
@@ -216,7 +216,7 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.createTable();
+      this.showDeviceList();
     },    
     //搜索
     search() {
@@ -228,7 +228,7 @@ export default {
       if (page > 1) {
         this.query.page = 1;
       }
-      this.createTable();
+      this.showDeviceList();
     },
     handleSchool(value) {
       this.query.schoolId = value;
@@ -242,7 +242,7 @@ export default {
         row.labelIds = [];
       }
       this.edit = {...row};
-      this.regionBySchoolId(row.schoolId);
+      this.queryProvinceCityRegionBySchoolId(row.schoolId);
     },
     handleSelect() {},
     handleDel(row) {
@@ -253,7 +253,7 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteTable(row.deviceId);
+          that.deleteDeviceBind(row.deviceId);
         })
         .catch(error => {
           return false;
@@ -263,7 +263,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { regionId, ...args } = this.addForm;
-          this.addTable(args);
+          this.addDeviceBind(args);
         } else {
           return false;
         }
@@ -274,14 +274,14 @@ export default {
         if (valid) {
           this.btnloading = true;
           let { postTime, schoolName, totalCount, ...args } = this.edit;
-          this.updateTable(args);
+          this.updateDeviceBind(args);
         } else {
           return false;
         }
       });
     },
     //加载学校数据
-    async lastChange(value) {
+    async queryRegion(value) {
       this.addForm.regionId = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
@@ -292,22 +292,22 @@ export default {
       }
     },
     //根据学校Id查询区域
-    async regionBySchoolId(schoolId) {
-      let res = await service.queryProvinceCityRegionBySchoolId({ schoolId });
+    async queryProvinceCityRegionBySchoolId(schoolId) {
+      let res = await service.queryProvinceCityqueryProvinceCityRegionBySchoolId({ schoolId });
       if (res.errorCode === 0) {
         let { province, city, region } = res.data[0];
         this.selected = `${province} / ${city} / ${region}`;
       }
     },
     //查询标签
-    async getLabel() {
+    async queryLabel() {
       let res = await service.queryLabel({ queryType: 3 });
       if (res.errorCode === 0) {
         this.labelsList = res.data;
       }
     },
     //显示设备列表
-    async createTable() {
+    async showDeviceList() {
       let res = await service.showDeviceList(this.query);
       if (res.errorCode === 0) {
         let data = res.data.data;
@@ -321,12 +321,12 @@ export default {
       }
     },
     //新增设备绑定
-    async addTable(params = {}) {
+    async addDeviceBind(params = {}) {
       let res = await service.addDeviceBind(params);
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.dialogAdd = false;
-        this.createTable();
+        this.showDeviceList();
       } else if (res.errorCode === 1) {
         //MAC码已存在
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
@@ -334,27 +334,27 @@ export default {
       }
     },
     //编辑设备绑定
-    async updateTable(params = {}) {
+    async updateDeviceBind(params = {}) {
       let res = await service.updateDeviceBind(params);
       if (res.errorCode === 0) {
         this.dialogEdit = false;
         this.btnloading = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.showDeviceList();
       }
     },
     //删除设备绑定
-    async deleteTable(deviceId) {
+    async deleteDeviceBind(deviceId) {
       let res = await service.deleteDeviceBind({ deviceId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.showDeviceList();
       }
     }
   },
   mounted() {
-    this.getLabel();
-    this.createTable();
+    this.queryLabel();
+    this.showDeviceList();
   }
 };
 </script>

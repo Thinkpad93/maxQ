@@ -127,6 +127,12 @@ export function queryChannelContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//查询上传列表审核节点
+export function queryCheckNode(params) {
+  return ax.post('/action/mod-xiaojiao/content/check/queryCheckNode.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //查询我的上传列表
 export function queryContentList(params) {
   return ax.post('/action/mod-xiaojiao/channel/content/queryContentList.do', params)
@@ -157,14 +163,12 @@ export function updateContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-
 //查询栏目模板时间段
 export function querySchoolPlayListTime(params) {
   return ax.post('/action/mod-xiaojiao/channel/content/querySchoolPlayListTime.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-
 //显示内容模板列表
 export function queryContentTemplate(params) {
   return ax.post('/action/mod-xiaojiao/channel/content/queryContentTemplate.do', params)
@@ -213,9 +217,15 @@ export function publishContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-//查询预发布内容列表
+//查询待发布内容列表
 export function queryPublishContentList(params) {
   return ax.post('/action/mod-xiaojiao/content/prePublish/queryPublishContentList.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//查询预发布内容列表
+export function queryPrepublishContentList(params) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/queryPrepublishContentList.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

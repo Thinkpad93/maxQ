@@ -46,7 +46,7 @@
               :element-loading-text="loadingText"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)">
-              <a href="javascript:;" @click="showDevice(item.deviceId)">
+              <a href="javascript:;" @click="showDeviceDetail(item.deviceId)">
                 <img src="http://temp.im/466x300/4CD964/fff" class="image">
               </a>
               <div class="layer">
@@ -146,7 +146,7 @@ export default {
       if (this.schoolId === null) {
         this.$message({ message: "请选择学校名称", type: "warning" });
       } else {
-        this.createTable();
+        this.showDeviceStatus();
       }
     },
     async lastChange(value) {
@@ -177,7 +177,7 @@ export default {
       that.loadingText = "设备重启中";
       that.$set(item, "loading", true);
       setTimeout(() => {
-        that.sendDeviceDirective(params, item);
+        that.sendDeviceCommand(params, item);
       }, 1000);
     },
     handleUpdate(item) {
@@ -190,12 +190,12 @@ export default {
       that.loadingText = "设备刷新中";
       that.$set(item, "loading", true);
       setTimeout(() => {
-        that.sendDeviceDirective(params, item);
+        that.sendDeviceCommand(params, item);
       }, 1000);
     },
     handleMon() {},
     //显示设备详情
-    async showDevice(deviceId) {
+    async showDeviceDetail(deviceId) {
       let res = await service.showDeviceDetail({ deviceId });
       if (res.errorCode === 0) {
         this.viewDevice = res.data[0];
@@ -203,7 +203,7 @@ export default {
       }
     },
     //显示设备状态列表
-    async createTable() {
+    async showDeviceStatus() {
       let res = await service.showDeviceStatus(this.query);
       if (res.errorCode === 0) {
         let data = res.data.data;
@@ -215,7 +215,7 @@ export default {
       }
     },
     //发送设备命令
-    async sendDeviceDirective(params = {}, item) {
+    async sendDeviceCommand(params = {}, item) {
       let res = await service.sendDeviceCommand(params);
       if (res.errorCode === 0) {
         this.$set(item, "loading", false);
@@ -224,7 +224,7 @@ export default {
     }
   },
   mounted() {
-    this.createTable();
+    this.showDeviceStatus();
   }
 };
 </script>

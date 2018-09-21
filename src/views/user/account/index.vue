@@ -45,9 +45,6 @@
            <template slot-scope="scope">
              <el-switch 
               v-model="scope.row.status" 
-              :width="35"
-              active-text="开"
-              inactive-text="关"
               :active-value="0"
               :inactive-value="1"
               active-color="#13ce66" 

@@ -21,11 +21,19 @@ Vue.use(Element);
 Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    next();
-  } else {
-    next();
-  }
+  //let token = localStorage.getItem('token');
+  next();
+  // if (!token) {
+  //   return next({
+  //     path: '/login'
+  //   });
+  // }
+  //next();
+  // if (to.matched.some(record => record.meta.requiresAuth)) {
+  //   next();
+  // } else {
+  //   next();
+  // }
 });
 
 /* eslint-disable no-new */

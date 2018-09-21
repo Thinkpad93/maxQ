@@ -8,10 +8,10 @@
                           <el-form-item label="内容标题">
                               <el-input v-model="query.title" placeholder="请输入栏目模板" maxlength="40"></el-input>
                           </el-form-item>
-                          <el-form-item label="审核阶段">
-                            <el-select v-model="query.checkStage" clearable placeholder="请选择设备状态">
+                          <el-form-item label="审核状态">
+                            <el-select v-model="query.verifyStatus" clearable placeholder="请选择设备状态">
                                 <el-option
-                                    v-for="item in checkStageList"
+                                    v-for="item in verifyStatusList"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -55,19 +55,19 @@
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="审核阶段" prop="checkStage" :show-overflow-tooltip="true">
+              <!-- <el-table-column :resizable="false" label="审核节点" prop="checkStage" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
                       <p v-if="scope.row.checkStage === 0">待审核</p>
                       <p v-else-if="scope.row.checkStage === 1">初审</p>
                       <p v-else-if="scope.row.checkStage === 2">复审</p>
                       <p v-else>终审</p>
                   </template>
-              </el-table-column>
-              <el-table-column :resizable="false" label="审核状态" prop="verifyStatus" :show-overflow-tooltip="true">
+              </el-table-column> -->
+              <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <p v-if="scope.row.verifyStatus === 0" style="color:#409EFF">初审</p>
-                      <p v-else-if="scope.row.verifyStatus === 1" style="color:#67C23A;">审核通过</p>
-                      <p v-else style="color:#F56C6C;">审核不通过</p>
+                      <a href="javascript:;" v-if="scope.row.verifyStatus === 0" style="color:#409EFF">初始</a>
+                      <a href="javascript:;" v-else-if="scope.row.verifyStatus === 1" style="color:#67C23A;">审核通过</a>
+                      <a href="javascript:;" v-else style="color:#F56C6C;" @click="handleCheckNode(scope.row)">审核不通过</a>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
@@ -89,7 +89,18 @@
         :pageSize="query.pageSize" 
         :total="totalCount">
       </qx-pagination>
-    </template>          
+    </template>  
+    <!-- 查看审核节点 -->
+    <template>
+      <el-dialog width="60%" center top="40px" title="审核节点" :visible.sync="dialogNode">
+        <el-table :data="nodeData"  style="width: 100%" :height="450" stripe size="mini">
+          <el-table-column property="checkStage" label="审核环节" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="verifyStatus" label="审核结果" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="postTime" label="审核时间" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="verifyDescription" label="审核意见" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+      </el-dialog>
+    </template>        
    </div> 
 </template>
 <script>
@@ -98,27 +109,27 @@ import pagination from "@/components/pagination";
 export default {
   name: "upload",
   components: {
-    'qx-pagination': pagination
-  },  
+    "qx-pagination": pagination
+  },
   data() {
     return {
-      dialogAdd: false,
+      dialogNode: false,
       query: {
         schoolId: 0,
-        checkStage: 4,
+        verifyStatus: 3,
         title: "",
         page: 1,
         pageSize: 20
       },
       totalCount: 0,
-      checkStageList: [
-        { value: 0, label: "待审核" },
-        { value: 1, label: "初审" },
-        { value: 2, label: "复审" },
-        { value: 3, label: "终审" },
-        { value: 4, label: "全部" }
+      verifyStatusList: [
+        { value: 0, label: "审核中" },
+        { value: 1, label: "审核通过" },
+        { value: 2, label: "审核不通过 " },
+        { value: 3, label: "全部" }
       ],
-      tableData: []
+      tableData: [],
+      nodeData: []
     };
   },
   computed: {
@@ -129,18 +140,18 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.createTable();
-    },    
-    search() {
-      this.createTable();
+      this.queryContentList();
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    // handleEdit(row) {
-    //   this.$router.push({
-    //     path: `/content/uploadContentEdit/${row.contentId}`
-    //   });
-    // },
+    search() {
+      this.queryContentList();
+    },
+    handleCheckNode(row) {
+      let { contentId, verifyStatus } = row;
+      if (contentId && verifyStatus === 2) {
+        this.dialogNode = true;
+        this.queryCheckNode(contentId);
+      }
+    },
     handleDel(row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
@@ -149,7 +160,7 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteTable(row.contentId);
+          that.deleteContent(row.contentId);
         })
         .catch(error => {
           return false;
@@ -158,9 +169,16 @@ export default {
     uoloadAction() {
       this.$router.push({ path: "/content/uploadContent" });
     },
-    async createTable() {
+    //查询上传列表审核节点
+    async queryCheckNode(contentId) {
+      let res = await service.queryCheckNode({ contentId });
+      if (res.errorCode === 0) {  
+        this.nodeData = res.data;
+      }
+    },
+    //查询我的上传列表
+    async queryContentList() {
       let res = await service.queryContentList(this.query);
-      console.log(res);
       if (res.errorCode === 0) {
         let data = res.data.data;
         if (!Array.isArray(data)) {
@@ -172,17 +190,17 @@ export default {
       }
     },
     //删除上传内容
-    async deleteTable(contentId) {
+    async deleteContent(contentId) {
       let res = await service.deleteContent({ contentId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.queryContentList();
       }
     }
   },
   mounted() {},
   activated() {
-    this.createTable();
+    this.queryContentList();
   }
 };
 </script>
