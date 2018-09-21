@@ -5,13 +5,13 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="栏目名称">
+              <el-form-item label="内容标题">
                 <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
               </el-form-item>              
               <el-form-item label="审核状态">
                 <el-select v-model="query.verifyStatus" clearable placeholder="请选择审核状态">
                   <el-option
-                    v-for="item in options"
+                    v-for="item in verifyStatusList"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -28,7 +28,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
@@ -40,38 +40,65 @@
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
     </template>
+    <!-- 分页 -->
+    <template>
+      <qx-pagination 
+        @page-change="pageChange" 
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
+    </template>        
   </div>   
 </template>
 <script>
 import service from "@/api";
+import pagination from "@/components/pagination";
 export default {
   name: "trial",
+  components: {
+    'qx-pagination': pagination
+  },  
   data() {
     return {
-      options: [
-        {  }
-      ],
       query: {
+        schoolId: 0,
         title: "",
-        checkStage: null,
-        verifyStatus: null,
+        checkStage: 1,
+        verifyStatus: 0,
         page: 1,
         pageSize: 10
       },
-      tableData: []
+      totalCount: 0,
+      tableData: [],
+      verifyStatusList: [
+        { value: 0, label: "待审核" },
+        { value: 1, label: "审核通过" },
+        { value: 2, label: "审核不通过 " },
+      ]
     };
   },
+  computed: {
+    //设置表格高度
+    tableHeight() {
+      return window.innerHeight - 255;
+    }
+  },  
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.querycheckContentList();
+    },    
     search() {},
-    async createTable() {
-      let res = await service.querycheckContentList(this.query);
+    async queryCheckContentList() {
+      let res = await service.queryCheckContentList(this.query);
       if (res.errorCode === 0) {
-          
+         this.tableData = res.data;  
       }
     }
   },
   mounted() {
-    this.createTable();
+    this.queryCheckContentList();
   }
 };
 </script>

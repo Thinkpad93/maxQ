@@ -93,10 +93,24 @@
     <!-- 查看审核节点 -->
     <template>
       <el-dialog width="60%" center top="40px" title="审核节点" :visible.sync="dialogNode">
-        <el-table :data="nodeData"  style="width: 100%" :height="450" stripe size="mini">
-          <el-table-column property="checkStage" label="审核环节" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column property="verifyStatus" label="审核结果" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column property="postTime" label="审核时间" :show-overflow-tooltip="true"></el-table-column>
+        <el-table :data="nodeData"  style="width: 100%" border stripe size="mini">
+          <el-table-column width="150" type="index" label="申请编号" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column width="150" property="checkStage" label="审核环节" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <a href="javascript:;" v-if="scope.row.checkStage === 0">待审核</a>
+              <a href="javascript:;" v-else-if="scope.row.checkStage === 1">初审</a>
+              <a href="javascript:;" v-else-if="scope.row.checkStage === 2">复审</a>
+              <a href="javascript:;" v-else>终审</a>
+            </template>
+          </el-table-column>
+          <el-table-column width="150" property="verifyStatus" label="审核结果" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <a href="javascript:;" style="color:#409EFF" v-if="scope.row.verifyStatus === 0">初始</a>
+              <a href="javascript:;" style="color:#67C23A;" v-else-if="scope.row.verifyStatus === 1">审核通过</a>
+              <a href="javascript:;" style="color:#F56C6C;" v-else>审核不通过</a>
+            </template>
+          </el-table-column>
+          <el-table-column width="150" property="postTime" label="审核时间" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column property="verifyDescription" label="审核意见" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
       </el-dialog>

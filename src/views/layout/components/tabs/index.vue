@@ -1,17 +1,14 @@
 <template>
-  <div class="tabs-control">
-    <el-tabs class="" 
-        type="card" 
-        v-model="activeName" 
-        :closable="true"
-        @tab-click="handleClick">
-        <el-tab-pane 
-            v-for="(tab, index) in tabList"
-            :key="index"
-            :label="tab.meta.title" 
-            :name="tab.name">
-        </el-tab-pane> 
-    </el-tabs>    
+  <div class="tabs-contaier">
+    <router-link 
+        v-for="tab in tabList" 
+        :key="tab.path" 
+        :to="tab.path">
+        {{ tab.meta.title }}
+        <template v-if="tab.path !== '/home/index'">
+          <i class='el-icon-close' @click.prevent.stop="remove(tab)"></i>
+        </template>
+    </router-link>   
   </div>  
 </template>
 <script>
@@ -20,42 +17,63 @@ import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   name: "tabs",
   data() {
-    return {
-      activeName: "first"
-    };
+    return {};
   },
   watch: {
     $route(news, old) {
-      this.addTabs();
+      this.ADD_TABS(this.$route);
     }
   },
   computed: {
-    ...mapState("tabs", {
-      tabList: state => state.tabList
-    })
+    ...mapState("tabs", ["tabList"])
   },
   methods: {
-    addTabs() {
-      this.$store.commit("tabs/ADD_TABS", this.$route);
-    },
-    handleClick(tab) {
-      let route = this.tabList.find(t => t.name === tab.name);
-      if (route) {
-        this.$router.push({ path: `${route.path}` });
-      }
+    ...mapMutations("tabs", ["ADD_TABS", "DETELE_TABS"]),
+    ...mapActions("tabs", ["removeTabs"]),
+    remove(tab) {
+      this.removeTabs(tab).then(res => {
+        console.log(res);
+      });
     }
   },
   mounted() {
-    this.addTabs();
+    this.ADD_TABS(this.$route);
   }
 };
 </script>
 <style lang="less" scoped>
-.tabs-control {
+.tabs-contaier {
   position: absolute;
   left: 0;
   top: 0;
   z-index: 990;
   width: 100%;
+  display: flex;
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.12);
+  a {
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-height: 30px;
+    min-width: 50px;
+    padding: 0 10px;
+    color: #909399;
+    font-size: 12px;
+    i {
+      display: inline-block;
+      margin-left: 5px;
+      border-radius: 50%;
+      color: #fff;
+      background-color: #ccc;
+    }
+    &.router-link-exact-active {
+      color: #333;
+      background-color: #f6f6f6;
+      i {
+        background-color: #409eff;
+      }
+    }
+  }
 }
 </style>

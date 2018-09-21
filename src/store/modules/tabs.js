@@ -1,7 +1,11 @@
+import db from "@/libs/db";
 import {
   ADD_TABS,
   DETELE_TABS
 } from '../mutation-types';
+import {
+  get
+} from "http";
 
 
 const state = {
@@ -13,17 +17,15 @@ const mutations = {
     if (state.tabList.some(v => v.path === params.path)) {
       return false;
     }
-    state.tabList.push(Object.assign({}, params));
+    state.tabList.push({ ...params
+    });
   },
 
-  [DETELE_TABS](state, {
-    path,
-    name
-  }) {
-    let ientries = state.tagList.entries();
+  [DETELE_TABS](state, params) {
+    let ientries = state.tabList.entries();
     for (let [i, v] of ientries) {
-      if (v.path === path && name) {
-        state.tagList.splice(i, 1);
+      if (v.path === params.path) {
+        state.tabList.splice(i, 1);
         break;
       }
     }
@@ -31,11 +33,14 @@ const mutations = {
 };
 
 const actions = {
-  closeTab({
+  removeTabs({
     commit,
     state
-  }) {
-
+  }, params) {
+    return new Promise(resolve => {
+      commit('DETELE_TABS', params);
+      resolve([...state.tabList]);
+    });
   }
 };
 

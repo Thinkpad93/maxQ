@@ -7,6 +7,7 @@ import Vuex from 'vuex';
 import account from './modules/account';
 import user from './modules/user';
 import tag from './modules/tag';
+import tabs from './modules/tabs';
 
 Vue.use(Vuex);
 
@@ -22,7 +23,8 @@ const store = new Vuex.Store({
   modules: {
     account,
     user,
-    tag
+    tag,
+    tabs
   }
 });
 

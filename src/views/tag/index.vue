@@ -12,7 +12,7 @@
      </template>
      <!-- 表格数据 -->
      <template>
-         <el-table :data="tableData" style="width: 100%" stripe size="mini" empty-text="没有标签哦" v-loading="loading">
+         <el-table :data="tableData" style="width: 100%" stripe size="mini" empty-text="没有标签哦">
             <el-table-column label="标签ID" prop="labelId"></el-table-column>
             <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
               <template slot-scope="scope">
@@ -100,7 +100,6 @@ export default {
   name: "tab",
   data() {
     return {
-      loading: false,
       dialogAdd: false,
       formLabelWidth: "100px",
       form: {},
@@ -140,10 +139,8 @@ export default {
     },
     //查询标签列表
     async createTable() {
-      this.loading = true;
       let res = await service.queryLabel({ queryType: 0 });
       if (res.errorCode === 0) {
-        this.loading = false;
         this.tableData = res.data;
       }
     },

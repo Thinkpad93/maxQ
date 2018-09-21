@@ -22,7 +22,7 @@
 <script>
 import qxheader from "./components/headers";
 import qxaside from "./components/asides";
-import qxtabs from "./components/tags";
+import qxtabs from "./components/tabs";
 
 export default {
   name: "layout",

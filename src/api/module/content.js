@@ -183,7 +183,7 @@ export function addContentTemplate(params) {
 }
 //查询审核内容列表
 export function queryCheckContentList(params) {
-  return ax.post('/action/mod-xiaojiao/channel/check/queryCheckContentList.do', params)
+  return ax.post('/action/mod-xiaojiao/content/check/queryCheckContentList.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
