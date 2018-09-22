@@ -16,7 +16,7 @@
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
       </el-menu-item>      
-      <el-menu-item index="/tag/index">
+      <el-menu-item index="/label/index">
         <i class="el-icon-menu"></i>
         <span slot="title">标签管理</span>        
       </el-menu-item>         

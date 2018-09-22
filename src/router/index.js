@@ -252,14 +252,14 @@ export const constantRouterMap = [{
     ]
   },
   {
-    path: '/tag',
+    path: '/label',
     component: Layout,
-    redirect: '/tag/index',
+    redirect: '/label/index',
     children: [{
-      path: '/tag/index',
-      name: 'tag',
+      path: '/label/index',
+      name: 'label',
       component: () =>
-        import ('@/views/tag'),
+        import ('@/views/label'),
       meta: {
         requiresAuth: true,
         title: "标签管理"

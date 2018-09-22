@@ -3,10 +3,6 @@ import {
   ADD_TABS,
   DETELE_TABS
 } from '../mutation-types';
-import {
-  get
-} from "http";
-
 
 const state = {
   tabList: []

@@ -28,11 +28,19 @@ export default {
     ...mapState("tabs", ["tabList"])
   },
   methods: {
-    ...mapMutations("tabs", ["ADD_TABS", "DETELE_TABS"]),
+    ...mapMutations("tabs", ["ADD_TABS"]),
     ...mapActions("tabs", ["removeTabs"]),
+    //关闭标签页
     remove(tab) {
       this.removeTabs(tab).then(res => {
-        console.log(res);
+        if (tab.path === this.$route.path) {
+          const latestView = res.slice(-1)[0];
+          if (latestView) {
+            this.$router.push(latestView);
+          }else {
+            this.$router.push({ path: "/" });
+          }
+        }
       });
     }
   },

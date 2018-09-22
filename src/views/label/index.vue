@@ -97,7 +97,7 @@
 <script>
 import service from "@/api";
 export default {
-  name: "tab",
+  name: "label",
   data() {
     return {
       dialogAdd: false,
@@ -116,7 +116,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addTable(this.form);
+          this.addLabel(this.form);
         }
       });
     },
@@ -131,40 +131,40 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteTable(row.labelId);
+          that.deleteLabel(row.labelId);
         })
         .catch(error => {
           return false;
         });
     },
     //查询标签列表
-    async createTable() {
+    async queryLabel() {
       let res = await service.queryLabel({ queryType: 0 });
       if (res.errorCode === 0) {
         this.tableData = res.data;
       }
     },
     //新增标签
-    async addTable(params = {}) {
+    async addLabel(params = {}) {
       let res = await service.addLabel(params);
       if (res.errorCode === 0) {
         this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.resetForm("form");
-        this.createTable();
+        this.queryLabel();
       }
     },
     //删除标签
-    async deleteTable(labelId) {
+    async deleteLabel(labelId) {
       let res = await service.deleteLabel({ labelId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.queryLabel();
       }
     }
   },
   mounted() {
-    this.createTable();
+    this.queryLabel();
   }
 };
 </script>
