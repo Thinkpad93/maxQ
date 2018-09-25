@@ -2,7 +2,7 @@
  * @Author: 1993n 
  * @Date: 2018-09-20 17:52:18 
  * @Last Modified by: 1993n
- * @Last Modified time: 2018-09-21 18:11:10
+ * @Last Modified time: 2018-09-25 18:57:55
  */
 
 import low from 'lowdb';
@@ -14,7 +14,9 @@ const db = low(adapter);
 
 // 初始化数据库
 db.defaults({
-  QX: {}
+  sys: {
+    name: ''
+  }
 }).write();
 
 

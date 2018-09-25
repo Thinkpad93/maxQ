@@ -47,6 +47,6 @@ new Vue({
   template: '<App/>',
   created() {},
   mounted() {
-    //this.$store.commit('DB_GET_USER');
-  }
+    this.$store.commit('user/dbget');
+  },
 })

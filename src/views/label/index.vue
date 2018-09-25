@@ -4,8 +4,26 @@
      <template>
        <el-row :gutter="10">
          <el-col :span="24">
-           <div class="page-form" style="padding-bottom: 18px;">
-              <el-button size="small" icon="el-icon-plus" type="primary" @click="dialogAdd = true">添加标签</el-button>
+           <div class="page-form">
+             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+               <el-form-item label="标签类型">
+                 <el-select v-model="query.queryType" placeholder="选择标签类型">
+                    <el-option
+                      v-for="item in labelsType"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>                      
+                 </el-select>
+               </el-form-item>
+               <el-form-item label="标签名称">
+                 <el-input v-model="query.name" placeholder="请输入标签名称" maxlength="10"></el-input>
+               </el-form-item>
+               <el-form-item>
+                 <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                 <el-button size="small" icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">添加标签</el-button>
+               </el-form-item>
+             </el-form>
            </div>
          </el-col>
        </el-row>
@@ -14,24 +32,6 @@
      <template>
          <el-table :data="tableData" style="width: 100%" stripe size="mini" empty-text="没有标签哦">
             <el-table-column label="标签ID" prop="labelId"></el-table-column>
-            <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
-              <template slot-scope="scope">
-                <template v-if="scope.row.show">
-                  <el-input v-model="scope.row.name" size="mini"></el-input>
-                </template>
-                <template v-else>
-                  <span style="color:#409EFF">{{ scope.row.name }}</span>
-                </template>
-              </template>
-            </el-table-column>
-            <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
-              <template slot-scope="scope">
-                <template v-if="scope.row.show">
-                  <el-input v-model="scope.row.desription" size="mini"></el-input>
-                </template>
-                <template v-else>{{ scope.row.desription }}</template>                        
-              </template>
-            </el-table-column>
             <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
               <template slot-scope="scope">
                 <template v-if="scope.row.show">
@@ -45,33 +45,50 @@
                   </el-select>   
                 </template>
                 <template v-else>
-                  <span size="mini" v-if="scope.row.type === 0">缺省</span>
-                  <span size="mini" v-else-if="scope.row.type === 1">特色</span>
-                  <span size="mini" v-else-if="scope.row.type === 2">商圈</span>
-                  <span size="mini" v-else>冠名企业</span>
+                  <span size="mini" v-if="scope.row.type === 0" style="color:#409EFF">全部</span>
+                  <span size="mini" v-else-if="scope.row.type === 1" style="color:#409EFF">特色</span>
+                  <span size="mini" v-else-if="scope.row.type === 2" style="color:#409EFF">商圈</span>
+                  <span size="mini" v-else style="color:#409EFF">冠名企业</span>
                 </template>
+              </template>
+            </el-table-column>            
+            <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <template v-if="scope.row.show">
+                  <el-input v-model="scope.row.name" size="mini"></el-input>
+                </template>
+                <template v-else>
+                  <span>{{ scope.row.name }}</span>
+                </template>
+              </template>
+            </el-table-column>
+            <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <template v-if="scope.row.show">
+                  <el-input v-model="scope.row.description" size="mini"></el-input>
+                </template>
+                <template v-else>{{ scope.row.description }}</template>                        
               </template>
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
+                <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
                 <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
               </template>
             </el-table-column>
          </el-table>
      </template>  
-     <!-- 新增 -->
+     <!-- 新增 or 编辑 -->
      <template>
-       <el-dialog center top="40px" title="新增标签" :visible.sync="dialogAdd" :modal-append-to-body="false">
+       <el-dialog center top="40px" title="" :visible.sync="dialogFormVisible" @close="close">
          <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="标签名称" prop="name" :rules="[
               { required: true, message: '请输入标签名称', trigger: 'blur' }
             ]">
               <el-input v-model="form.name" placeholder="请输入标签名称"></el-input>
             </el-form-item>  
-            <el-form-item label="标签类型" prop="type" :rules="[
-              { required: true, message: '请选择标签类型', trigger: 'blur' }
-            ]">
-              <el-select v-model="form.type" clearable filterable placeholder="选择标签类型">
+            <el-form-item label="标签类型" prop="type">
+              <el-select v-model="form.type" placeholder="选择标签类型">
                 <el-option
                     v-for="item in labelsType"
                     :key="item.id"
@@ -86,25 +103,34 @@
               <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入标签描述"></el-input>
             </el-form-item> 
             <el-row style="text-align:center">
-              <el-button size="mini" @click="dialogAdd = false">取消</el-button>
+              <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
               <el-button size="mini" type="primary" @click="submitForm('form')">确定</el-button>
-            </el-row>                             
+            </el-row>              
          </el-form>
        </el-dialog>
-     </template>    
+     </template>
    </div> 
 </template>
 <script>
 import service from "@/api";
 export default {
-  name: "tab",
+  name: "labels",
   data() {
     return {
-      dialogAdd: false,
+      dialogFormVisible: false,
       formLabelWidth: "100px",
-      form: {},
+      query: {
+        queryType: 0,
+        name: ""
+      },
+      form: {
+        labelId: null,
+        type: 0,
+        name: "",
+        description: ""
+      },
       labelsType: [
-        { id: 0, name: "缺省" },
+        { id: 0, name: "全部" },
         { id: 1, name: "特色" },
         { id: 2, name: "商圈" },
         { id: 3, name: "冠名企业" }
@@ -113,15 +139,25 @@ export default {
     };
   },
   methods: {
+    search() {
+      this.queryLabel(this.query);
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addTable(this.form);
+          this.addLabel(this.form);
         }
       });
     },
+    close() {
+      this.resetForm("form");
+    },    
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleEdit(row) {
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
     },
     handleDel(row) {
       let that = this;
@@ -131,40 +167,40 @@ export default {
         type: "warning"
       })
         .then(function() {
-          that.deleteTable(row.labelId);
+          that.deleteLabel(row.labelId);
         })
         .catch(error => {
           return false;
         });
     },
     //查询标签列表
-    async createTable() {
-      let res = await service.queryLabel({ queryType: 0 });
+    async queryLabel(params = {}) {
+      let res = await service.queryLabel(params);
       if (res.errorCode === 0) {
         this.tableData = res.data;
       }
     },
     //新增标签
-    async addTable(params = {}) {
+    async addLabel(params = {}) {
       let res = await service.addLabel(params);
       if (res.errorCode === 0) {
-        this.dialogAdd = false;
+        this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.resetForm("form");
-        this.createTable();
+        this.queryLabel(this.query);
       }
     },
     //删除标签
-    async deleteTable(labelId) {
+    async deleteLabel(labelId) {
       let res = await service.deleteLabel({ labelId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.createTable();
+        this.queryLabel(this.query);
       }
     }
   },
   mounted() {
-    this.createTable();
+    this.queryLabel(this.query);
   }
 };
 </script>

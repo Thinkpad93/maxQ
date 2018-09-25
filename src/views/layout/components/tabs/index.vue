@@ -6,14 +6,14 @@
         :to="tab.path">
         {{ tab.meta.title }}
         <template v-if="tab.path !== '/home/index'">
-          <i class='el-icon-close' @click.prevent.stop="remove(tab)"></i>
+          <i class='el-icon-close' @click.prevent.stop="removeAction(tab)"></i>
         </template>
     </router-link>   
   </div>  
 </template>
 <script>
 //在组件中分发 Action
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "tabs",
   data() {
@@ -21,23 +21,29 @@ export default {
   },
   watch: {
     $route(news, old) {
-      this.ADD_TABS(this.$route);
+      return this.$store.commit('tabs/adds', this.$route);
     }
   },
   computed: {
     ...mapState("tabs", ["tabList"])
   },
   methods: {
-    ...mapMutations("tabs", ["ADD_TABS", "DETELE_TABS"]),
-    ...mapActions("tabs", ["removeTabs"]),
-    remove(tab) {
-      this.removeTabs(tab).then(res => {
-        console.log(res);
+    ...mapActions("tabs", ["removes"]),
+    removeAction(tab) {
+      this.removes(tab).then(res => {
+        if (tab.path === this.$route.path) {
+          const latestView = res.slice(-1)[0];
+          if (latestView) {
+            this.$router.push(latestView);
+          }else {
+            this.$router.push({ path: "/" });
+          }
+        }
       });
     }
   },
   mounted() {
-    this.ADD_TABS(this.$route);
+    return this.$store.commit('tabs/adds', this.$route);
   }
 };
 </script>

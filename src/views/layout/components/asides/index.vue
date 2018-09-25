@@ -16,7 +16,7 @@
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
       </el-menu-item>      
-      <el-menu-item index="/tag/index">
+      <el-menu-item index="/label/index">
         <i class="el-icon-menu"></i>
         <span slot="title">标签管理</span>        
       </el-menu-item>         
@@ -26,7 +26,7 @@
           <span>设备管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="/device/index">设备列表</el-menu-item>
+          <el-menu-item index="/device/binding">设备列表</el-menu-item>
           <el-menu-item index="/device/monitoring">设备监控</el-menu-item>
           <el-menu-item index="/device/record">设备检修记录</el-menu-item>
           <el-menu-item index="/device/runlog">设备运行日志</el-menu-item>
@@ -41,7 +41,6 @@
           <el-menu-item index="/content/index">栏目管理</el-menu-item>
           <el-menu-item index="/content/columntpl">栏目模板</el-menu-item>
           <el-menu-item index="/content/upload">内容上传</el-menu-item>
-          <!-- <el-menu-item index="/content/poster">海报在线编辑</el-menu-item> -->
           <el-menu-item index="/content/trial">内容初审</el-menu-item>
           <el-menu-item index="/content/review">内容复审</el-menu-item>
           <el-menu-item index="/content/final">内容终审</el-menu-item>
@@ -56,17 +55,19 @@
           <span>校区管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="/school/index">学校管理</el-menu-item>
+          <el-menu-item index="/school/list">学校管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="5">
         <template slot="title">
           <i class="el-icon-menu"></i>
-          <span>用户管理</span>
+          <span>系统管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="/user/permissions">权限管理</el-menu-item>
-          <el-menu-item index="/user/account">账号管理</el-menu-item>
+          <!-- <el-menu-item index="/sys/permissions">权限管理</el-menu-item> -->
+          <el-menu-item index="/sys/user">用户管理</el-menu-item>
+          <el-menu-item index="/sys/menu">菜单管理</el-menu-item>
+          <el-menu-item index="/sys/role">角色管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>           
     </el-menu>

@@ -2,18 +2,15 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Layout from '@/views/layout/index';
 
-//const Layout = () => import('@/views/layout');
-
 Vue.use(Router);
 
-
-export const constantRouterMap = [{
+const routeMap = [{
     path: '/login',
     component: () =>
-      import ('@/views/login'),
+      import('@/views/login')
   },
   {
-    path: '/',
+    path: '/home',
     component: Layout,
     redirect: '/home/index',
     children: [{
@@ -22,7 +19,6 @@ export const constantRouterMap = [{
       component: () =>
         import ('@/views/home'),
       meta: {
-        requiresAuth: true,
         title: "首页"
       }
     }]
@@ -37,7 +33,6 @@ export const constantRouterMap = [{
       component: () =>
         import ('@/views/label'),
       meta: {
-        requiresAuth: true,
         title: "标签管理"
       }
     }]
@@ -52,7 +47,6 @@ export const constantRouterMap = [{
         component: () =>
           import ('@/views/device/binding'),
         meta: {
-          requiresAuth: true,
           title: "设备列表"
         }
       },
@@ -62,7 +56,6 @@ export const constantRouterMap = [{
         component: () =>
           import ('@/views/device/monitoring'),
         meta: {
-          requiresAuth: true,
           title: "设备监控"
         }
       },
@@ -72,7 +65,6 @@ export const constantRouterMap = [{
         component: () =>
           import ('@/views/device/record'),
         meta: {
-          requiresAuth: true,
           title: "设备检修记录"
         }
       },
@@ -82,8 +74,112 @@ export const constantRouterMap = [{
         component: () =>
           import ('@/views/device/runlog'),
         meta: {
-          requiresAuth: true,
           title: "设备运行日志"
+        }
+      }
+    ]
+  },
+  {
+    path: '/content',
+    component: Layout,
+    redirect: '/content/column',
+    children: [{
+        path: '/content/column',
+        name: 'column',
+        component: () =>
+          import ('@/views/content/column'),
+        meta: {
+          title: "栏目管理"
+        }
+      },
+      {
+        path: '/content/columntpl',
+        name: 'columntpl',
+        component: () =>
+          import ('@/views/content/columntpl'),
+        meta: {
+          title: "栏目模板"
+        }
+      },
+      {
+        path: '/content/upload',
+        name: 'upload',
+        component: () =>
+          import ('@/views/content/upload/index'),
+        meta: {
+          title: "我的上传"
+        }
+      },
+      {
+        path: '/content/uploadContent',
+        name: 'uploadContent',
+        component: () =>
+          import ('@/views/content/upload/add'),
+        meta: {
+          title: "上传内容"
+        }
+      },
+      {
+        path: '/content/uploadContentEdit/:id',
+        name: 'uploadContentEdit',
+        component: () =>
+          import ('@/views/content/upload/edit'),
+        meta: {
+          title: "上传内容编辑"
+        }
+      },
+      {
+        path: '/content/trial',
+        name: 'trial',
+        component: () =>
+          import ('@/views/content/trial'),
+        meta: {
+          title: "内容初审"
+        }
+      },
+      {
+        path: '/content/review',
+        name: 'review',
+        component: () =>
+          import ('@/views/content/review'),
+        meta: {
+          title: "内容复审"
+        }
+      },
+      {
+        path: '/content/final',
+        name: 'final',
+        component: () =>
+          import ('@/views/content/final'),
+        meta: {
+          title: "内容终审"
+        }
+      },
+      {
+        path: '/content/prerelease',
+        name: 'prerelease',
+        component: () =>
+          import ('@/views/content/prerelease'),
+        meta: {
+          title: "预发布"
+        }
+      },
+      {
+        path: '/content/release',
+        name: 'release',
+        component: () =>
+          import ('@/views/content/release'),
+        meta: {
+          title: "内容发布"
+        }
+      },
+      {
+        path: '/content/playform',
+        name: 'playform',
+        component: () =>
+          import ('@/views/content/playform'),
+        meta: {
+          title: "学校播放表单"
         }
       }
     ]
@@ -102,10 +198,10 @@ export const constantRouterMap = [{
         }
       },
       {
-        path: '/school/views/:id',
+        path: '/school/view/:id',
         name: 'schoolView',
         component: () =>
-          import('@/views/school/views'),
+          import('@/views/school/view'),
         meta: {
           title: "学校详情查看"
         }
@@ -113,151 +209,9 @@ export const constantRouterMap = [{
     ]
   },
   {
-    path: '/school',
-    component: Layout,
-    redirect: '/school/index',
-    children: [{
-        path: '/school/index',
-        name: 'school',
-        component: () =>
-          import ('@/views/campus/schoolmanagement/index'),
-        meta: {
-          requiresAuth: true,
-          title: "学校管理"
-        }
-      },
-      {
-        path: '/school/details/:schoolId',
-        name: 'schoolDetails',
-        component: () =>
-          import ('@/views/campus/schoolmanagement/details'),
-        meta: {
-          requiresAuth: true,
-          title: "学校信息详情"
-        }
-      }
-    ]
-  },
-  {
-    path: '/content',
-    component: Layout,
-    redirect: '/content/index',
-    children: [{
-        path: '/content/index',
-        name: 'column',
-        component: () =>
-          import ('@/views/content/column'),
-        meta: {
-          requiresAuth: true,
-          title: "栏目管理"
-        }
-      },
-      {
-        path: '/content/columntpl',
-        name: 'columntpl',
-        component: () =>
-          import ('@/views/content/columntpl'),
-        meta: {
-          requiresAuth: true,
-          title: "栏目模板"
-        }
-      },
-      {
-        path: '/content/upload',
-        name: 'upload',
-        component: () =>
-          import ('@/views/content/upload'),
-        meta: {
-          requiresAuth: true,
-          title: "我的上传"
-        }
-      },
-      {
-        path: '/content/uploadContent',
-        name: 'uploadContent',
-        component: () =>
-          import ('@/views/content/upload/add'),
-        meta: {
-          requiresAuth: true,
-          title: "上传内容"
-        }
-      },
-      {
-        path: '/content/uploadContentEdit/:id',
-        name: 'uploadContentEdit',
-        component: () =>
-          import ('@/views/content/upload/edit'),
-        meta: {
-          requiresAuth: true,
-          title: "上传内容编辑"
-        }
-      },
-      {
-        path: '/content/trial',
-        name: 'trial',
-        component: () =>
-          import ('@/views/content/trial'),
-        meta: {
-          requiresAuth: true,
-          title: "内容初审"
-        }
-      },
-      {
-        path: '/content/review',
-        name: 'review',
-        component: () =>
-          import ('@/views/content/review'),
-        meta: {
-          requiresAuth: true,
-          title: "内容复审"
-        }
-      },
-      {
-        path: '/content/final',
-        name: 'final',
-        component: () =>
-          import ('@/views/content/final'),
-        meta: {
-          requiresAuth: true,
-          title: "内容终审"
-        }
-      },
-      {
-        path: '/content/prerelease',
-        name: 'prerelease',
-        component: () =>
-          import ('@/views/content/prerelease'),
-        meta: {
-          requiresAuth: true,
-          title: "预发布"
-        }
-      },
-      {
-        path: '/content/release',
-        name: 'release',
-        component: () =>
-          import ('@/views/content/release'),
-        meta: {
-          requiresAuth: true,
-          title: "内容发布"
-        }
-      },
-      {
-        path: '/content/playform',
-        name: 'playform',
-        component: () =>
-          import ('@/views/content/playform'),
-        meta: {
-          requiresAuth: true,
-          title: "学校播放表单"
-        }
-      },
-    ]
-  },
-  {
     path: '/sys',
     component: Layout,
-    redirect: '/sys/permissions',
+    redirect: '/sys/index',
     children: [{
         path: '/sys/permissions',
         name: 'permissions',
@@ -287,23 +241,7 @@ export const constantRouterMap = [{
           requiresAuth: true,
           title: "菜单管理"
         }
-      },
-      {
-        path: '/sys/role',
-        name: 'role',
-        component: () =>
-          import ('@/views/sys/role'),
-        meta: {
-          requiresAuth: true,
-          title: "角色管理"
-        }
       }
     ]
   }
 ]
-
-
-export default new Router({
-  //mode: 'history', //取消导航中的 # 
-  routes: constantRouterMap
-});

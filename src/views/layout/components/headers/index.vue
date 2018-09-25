@@ -21,7 +21,8 @@
 </template>
 <script>
 import bus from "@/utils/bus";
-import { mapState } from "vuex";
+//在组件中分发 Action
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "headers",
@@ -36,12 +37,15 @@ export default {
     ])
   },
   methods: {
+    ...mapActions('account', [
+      'logout'
+    ]),
     collapseChage() {
       this.collapse = !this.collapse;
       bus.$emit('collapse', this.collapse);
     },
     handleCommand(command) {
-      this.$message('click on item ' + command);
+      this.logout({ vm: this });
     }
   },
   created() {},

@@ -48,11 +48,6 @@ export default {
             name: this.form.name,
             password: this.form.password
           });
-          //let res = await this.$store.dispatch('login', this.form);
-          //console.log(res);
-          // this.$store.dispatch('adminLogin', this.form).then(res => {
-          //   this.$router.push({ path:'/home' });
-          // })
         }
       });
     },

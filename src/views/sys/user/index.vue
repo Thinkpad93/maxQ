@@ -265,8 +265,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { accountId, password } = this.reset;
-          this.resetPassword({ accountId, password });
+          let { accountId, password, userName } = this.reset;
+          console.log(this.reset);
+          this.resetPassword({ accountId, password, userName });
         } else {
           return false;
         }

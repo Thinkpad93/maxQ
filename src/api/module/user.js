@@ -42,6 +42,19 @@ export function changeStatus(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//用户登录
+export function login(params) {
+  return ax.post('/action/mod-xiaojiao/user/login.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//用户登出
+export function logout(params) {
+  return ax.post('/action/mod-xiaojiao/user/logout.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+
 export function QXLogin(params) {
   return ax.post('https://jsonplaceholder.typicode.com/posts', params)
     .then(res => res.data)
