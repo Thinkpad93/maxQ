@@ -1,15 +1,26 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" border stripe size="small">
-    <el-table-column v-for="(column, index) in columns" :key="index" :label="column.text" :width="column.width">
-        <template slot-scope="scope">
-            <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"></span>
-            <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
-                <i v-if="!scope.row._expanded" class="el-icon-plus"></i>
-                <i v-else class="el-icon-minus"></i>
-            </span>            
-            {{ scope.row[column.value] }}
-        </template>
+  <el-table :data="formatData" :row-style="showRow" border stripe size="mini">
+    <el-table-column v-if="columns.length === 0" width="150">
+      <template slot-scope="scope">
+        <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
+        <span v-if="iconShow(0,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
+          <i v-if="!scope.row._expanded" class="el-icon-plus"/>
+          <i v-else class="el-icon-minus"/>
+        </span>
+      </template>
     </el-table-column>
+    <el-table-column align="center" v-for="(column, index) in columns" v-else :key="column.value" :label="column.text" :width="column.width">
+      <template slot-scope="scope">
+        <!-- Todo -->
+        <!-- eslint-disable-next-line vue/no-confusing-v-for-v-if -->
+        <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"/>
+        <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
+          <i v-if="!scope.row._expanded" class="el-icon-plus"/>
+          <i v-else class="el-icon-minus"/>
+        </span>
+        {{ scope.row[column.value] }}
+      </template>
+    </el-table-column>    
     <slot></slot>
   </el-table>  
 </template>
@@ -74,6 +85,12 @@ export default {
 <style lang="less" scoped>
   @color-blue: #2196F3;
   @space-width: 18px;
+  .el-icon-plus {
+    font-weight: bold;
+  }
+  .el-icon-minus {
+    font-weight: bold;
+  }
   .ms-tree-space {
     position: relative;
     top: 1px;
@@ -100,4 +117,13 @@ export default {
     color: @color-blue;
     margin-left: -@space-width;
   }
+
+@keyframes treeTableShow {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}  
 </style>

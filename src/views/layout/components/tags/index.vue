@@ -41,6 +41,7 @@ export default {
     isActive(route) {
       return route.name === this.$route.name;
     },    
+    //关闭标签页
     closeTag(tab) {
       this.$store.dispatch("close", tab).then(res => {
         if (tab.path === this.$route.path) {
