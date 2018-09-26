@@ -1,0 +1,36 @@
+{
+  "errorCode": 0,
+  "errorMessage": "登录成功",
+  "data": {
+    "school": 1,
+    "roleid": 1,
+    "type": 1,
+    "router": [{
+      "path": "/",
+      "component": "Layout",
+      "redirect": "/home",
+      "children": [{
+          "path": "/home",
+          "name": "home",
+          "component": "Common.Home",
+          "meta": {
+            "title": "首页"
+          }
+        },
+        {
+          "path": "/label",
+          "component": "Layout",
+          "redirect": "/label",
+          "children": [{
+            "path": "/label",
+            "name": "label",
+            "component": "Common.Label",
+            "meta": {
+              "title": "标签管理"
+            }
+          }]
+        }
+      ]
+    }]
+  }
+}

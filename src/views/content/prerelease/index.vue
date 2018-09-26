@@ -19,7 +19,17 @@
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="内容编号" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="账户类型" prop="type" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="scope.row.type === 0">促进会</span>
+            <span v-else-if="scope.row.type === 1">学校</span>
+            <span v-else-if="scope.row.type === 2">教育局</span>
+            <span v-else>培训机构</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
@@ -45,14 +55,14 @@
     <template>
       <el-dialog title="预发布" center top="40px" :visible.sync="dialogAdd">
         <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="内容标题" prop="name">
-            <el-input v-model="form.name" placeholder="请输入栏目名称" disabled></el-input>
+          <el-form-item label="内容标题" prop="title">
+            <el-input v-model="form.title" placeholder="请输入栏目名称" disabled></el-input>
           </el-form-item>
           <el-form-item label="发布区域" prop="name">
             <qx-region @last="lastChange"></qx-region>
           </el-form-item>
-          <el-form-item label="发布来源" prop="name">
-            <el-input v-model="form.name" placeholder="请输入发布来源"></el-input>
+          <el-form-item label="发布来源" prop="resources">
+            <el-input v-model="form.resources" placeholder="请输入发布来源"></el-input>
           </el-form-item>
           <el-form-item label="学校性质" prop="propertyId">
             <el-select v-model="form.propertyId" placeholder="请选择学校性质">
@@ -85,14 +95,18 @@
             </el-select>
           </el-form-item>
           <el-form-item label="冠名企业" prop="labelIds">
-            <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
+            <el-checkbox-group v-model="checkList">
+              <el-checkbox label="广州市华侨文化发展基金会"></el-checkbox>
+              <el-checkbox label="广州市科普知识促进会"></el-checkbox>
+            </el-checkbox-group>
+            <!-- <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
               <el-option
                 v-for="item in labelsList"
                 :key="item.labelId"
                 :label="item.name"
                 :value="item.labelId">
               </el-option>              
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
@@ -124,7 +138,21 @@ export default {
       },
       totalCount: 0,
       form: {},
-      rules: {},
+      rules: {
+        propertyId: [
+          { required: true, message: "请选择学校性质", trigger: "blur" }
+        ],        
+        propertyId: [
+          { required: true, message: "请选择学校性质", trigger: "blur" }
+        ],
+        typeId: [
+          { required: true, message: "请选择学校类型", trigger: "blur" }
+        ], 
+        labelIds: [
+          { required: true, message: "请选择学校标签", trigger: "blur" }
+        ]       
+      },
+      checkList: ['广州市华侨文化发展基金会','广州市科普知识促进会'],
       propertyidList: [],
       typeidList: [],
       schoolLabel: [],
@@ -144,7 +172,11 @@ export default {
       this.queryPrepublishContentList(this.query);
     },
     search() {},
-    handleRelease(row) {},
+    handleRelease(row) {
+      console.log(row);
+      this.dialogAdd = true;
+      this.form.title = row.title; 
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

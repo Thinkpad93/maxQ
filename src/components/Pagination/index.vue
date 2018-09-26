@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     handleSizeChange(size) {
-      console.log(size);
+      this.$emit('page-size', size);
     },
     handleCurrentChange(curr) {
       this.$emit('page-change', curr);

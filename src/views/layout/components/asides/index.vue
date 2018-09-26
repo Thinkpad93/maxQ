@@ -12,11 +12,11 @@
     @close="handleClose" 
     :collapse="collapse"
     :collapse-transition="true">
-      <el-menu-item index="/home/index">
+      <el-menu-item index="/home">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
       </el-menu-item>      
-      <el-menu-item index="/label/index">
+      <el-menu-item index="/label">
         <i class="el-icon-menu"></i>
         <span slot="title">标签管理</span>        
       </el-menu-item>         

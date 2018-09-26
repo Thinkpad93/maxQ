@@ -6,12 +6,8 @@ import {
 
 let loading;
 
-// import {
-//   AXIOS_DEFAULT_CONFIG
-// } from '@/config';
-
 const service = axios.create({
-  baseURL: "http://192.168.18.107:8080/qxiao-cms/",
+  baseURL: "http://192.168.18.114:8080/qxiao-cms/",
   timeout: 5000
 });
 
@@ -43,6 +39,7 @@ service.interceptors.response.use(config => {
   return config;
 }, error => {
   loading.close();
+  console.log('err' + error) // for debug
   return Promise.reject(error);
 });
 

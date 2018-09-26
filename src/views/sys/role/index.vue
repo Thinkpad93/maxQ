@@ -24,7 +24,12 @@
           <el-table-column label="角色ID" prop=""></el-table-column>  
           <el-table-column label="角色名称" prop=""></el-table-column>  
           <el-table-column label="备注" prop=""></el-table-column>  
-          <el-table-column label="操作" prop=""></el-table-column>  
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+            </template>            
+          </el-table-column>  
        </el-table>
      </template> 
      <template>
@@ -46,6 +51,10 @@
               :props="defaultProps">
              </el-tree>
            </el-form-item>
+           <el-row style="text-align:center">
+             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
+             <el-button size="mini" type="primary" @click="formAction('addForm')">确定</el-button>
+           </el-row>           
          </el-form>
        </el-dialog>
      </template>
@@ -120,7 +129,9 @@ export default {
     };
   },
   methods: {
-    search() {}
+    search() {},
+    handleEdit(row) {},
+    handleDel(row) {}
   }
 };
 </script>

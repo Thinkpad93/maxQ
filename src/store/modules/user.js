@@ -3,6 +3,9 @@ import db from "@/libs/db";
 export default {
   namespaced: true,
   state: {
+    school: null,
+    role: null,
+    type: null,
     //用户信息
     info: {
       name: ""

@@ -4,12 +4,12 @@
         <h3 style="text-align:center;margin-bottom:25px;">欢迎登录Q校网</h3>
         <el-form :rules="rules" ref="form" :model="form" style="width: 360px;">
           <el-form-item prop="name">
-            <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名">
+            <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名" auto-complete="no" autocomplete="no">
               <i slot="prefix" class="el-input__icon el-icon-date"></i>
             </el-input>
           </el-form-item>           
           <el-form-item prop="password">
-            <el-input type="password" name="password" v-model="form.password" auto-complete="off" placeholder="请输入密码">
+            <el-input type="password" name="password" v-model="form.password" placeholder="请输入密码">
               <i slot="prefix" class="el-input__icon el-icon-setting"></i>
             </el-input>
           </el-form-item>
@@ -38,16 +38,22 @@ export default {
   },
   methods: {
     ...mapActions('account', [
-      'login'
+      'login',
+      'qxlogin'
     ]),
     submit() {
       this.$refs.form.validate(async valid => {
         if (valid) {
-          this.login({
+          this.qxlogin({
             vm: this,
             name: this.form.name,
             password: this.form.password
           });
+          // this.login({
+          //   vm: this,
+          //   name: this.form.name,
+          //   password: this.form.password
+          // });
         }
       });
     },

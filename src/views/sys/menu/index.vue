@@ -102,7 +102,41 @@ export default {
               url: "/device/monitoring",
               status: 0,
               flatFlag: 1
-            }            
+            },
+            {
+              id: 1,
+              permitId: 3,
+              permitName: "设备检修记录",
+              url: "/device/record",
+              status: 0,
+              flatFlag: 1
+            },
+            {
+              id: 1,
+              permitId: 3,
+              permitName: "设备检修记录",
+              url: "/device/runlog",
+              status: 0,
+              flatFlag: 1
+            }
+          ]
+        },
+        {
+          id: 1,
+          permitId: 2,
+          permitName: "内容管理",
+          url: "/content",
+          status: 0,
+          flatFlag: 0,
+          children: [
+            {
+              id: 1,
+              permitId: 3,
+              permitName: "栏目管理",
+              url: "/content/index",
+              status: 0,
+              flatFlag: 1
+            }
           ]
         }
       ]
@@ -116,9 +150,7 @@ export default {
       console.log(row);
     },
     handleDel(row) {},
-    formAction(formName) {
-
-    }
+    formAction(formName) {}
   },
   created() {}
 };

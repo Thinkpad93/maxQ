@@ -78,6 +78,10 @@ export default {
     }
   },  
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.queryChannel();
+    },    
     handleViewSchool(row) {
       this.dialogView = true;
     },

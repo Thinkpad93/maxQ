@@ -5,6 +5,8 @@ import App from './App';
 import router from './router';
 import store from './store';
 
+import cookie from "@/libs/cookie";
+
 
 import 'normalize.css/normalize.css';
 import Element from 'element-ui';
@@ -21,19 +23,20 @@ Vue.use(Element);
 Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
-  //let token = localStorage.getItem('token');
-  next();
-  // if (!token) {
-  //   return next({
-  //     path: '/login'
-  //   });
-  // }
-  //next();
-  // if (to.matched.some(record => record.meta.requiresAuth)) {
-  //   next();
-  // } else {
-  //   next();
-  // }
+  let school = cookie.get('school');
+  if (!school && to.path !== '/login') {
+    next({
+      path: `/login`
+    })
+  } else {
+    if (to.path === '/login' && school) {
+      next({
+        path: `${from.path}`
+      })
+    } else {
+      next();
+    }
+  }
 });
 
 /* eslint-disable no-new */

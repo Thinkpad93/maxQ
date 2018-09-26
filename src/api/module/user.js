@@ -55,8 +55,15 @@ export function logout(params) {
     .catch(e => console.log(e));
 }
 
+//模板登陆1
 export function QXLogin(params) {
   return ax.post('https://jsonplaceholder.typicode.com/posts', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//模板登陆2
+export function QXLogin2(params) {
+  return ax.get('http://localhost:8080/static/qx.json', {})
     .then(res => res.data)
     .catch(e => console.log(e));
 }
