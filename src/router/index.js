@@ -299,24 +299,6 @@ export const constantRouterMap = [{
         }
       }
     ]
-<<<<<<< HEAD
-=======
-  },
-  {
-    path: '/label',
-    component: Layout,
-    redirect: '/label/index',
-    children: [{
-      path: '/label/index',
-      name: 'label',
-      component: () =>
-        import ('@/views/label'),
-      meta: {
-        requiresAuth: true,
-        title: "标签管理"
-      }
-    }]
->>>>>>> 9dc883e3c513cfc256b7effdde879c0ed71cc9c0
   }
 ]
 

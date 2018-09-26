@@ -199,7 +199,7 @@ export function prepublishContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-//内容发布详细查询
+//内容发布学校信息
 export function queryPublishContent(params) {
   return ax.post('/action/mod-xiaojiao/content/prePublish/queryPublishContent.do', params)
     .then(res => res.data)

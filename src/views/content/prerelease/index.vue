@@ -116,7 +116,7 @@ export default {
   data() {
     return {
       formLabelWidth: "100px",
-      dialogAdd: true,
+      dialogAdd: false,
       query: {
         title: "",
         page: 1,
@@ -141,7 +141,7 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.createTable();
+      this.queryPrepublishContentList(this.query);
     },
     search() {},
     handleRelease(row) {},
@@ -174,8 +174,9 @@ export default {
       }
     },
     async lastChange(value) {},
-    async createTable() {
-      let res = await service.queryPrepublishContentList(this.query);
+    //查询预发布内容列表
+    async queryPrepublishContentList(params = {}) {
+      let res = await service.queryPrepublishContentList(params);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
@@ -183,7 +184,7 @@ export default {
     }
   },
   mounted() {
-    this.createTable();
+    this.queryPrepublishContentList(this.query);
     this.queryLabel(1);
     this.queryLabel(3);
     this.querySchoolCategory({ queryType: 0 });

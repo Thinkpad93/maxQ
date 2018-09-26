@@ -7,7 +7,7 @@
     active-text-color="#ffd04b"
     router 
     unique-opened 
-    default-active="/home" 
+    :default-active="$route.path" 
     @open="handleOpen" 
     @close="handleClose" 
     :collapse="collapse"

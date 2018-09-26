@@ -38,6 +38,11 @@
         <el-table-column label="专属类别" prop="belongTo" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="审批的详细内容" prop="verifyDescrition" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="handleStage(scope.row)">预览审核</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </template>
     <!-- 分页 -->
@@ -48,17 +53,17 @@
         :pageSize="query.pageSize" 
         :total="totalCount">
       </qx-pagination>
-    </template>        
-  </div>   
+    </template>          
+  </div>    
 </template>
 <script>
 import service from "@/api";
 import pagination from "@/components/pagination";
 export default {
-  name: "trial",
+  name: "review",
   components: {
     'qx-pagination': pagination
-  },  
+  },   
   data() {
     return {
       query: {
@@ -75,7 +80,7 @@ export default {
         { value: 0, label: "待审核" },
         { value: 1, label: "审核通过" },
         { value: 2, label: "审核不通过 " },
-      ]
+      ]            
     };
   },
   computed: {
@@ -90,16 +95,19 @@ export default {
       this.querycheckContentList();
     },    
     search() {},
+    handleStage(row) {
+
+    },
     async queryCheckContentList() {
       let res = await service.queryCheckContentList(this.query);
       if (res.errorCode === 0) {
-         this.tableData = res.data;  
+         this.tableData = res.data.data;  
       }
     }
   },
   mounted() {
     this.queryCheckContentList();
-  }
+  }   
 };
 </script>
 <style lang="less" scoped>
