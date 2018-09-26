@@ -194,8 +194,8 @@ export function checkContent(params) {
     .catch(e => console.log(e));
 }
 //进行内容预发布
-export function prepublishContent(params) {
-  return ax.post('/action/mod-xiaojiao/content/prePublish/prepublishContent.do', params)
+export function prepublishContent(params, config) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/prepublishContent.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

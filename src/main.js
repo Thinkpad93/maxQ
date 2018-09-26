@@ -11,8 +11,7 @@ import cookie from "@/libs/cookie";
 import 'normalize.css/normalize.css';
 import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import '@/styles/base.less';
-import '@/styles/common.less';
+import '@/styles/site.less';
 import '@/iconfont/iconfont.css';
 
 

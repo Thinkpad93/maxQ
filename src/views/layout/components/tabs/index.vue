@@ -5,7 +5,7 @@
         :key="tab.path" 
         :to="tab.path">
         {{ tab.meta.title }}
-        <template v-if="tab.path !== '/home/index'">
+        <template v-if="tab.path !== '/home'">
           <i class='el-icon-close' @click.prevent.stop="removeAction(tab)"></i>
         </template>
     </router-link>   

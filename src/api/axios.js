@@ -7,7 +7,8 @@ import {
 let loading;
 
 const service = axios.create({
-  baseURL: "http://192.168.18.114:8080/qxiao-cms/",
+  //baseURL: "http://192.168.18.114:8080/qxiao-cms/",
+  baseURL: process.env.BASE_API,
   timeout: 5000
 });
 

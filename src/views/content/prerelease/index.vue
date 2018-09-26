@@ -56,13 +56,13 @@
       <el-dialog title="预发布" center top="40px" :visible.sync="dialogAdd">
         <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="内容标题" prop="title">
-            <el-input v-model="form.title" placeholder="请输入栏目名称" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="发布区域" prop="name">
-            <qx-region @last="lastChange"></qx-region>
+            <el-input v-model="form.title" disabled></el-input>
           </el-form-item>
           <el-form-item label="发布来源" prop="resources">
-            <el-input v-model="form.resources" placeholder="请输入发布来源"></el-input>
+            <el-input v-model="form.resources" disabled></el-input>
+          </el-form-item>          
+          <el-form-item label="发布区域" prop="regionId">
+            <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
           </el-form-item>
           <el-form-item label="学校性质" prop="propertyId">
             <el-select v-model="form.propertyId" placeholder="请选择学校性质">
@@ -94,10 +94,10 @@
               </el-option>              
             </el-select>
           </el-form-item>
-          <el-form-item label="冠名企业" prop="labelIds">
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox label="广州市华侨文化发展基金会"></el-checkbox>
-              <el-checkbox label="广州市科普知识促进会"></el-checkbox>
+          <el-form-item label="冠名企业" prop="scopeId">
+            <el-checkbox-group v-model="form.scopeId">
+              <el-checkbox :label="0">广州市华侨文化发展基金会</el-checkbox>
+              <el-checkbox :label="1">广州市科普知识促进会</el-checkbox>
             </el-checkbox-group>
             <!-- <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
               <el-option
@@ -137,22 +137,33 @@ export default {
         pageSize: 10
       },
       totalCount: 0,
-      form: {},
+      form: {
+        scoreType: 3,
+        scoreId: null,
+        regionId: [],
+        sponsorIds: [0, 1]
+      },
       rules: {
+        regionId: [
+          {
+            required: true,
+            message: "请选择发布区域",
+            trigger: "blur"
+          }
+        ],
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
-        ],        
+        ],
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
         ],
         typeId: [
           { required: true, message: "请选择学校类型", trigger: "blur" }
-        ], 
+        ],
         labelIds: [
           { required: true, message: "请选择学校标签", trigger: "blur" }
-        ]       
+        ]
       },
-      checkList: ['广州市华侨文化发展基金会','广州市科普知识促进会'],
       propertyidList: [],
       typeidList: [],
       schoolLabel: [],
@@ -173,27 +184,45 @@ export default {
     },
     search() {},
     handleRelease(row) {
-      console.log(row);
+      let { contentId, resources, title } = row;
       this.dialogAdd = true;
-      this.form.title = row.title; 
+      this.form = Object.assign({}, this.form, { contentId, resources, title });
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let { regionId, scoreId, resources, title, ...args } = this.form;
+          if (Array.isArray(regionId)) {
+            scoreId = regionId[regionId.length - 1];
+          }
+          let obj = Object.assign({}, args, { scoreId });
+          this.prepublishContent(obj);
         }
       });
     },
+    async lastChange(value) {
+      this.form.regionId = value;
+    },  
+    //进行内容预发布
+    async prepublishContent(params = {}) {
+      let res = await service.prepublishContent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        console.log(res);
+      }
+    },  
     //查询标签 1.学校 3.冠名企业
     async queryLabel(queryType) {
       let res = await service.queryLabel({ queryType });
       if (res.errorCode === 0) {
         if (queryType == 1) {
           this.schoolLabel = res.data;
-        }else if (queryType == 3) {
+        } else if (queryType == 3) {
           this.labelsList = res.data;
         }
       }
-    },    
+    },
     //查询学校类别
     async querySchoolCategory(params = {}) {
       let res = await service.querySchoolCategory(params);
@@ -205,7 +234,6 @@ export default {
         }
       }
     },
-    async lastChange(value) {},
     //查询预发布内容列表
     async queryPrepublishContentList(params = {}) {
       let res = await service.queryPrepublishContentList(params);
@@ -218,7 +246,7 @@ export default {
   mounted() {
     this.queryPrepublishContentList(this.query);
     this.queryLabel(1);
-    this.queryLabel(3);
+    //this.queryLabel(3);
     this.querySchoolCategory({ queryType: 0 });
     this.querySchoolCategory({ queryType: 1 });
   }

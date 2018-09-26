@@ -4,7 +4,7 @@
         <h3 style="text-align:center;margin-bottom:25px;">欢迎登录Q校网</h3>
         <el-form :rules="rules" ref="form" :model="form" style="width: 360px;">
           <el-form-item prop="name">
-            <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名" auto-complete="no" autocomplete="no">
+            <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名">
               <i slot="prefix" class="el-input__icon el-icon-date"></i>
             </el-input>
           </el-form-item>           

@@ -21,9 +21,10 @@
      <!-- 表格数据 -->
      <template>
        <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
-          <el-table-column label="角色ID" prop=""></el-table-column>  
-          <el-table-column label="角色名称" prop=""></el-table-column>  
-          <el-table-column label="备注" prop=""></el-table-column>  
+          <el-table-column label="角色ID" prop="roleId"></el-table-column>  
+          <el-table-column label="角色名称" prop="roleName"></el-table-column>  
+          <el-table-column label="角色等级" prop="roleLevel"></el-table-column>  
+          <el-table-column label="备注" prop="description"></el-table-column>  
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
@@ -32,6 +33,7 @@
           </el-table-column>  
        </el-table>
      </template> 
+     <!-- 新增角色 -->
      <template>
        <el-dialog width="50%" :close-on-click-modal="false" center top="40px" title="新增角色" :visible.sync="dialogAdd" :modal-append-to-body="false">
          <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
@@ -61,14 +63,23 @@
    </div> 
 </template>
 <script>
+import service from "@/api";
+import pagination from "@/components/pagination";
 export default {
   name: "role",
+  components: {
+    'qx-pagination': pagination
+  },  
   data() {
     return {
       dialogAdd: false,
       loading: false,
       formLabelWidth: "100px",
-      query: {},
+      query: {
+        roleName: "",
+        page: 1,
+        pageSize: 10
+      },
       addForm: {},
       rules: {},
       tableData: [],
@@ -131,7 +142,25 @@ export default {
   methods: {
     search() {},
     handleEdit(row) {},
-    handleDel(row) {}
+    handleDel(row) {},
+    //新增角色
+    async addRole(params = {}) {
+      let res = await service.addRole(params);
+      console.log(res);
+    },
+    //删除角色
+    async deleteRole(roleId) {
+      let res = await service.deleteRole({ roleId });
+      console.log(res);
+    },    
+    //角色列表
+    async queryRoleList(params = {}) {
+      let res = service.queryRoleList(params);
+      console.log(res);
+    }
+  },
+  mounted() {
+    this.queryRoleList(this.query);
   }
 };
 </script>
