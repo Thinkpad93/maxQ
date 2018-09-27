@@ -105,7 +105,7 @@ export default {
   name: "schoolDetails",
   data() {
     return {
-      schoolId: this.$route.params.schoolId,
+      schoolId: this.$route.params.id,
       info: {}
     };
   },

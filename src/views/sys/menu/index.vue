@@ -1,11 +1,16 @@
 <template>
   <div class="page">
     <template>
-      <qx-treeTable :data="data">
-        <el-table-column label="权限ID" prop="permitId"></el-table-column>
-        <el-table-column label="权限名称" prop="permitName"></el-table-column>
-        <el-table-column label="权限链接" prop="url"></el-table-column>
-        <el-table-column label="状态" prop="status"></el-table-column>
+      <el-row :gutter="10">
+        <el-col :span="24">
+          <div class="page-form" style="padding-bottom: 18px;">
+            <el-button icon="el-icon-plus" type="primary" size="mini">新增一级菜单</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </template>
+    <template>
+      <qx-treeTable :data="data" :columns="columns">
         <el-table-column label="平台类型" prop="flatFlag">
           <template slot-scope="scope">
             <span v-if="scope.row.flatFlag === 0">PC端</span>
@@ -14,9 +19,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">    
-            <el-button size="mini" type="text" @click="handleChild(scope.row)">新增子菜单</el-button>
-            <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+            <el-button size="mini" type="primary" plain @click="handleChild(scope.row)">新增子菜单</el-button>
+            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="primary" plain @click="handleDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>        
       </qx-treeTable> 
@@ -62,6 +67,24 @@ export default {
       formLabelWidth: "100px",
       form: {},
       rules: {},
+      columns: [
+        {
+          text: '菜单名称',
+          value: 'permitName',
+        },        
+        {
+          text: '菜单ID',
+          value: 'permitId',
+        },
+        {
+          text: '菜单链接',
+          value: 'url',
+        },
+        {
+          text: '状态',
+          value: 'status',
+        }                        
+      ],
       data: [
         {
           id: 0,

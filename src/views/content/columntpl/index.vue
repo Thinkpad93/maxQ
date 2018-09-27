@@ -30,16 +30,16 @@
             <el-table-column label="栏目模板描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" @click="handleDetail(scope.row)">新增模板详细</el-button>
-                    <el-button size="mini" type="text" @click="handleEdit(scope.row)">修改模板详细</el-button>
+                    <el-button size="mini" type="primary" plain @click="handleDetail(scope.row)">新增模板详细</el-button>
+                    <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">修改模板详细</el-button>
                     <!-- 默认模板不能删除 -->
                     <template v-if="scope.row.type">
-                        <el-button :disabled="scope.row.type === 1" size="mini" type="text">默认模板</el-button>   
+                        <el-button :disabled="scope.row.type === 1" size="mini" type="primary">默认模板</el-button>   
                     </template>   
                     <template v-else>
-                        <el-button size="mini" type="text" @click="setChannelDefautl(scope.row)">设置默认模板</el-button>
+                        <el-button size="mini" type="primary" plain @click="setChannelDefautl(scope.row)">设置默认模板</el-button>
                     </template>
-                    <el-button size="mini" type="text" @click="handleDel(scope.$index,scope.row)" v-if="!scope.row.type">删除</el-button> 
+                    <el-button size="mini" type="danger" plain @click="handleDel(scope.$index,scope.row)" v-if="!scope.row.type">删除</el-button> 
                 </template>
             </el-table-column>
         </el-table>
@@ -321,9 +321,9 @@
           </el-table-column>    
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleInnerSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
-              <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleInnerEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
-              <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleInnerDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
+              <el-button :disabled="scope.row.state === 0" size="mini" type="success" plain @click="handleInnerSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
+              <el-button :disabled="scope.row.state === 0" size="mini" type="primary" plain @click="handleInnerEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
+              <el-button :disabled="scope.row.state === 0" size="mini" type="danger" plain @click="handleInnerDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
             </template>
           </el-table-column>                                                  
         </el-table>

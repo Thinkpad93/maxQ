@@ -18,9 +18,9 @@ export function queryAccountName(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-//用户角色
+//用户-查询所有角色
 export function queryRoleName(params) {
-  return ax.post('/action/mod-xiaojiao/account/queryRoleName.do', params)
+  return ax.post('/action/mod-xiaojiao/role/queryRoleName.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

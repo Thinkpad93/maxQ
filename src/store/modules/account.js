@@ -1,6 +1,12 @@
 import cookie from "@/libs/cookie";
 import service from "@/api";
 import db from "@/libs/db";
+import {
+  getToken,
+  setToken,
+  removeToken
+} from "@/utils/auth";
+
 
 export default {
   namespaced: true,
@@ -40,16 +46,31 @@ export default {
       console.log(res);
       if (res.errorCode === 0) {
         cookie.set('school', `${res.data.school}`);
-        cookie.set('roleid', `${res.data.roleid}`);
-        cookie.set('type', `${res.data.type}`);
-        await dispatch('user/set', {
-          name: name
-        }, {
-          root: true
-        })
-        vm.$router.replace({
-          path: '/'
+        return new Promise((resolve) => {
+          dispatch('user/set', {
+            name: name
+          }, {
+            root: true
+          });
+          dispatch('menu/addMenu', res.data.router, {
+            root: true
+          });
+          resolve(res.data);
         });
+        // cookie.set('school', `${res.data.school}`);
+        // cookie.set('roleid', `${res.data.roleid}`);
+        // cookie.set('type', `${res.data.type}`);
+        // await dispatch('user/set', {
+        //   name: name
+        // }, {
+        //   root: true
+        // });
+        // await dispatch('menu/addMenu', res.data.router, {
+        //   root: true
+        // });
+        // vm.$router.replace({
+        //   path: '/'
+        // });
       }
     },
     logout({
@@ -66,9 +87,6 @@ export default {
         cookie.remove('roleid');
         cookie.remove('type');
         location.reload();
-        // vm.$router.replace({
-        //   path: '/login'
-        // });
       }).catch(error => {
         return false;
       })

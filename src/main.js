@@ -14,6 +14,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '@/styles/site.less';
 import '@/iconfont/iconfont.css';
 
+import filterAsyncRouter from "@/utils/filterAsyncRouter";
+import {
+  getToken
+} from '@/utils/auth';
 
 
 Vue.use(Element);
@@ -21,19 +25,31 @@ Vue.use(Element);
 
 Vue.config.productionTip = false;
 
+const whiteList = ['/login'] // no redirect whitelist
+
 router.beforeEach((to, from, next) => {
-  let school = cookie.get('school');
-  if (!school && to.path !== '/login') {
-    next({
-      path: `/login`
-    })
-  } else {
-    if (to.path === '/login' && school) {
+  if (getToken()) {
+    if (to.path === '/login') {
       next({
         path: `${from.path}`
       })
     } else {
-      next();
+      if (store.getters.menu.length === 0) {
+        store.dispatch('qxuser/qxGetUserInfo').then(res => {
+          let rou = res.router;
+          let r = filterAsyncRouter(rou);
+          router.addRoutes(r);
+        })
+        next();
+      } else {
+        next();
+      }
+    }
+  } else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next()
+    } else {
+      next(`/login?redirect=${to.path}`)
     }
   }
 });
@@ -49,6 +65,7 @@ new Vue({
   template: '<App/>',
   created() {},
   mounted() {
+    this.$store.commit('menu/dbget');
     this.$store.commit('user/dbget');
   },
 })

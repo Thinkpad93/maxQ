@@ -2,35 +2,209 @@
   "errorCode": 0,
   "errorMessage": "登录成功",
   "data": {
-    "school": 1,
-    "roleid": 1,
-    "type": 1,
+    "name": "北宋欧阳修",
     "router": [{
-      "path": "/",
-      "component": "Layout",
-      "redirect": "/home",
-      "children": [{
-          "path": "/home",
-          "name": "home",
-          "component": "Common.Home",
-          "meta": {
-            "title": "首页"
-          }
-        },
-        {
+        "path": "/label",
+        "name": "标签管理",
+        "component": "layout",
+        "redirect": "/label",
+        "children": [{
           "path": "/label",
-          "component": "Layout",
-          "redirect": "/label",
-          "children": [{
-            "path": "/label",
-            "name": "label",
-            "component": "Common.Label",
+          "name": "label",
+          "component": "label",
+          "meta": {
+            "title": "标签管理","hidden": false
+          }
+        }]
+      },
+      {
+        "path": "/device",
+        "name": "设备管理",
+        "component": "layout",
+        "redirect": "/device/binding",
+        "children": [{
+            "path": "/device/binding",
+            "name": "binding",
+            "component": "device/binding",
             "meta": {
-              "title": "标签管理"
+              "title": "设备列表","hidden": false
             }
-          }]
-        }
-      ]
-    }]
+          },
+          {
+            "path": "/device/monitoring",
+            "name": "monitoring",
+            "component": "device/monitoring",
+            "meta": {
+              "title": "设备监控","hidden": false
+            }
+          },
+          {
+            "path": "/device/record",
+            "name": "record",
+            "component": "device/record",
+            "meta": {
+              "title": "设备检修记录","hidden": false
+            }
+          },
+          {
+            "path": "/device/runlog",
+            "name": "runlog",
+            "component": "device/runlog",
+            "meta": {
+              "title": "设备运行日志","hidden": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/school",
+        "name": "学校管理",
+        "component": "layout",
+        "redirect": "/school/list",
+        "children": [{
+            "path": "/school/list",
+            "name": "schoolList",
+            "component": "school/list",
+            "meta": {
+              "title": "学校列表","hidden": false
+            }
+          },
+          {
+            "path": "/school/views/:id",
+            "name": "schoolView",
+            "component": "school/views",
+            "meta": {
+              "title": "学校详情查看","hidden": true
+            }
+          }
+        ]
+      },
+      {
+        "path": "/content",
+        "name": "内容管理",
+        "component": "layout",
+        "redirect": "/content/column",
+        "children": [{
+            "path": "/content/column",
+            "name": "column",
+            "component": "content/column",
+            "meta": {
+              "title": "栏目管理","hidden": false
+            }
+          },
+          {
+            "path": "/content/columntpl",
+            "name": "columntpl",
+            "component": "content/columntpl",
+            "meta": {
+              "title": "栏目模板","hidden": false
+            }
+          },
+          {
+            "path": "/content/upload",
+            "name": "upload",
+            "component": "content/upload",
+            "meta": {
+              "title": "我的上传","hidden": false
+            }
+          },
+          {
+            "path": "/content/uploadContent",
+            "name": "uploadContent",
+            "component": "content/upload/add",
+            "meta": {
+              "title": "上传内容","hidden": false
+            }
+          },
+          {
+            "path": "/content/uploadContentEdit/:id",
+            "name": "uploadContentEdit",
+            "component": "content/upload/edit",
+            "meta": {
+              "title": "上传内容编辑","hidden": false
+            }
+          },
+          {
+            "path": "/content/trial",
+            "name": "trial",
+            "component": "content/trial",
+            "meta": {
+              "title": "内容初审","hidden": false
+            }
+          },
+          {
+            "path": "/content/review",
+            "name": "review",
+            "component": "content/review",
+            "meta": {
+              "title": "内容复审","hidden": false
+            }
+          },
+          {
+            "path": "/content/final",
+            "name": "final",
+            "component": "content/final",
+            "meta": {
+              "title": "内容终审","hidden": false
+            }
+          },
+          {
+            "path": "/content/prerelease",
+            "name": "prerelease",
+            "component": "content/prerelease",
+            "meta": {
+              "title": "预发布","hidden": false
+            }
+          },
+          {
+            "path": "/content/release",
+            "name": "release",
+            "component": "content/release",
+            "meta": {
+              "title": "内容发布","hidden": false
+            }
+          },
+          {
+            "path": "/content/playform",
+            "name": "playform",
+            "component": "content/playform",
+            "meta": {
+              "title": "学校播放表单","hidden": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/sys",
+        "name": "系统管理",
+        "component": "layout",
+        "redirect": "/sys/user",
+        "children": [{
+            "path": "/sys/user",
+            "name": "user",
+            "component": "sys/user",
+            "meta": {
+              "title": "用户管理","hidden": false
+            }
+          },
+          {
+            "path": "/sys/menu",
+            "name": "menu",
+            "component": "sys/menu",
+            "meta": {
+              "title": "菜单管理","hidden": false
+            }
+          },
+          {
+            "path": "/sys/role",
+            "name": "role",
+            "component": "sys/role",
+            "meta": {
+              "title": "角色管理","hidden": false
+            }
+          }
+        ]
+      }
+    ]
   }
 }

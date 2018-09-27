@@ -45,8 +45,8 @@
          <el-table-column :resizable="false" label="联系电话" prop="phone"></el-table-column>
          <el-table-column :resizable="false" label="操作" width="200">
            <template slot-scope="scope">
-             <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-             <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
+             <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
            </template>
          </el-table-column>
        </el-table>

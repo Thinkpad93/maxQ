@@ -54,7 +54,7 @@
          </el-table-column>
          <el-table-column label="操作" prop="" :show-overflow-tooltip="true">
            <template slot-scope="scope">
-             <el-button size="mini" type="text" @click="handleReset(scope.row)">重置密码</el-button>
+             <el-button size="mini" type="primary" plain @click="handleReset(scope.row)">重置密码</el-button>
            </template>
          </el-table-column>
        </el-table>

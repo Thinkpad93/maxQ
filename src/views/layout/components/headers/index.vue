@@ -9,7 +9,8 @@
      </div> 
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
-          {{ info.name }}
+          <!-- {{ info.name }} -->
+          {{ name }}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -28,24 +29,43 @@ export default {
   name: "headers",
   data() {
     return {
-      collapse: false,
+      collapse: false
     };
   },
   computed: {
-    ...mapState('user', [
-      'info'
-    ])
+    // ...mapState('user', [
+    //   'info'
+    // ])
+    ...mapState("qxuser", ["name"])
   },
   methods: {
-    ...mapActions('account', [
-      'logout'
-    ]),
+    // ...mapActions('account', [
+    //   'logout'
+    // ]),
     collapseChage() {
       this.collapse = !this.collapse;
-      bus.$emit('collapse', this.collapse);
+      bus.$emit("collapse", this.collapse);
     },
     handleCommand(command) {
-      this.logout({ vm: this });
+      //this.logout({ vm: this });
+      this.$confirm(`确定退出登陆吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$store.dispatch("qxuser/qxLogout").then(res => {
+            if (res.errorCode === 0) {
+              location.reload();
+              // this.$router.push({
+              //   path: "/login"
+              // })
+            }
+          });
+        })
+        .catch(error => {
+          return false;
+        });
     }
   },
   created() {},

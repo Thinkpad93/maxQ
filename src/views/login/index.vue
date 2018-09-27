@@ -3,8 +3,8 @@
       <div class="user-login">
         <h3 style="text-align:center;margin-bottom:25px;">欢迎登录Q校网</h3>
         <el-form :rules="rules" ref="form" :model="form" style="width: 360px;">
-          <el-form-item prop="name">
-            <el-input type="text" name="name" v-model="form.name" placeholder="请输入用户名">
+          <el-form-item prop="userName">
+            <el-input type="text" name="userName" v-model="form.userName" placeholder="请输入用户名">
               <i slot="prefix" class="el-input__icon el-icon-date"></i>
             </el-input>
           </el-form-item>           
@@ -22,33 +22,63 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import filterAsyncRouter from "@/utils/filterAsyncRouter";
+let routers = [];
 export default {
   name: "login",
   data() {
     return {
       form: {
-        name: "",
+        userName: "",
         password: ""
       },
       rules: {
-        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        userName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
   },
   methods: {
-    ...mapActions('account', [
-      'login',
-      'qxlogin'
-    ]),
+    // ...mapActions('qxuser' [
+    //   'qxLoginByUsername'
+    // ]),
+    // ...mapActions('account', [
+    //   'login',
+    //   'qxlogin'
+    // ]),
     submit() {
-      this.$refs.form.validate(async valid => {
+      //console.log(menu);
+      this.$refs.form.validate(valid => {
         if (valid) {
-          this.qxlogin({
-            vm: this,
-            name: this.form.name,
-            password: this.form.password
-          });
+          this.$store.dispatch('qxuser/qxLoginByUsername', this.form).then(res => {
+            //登录成功
+            console.log(res);
+            console.log("登录成功");
+            if (res.errorCode === 0) {
+              //this.$router.push({ path: '/' });
+              this.$router.replace({
+                path: '/'
+              })
+            }else if (res.errorCode === -1) {
+              this.$message({ message: `${res.errorMsg}`, type: "warning" });
+              return false;
+            }
+          })
+          // this.qxLoginByUsername(this.form).then((res) => {
+          //   console.log(res);
+          // });
+          // this.qxlogin({
+          //   vm: this,
+          //   name: this.form.name,
+          //   password: this.form.password
+          // }).then(res => {
+          //    let data = res.router; //返回的数据信息
+          //    let r = filterAsyncRouter(data);
+          //    this.$router.addRoutes(r);
+          //    this.$router.replace({
+          //      path: "/"
+          //    })
+          // });
           // this.login({
           //   vm: this,
           //   name: this.form.name,

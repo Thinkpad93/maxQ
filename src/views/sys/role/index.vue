@@ -5,15 +5,15 @@
         <el-row :gutter="10">
             <el-col :span="24">
                 <div class="page-form">
-                    <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-                        <el-form-item label="角色名称">
-                          <el-input v-model.trim="query.roleName" placeholder="请输入账号" maxlength="40"></el-input>
-                        </el-form-item>                          
-                        <el-form-item>
-                            <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                            <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增角色</el-button>
-                        </el-form-item>                          
-                    </el-form>
+                  <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+                    <el-form-item label="角色名称">
+                      <el-input v-model.trim="query.roleName" placeholder="请输入角色名称" maxlength="40"></el-input>
+                    </el-form-item>                          
+                    <el-form-item>
+                      <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                      <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增角色</el-button>
+                    </el-form-item>                          
+                  </el-form>
                 </div>
             </el-col>
         </el-row> 

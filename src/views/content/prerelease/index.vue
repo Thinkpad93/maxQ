@@ -94,10 +94,10 @@
               </el-option>              
             </el-select>
           </el-form-item>
-          <el-form-item label="冠名企业" prop="scopeId">
-            <el-checkbox-group v-model="form.scopeId">
-              <el-checkbox :label="0">广州市华侨文化发展基金会</el-checkbox>
-              <el-checkbox :label="1">广州市科普知识促进会</el-checkbox>
+          <el-form-item label="冠名企业" prop="sponsorIds">
+            <el-checkbox-group v-model="form.sponsorIds">
+              <el-checkbox :label="1">广州市华侨文化发展基金会</el-checkbox>
+              <el-checkbox :label="2">广州市科普知识促进会</el-checkbox>
             </el-checkbox-group>
             <!-- <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
               <el-option

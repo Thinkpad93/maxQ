@@ -15,6 +15,38 @@
       <el-menu-item index="/home">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
+      </el-menu-item>       
+      <template v-for="item in menu">
+        <template v-if="item.children.length >= 2">
+          <el-submenu :index="item.path" :key="item.path">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>{{ item.name }}</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item :index="ren.path" 
+                v-if="!ren.meta.hidden"
+                v-for="(ren, i) in item.children" 
+                :key="i">
+                {{ ren.meta.title }}
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+        </template>
+        <template v-else>
+          <el-menu-item :index="item.path" :key="item.index">
+            <i class="el-icon-menu"></i>
+            <span slot="title">{{ item.name }}</span>     
+          </el-menu-item>
+        </template>
+      </template>
+      <!-- <el-menu-item v-for="(item, index) in menuList" :key="index" :index="item.path">
+        <i class="el-icon-menu"></i>
+        <span slot="title">{{ item.children[0].meta.title }}</span>        
+      </el-menu-item> -->
+      <!-- <el-menu-item index="/home">
+        <i class="el-icon-menu"></i>
+        <span slot="title">首页</span>        
       </el-menu-item>      
       <el-menu-item index="/label">
         <i class="el-icon-menu"></i>
@@ -64,16 +96,16 @@
           <span>系统管理</span>
         </template>
         <el-menu-item-group>
-          <!-- <el-menu-item index="/sys/permissions">权限管理</el-menu-item> -->
           <el-menu-item index="/sys/user">用户管理</el-menu-item>
           <el-menu-item index="/sys/menu">菜单管理</el-menu-item>
           <el-menu-item index="/sys/role">角色管理</el-menu-item>
         </el-menu-item-group>
-      </el-submenu>           
+      </el-submenu>            -->
     </el-menu>
   </el-aside>  
 </template>
 <script>
+import { mapState } from "vuex";
 import bus from "@/utils/bus";
 export default {
   name: "asides",
@@ -82,6 +114,14 @@ export default {
       width: 200,
       collapse: false
     };
+  },
+  computed: {
+    // ...mapState('menu', [
+    //   'menuList'
+    // ]),
+    ...mapState('qxuser',[
+      'menu'
+    ])
   },
   methods: {
     handleOpen() {},

@@ -35,7 +35,7 @@
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <router-link style="color:#409EFF" 
-              :to="{path: `/school/details/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
+              :to="{path: `/school/views/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
           </template>                    
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
