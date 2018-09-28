@@ -1,13 +1,20 @@
+import store from '@/store';
 import axios from 'axios';
 import qs from 'qs';
 import {
   Loading
 } from 'element-ui';
+import {
+  getToken
+} from '@/utils/auth';
+
+import Nprogress from 'nprogress';
+import 'nprogress/nprogress.css';
+
 
 let loading;
 
 const service = axios.create({
-  //baseURL: "http://192.168.18.114:8080/qxiao-cms/",
   baseURL: process.env.BASE_API,
   timeout: 5000
 });
@@ -16,9 +23,13 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   console.log("请求拦截器");
   console.log(config);
-  loading = Loading.service({
-    text: '玩命加载中',
-  });
+  Nprogress.start();
+  // loading = Loading.service({
+  //   text: '加载中',
+  // });
+  if (store.getters.token) {
+    config.headers['X-Token'] = getToken();
+  }
   if (config.headers['Content-Type'] === "application/json") {
     //...
   } else {
@@ -36,10 +47,12 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(config => {
   console.log("响应拦截器");
   console.log(config);
-  loading.close();
+  //loading.close();
+  Nprogress.done();
   return config;
 }, error => {
-  loading.close();
+  Nprogress.done();
+  //loading.close();
   console.log('err' + error) // for debug
   return Promise.reject(error);
 });

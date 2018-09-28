@@ -7,7 +7,7 @@
                 <div class="page-form">
                   <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
                     <el-form-item label="角色名称">
-                      <el-input v-model.trim="query.roleName" placeholder="请输入角色名称" maxlength="40"></el-input>
+                      <el-input v-model.trim="query.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
                     </el-form-item>                          
                     <el-form-item>
                       <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
@@ -20,36 +20,50 @@
      </template> 
      <!-- 表格数据 -->
      <template>
-       <el-table :data="tableData" style="width: 100%" border stripe size="mini" v-loading="loading">
+       <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
           <el-table-column label="角色ID" prop="roleId"></el-table-column>  
           <el-table-column label="角色名称" prop="roleName"></el-table-column>  
           <el-table-column label="角色等级" prop="roleLevel"></el-table-column>  
           <el-table-column label="备注" prop="description"></el-table-column>  
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
             </template>            
           </el-table-column>  
        </el-table>
      </template> 
      <!-- 新增角色 -->
      <template>
-       <el-dialog width="50%" :close-on-click-modal="false" center top="40px" title="新增角色" :visible.sync="dialogAdd" :modal-append-to-body="false">
-         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-           <el-form-item label="角色名称">
-             <el-input v-model="addForm.roleName" placeholder="请输入角色名称"></el-input>
+       <el-dialog center top="40px" title="新增角色" :visible.sync="dialogAdd">
+         <el-form ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
+           <el-form-item label="角色名称" prop="roleName" :rules="[
+              { required: true, message: '请输入角色名称', trigger: 'blur' }
+            ]">
+             <el-input v-model="addForm.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
            </el-form-item>
+           <el-form-item label="角色等级">
+             <el-select v-model="addForm.roleLevel" placeholder="选择标签类型" disabled>
+                <el-option
+                  v-for="item in roleLevelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option> 
+             </el-select>
+           </el-form-item>           
            <el-form-item label="备注">
-             <el-input type="textarea" v-model="addForm.note" :rows="4" placeholder="请输入备注"></el-input>
+             <el-input type="textarea" v-model="addForm.description" :rows="4" placeholder="请输入备注"></el-input>
            </el-form-item>
-           <el-form-item label="权限设置">
+           <el-form-item label="菜单权限设置">
              <el-tree 
-              :data="data2" 
+              ref="tree"
+              :data="menuData"
+              highlight-current
+              default-expand-all 
+              check-on-click-node
               show-checkbox 
-              node-key="id" 
-              :default-expanded-keys="[2, 3]" 
-              :default-checked-keys="[5]" 
+              node-key="permitId" 
               :props="defaultProps">
              </el-tree>
            </el-form-item>
@@ -68,8 +82,8 @@ import pagination from "@/components/pagination";
 export default {
   name: "role",
   components: {
-    'qx-pagination': pagination
-  },  
+    "qx-pagination": pagination
+  },
   data() {
     return {
       dialogAdd: false,
@@ -80,86 +94,84 @@ export default {
         page: 1,
         pageSize: 10
       },
-      addForm: {},
-      rules: {},
+      addForm: {
+        roleLevel: 1
+      },
+      roleLevelList: [{ id: 1, name: "1" }],
       tableData: [],
-      data2: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ],
+      menuData: [], //菜单数据
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "permitName"
       }
     };
   },
   methods: {
     search() {},
     handleEdit(row) {},
-    handleDel(row) {},
+    handleDel(row) {
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deleteRole(row.roleId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
+    formAction(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          //获取当前被选中节点的 node
+          let permitIds = this.$refs.tree.getCheckedNodes();
+          console.log(this.addForm);
+          console.log(permitIds);
+        }
+      });
+    },
     //新增角色
     async addRole(params = {}) {
-      let res = await service.addRole(params);
+      let res = await service.addRole(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       console.log(res);
+    },
+    //编辑角色
+    async updateRole(params = {}) {
+      let res = await service.updateRole(params, {
+        headers: { "Content-Type": "application/json" }
+      });
     },
     //删除角色
     async deleteRole(roleId) {
       let res = await service.deleteRole({ roleId });
-      console.log(res);
-    },    
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryRoleList(this.query);
+      }else if (res.errorCode === 1) {
+        this.$message({ message: `${res.errorMsg}`, type: "error" });
+      }
+    },
     //角色列表
     async queryRoleList(params = {}) {
-      let res = service.queryRoleList(params);
-      console.log(res);
+      let res = await service.queryRoleList(params);
+      if (res.errorCode === 0) {
+        this.tableData = res.data.data;
+      }
+    },
+    //权限列表（系统菜单）
+    async querySystemMenu(params = {}) {
+      let res = await service.querySystemMenu(params);
+      if (res.errorCode === 0) {
+        this.menuData = res.data;
+      }
     }
   },
   mounted() {
+    this.querySystemMenu({ page: 1, pageSize: 50 });
     this.queryRoleList(this.query);
   }
 };

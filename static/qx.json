@@ -113,7 +113,7 @@
             "name": "uploadContent",
             "component": "content/upload/add",
             "meta": {
-              "title": "上传内容","hidden": false
+              "title": "上传内容","hidden": true
             }
           },
           {
@@ -121,7 +121,7 @@
             "name": "uploadContentEdit",
             "component": "content/upload/edit",
             "meta": {
-              "title": "上传内容编辑","hidden": false
+              "title": "上传内容编辑","hidden": true
             }
           },
           {
@@ -153,7 +153,7 @@
             "name": "prerelease",
             "component": "content/prerelease",
             "meta": {
-              "title": "预发布","hidden": false
+              "title": "内容预发布","hidden": false
             }
           },
           {

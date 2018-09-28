@@ -85,14 +85,6 @@ export default {
 <style lang="less" scoped>
   @color-blue: #2196F3;
   @space-width: 18px;
-  .el-icon-caret-right {
-    font-size: 14px;
-    font-weight: bold;
-  }
-  .el-icon-caret-bottom {
-    font-size: 14px;
-    font-weight: bold;
-  }
   .ms-tree-space {
     position: relative;
     top: 1px;

@@ -44,6 +44,18 @@ export default {
       })
     },
 
+    //获取用户权限菜单
+    querySystemMenus({
+      commit,
+      state
+    }) {
+      return new Promise((resolve, reject) => {
+        service.querySystemMenus({}).then(res => {
+          resolve(res);
+        })
+      });
+    },
+
     // 获取用户信息
     qxGetUserInfo({
       commit,

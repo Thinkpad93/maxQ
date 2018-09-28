@@ -169,7 +169,8 @@ export default {
   display: table-cell;
   line-height: 22px;
   padding-bottom: 16px;
-  color: rgba(0, 0, 0, 0.65);
+  color: #409EFF;
+  //color: rgba(0, 0, 0, 0.65);
   span {
     color: #fff;
     padding: 1px 10px;

@@ -5,7 +5,8 @@ import App from './App';
 import router from './router';
 import store from './store';
 
-import cookie from "@/libs/cookie";
+
+//import cookie from "@/libs/cookie";
 
 
 import 'normalize.css/normalize.css';
@@ -18,6 +19,8 @@ import filterAsyncRouter from "@/utils/filterAsyncRouter";
 import {
   getToken
 } from '@/utils/auth';
+
+
 
 
 Vue.use(Element);
@@ -33,8 +36,16 @@ router.beforeEach((to, from, next) => {
       next({
         path: `${from.path}`
       })
+    } else if (to.path === '/404') {
+      next({
+        path: `${from.path}`
+      })
     } else {
       if (store.getters.menu.length === 0) {
+        // store.dispatch('qxuser/querySystemMenus').then(res => {
+        //   console.log(res);
+        //   console.log(10110);
+        // })
         store.dispatch('qxuser/qxGetUserInfo').then(res => {
           let rou = res.router;
           let r = filterAsyncRouter(rou);
@@ -54,6 +65,8 @@ router.beforeEach((to, from, next) => {
   }
 });
 
+router.afterEach(() => {});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -65,7 +78,7 @@ new Vue({
   template: '<App/>',
   created() {},
   mounted() {
-    this.$store.commit('menu/dbget');
-    this.$store.commit('user/dbget');
+    //this.$store.commit('menu/dbget');
+    //this.$store.commit('user/dbget');
   },
 })

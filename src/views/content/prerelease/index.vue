@@ -138,8 +138,8 @@ export default {
       },
       totalCount: 0,
       form: {
-        scoreType: 3,
-        scoreId: null,
+        scopeType: 3,
+        scopeId: null,
         regionId: [],
         sponsorIds: [0, 1]
       },
@@ -191,11 +191,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { regionId, scoreId, resources, title, ...args } = this.form;
+          let { regionId, scopeId, resources, title, ...args } = this.form;
           if (Array.isArray(regionId)) {
-            scoreId = regionId[regionId.length - 1];
+            scopeId = regionId[regionId.length - 1];
           }
-          let obj = Object.assign({}, args, { scoreId });
+          let obj = Object.assign({}, args, { scopeId });
           this.prepublishContent(obj);
         }
       });

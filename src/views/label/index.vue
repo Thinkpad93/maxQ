@@ -62,12 +62,12 @@
                 </template>
               </template>
             </el-table-column>
-            <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
+            <el-table-column label="描述" prop="desription" :show-overflow-tooltip="true">
               <template slot-scope="scope">
                 <template v-if="scope.row.show">
-                  <el-input v-model="scope.row.description" size="mini"></el-input>
+                  <el-input v-model="scope.row.desription" size="mini"></el-input>
                 </template>
-                <template v-else>{{ scope.row.description }}</template>                        
+                <template v-else>{{ scope.row.desription }}</template>                        
               </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -97,10 +97,10 @@
                 </el-option> 
               </el-select>
             </el-form-item>                 
-            <el-form-item label="标签描述" prop="description"  :rules="[
+            <el-form-item label="标签描述" prop="desription"  :rules="[
               { required: true, message: '请输入标签描述', trigger: 'blur' }
             ]">
-              <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入标签描述"></el-input>
+              <el-input type="textarea" v-model="form.desription" :rows="5" placeholder="请输入标签描述"></el-input>
             </el-form-item> 
             <el-row style="text-align:center">
               <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
@@ -127,7 +127,7 @@ export default {
         labelId: null,
         type: 0,
         name: "",
-        description: ""
+        desription: ""
       },
       labelsType: [
         { id: 0, name: "全部" },

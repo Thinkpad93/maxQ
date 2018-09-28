@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Layout from '@/views/layout';
+import layout from '@/views/layout';
 
 Vue.use(Router);
 
@@ -11,7 +11,7 @@ export const constantRouterMap = [{
   },
   {
     path: '/',
-    component: Layout,
+    component: layout,
     redirect: '/home',
     children: [{
       path: '/home',
@@ -19,11 +19,10 @@ export const constantRouterMap = [{
       component: () =>
         import ('@/views/home'),
       meta: {
-        requiresAuth: true,
         title: "首页"
       }
     }]
-  },
+  }
   // {
   //   path: '/label',
   //   component: Layout,

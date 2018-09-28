@@ -161,9 +161,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
-            <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
-            <el-button :disabled="scope.row.state === 0" size="mini" type="text" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
+            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" plain @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="primary" plain @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="danger" plain @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

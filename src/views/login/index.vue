@@ -22,7 +22,6 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-import filterAsyncRouter from "@/utils/filterAsyncRouter";
 let routers = [];
 export default {
   name: "login",
@@ -42,20 +41,12 @@ export default {
     // ...mapActions('qxuser' [
     //   'qxLoginByUsername'
     // ]),
-    // ...mapActions('account', [
-    //   'login',
-    //   'qxlogin'
-    // ]),
     submit() {
-      //console.log(menu);
       this.$refs.form.validate(valid => {
         if (valid) {
           this.$store.dispatch('qxuser/qxLoginByUsername', this.form).then(res => {
             //登录成功
-            console.log(res);
-            console.log("登录成功");
             if (res.errorCode === 0) {
-              //this.$router.push({ path: '/' });
               this.$router.replace({
                 path: '/'
               })
@@ -64,26 +55,6 @@ export default {
               return false;
             }
           })
-          // this.qxLoginByUsername(this.form).then((res) => {
-          //   console.log(res);
-          // });
-          // this.qxlogin({
-          //   vm: this,
-          //   name: this.form.name,
-          //   password: this.form.password
-          // }).then(res => {
-          //    let data = res.router; //返回的数据信息
-          //    let r = filterAsyncRouter(data);
-          //    this.$router.addRoutes(r);
-          //    this.$router.replace({
-          //      path: "/"
-          //    })
-          // });
-          // this.login({
-          //   vm: this,
-          //   name: this.form.name,
-          //   password: this.form.password
-          // });
         }
       });
     },

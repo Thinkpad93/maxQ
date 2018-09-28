@@ -4,9 +4,9 @@
       <template>
         <el-row :gutter="10">
           <el-col :span="24">
-            <el-tabs class="qx-page-tabs" v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane label="待发布" name="first"></el-tab-pane>
-              <el-tab-pane label="已发布" name="second"></el-tab-pane>
+            <el-tabs class="qx-page-tabs" v-model="query.status" @tab-click="handleClick">
+              <el-tab-pane label="待发布" name="1"></el-tab-pane>
+              <el-tab-pane label="已发布" name="2"></el-tab-pane>
             </el-tabs>          
           </el-col>
         </el-row>
@@ -63,7 +63,7 @@ export default {
       activeName: 'first',
       dialogView: false,
       query: {
-        status: 1,
+        status: "1",
         page: 1,
         pageSize: 10
       },
@@ -85,16 +85,20 @@ export default {
     handleViewSchool(row) {
       this.dialogView = true;
     },
-    handleClick() {},
+    handleClick(tab) {
+      //tab 实例
+      this.query.status = tab.name;
+      let obj = Object.assign({}, this.query, { status: parseInt(tab.name) });
+      this.queryPublishContentList(obj);
+    },
     handleRelease(row) {
-      let { contentId } = row;
       this.$confirm(`您确定要发布内容?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.publishContent(contentId);
+          this.publishContent(row.contentId);
         })
         .catch(error => {
           return false;
@@ -103,7 +107,9 @@ export default {
     //查询待发布内容列表
     async queryPublishContentList(params = {}) {
       let res = await service.queryPublishContentList(params);
-      console.log(res);
+      if (res.errorCode === 0) {
+        this.tableData = res.data.data;
+      }
     },
     //进行内容正式发布
     async publishContent(contentId) {

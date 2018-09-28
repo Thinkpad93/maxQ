@@ -1,8 +1,6 @@
 <template>
    <div class="page">
-    <template>
-        <el-progress type="circle" :percentage="25"></el-progress>  
-    </template>
+
     </div> 
 </template>
 <script>
