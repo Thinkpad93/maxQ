@@ -21,8 +21,6 @@
    </div> 
 </template>
 <script>
-import { mapActions } from "vuex";
-let routers = [];
 export default {
   name: "login",
   data() {
@@ -60,7 +58,7 @@ export default {
     },
   },
   created() {
-    console.log(this.$store);
+
   },
   mounted() {}
 };

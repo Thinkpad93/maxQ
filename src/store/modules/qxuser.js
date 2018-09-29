@@ -32,8 +32,10 @@ export default {
       return new Promise((resolve, reject) => {
         service.login(userInfo).then(res => {
           if (res.errorCode === 0) {
-            commit('SET_TOKEN', 'QX-Token');
-            setToken('QX-Token');
+            commit('SET_TOKEN', res.data.token);
+            setToken(res.data.token);
+            //commit('SET_TOKEN', 'QX-Token');
+            //setToken('QX-Token');
             resolve(res);
           } else {
             resolve(res);
@@ -51,7 +53,15 @@ export default {
     }) {
       return new Promise((resolve, reject) => {
         service.querySystemMenus({}).then(res => {
-          resolve(res);
+          if (res.errorCode === 0) {
+            if (res.data.router) {
+              commit('SET_NAME', res.data.name);
+              commit('SET_MENU', res.data.router);
+            }
+            resolve(res);
+          }
+        }).catch(error => {
+          reject(error);
         })
       });
     },

@@ -16,7 +16,8 @@ let loading;
 
 const service = axios.create({
   baseURL: process.env.BASE_API,
-  timeout: 5000
+  timeout: 5000,
+  withCredentials: true //允许携带cookie
 });
 
 //请求拦截器
@@ -28,7 +29,7 @@ service.interceptors.request.use(config => {
   //   text: '加载中',
   // });
   if (store.getters.token) {
-    config.headers['X-Token'] = getToken();
+    config.headers['token'] = getToken();
   }
   if (config.headers['Content-Type'] === "application/json") {
     //...
@@ -52,7 +53,7 @@ service.interceptors.response.use(config => {
   return config;
 }, error => {
   Nprogress.done();
-  //loading.close();
+
   console.log('err' + error) // for debug
   return Promise.reject(error);
 });

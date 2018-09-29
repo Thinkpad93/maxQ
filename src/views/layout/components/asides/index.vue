@@ -116,9 +116,6 @@ export default {
     };
   },
   computed: {
-    // ...mapState('menu', [
-    //   'menuList'
-    // ]),
     ...mapState('qxuser',[
       'menu'
     ])

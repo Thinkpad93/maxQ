@@ -33,21 +33,14 @@ export default {
     };
   },
   computed: {
-    // ...mapState('user', [
-    //   'info'
-    // ])
     ...mapState("qxuser", ["name"])
   },
   methods: {
-    // ...mapActions('account', [
-    //   'logout'
-    // ]),
     collapseChage() {
       this.collapse = !this.collapse;
       bus.$emit("collapse", this.collapse);
     },
     handleCommand(command) {
-      //this.logout({ vm: this });
       this.$confirm(`确定退出登陆吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -57,9 +50,6 @@ export default {
           this.$store.dispatch("qxuser/qxLogout").then(res => {
             if (res.errorCode === 0) {
               location.reload();
-              // this.$router.push({
-              //   path: "/login"
-              // })
             }
           });
         })

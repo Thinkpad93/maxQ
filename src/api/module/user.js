@@ -63,7 +63,7 @@ export function QXLogin(params) {
 }
 //模板登陆2
 export function QXLogin2(params) {
-  return ax.get('http://localhost:8080/static/qx.json', {})
+  return ax.get('http://localhost:9527/static/qx.json', {})
     .then(res => res.data)
     .catch(e => console.log(e));
 }

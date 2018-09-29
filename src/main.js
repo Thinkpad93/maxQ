@@ -6,9 +6,6 @@ import router from './router';
 import store from './store';
 
 
-//import cookie from "@/libs/cookie";
-
-
 import 'normalize.css/normalize.css';
 import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -42,15 +39,16 @@ router.beforeEach((to, from, next) => {
       })
     } else {
       if (store.getters.menu.length === 0) {
-        // store.dispatch('qxuser/querySystemMenus').then(res => {
-        //   console.log(res);
-        //   console.log(10110);
-        // })
-        store.dispatch('qxuser/qxGetUserInfo').then(res => {
-          let rou = res.router;
+        store.dispatch('qxuser/querySystemMenus').then(res => {
+          let rou = res.data.router;
           let r = filterAsyncRouter(rou);
           router.addRoutes(r);
         })
+        // store.dispatch('qxuser/qxGetUserInfo').then(res => {
+        //   let rou = res.router;
+        //   let r = filterAsyncRouter(rou);
+        //   router.addRoutes(r);
+        // })
         next();
       } else {
         next();
