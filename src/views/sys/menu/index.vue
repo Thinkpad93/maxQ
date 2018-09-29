@@ -93,7 +93,7 @@
             <el-input v-model="editForm.permitName" placeholder="权限名称"></el-input>
           </el-form-item>
           <el-form-item label="菜单路径" prop="url">
-            <el-input v-model="editForm.url" placeholder="权限链接" disabled></el-input>
+            <el-input v-model="editForm.url" placeholder="权限链接"></el-input>
           </el-form-item>
         </el-form>
         <el-row style="text-align:center">
@@ -185,10 +185,17 @@ export default {
     editFormSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { _expanded, _level, _show, children, parent, ...args } = this.editForm;
+          let {
+            _expanded,
+            _level,
+            _show,
+            children,
+            parent,
+            ...args
+          } = this.editForm;
           if (typeof parent === "object") {
             parent = parent.permitId;
-          }else {
+          } else {
             parent = 0;
           }
           let obj = Object.assign({}, args, { parent });

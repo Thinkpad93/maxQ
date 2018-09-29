@@ -30,7 +30,9 @@ export default {
         password: ""
       },
       rules: {
-        userName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        userName: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
@@ -42,24 +44,24 @@ export default {
     submit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$store.dispatch('qxuser/qxLoginByUsername', this.form).then(res => {
-            //登录成功
-            if (res.errorCode === 0) {
-              this.$router.replace({
-                path: '/'
-              })
-            }else if (res.errorCode === -1) {
-              this.$message({ message: `${res.errorMsg}`, type: "warning" });
-              return false;
-            }
-          })
+          this.$store
+            .dispatch("qxuser/qxLoginByUsername", this.form)
+            .then(res => {
+              //登录成功
+              if (res.errorCode === 0) {
+                this.$router.replace({
+                  path: "/"
+                });
+              } else if (res.errorCode === -1) {
+                this.$message({ message: `${res.errorMsg}`, type: "warning" });
+                return false;
+              }
+            });
         }
       });
-    },
+    }
   },
-  created() {
-
-  },
+  created() {},
   mounted() {}
 };
 </script>
@@ -82,6 +84,6 @@ div[data-page="login"] {
   left: 50%;
   top: 50%;
   z-index: 10;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 }
 </style>

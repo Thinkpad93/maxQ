@@ -4,6 +4,19 @@
   "data": {
     "name": "北宋欧阳修",
     "router": [{
+        "path": "/",
+        "component": "layout",
+        "redirect": "/home",
+        "children": [{
+          "path": "/home",
+          "name": "home",
+          "meta": {
+            "hidden": false,
+            "title": "首页"
+          }
+        }]
+      },
+      {
         "path": "/label",
         "name": "标签管理",
         "component": "layout",
@@ -13,7 +26,8 @@
           "name": "label",
           "component": "label",
           "meta": {
-            "title": "标签管理","hidden": false
+            "title": "标签管理",
+            "hidden": false
           }
         }]
       },
@@ -27,7 +41,8 @@
             "name": "binding",
             "component": "device/binding",
             "meta": {
-              "title": "设备列表","hidden": false
+              "title": "设备列表",
+              "hidden": false
             }
           },
           {
@@ -35,7 +50,8 @@
             "name": "monitoring",
             "component": "device/monitoring",
             "meta": {
-              "title": "设备监控","hidden": false
+              "title": "设备监控",
+              "hidden": false
             }
           },
           {
@@ -43,7 +59,8 @@
             "name": "record",
             "component": "device/record",
             "meta": {
-              "title": "设备检修记录","hidden": false
+              "title": "设备检修记录",
+              "hidden": false
             }
           },
           {
@@ -51,7 +68,8 @@
             "name": "runlog",
             "component": "device/runlog",
             "meta": {
-              "title": "设备运行日志","hidden": false
+              "title": "设备运行日志",
+              "hidden": false
             }
           }
         ]
@@ -66,7 +84,8 @@
             "name": "schoolList",
             "component": "school/list",
             "meta": {
-              "title": "学校列表","hidden": false
+              "title": "学校列表",
+              "hidden": false
             }
           },
           {
@@ -74,7 +93,8 @@
             "name": "schoolView",
             "component": "school/views",
             "meta": {
-              "title": "学校详情查看","hidden": true
+              "title": "学校详情查看",
+              "hidden": true
             }
           }
         ]
@@ -89,7 +109,8 @@
             "name": "column",
             "component": "content/column",
             "meta": {
-              "title": "栏目管理","hidden": false
+              "title": "栏目管理",
+              "hidden": false
             }
           },
           {
@@ -97,7 +118,8 @@
             "name": "columntpl",
             "component": "content/columntpl",
             "meta": {
-              "title": "栏目模板","hidden": false
+              "title": "栏目模板",
+              "hidden": false
             }
           },
           {
@@ -105,7 +127,8 @@
             "name": "upload",
             "component": "content/upload",
             "meta": {
-              "title": "我的上传","hidden": false
+              "title": "我的上传",
+              "hidden": false
             }
           },
           {
@@ -113,7 +136,8 @@
             "name": "uploadContent",
             "component": "content/upload/add",
             "meta": {
-              "title": "上传内容","hidden": true
+              "title": "上传内容",
+              "hidden": true
             }
           },
           {
@@ -121,7 +145,8 @@
             "name": "uploadContentEdit",
             "component": "content/upload/edit",
             "meta": {
-              "title": "上传内容编辑","hidden": true
+              "title": "上传内容编辑",
+              "hidden": true
             }
           },
           {
@@ -129,7 +154,8 @@
             "name": "trial",
             "component": "content/trial",
             "meta": {
-              "title": "内容初审","hidden": false
+              "title": "内容初审",
+              "hidden": false
             }
           },
           {
@@ -137,7 +163,8 @@
             "name": "review",
             "component": "content/review",
             "meta": {
-              "title": "内容复审","hidden": false
+              "title": "内容复审",
+              "hidden": false
             }
           },
           {
@@ -145,7 +172,8 @@
             "name": "final",
             "component": "content/final",
             "meta": {
-              "title": "内容终审","hidden": false
+              "title": "内容终审",
+              "hidden": false
             }
           },
           {
@@ -153,7 +181,8 @@
             "name": "prerelease",
             "component": "content/prerelease",
             "meta": {
-              "title": "内容预发布","hidden": false
+              "title": "内容预发布",
+              "hidden": false
             }
           },
           {
@@ -161,7 +190,8 @@
             "name": "release",
             "component": "content/release",
             "meta": {
-              "title": "内容发布","hidden": false
+              "title": "内容发布",
+              "hidden": false
             }
           },
           {
@@ -169,7 +199,8 @@
             "name": "playform",
             "component": "content/playform",
             "meta": {
-              "title": "学校播放表单","hidden": false
+              "title": "学校播放表单",
+              "hidden": false
             }
           }
         ]
@@ -184,7 +215,8 @@
             "name": "user",
             "component": "sys/user",
             "meta": {
-              "title": "用户管理","hidden": false
+              "title": "用户管理",
+              "hidden": false
             }
           },
           {
@@ -192,7 +224,8 @@
             "name": "menu",
             "component": "sys/menu",
             "meta": {
-              "title": "菜单管理","hidden": false
+              "title": "菜单管理",
+              "hidden": false
             }
           },
           {
@@ -200,7 +233,8 @@
             "name": "role",
             "component": "sys/role",
             "meta": {
-              "title": "角色管理","hidden": false
+              "title": "角色管理",
+              "hidden": false
             }
           }
         ]

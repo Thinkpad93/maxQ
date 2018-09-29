@@ -12,6 +12,11 @@ git push -u origin master
 > 代码
 
 ```javascript
+
+  // loading = Loading.service({
+  //   text: '加载中',
+  // }); 123
+
 this.$router.push({ path: `/content/poster/${field}` });
 this.$router.push({ name: "poster", params: { id: `${field}` } });
 this.$router.push({ path: "poster", query: { id: `${field}` } });

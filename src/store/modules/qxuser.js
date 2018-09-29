@@ -32,10 +32,8 @@ export default {
       return new Promise((resolve, reject) => {
         service.login(userInfo).then(res => {
           if (res.errorCode === 0) {
-            commit('SET_TOKEN', res.data.token);
-            setToken(res.data.token);
-            //commit('SET_TOKEN', 'QX-Token');
-            //setToken('QX-Token');
+            commit('SET_TOKEN', res.data.Authorization);
+            setToken(res.data.Authorization);
             resolve(res);
           } else {
             resolve(res);
@@ -46,7 +44,7 @@ export default {
       })
     },
 
-    //获取用户权限菜单
+    //获取用户权限菜单，登陆后的操作
     querySystemMenus({
       commit,
       state
@@ -59,6 +57,11 @@ export default {
               commit('SET_MENU', res.data.router);
             }
             resolve(res);
+          } else if (res.errorCode === -1) {
+            console.log("获取用户权限菜单，登陆后的操作")
+            commit('SET_TOKEN', '')
+            removeToken();
+            location.reload();
           }
         }).catch(error => {
           reject(error);

@@ -202,16 +202,18 @@ export default {
     },
     async lastChange(value) {
       this.form.regionId = value;
-    },  
+    },
     //进行内容预发布
     async prepublishContent(params = {}) {
       let res = await service.prepublishContent(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        console.log(res);
+        this.dialogAdd = true;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryPrepublishContentList(this.query);
       }
-    },  
+    },
     //查询标签 1.学校 3.冠名企业
     async queryLabel(queryType) {
       let res = await service.queryLabel({ queryType });

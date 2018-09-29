@@ -22,7 +22,22 @@ export const constantRouterMap = [{
         title: "首页"
       }
     }]
-  }
+  },
+  //不存在的路由定向到404页面
+  // {
+  //   path: '*',
+  //   component: layout,
+  //   redirect: '/404',
+  //   children: [{
+  //     path: '/404',
+  //     name: 'errorpage',
+  //     component: () =>
+  //       import ('@/views/errorpage'),
+  //     meta: {
+  //       title: "404页"
+  //     }
+  //   }]
+  // }
   // {
   //   path: '/label',
   //   component: Layout,

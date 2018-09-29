@@ -33,10 +33,6 @@ router.beforeEach((to, from, next) => {
       next({
         path: `${from.path}`
       })
-    } else if (to.path === '/404') {
-      next({
-        path: `${from.path}`
-      })
     } else {
       if (store.getters.menu.length === 0) {
         store.dispatch('qxuser/querySystemMenus').then(res => {

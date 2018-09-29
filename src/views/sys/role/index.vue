@@ -63,7 +63,8 @@
               default-expand-all 
               check-on-click-node
               show-checkbox 
-              node-key="permitId" 
+              node-key="permitId"
+              :default-checked-keys="addForm.permitIds" 
               :props="defaultProps">
              </el-tree>
            </el-form-item>
@@ -95,8 +96,13 @@ export default {
         pageSize: 10
       },
       addForm: {
-        roleLevel: 1
+        roleId: null,
+        roleName: "",
+        description: "",
+        roleLevel: 1,
+        permitIds: []
       },
+      permitIdCheck: [],
       roleLevelList: [{ id: 1, name: "1" }],
       tableData: [],
       menuData: [], //菜单数据
@@ -108,7 +114,11 @@ export default {
   },
   methods: {
     search() {},
-    handleEdit(row) {},
+    handleEdit(row) {
+      console.log(row);
+      //this.permitIdCheck = row.permits.map(elem => elem.permitId);
+      //console.log(permitId);
+    },
     handleDel(row) {
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
@@ -126,18 +136,26 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //获取当前被选中节点的 node
-          let permitIds = this.$refs.tree.getCheckedNodes();
-          console.log(this.addForm);
+          let ids = this.$refs.tree.getCheckedNodes();
+          if (!ids.length) {
+            this.$message({ message: `请为角色设置权限菜单`, type: "warning" });
+            return false;
+          }
+          const permitIds = ids.map(elem => elem.permitId);
           console.log(permitIds);
+          let obj = Object.assign({}, this.addForm, { permitIds });
+          this.addRole(obj);
         }
       });
     },
     //新增角色
     async addRole(params = {}) {
-      let res = await service.addRole(params, {
-        headers: { "Content-Type": "application/json" }
-      });
-      console.log(res);
+      let res = await service.addRole(params);
+      if (res.errorCode === 0) {
+        console.log(res);
+        this.dialogAdd = false;
+        this.queryRoleList(this.query);
+      }
     },
     //编辑角色
     async updateRole(params = {}) {
@@ -151,7 +169,7 @@ export default {
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryRoleList(this.query);
-      }else if (res.errorCode === 1) {
+      } else if (res.errorCode === 1) {
         this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     },

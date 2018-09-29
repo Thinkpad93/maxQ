@@ -1,16 +1,17 @@
 import Cookies from 'js-cookie';
 
 
-const TokenKey = 'QX-Token';
+//const TokenKey = 'QX-Token';
+//const Token = 'Authorization';
 
 export function getToken() {
-  return Cookies.get(TokenKey);
+  return Cookies.get('Authorization');
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token);
+  return Cookies.set('Authorization', token);
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey);
+  return Cookies.remove('Authorization');
 }

@@ -21,7 +21,7 @@
               </el-form-item>           
               <el-form-item>
                 <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="dialogChannel = true">新增</el-button>
+                <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="handleaddChannel">新增</el-button>
                 <el-button :disabled="disabled === 1" type="primary">更新播放表单</el-button>
               </el-form-item>              
             </el-form>
@@ -193,13 +193,13 @@
         ref="channelForm" 
         :model="channelForm" 
         status-icon size="small" :label-width="formLabelWidth">
-        <!-- <el-row :gutter="20">
-          <el-col :span="24">
-            <el-form-item label="学校ID">
-              <el-input v-model="channelForm.schoolId" :disabled="true"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row> -->
+            <el-row :gutter="20">
+              <el-col :span="24">
+                <el-form-item label="学校ID">
+                  <el-input v-model="channelForm.schoolId" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-form-item label="栏目名称" prop="channelId">
               <el-select v-model="channelForm.channelId" placeholder="请选择" style="width:100%;" @change="handleQueryContent">
                 <el-option v-for="item in channelList" 
@@ -290,7 +290,6 @@ export default {
   data() {
     return {
       disabled: 0,
-      dialogAdd: false,
       dialogValidity: false,
       dialogContent: false,
       btnloading: false,
@@ -311,10 +310,10 @@ export default {
       playContendata: [],
       channelList: [],
       query: {
-        schoolId: 1
+        schoolId: null
       },
       channelForm: {
-        schoolId: 77,
+        schoolId: null,
         scrollType: 0,
         validType: 0,
         contents: []
@@ -360,8 +359,7 @@ export default {
       });
     },
     close() {
-      this.$nextTick(() => {
-      });
+      this.$nextTick(() => {});
     },
     toggleSelection() {
       this.dialogContent = false;
@@ -392,6 +390,15 @@ export default {
           this.$delete(e, "state");
         });
       }
+    },
+    //新增学校播放表单
+    handleaddChannel() {
+      if (this.query.schoolId === null) {
+        this.$message({ message: `请先选择学校在查询`, type: "warning" });
+        return false;
+      }
+      this.channelForm.schoolId = this.query.schoolId;
+      this.dialogChannel = true;
     },
     handleChangeTime(value) {
       this.isChangeTime = true;
@@ -439,7 +446,11 @@ export default {
           return { contentId: item.contentId, status: 0 };
         });
         playContendata.forEach(oldItem => {
-          if (!content.find(newItem => { return oldItem.contentId == newItem.contentId })) {
+          if (
+            !content.find(newItem => {
+              return oldItem.contentId == newItem.contentId;
+            })
+          ) {
             one.push({ contentId: oldItem.contentId, status: 1 });
           }
         });
@@ -504,16 +515,23 @@ export default {
             validObj = { validStartTime: "", validEndTime: "" };
           }
           this.contentsList.forEach(oldItem => {
-            if (contents.find(newItem => { return oldItem.contentId == newItem })) {
-              one.push({ contentId: oldItem.contentId, status: oldItem.status });
+            if (
+              contents.find(newItem => {
+                return oldItem.contentId == newItem;
+              })
+            ) {
+              one.push({
+                contentId: oldItem.contentId,
+                status: oldItem.status
+              });
             }
           });
           obj = Object.assign({}, args, {
             contents: one,
             playStartTime: playTime[0],
             playEndTime: playTime[1],
-            ...validObj,
-          });      
+            ...validObj
+          });
           this.addSchoolPlayChannel(obj);
         }
       });
@@ -564,7 +582,11 @@ export default {
     async querySchoolPlayChannel() {
       let res = await service.querySchoolPlayChannel(this.query);
       if (res.errorCode === 0) {
-        this.tableData = res.data;
+        if (res.data.length) {
+          this.tableData = res.data;
+        } else {
+          this.tableData = [];
+        }
       }
     },
     //编辑学校播放频道
@@ -589,7 +611,7 @@ export default {
     }
   },
   mounted() {
-    this.querySchoolPlayChannel();
+    //this.querySchoolPlayChannel();
     this.queryChannelAll();
   }
 };

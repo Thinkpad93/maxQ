@@ -21,7 +21,7 @@ export default {
   },
   watch: {
     $route(news, old) {
-      return this.$store.commit('tabs/adds', this.$route);
+      return this.$store.commit("tabs/adds", this.$route);
     }
   },
   computed: {
@@ -35,7 +35,7 @@ export default {
           const latestView = res.slice(-1)[0];
           if (latestView) {
             this.$router.push(latestView);
-          }else {
+          } else {
             this.$router.push({ path: "/" });
           }
         }
@@ -43,7 +43,7 @@ export default {
     }
   },
   mounted() {
-    return this.$store.commit('tabs/adds', this.$route);
+    return this.$store.commit("tabs/adds", this.$route);
   }
 };
 </script>

@@ -1,21 +1,20 @@
 <template>
    <div class="page">
      <div class="exception-content">
-        <img src="@/assets/empty-content.png" alt="" style="max-width: 260px;">
+        <img src="@/assets/basic-not-found.png" alt="" style="max-width: 260px;">
         <div>
-          <h3>页面暂无内容</h3>
-          <p>抱歉，页面暂无内容，请看看其他页面</p>
+          <h3>抱歉，你访问的页面不存在</h3>
+          <p>您要找的页面没有找到，请返回首页继续浏览</p>
         </div>
-     </div>
-    </div> 
+     </div>       
+   </div>    
 </template>
 <script>
 export default {
-  name: "home",
+  name: "page404",
   data() {
     return {};
-  },
-  created() {}
+  }
 };
 </script>
 <style lang="less" scoped>
