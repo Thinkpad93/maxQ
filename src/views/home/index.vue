@@ -10,12 +10,15 @@
     </div> 
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "home",
   data() {
     return {};
   },
-  created() {}
+  mounted() {
+    //this.$store.dispatch("comm/qxregion");
+  }
 };
 </script>
 <style lang="less" scoped>

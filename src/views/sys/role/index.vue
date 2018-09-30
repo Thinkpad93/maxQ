@@ -33,17 +33,17 @@
           </el-table-column>  
        </el-table>
      </template> 
-     <!-- 新增角色 -->
+     <!-- 新增 or 编辑 -->
      <template>
-       <el-dialog center top="40px" title="新增角色" :visible.sync="dialogAdd">
-         <el-form ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
+       <el-dialog center top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
+         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
            <el-form-item label="角色名称" prop="roleName" :rules="[
               { required: true, message: '请输入角色名称', trigger: 'blur' }
             ]">
-             <el-input v-model="addForm.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
+             <el-input v-model="form.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
            </el-form-item>
            <el-form-item label="角色等级">
-             <el-select v-model="addForm.roleLevel" placeholder="选择标签类型" disabled>
+             <el-select v-model="form.roleLevel" placeholder="选择标签类型" disabled>
                 <el-option
                   v-for="item in roleLevelList"
                   :key="item.id"
@@ -53,9 +53,10 @@
              </el-select>
            </el-form-item>           
            <el-form-item label="备注">
-             <el-input type="textarea" v-model="addForm.description" :rows="4" placeholder="请输入备注"></el-input>
+             <el-input type="textarea" v-model="form.description" :rows="4" placeholder="请输入备注"></el-input>
            </el-form-item>
            <el-form-item label="菜单权限设置">
+             <!--  -->
              <el-tree 
               ref="tree"
               :data="menuData"
@@ -64,13 +65,13 @@
               check-on-click-node
               show-checkbox 
               node-key="permitId"
-              :default-checked-keys="addForm.permitIds" 
+              :default-checked-keys="permitIds"  
               :props="defaultProps">
              </el-tree>
            </el-form-item>
            <el-row style="text-align:center">
              <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-             <el-button size="mini" type="primary" @click="formAction('addForm')">确定</el-button>
+             <el-button size="mini" type="primary" @click="formSubmit('form')">确定</el-button>
            </el-row>           
          </el-form>
        </el-dialog>
@@ -95,14 +96,13 @@ export default {
         page: 1,
         pageSize: 10
       },
-      addForm: {
+      form: {
         roleId: null,
         roleName: "",
         description: "",
-        roleLevel: 1,
-        permitIds: []
+        roleLevel: 1
       },
-      permitIdCheck: [],
+      permitIds: [],
       roleLevelList: [{ id: 1, name: "1" }],
       tableData: [],
       menuData: [], //菜单数据
@@ -114,13 +114,21 @@ export default {
   },
   methods: {
     search() {},
+    show() {
+      if ("permits" in this.form) {
+        let permitIdCheck = this.form.permits.map(e => e.permitId);
+        this.permitIds = [].concat(permitIdCheck);
+      }
+    },
+    close() {
+      this.$refs.tree.setCheckedKeys([]);
+    },
     handleEdit(row) {
-      console.log(row);
-      //this.permitIdCheck = row.permits.map(elem => elem.permitId);
-      //console.log(permitId);
+      this.dialogAdd = true;
+      this.form = Object.assign({}, row);
     },
     handleDel(row) {
-      this.$confirm(`确定删除吗?`, "提示", {
+      this.$confirm(`确定删除该角色吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -132,7 +140,7 @@ export default {
           return false;
         });
     },
-    formAction(formName) {
+    formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //获取当前被选中节点的 node
@@ -141,9 +149,15 @@ export default {
             this.$message({ message: `请为角色设置权限菜单`, type: "warning" });
             return false;
           }
-          const permitIds = ids.map(elem => elem.permitId);
-          console.log(permitIds);
-          let obj = Object.assign({}, this.addForm, { permitIds });
+          let permitIds = ids.map(elem => elem.permitId);
+          let obj = Object.assign({}, this.form, { permitIds });
+          //编辑模式
+          if (obj.roleId) {
+            delete obj.permits;
+          } else {
+            delete obj.roleId;
+          }
+          console.log(obj);
           this.addRole(obj);
         }
       });
@@ -152,16 +166,13 @@ export default {
     async addRole(params = {}) {
       let res = await service.addRole(params);
       if (res.errorCode === 0) {
-        console.log(res);
         this.dialogAdd = false;
         this.queryRoleList(this.query);
       }
     },
     //编辑角色
     async updateRole(params = {}) {
-      let res = await service.updateRole(params, {
-        headers: { "Content-Type": "application/json" }
-      });
+      let res = await service.updateRole(params);
     },
     //删除角色
     async deleteRole(roleId) {

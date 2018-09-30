@@ -231,7 +231,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl1 }"
                     class="upload-image"
-                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -250,7 +250,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl2 }"
                     class="upload-image"
-                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -275,9 +275,7 @@
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="编辑学校" :visible.sync="dialogEdit">
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
-
             <region @last="lastInnerEditChange" v-model="edit.regionId"></region>
-
           </el-form-item>
           <el-row :gutter="5">
             <el-col :span="8">
@@ -432,7 +430,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl3 }"
                     class="upload-image"
-                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -451,7 +449,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl4 }"
                     class="upload-image"
-                    action="http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                    action="/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -487,7 +485,7 @@ export default {
   name: "schoolManagement",
   components: {
     region,
-    'qx-pagination': pagination
+    "qx-pagination": pagination
   },
   data() {
     return {
@@ -555,15 +553,15 @@ export default {
       return window.innerHeight - 255;
     }
   },
-  methods: {    
+  methods: {
     pageChange(curr) {
       this.query.page = curr;
       this.showSchoolList();
-    }, 
+    },
     pageSize(size) {
       this.query.pageSize = size;
       this.showSchoolList();
-    },   
+    },
     //新增联系人
     addlinkMan(flags) {
       let addLinkMan = this.addForm.linkMan;
@@ -691,11 +689,11 @@ export default {
     },
     //图片上传大小限制为2M
     beforeImageUpload(file) {
-       const isLt2M = file.size / 1024 / 1024 < 2;
-       if (!isLt2M) {
-         this.$message.error('图片大小不能超过2MB!');
-       }
-       return isLt2M;
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error("图片大小不能超过2MB!");
+      }
+      return isLt2M;
     },
     async queryRegion(value) {
       let last = value[value.length - 1];
@@ -745,7 +743,7 @@ export default {
     //新增学校
     async addSchool(params = {}) {
       let res = await service.addSchool(params, {
-        headers: {'Content-Type': 'application/json'}
+        headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
         this.dialogAdd = false;
@@ -756,7 +754,7 @@ export default {
     //编辑学校
     async updateSchool(params = {}) {
       let res = await service.updateSchool(params, {
-        headers: {'Content-Type': 'application/json'}
+        headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
         this.dialogEdit = false;

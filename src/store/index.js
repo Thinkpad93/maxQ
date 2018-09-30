@@ -7,6 +7,7 @@ import tag from './modules/tag';
 import tabs from './modules/tabs';
 import menu from './modules/menu';
 import qxuser from './modules/qxuser';
+import comm from './modules/comm';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -18,7 +19,8 @@ const store = new Vuex.Store({
     tag,
     tabs,
     menu,
-    qxuser
+    qxuser,
+    comm
   },
   getters
 });

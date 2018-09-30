@@ -2,7 +2,7 @@
    <div data-page="login">
       <div class="user-login">
         <h3 style="text-align:center;margin-bottom:25px;">欢迎登录Q校网</h3>
-        <el-form :rules="rules" ref="form" :model="form" style="width: 360px;">
+        <el-form :rules="rules" ref="form" :model="form" style="width: 360px;" @submit.native.prevent>
           <el-form-item prop="userName">
             <el-input type="text" name="userName" v-model="form.userName" placeholder="请输入用户名">
               <i slot="prefix" class="el-input__icon el-icon-date"></i>
@@ -14,7 +14,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button style="width:100%;" type="primary" @click="submit">登 陆</el-button>
+            <el-button style="width:100%;" type="primary" native-type="submit" @click="submit">登陆</el-button>
           </el-form-item>               
         </el-form>     
       </div>        

@@ -166,16 +166,13 @@
 import service from "@/api";
 import pagination from "@/components/pagination";
 import region from "@/components/region";
-import {
-  isMac,
-  isPhone
-} from "@/utils/validator";
+import { isMac, isPhone } from "@/utils/validator";
 
 export default {
   name: "binding",
   components: {
-    'qx-region': region,
-    'qx-pagination': pagination
+    "qx-region": region,
+    "qx-pagination": pagination
   },
   data() {
     return {
@@ -187,32 +184,43 @@ export default {
       selected: "",
       form: {},
       rules: {
-        regionId: [{
-          required: true,
-          message: "请选择区域",
-          trigger: "blur"
-        }],
-        schoolId: [{
-          required: true,
-          message: "请选择学校名称",
-          trigger: "blur"
-        }],
-        address: [{
-          required: true,
-          message: "请输入安装位置",
-          trigger: "blur"
-        }],
-        batch: [{
-          required: true,
-          message: "请输入设备批次",
-          trigger: "blur"
-        }],
-        serial: [{
-          required: true,
-          message: "请选择设备序号",
-          trigger: "blur"
-        }],
-        mac: [{
+        regionId: [
+          {
+            required: true,
+            message: "请选择区域",
+            trigger: "blur"
+          }
+        ],
+        schoolId: [
+          {
+            required: true,
+            message: "请选择学校名称",
+            trigger: "blur"
+          }
+        ],
+        address: [
+          {
+            required: true,
+            message: "请输入安装位置",
+            trigger: "blur"
+          }
+        ],
+        batch: [
+          {
+            required: true,
+            message: "请输入设备批次",
+            trigger: "blur"
+          }
+        ],
+        serial: [
+          {
+            required: true,
+            message: "请选择设备序号",
+            trigger: "blur"
+          }
+        ],
+        mac: [
+          {
             required: true,
             message: "请输入MAC地址",
             trigger: "blur"
@@ -223,7 +231,8 @@ export default {
             trigger: "blur"
           }
         ],
-        manager: [{
+        manager: [
+          {
             required: true,
             message: "请输入设备管理员",
             trigger: "blur"
@@ -235,7 +244,8 @@ export default {
             trigger: "blur"
           }
         ],
-        phone: [{
+        phone: [
+          {
             required: true,
             message: "手机号不能为空",
             trigger: "blur"
@@ -280,7 +290,7 @@ export default {
     pageChange(curr) {
       this.query.page = curr;
       this.showDeviceList();
-    },    
+    },
     //搜索
     search() {
       let page = this.query.page;
@@ -304,7 +314,7 @@ export default {
       if (row.labelIds === null) {
         row.labelIds = [];
       }
-      this.edit = {...row};
+      this.edit = { ...row };
       this.queryProvinceCityRegionBySchoolId(row.schoolId);
     },
     handleSelect() {},
@@ -356,7 +366,7 @@ export default {
     },
     //根据学校Id查询区域
     async queryProvinceCityRegionBySchoolId(schoolId) {
-      let res = await service.queryProvinceCityqueryProvinceCityRegionBySchoolId({ schoolId });
+      let res = await service.queryProvinceCityRegionBySchoolId({ schoolId });
       if (res.errorCode === 0) {
         let { province, city, region } = res.data[0];
         this.selected = `${province} / ${city} / ${region}`;

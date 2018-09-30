@@ -4,7 +4,7 @@
       :clearable="true"
       :disabled="disabled"
       :value="value"
-      :options="allData"
+      :options="distpickerData"
       @change="handleRegionChange"
       @input="input"
       :props="propss"
@@ -12,6 +12,7 @@
   </div>  
 </template>
 <script>
+import { mapState } from "vuex";
 import service from "@/api";
 export default {
   name: "region",
@@ -29,32 +30,35 @@ export default {
   },
   data() {
     return {
-      allData: [],
+      //allData: [],
       propss: {
         value: "id",
         label: "name",
         children: "children"
-      },
+      }
     };
+  },
+  computed: {
+    ...mapState("comm", ["distpickerData"])
   },
   watch: {},
   methods: {
     input() {},
     handleRegionChange(value) {
       if (Array.isArray(value)) {
-        this.$emit('last', value);
+        this.$emit("last", value);
       }
-    },
+    }
     //初始化查询省市区所有数据
-    async init() {
-      let res = await service.findAll({});
-      if (res.errorCode === 0) {
-        this.allData = res.data;
-      }
-    },   
+    // async init() {
+    //   let res = await service.findAll({});
+    //   if (res.errorCode === 0) {
+    //     this.allData = res.data;
+    //   }
+    // },
   },
   mounted() {
-    this.init();
+    //this.init();
   }
 };
 </script>

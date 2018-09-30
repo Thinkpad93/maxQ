@@ -394,7 +394,10 @@ export default {
     //新增学校播放表单
     handleaddChannel() {
       if (this.query.schoolId === null) {
-        this.$message({ message: `请先选择学校在查询`, type: "warning" });
+        this.$message({
+          message: `请先查询播放表单在进行新增`,
+          type: "warning"
+        });
         return false;
       }
       this.channelForm.schoolId = this.query.schoolId;

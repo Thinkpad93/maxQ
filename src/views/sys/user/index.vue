@@ -92,7 +92,7 @@
              </el-select>
            </el-form-item>
            <el-form-item label="类型" prop="type">
-             <el-select v-model="form.type" placeholder="选择类型">
+             <el-select v-model="form.type" placeholder="选择类型" @change="handleType">
                 <el-option
                   v-for="item in typeList"
                   :key="item.id"
@@ -104,16 +104,16 @@
            <el-form-item label="对应区域" prop="regionId">
              <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
            </el-form-item>
-           <template v-if="form.type !== 2">
+           <template v-if="form.type === 1">
             <el-form-item label="对应学校" prop="schoolId">
-                <el-select v-model="form.schoolId" placeholder="选择学校" @change="handleSchool">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>
+              <el-select v-model="form.schoolId" placeholder="选择学校" @change="handleSchool" :disabled="disabled === 1">
+                <el-option
+                  v-for="item in schoolList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option> 
+              </el-select>
             </el-form-item>
            </template>
            <el-row style="text-align:center">
@@ -161,11 +161,11 @@ export default {
   data() {
     let checkUserName = async (rule, value, callback) => {
       let res = await service.queryAccountName({ userName: value });
-       if (res.errorCode === 0) {
-         callback();
-       }else {
-         callback(new Error(`${res.errorMsg}`));
-       }
+      if (res.errorCode === 0) {
+        callback();
+      } else {
+        callback(new Error(`${res.errorMsg}`));
+      }
     };
     let checkPass = (rule, value, callback) => {
       if (value === "") {
@@ -179,6 +179,7 @@ export default {
       dialogAdd: false,
       dialogReset: false,
       formLabelWidth: "100px",
+      disabled: 0,
       query: {
         schoolId: null,
         userName: "",
@@ -211,7 +212,7 @@ export default {
       },
       rules2: {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        checkPass: [{ required: true, validator: checkPass, trigger: "blur" }],
+        checkPass: [{ required: true, validator: checkPass, trigger: "blur" }]
       },
       schoolList: [],
       typeList: [
@@ -228,7 +229,7 @@ export default {
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
-    },
+    }
   },
   methods: {
     pageChange(curr) {
@@ -236,7 +237,14 @@ export default {
       this.createTable();
     },
     search() {
-      this.createTable(this.query)
+      this.createTable(this.query);
+    },
+    handleType(value) {
+      if (value !== 1) {
+        this.disabled = 1;
+      } else {
+        this.disabled = 0;
+      }
     },
     handleSchool(value) {
       this.query.schoolId = value;
@@ -253,10 +261,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-           let { regionId, checkPass, ...args } = this.form;
-           let lasts = regionId[regionId.length - 1]; 
-           let obj = Object.assign({}, args, { regionId: lasts });
-           this.addAccount(obj);
+          let { regionId, checkPass, ...args } = this.form;
+          let lasts = regionId[regionId.length - 1];
+          let obj = Object.assign({}, args, { regionId: lasts });
+          this.addAccount(obj);
         } else {
           return false;
         }
@@ -291,7 +299,6 @@ export default {
     //用户角色
     async queryRoleName(params = {}) {
       let res = await service.queryRoleName(params);
-      console.log(res);
       if (res.errorCode === 0) {
         this.roleList = res.data;
       }
