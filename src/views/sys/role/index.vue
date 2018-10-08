@@ -113,7 +113,9 @@ export default {
     };
   },
   methods: {
-    search() {},
+    search() {
+      this.queryRoleList(this.query);
+    },
     show() {
       if ("permits" in this.form) {
         let permitIdCheck = this.form.permits.map(e => e.permitId);

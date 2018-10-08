@@ -32,15 +32,23 @@
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="账号名称" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="内容类型" prop="contentType" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="时长" prop="duration" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="专属类别" prop="belongTo" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="审批的详细内容" prop="verifyDescrition" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+        <!-- <el-table-column label="内容类型" prop="contentType" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contentType === 0">全屏播放</span>
+            <span v-else>全屏播放</span>
+          </template>
+        </el-table-column> -->
+        <!-- <el-table-column label="时长" prop="duration" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="专属类别" prop="belongTo" :show-overflow-tooltip="true"></el-table-column> -->
+        <!-- <el-table-column label="审批的详细内容" prop="verifyDescrition" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="handleStage(scope.row)">预览审核</el-button>
+            <template v-if="scope.row.verifyStatus === 0">
+              <el-button size="mini" type="text" @click="handleStage(scope.row)">预览审核</el-button>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -53,7 +61,36 @@
         :pageSize="query.pageSize" 
         :total="totalCount">
       </qx-pagination>
-    </template>          
+    </template>     
+    <!-- 预览审核 -->
+    <template>
+      <el-dialog center top="40px" title="" :visible.sync="dialogView">
+        <el-row :gutter="10">
+          <el-col :span="10">
+            <img src="http://temp.im/300x600/4CD964/fff" class="image">
+          </el-col>
+          <el-col :span="14">
+            <el-form ref="check" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+              <el-form-item label="是否通过" prop="name">
+                <el-radio-group v-model="form.verifyStatus">
+                  <el-radio :label="1">通过</el-radio>
+                  <el-radio :label="2">不通过</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="审核意见" prop="verifyDescrition" :rules="[
+              { required: true, message: '请输入审核意见', trigger: 'blur' }
+            ]">
+                <el-input type="textarea" v-model="form.verifyDescrition" :rows="6" placeholder="审核意见"></el-input>
+              </el-form-item>
+              <el-row style="text-align:center">
+                <el-button size="mini" @click="dialogView = false">取消</el-button>
+                <el-button size="mini" type="primary" @click="checkForm('check')">审核</el-button>
+              </el-row>
+            </el-form>
+          </el-col>          
+        </el-row>
+      </el-dialog>
+    </template>             
   </div>    
 </template>
 <script>
@@ -62,25 +99,31 @@ import pagination from "@/components/pagination";
 export default {
   name: "review",
   components: {
-    'qx-pagination': pagination
-  },   
+    "qx-pagination": pagination
+  },
   data() {
     return {
+      dialogView: false,
+      formLabelWidth: "100px",
       query: {
-        schoolId: 0,
         title: "",
         checkStage: 3,
         verifyStatus: 0,
         page: 1,
         pageSize: 10
       },
+      form: {
+        verifyStatus: 1,
+        checkStage: null,
+        contentId: null
+      },
       totalCount: 0,
       tableData: [],
       verifyStatusList: [
         { value: 0, label: "待审核" },
         { value: 1, label: "审核通过" },
-        { value: 2, label: "审核不通过 " },
-      ]            
+        { value: 2, label: "审核不通过 " }
+      ]
     };
   },
   computed: {
@@ -88,26 +131,49 @@ export default {
     tableHeight() {
       return window.innerHeight - 255;
     }
-  },  
+  },
   methods: {
     pageChange(curr) {
       this.query.page = curr;
       this.querycheckContentList();
-    },    
-    search() {},
-    handleStage(row) {
-
     },
+    search() {
+      this.queryCheckContentList();
+    },
+    handleStage(row) {
+      this.form.contentId = row.contentId;
+      this.form.checkStage = row.checkStage;
+      this.dialogView = true;
+    },
+    checkForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.checkContent(this.form);
+        } else {
+          return false;
+        }
+      });
+    },
+    //审核内容
+    async checkContent(params = {}) {
+      let res = await service.checkContent(params);
+      if (res.errorCode === 0) {
+        this.dialogView = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryCheckContentList();
+      }
+    },
+    //查询审核内容列表
     async queryCheckContentList() {
       let res = await service.queryCheckContentList(this.query);
       if (res.errorCode === 0) {
-         this.tableData = res.data.data;  
+        this.tableData = res.data.data;
       }
     }
   },
   mounted() {
     this.queryCheckContentList();
-  }   
+  }
 };
 </script>
 <style lang="less" scoped>

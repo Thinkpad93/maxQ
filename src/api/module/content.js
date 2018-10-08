@@ -189,7 +189,7 @@ export function queryCheckContentList(params) {
 }
 //审核内容
 export function checkContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/check/checkContent.do', params)
+  return ax.post('/action/mod-xiaojiao/content/check/checkContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

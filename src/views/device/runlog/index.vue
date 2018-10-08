@@ -12,7 +12,7 @@
           <template slot-scope="scope">
             <p v-if="scope.row.status === 0">正常</p>
             <p v-else-if="scope.row.status === 1">故障</p>
-            <p v-else="scope.row.status === 2">正常关机</p>
+            <p v-else>正常关机</p>
           </template>
         </el-table-column>
         <el-table-column :resizable="false" label="错误码" prop="deviceError" :show-overflow-tooltip="true"></el-table-column>
@@ -21,7 +21,7 @@
             <p v-if="scope.row.level === 0">无法描述的错误</p>
             <p v-else-if="scope.row.level === 1" style="color:#909399">INFO级别</p>
             <p v-else-if="scope.row.level === 2" style="color:#E6A23C">错误</p>
-            <p v-else="scope.row.level === 3" style="color:#F56C6C">严重</p>
+            <p v-else style="color:#F56C6C">严重</p>
             </template>
           </el-table-column>
         <el-table-column :resizable="false" label="日志时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>

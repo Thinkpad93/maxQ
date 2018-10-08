@@ -45,8 +45,8 @@
           <el-table-column :resizable="false" label="检修人员" prop="repairMan" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
             </template>            
           </el-table-column>
       </el-table>        
@@ -182,8 +182,8 @@ import region from "@/components/region";
 export default {
   name: "record",
   components: {
-    'qx-region': region,
-    'qx-pagination': pagination
+    "qx-region": region,
+    "qx-pagination": pagination
   },
   data() {
     return {
@@ -218,7 +218,7 @@ export default {
     pageChange(curr) {
       this.query.page = curr;
       this.showRepairList();
-    },      
+    },
     show() {},
     close() {},
     //搜索
@@ -246,7 +246,7 @@ export default {
     },
     handleEdit(row) {
       this.dialogEdit = true;
-      this.edit = {...row};
+      this.edit = { ...row };
     },
     handleDel(row) {
       let that = this;

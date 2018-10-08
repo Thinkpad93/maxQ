@@ -1,7 +1,7 @@
 <template>
    <div data-page="login">
       <div class="user-login">
-        <h3 style="text-align:center;margin-bottom:25px;">欢迎登录Q校网</h3>
+        <h3 style="text-align:center;margin-bottom:25px;color: rgba(0,0,0,.43);">欢迎登录Q校网</h3>
         <el-form :rules="rules" ref="form" :model="form" style="width: 360px;" @submit.native.prevent>
           <el-form-item prop="userName">
             <el-input type="text" name="userName" v-model="form.userName" placeholder="请输入用户名">
@@ -38,9 +38,6 @@ export default {
     };
   },
   methods: {
-    // ...mapActions('qxuser' [
-    //   'qxLoginByUsername'
-    // ]),
     submit() {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -76,8 +73,7 @@ div[data-page="login"] {
   width: 100%;
   height: 100%;
   background-color: rgb(240, 242, 245);
-  background-image: url("../../images/TB1kOoAqv1TBuNjy0FjXXajyXXa-600-600.png");
-  background-origin: 0 0;
+  background-image: url("../../assets/TVYTbAXWheQpRcWDaDMu.svg");
 }
 .user-login {
   position: absolute;
