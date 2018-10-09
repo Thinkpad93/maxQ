@@ -55,6 +55,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize" 
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -289,6 +290,10 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
+      this.showDeviceList();
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
       this.showDeviceList();
     },
     //搜索

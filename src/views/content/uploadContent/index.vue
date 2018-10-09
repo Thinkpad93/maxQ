@@ -72,7 +72,7 @@
                                   :on-preview="handlePreviewImg"
                                   :on-success="handleImageSuccess">
                                   <el-button :disabled="disabledImg === 0" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取图片</el-button>
-                                  <span class="el-upload__tip" slot="tip" style="margin-left:10px;">上传1080*1590的图片，不超过2MB</span>
+                                  <span class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</span>
                                 </el-upload>
                             </el-form-item>
                             <el-form-item label="视频上传" prop="videoUrl">
@@ -88,7 +88,7 @@
                                     :on-preview="handlePreviewVideo"
                                     :on-success="handleVideoSuccess">
                                     <el-button :disabled="disabledVideo === 0" slot="trigger" size="mini" type="info" style="width: 100%;">点击选取视频</el-button>
-                                    <span class="el-upload__tip" slot="tip" style="margin-left:10px;">视频大小不超过100MB</span>
+                                    <span class="el-upload__tip" slot="tip">视频大小不超过100MB</span>
                                 </el-upload>                             
                             </el-form-item>                                                                                                             
                         </template> 
@@ -181,7 +181,7 @@ export default {
       channelList: [],
       schoolPlayTime: [],
       query: {
-        schoolId: 77,
+        //schoolId: 77,
         title: "",
         author: "",
         channelId: null,
@@ -218,7 +218,7 @@ export default {
     handleRadio(value) {
       this.query.contentType = value;
       let params = {
-        schoolId: this.query.schoolId,
+        //schoolId: this.query.schoolId,
         contentType: this.query.contentType
       };
       this.querySchoolPlayListTimeAction(params);
@@ -363,7 +363,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .element-box {
   width: 500px;
   height: 736px;
@@ -410,10 +410,6 @@ export default {
     border-radius: 4px;
     border: 1px dashed #d9d9d9;
   }
-}
-.el-upload {
-  width: auto;
-  text-align: left;
 }
 h3 {
   margin-bottom: 18px;

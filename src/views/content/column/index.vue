@@ -36,6 +36,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize"
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -68,7 +69,7 @@ import pagination from "@/components/pagination";
 export default {
   name: "column",
   components: {
-    'qx-pagination': pagination
+    "qx-pagination": pagination
   },
   data() {
     return {
@@ -110,6 +111,10 @@ export default {
       this.query.page = curr;
       this.queryChannel();
     },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryChannel();
+    },
     search() {
       let page = this.query.page;
       if (!this.query.channelName.length) {
@@ -142,7 +147,7 @@ export default {
         })
         .catch(error => {
           return false;
-        });      
+        });
     },
     formAction(formName) {
       this.$refs[formName].validate(valid => {

@@ -19,7 +19,7 @@
                 </el-select>
               </el-form-item>                         
               <el-form-item label="设备状态">
-                <el-select v-model="query.status" clearable placeholder="请选择设备状态">
+                <el-select v-model="query.status" placeholder="请选择设备状态">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -40,14 +40,15 @@
     <template>
       <div class="container-block">
         <el-row :gutter="20">
-          <el-col :span="4" v-for="(item,index) in tableData" :key="index">
+          <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4" v-for="(item,index) in tableData" :key="index">
             <div class="waterfall-panel"
               v-loading="item.loading"
               :element-loading-text="loadingText"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)">
               <a href="javascript:;" @click="showDeviceDetail(item.deviceId)">
-                <img src="http://temp.im/466x300/4CD964/fff" class="image">
+                <!-- <img src="http://temp.im/466x300/4CD964/fff" class="image"> -->
+                <img src="https://fakeimg.pl/446x300/4CD964/fff" class="image">
               </a>
               <div class="layer">
                 <h4>
@@ -64,6 +65,7 @@
                   <el-button size="mini" type="text" @click="handleRestart(item)">重启</el-button>
                   <el-button size="mini" type="text" @click="handleUpdate(item)">刷新</el-button>
                   <el-button size="mini" type="text" @click="handleMon">实时监控</el-button>
+                  <el-button size="mini" type="text" @click="handleRunlog(item)">运行日志</el-button>
                 </div>
               </div>
             </div>
@@ -73,12 +75,12 @@
     </template>
     <!-- 设备详情 -->
     <template>
-      <el-dialog width="50%" center top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
+      <el-dialog width="60%" center top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
         <el-row :gutter="10">
-          <el-col :span="8">
-            <img src="http://temp.im/300x600/4CD964/fff" class="image">
+          <el-col :span="10">
+            <img src="https://fakeimg.pl/300x600/4CD964/fff" class="image">
           </el-col>
-          <el-col :span="16">
+          <el-col :span="14">
             <div class="list">
               <p>截屏时间：<span>{{ viewDevice.snapshotTime }}</span></p>
               <p>学校：<span>{{ viewDevice.schoolName }}</span></p>
@@ -94,6 +96,36 @@
         </el-row>
       </el-dialog>
     </template>
+    <!-- 设备运行日志 -->
+    <template>
+      <el-dialog width="80%" center top="40px" title="设备运行日志" :visible.sync="dialogRunlog">
+        <el-table :data="runlogData"  style="width: 100%" stripe size="mini">
+          <el-table-column :resizable="false" label="日志id" prop="logId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="设备id" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="mac地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="IP地址" prop="ip" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="日志详细信息" prop="logText" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="状态码" prop="status" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <p v-if="scope.row.status === 0">正常</p>
+              <p v-else-if="scope.row.status === 1">故障</p>
+              <p v-else>正常关机</p>
+            </template>
+          </el-table-column>    
+          <el-table-column :resizable="false" label="错误码" prop="deviceError" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="日志级别" prop="level">
+            <template slot-scope="scope">
+              <p v-if="scope.row.level === 0">无法描述的错误</p>
+              <p v-else-if="scope.row.level === 1" style="color:#909399">INFO级别</p>
+              <p v-else-if="scope.row.level === 2" style="color:#E6A23C">错误</p>
+              <p v-else style="color:#F56C6C">严重</p>
+              </template>
+            </el-table-column>
+          <el-table-column :resizable="false" label="日志时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>                
+        </el-table>
+      </el-dialog>
+    </template>
   </div>  
 </template>
 <script>
@@ -102,12 +134,13 @@ import region from "@/components/region";
 export default {
   name: "monitoring",
   components: {
-    'qx-region': region
+    "qx-region": region
   },
   data() {
     return {
       dialogAdd: false,
       dialogView: false,
+      dialogRunlog: false,
       loading: false,
       loadingText: "",
       schoolList: [],
@@ -133,7 +166,8 @@ export default {
         }
       ],
       viewDevice: {},
-      tableData: []
+      tableData: [],
+      runlogData: []
     };
   },
   computed: {
@@ -167,6 +201,11 @@ export default {
       }
     },
     handleSelect() {},
+    handleRunlog(row) {
+      console.log(row);
+      this.dialogRunlog = true;
+      this.showDeviceRunlog(row.deviceId);
+    },
     handleRestart(item) {
       let that = this;
       let params = {
@@ -194,11 +233,18 @@ export default {
       }, 1000);
     },
     handleMon() {},
+    //显示设备运行日志
+    async showDeviceRunlog(deviceId) {
+      let res = await service.showDeviceRunlog({ deviceId });
+      if (res.errorCode === 0) {
+        this.runlogData = res.data;
+      }
+    },
     //显示设备详情
     async showDeviceDetail(deviceId) {
       let res = await service.showDeviceDetail({ deviceId });
       if (res.errorCode === 0) {
-        this.viewDevice = res.data[0];
+        this.viewDevice = res.data;
         this.dialogView = true;
       }
     },
@@ -234,12 +280,17 @@ export default {
   background-color: #fff;
 }
 .waterfall-panel {
+  width: 90%;
+  margin: 0 auto;
   border-radius: 2px;
   margin-bottom: 20px;
   overflow: hidden;
   box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1);
   > a {
     display: block;
+  }
+  img {
+    height: 260px;
   }
 }
 .layer {

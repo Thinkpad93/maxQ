@@ -7,7 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <region @last="queryRegion"></region>
+                <qx-region @last="queryRegion"></qx-region>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClear">
@@ -75,7 +75,7 @@
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
-            <region @last="lastInnerChange" v-model="addForm.regionId"></region>
+            <qx-region @last="lastInnerChange" v-model="addForm.regionId"></qx-region>
           </el-form-item>
           <el-row :gutter="5">
             <el-col :span="8">
@@ -231,7 +231,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl1 }"
                     class="upload-image"
-                    action="/action/mod-xiaojiao/region/addImage.do"
+                    action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -250,7 +250,7 @@
                     ref="upload"
                     :style="{ backgroundImage : addImageUrl2 }"
                     class="upload-image"
-                    action="/action/mod-xiaojiao/region/addImage.do"
+                    action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -265,7 +265,7 @@
           </el-row>                                
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button :loading="btnloading" size="mini" type="primary" @click="addsForm('addForm')">保存</el-button>
+            <el-button size="mini" type="primary" @click="addsForm('addForm')">保存</el-button>
           </el-row>                             
         </el-form>
       </el-dialog>
@@ -275,7 +275,7 @@
       <el-dialog center width="60%" @open="show" @close="close" top="40px" title="编辑学校" :visible.sync="dialogEdit">
         <el-form :rules="rules" ref="editForm" :model="edit" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
-            <region @last="lastInnerEditChange" v-model="edit.regionId"></region>
+            <qx-region @last="lastInnerEditChange" v-model="edit.regionId"></qx-region>
           </el-form-item>
           <el-row :gutter="5">
             <el-col :span="8">
@@ -430,7 +430,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl3 }"
                     class="upload-image"
-                    action="/action/mod-xiaojiao/region/addImage.do"
+                    action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '0'}"
                     :multiple="false"
@@ -449,7 +449,7 @@
                     ref="upload"
                     :style="{ backgroundImage : editImageUrl4 }"
                     class="upload-image"
-                    action="/action/mod-xiaojiao/region/addImage.do"
+                    action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
                     name="honorImage"
                     :data="{type: '1'}"
                     :multiple="false"
@@ -464,17 +464,12 @@
           </el-row>            
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogEdit = false">取消</el-button>
-            <el-button :loading="btnloading" size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
+            <el-button size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
           </el-row>                                             
         </el-form>
       </el-dialog>
     </template>
     <!-- 查看学校信息 -->
-    <template>
-      <el-dialog center width="60%" top="40px" title="学校详情信息" :visible.sync="dialogView" :modal-append-to-body="false">
-
-      </el-dialog>
-    </template>
   </div>  
 </template>
 <script>
@@ -484,20 +479,18 @@ import pagination from "@/components/pagination";
 export default {
   name: "schoolManagement",
   components: {
-    region,
+    "qx-region": region,
     "qx-pagination": pagination
   },
   data() {
     return {
       dialogAdd: false,
       dialogEdit: false,
-      dialogView: false,
-      btnloading: false,
       formLabelWidth: "100px",
       query: {
         schoolId: 0,
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       totalCount: 0,
       schoolId: null,

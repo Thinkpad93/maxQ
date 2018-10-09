@@ -302,7 +302,7 @@ export default {
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .element-box {
   width: 500px;
   height: 736px;
@@ -350,10 +350,10 @@ export default {
     border: 1px dashed #d9d9d9;
   }
 }
-.el-upload {
-  width: auto;
-  text-align: left;
-}
+// .el-upload {
+//   width: auto;
+//   text-align: left;
+// }
 h3 {
   margin-bottom: 18px;
 }

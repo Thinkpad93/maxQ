@@ -21,7 +21,7 @@
                </el-form-item>
                <el-form-item>
                  <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                 <el-button size="small" icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">添加标签</el-button>
+                 <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
                </el-form-item>
              </el-form>
            </div>
@@ -81,6 +81,7 @@
      <!-- 新增 or 编辑 -->
      <template>
        <el-dialog center top="40px" title="" :visible.sync="dialogFormVisible" @close="close">
+         <span slot="title" class="dialog-title">{{ isShow ? '新增标签': '编辑标签' }}</span>
          <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="标签名称" prop="name" :rules="[
               { required: true, message: '请输入标签名称', trigger: 'blur' }
@@ -119,6 +120,7 @@ export default {
     return {
       dialogFormVisible: false,
       formLabelWidth: "100px",
+      isShow: true,
       query: {
         queryType: 0,
         name: ""
@@ -155,7 +157,12 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    handleAdd() {
+      this.isShow = true;
+      this.dialogFormVisible = true;
+    },
     handleEdit(row) {
+      this.isShow = false;
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
     },
@@ -205,4 +212,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.dialog-title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #303133;
+}
 </style>

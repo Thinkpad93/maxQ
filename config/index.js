@@ -12,7 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        target: 'http://192.168.18.253:8081/qxiao-cms', //目标接口域名
+        //target: process.env.BASE_API,
+        target: 'http://192.168.18.107:8080', //目标接口域名
         changeOrigin: true, //是否跨域
         secure: false, //允许https请求
         pathRewrite: {

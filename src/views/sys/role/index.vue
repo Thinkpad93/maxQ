@@ -20,7 +20,7 @@
      </template> 
      <!-- 表格数据 -->
      <template>
-       <el-table :data="tableData" style="width: 100%" stripe size="mini" v-loading="loading">
+       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini" v-loading="loading">
           <el-table-column label="角色ID" prop="roleId"></el-table-column>  
           <el-table-column label="角色名称" prop="roleName"></el-table-column>  
           <el-table-column label="角色等级" prop="roleLevel"></el-table-column>  
@@ -33,6 +33,16 @@
           </el-table-column>  
        </el-table>
      </template> 
+    <!-- 分页 -->
+    <template>
+      <qx-pagination 
+        @page-change="pageChange" 
+        @page-size="pageSize"
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
+    </template>        
      <!-- 新增 or 编辑 -->
      <template>
        <el-dialog center top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
@@ -96,6 +106,7 @@ export default {
         page: 1,
         pageSize: 10
       },
+      totalCount: 0, //分页总数
       form: {
         roleId: null,
         roleName: "",
@@ -112,7 +123,21 @@ export default {
       }
     };
   },
+  computed: {
+    //设置表格高度
+    tableHeight() {
+      return window.innerHeight - 255;
+    }
+  },
   methods: {
+    pageChange(curr) {
+      this.query.page = curr;
+      this.queryRoleList(this.query);
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryRoleList(this.query);
+    },
     search() {
       this.queryRoleList(this.query);
     },
@@ -159,7 +184,6 @@ export default {
           } else {
             delete obj.roleId;
           }
-          console.log(obj);
           this.addRole(obj);
         }
       });
@@ -191,6 +215,7 @@ export default {
       let res = await service.queryRoleList(params);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     },
     //权限列表（系统菜单）

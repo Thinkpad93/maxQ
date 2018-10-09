@@ -65,9 +65,12 @@
               </el-table-column> -->
               <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <a href="javascript:;" v-if="scope.row.verifyStatus === 0" style="color:#409EFF">初始</a>
-                      <a href="javascript:;" v-else-if="scope.row.verifyStatus === 1" style="color:#67C23A;">审核通过</a>
-                      <a href="javascript:;" v-else style="color:#F56C6C;" @click="handleCheckNode(scope.row)">审核不通过</a>
+                      <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
+                      <span v-else style="color:#F56C6C;cursor: pointer;" 
+                      @click="handleCheckNode(scope.row)">审核不通过</span>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
@@ -75,7 +78,6 @@
                   <template slot-scope="scope">
                     <router-link style="color:#409EFF" 
               :to="{path: `/content/uploadContentEdit/${scope.row.contentId}`}" v-if="scope.row.verifyStatus === 2">编辑</router-link>
-                      <!-- <el-button size="mini" type="text" @click="handleEdit(scope.row)" v-if="scope.row.verifyStatus === 2">编辑</el-button> -->
                       <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
                   </template>
               </el-table-column>
@@ -85,6 +87,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize"
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -97,17 +100,17 @@
           <el-table-column width="150" type="index" label="申请编号" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column width="150" property="checkStage" label="审核环节" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <a href="javascript:;" v-if="scope.row.checkStage === 0">待审核</a>
-              <a href="javascript:;" v-else-if="scope.row.checkStage === 1">初审</a>
-              <a href="javascript:;" v-else-if="scope.row.checkStage === 2">复审</a>
-              <a href="javascript:;" v-else>终审</a>
+              <span v-if="scope.row.checkStage === 0">待审核</span>
+              <span v-else-if="scope.row.checkStage === 1">初审</span>
+              <span v-else-if="scope.row.checkStage === 2">复审</span>
+              <span v-else>终审</span>
             </template>
           </el-table-column>
           <el-table-column width="150" property="verifyStatus" label="审核结果" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <a href="javascript:;" style="color:#409EFF" v-if="scope.row.verifyStatus === 0">初始</a>
-              <a href="javascript:;" style="color:#67C23A;" v-else-if="scope.row.verifyStatus === 1">审核通过</a>
-              <a href="javascript:;" style="color:#F56C6C;" v-else>审核不通过</a>
+              <span style="color:#409EFF" v-if="scope.row.verifyStatus === 0">初始</span>
+              <span style="color:#67C23A;" v-else-if="scope.row.verifyStatus === 1">审核通过</span>
+              <span style="color:#F56C6C;" v-else>审核不通过</span>
             </template>
           </el-table-column>
           <el-table-column width="150" property="postTime" label="审核时间" :show-overflow-tooltip="true"></el-table-column>
@@ -129,7 +132,6 @@ export default {
     return {
       dialogNode: false,
       query: {
-        schoolId: 0,
         verifyStatus: 3,
         title: "",
         page: 1,
@@ -154,6 +156,10 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
+      this.queryContentList();
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
       this.queryContentList();
     },
     search() {
@@ -186,7 +192,7 @@ export default {
     //查询上传列表审核节点
     async queryCheckNode(contentId) {
       let res = await service.queryCheckNode({ contentId });
-      if (res.errorCode === 0) {  
+      if (res.errorCode === 0) {
         this.nodeData = res.data;
       }
     },

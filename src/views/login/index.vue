@@ -5,7 +5,7 @@
         <el-form :rules="rules" ref="form" :model="form" style="width: 360px;" @submit.native.prevent>
           <el-form-item prop="userName">
             <el-input type="text" name="userName" v-model="form.userName" placeholder="请输入用户名">
-              <i slot="prefix" class="el-input__icon el-icon-date"></i>
+              <i slot="prefix" class="el-input__icon el-icon-setting"></i>
             </el-input>
           </el-form-item>           
           <el-form-item prop="password">

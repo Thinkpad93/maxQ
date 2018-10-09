@@ -64,6 +64,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize" 
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -184,7 +185,7 @@ export default {
         schoolId: null,
         userName: "",
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       form: {
         password: "",
@@ -234,10 +235,14 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.createTable();
+      this.queryFuzzy();
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryFuzzy();
     },
     search() {
-      this.createTable(this.query);
+      this.queryFuzzy(this.query);
     },
     handleType(value) {
       if (value !== 1) {
@@ -274,7 +279,6 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { accountId, password, userName } = this.reset;
-          console.log(this.reset);
           this.resetPassword({ accountId, password, userName });
         } else {
           return false;
@@ -308,7 +312,7 @@ export default {
       let res = await service.addAccount(params);
       if (res.errorCode === 0) {
         this.dialogAdd = false;
-        this.createTable();
+        this.queryFuzzy();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
@@ -324,12 +328,12 @@ export default {
     async changeStatus({ accountId, status }) {
       let res = await service.changeStatus({ accountId, status });
       if (res.errorCode === 0) {
-        this.createTable();
+        this.queryFuzzy();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
     //用户列表
-    async createTable() {
+    async queryFuzzy() {
       let res = await service.queryFuzzy(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
@@ -338,7 +342,7 @@ export default {
     }
   },
   mounted() {
-    this.createTable();
+    this.queryFuzzy();
     this.queryRoleName();
   }
 };

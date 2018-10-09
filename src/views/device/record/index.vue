@@ -20,7 +20,7 @@
               </el-form-item>       
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增</el-button>
+                <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -55,124 +55,80 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize" 
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
       </qx-pagination>
     </template>    
-    <!-- 新增检修记录 -->
+    <!-- 新增 or 编辑检修记录 -->
     <template>
-      <el-dialog center @open="show" @close="close" top="40px" title="新增检修记录" :visible.sync="dialogAdd" :modal-append-to-body="false">
-        <el-form ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="区域选择" prop="regionId" :rules="[
-            { required: true, message: '请选择区域', trigger: 'blur' }
-          ]">
-            <qx-region @last="queryRegion" v-model="addForm.regionId"></qx-region>
-          </el-form-item>    
-          <el-form-item label="学校名称" prop="schoolId" :rules="[
-            { required: true, message: '请输入学校名称', trigger: 'blur' }
-          ]">
-            <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
-              <el-option
-                v-for="item in schoolList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option> 
-            </el-select>              
-          </el-form-item>                
+      <el-dialog center top="40px" :visible.sync="dialogFormVisible" @close="close">
+        <span slot="title" class="dialog-title">{{ isShow ? '新增检修记录': '编辑检修记录' }}</span>
+        <el-form ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
+          <template v-if="isShow">
+            <el-form-item label="区域选择" prop="regionId" :rules="[
+              { required: true, message: '请选择区域', trigger: 'blur' }
+            ]">
+              <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
+            </el-form-item>
+            <el-form-item label="学校名称" prop="schoolId" :rules="[
+              { required: true, message: '请输入学校名称', trigger: 'blur' }
+            ]">
+              <el-select v-model="form.schoolId" clearable filterable placeholder="选择学校">
+                <el-option
+                  v-for="item in schoolListInner"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option> 
+              </el-select>              
+            </el-form-item>    
+          </template> 
           <el-form-item label="故障时间" prop="faultTime" :rules="[
             { required: true, message: '请选择故障时间', trigger: 'blur' }
           ]">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="addForm.faultTime"
+              v-model="form.faultTime"
               type="datetime"
               placeholder="选择故障时间">
             </el-date-picker>            
-          </el-form-item>
+          </el-form-item>       
           <el-form-item label="检修时间" prop="repairTime" :rules="[
             { required: true, message: '请选择检修时间', trigger: 'blur' }
           ]">
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="addForm.repairTime"
+              v-model="form.repairTime"
               type="datetime"
               placeholder="选择检修时间">
             </el-date-picker>             
-          </el-form-item>          
+          </el-form-item>  
           <el-form-item label="故障描述" prop="faultDescription" :rules="[
             { required: true, message: '请输入故障描述', trigger: 'blur' }
           ]">
-            <el-input type="textarea" v-model="addForm.faultDescription" :rows="4" placeholder="请输入故障描述"></el-input>
+            <el-input type="textarea" v-model="form.faultDescription" :rows="5" placeholder="请输入故障描述"></el-input>
           </el-form-item>
           <el-form-item label="检修结果" prop="repairResult" :rules="[
             { required: true, message: '请输入检修结果', trigger: 'blur' }
           ]">
-            <el-input type="textarea" v-model="addForm.repairResult" :rows="4" placeholder="请输入检修结果"></el-input>
+            <el-input type="textarea" v-model="form.repairResult" :rows="5" placeholder="请输入检修结果"></el-input>
           </el-form-item>
           <el-form-item label="检修人员" prop="repairMan" :rules="[
             { required: true, message: '请输入检修人员', trigger: 'blur' }
           ]">
-            <el-input v-model="addForm.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
+            <el-input v-model="form.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
           <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button :loading="btnloading" size="mini" type="primary" @click="addsForm('addForm')">保存</el-button>
-          </el-row>             
+            <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
+            <el-button size="mini" type="primary" @click="formAction('formRef')">保存</el-button>
+          </el-row>                                           
         </el-form>
       </el-dialog>
-    </template>   
-    <!-- 编辑检修记录 -->
-    <template>
-      <el-dialog center @open="show" @close="close" top="40px" title="编辑检修记录" :visible.sync="dialogEdit" :modal-append-to-body="false">
-        <el-form ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
-          <el-form-item label="故障时间" prop="faultTime" :rules="[
-            { required: true, message: '请选择故障时间', trigger: 'blur' }
-          ]">
-            <el-date-picker
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="edit.faultTime"
-              type="datetime"
-              placeholder="选择故障时间">
-            </el-date-picker>   
-          </el-form-item>
-          <el-form-item label="检修时间" prop="repairTime" :rules="[
-            { required: true, message: '请选择检修时间', trigger: 'blur' }
-          ]">
-            <el-date-picker
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="edit.repairTime"
-              type="datetime"
-              placeholder="选择检修时间">
-            </el-date-picker>               
-          </el-form-item>
-          <el-form-item label="故障描述" prop="faultDescription" :rules="[
-            { required: true, message: '请输入故障描述', trigger: 'blur' }
-          ]">
-            <el-input type="textarea" v-model="edit.faultDescription" :rows="4" placeholder="请输入故障描述"></el-input>
-          </el-form-item>
-          <el-form-item label="检修结果" prop="repairResult" :rules="[
-            { required: true, message: '请输入检修结果', trigger: 'blur' }
-          ]">
-            <el-input type="textarea" v-model="edit.repairResult" :rows="4" placeholder="请输入检修结果"></el-input>
-          </el-form-item>
-          <el-form-item label="检修人员" prop="repairMan" :rules="[
-            { required: true, message: '请输入检修人员', trigger: 'blur' }
-          ]">
-            <el-input v-model="edit.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
-          </el-form-item>
-          <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogEdit = false">取消</el-button>
-            <el-button :loading="btnloading" size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
-          </el-row>              
-        </el-form>
-      </el-dialog>
-    </template>        
+    </template>
   </div>  
 </template>
 <script>
@@ -189,7 +145,8 @@ export default {
     return {
       dialogAdd: false,
       dialogEdit: false,
-      btnloading: false,
+      dialogFormVisible: false,
+      isShow: true,
       formLabelWidth: "100px",
       //默认参数
       query: {
@@ -201,10 +158,10 @@ export default {
       schoolId: null,
       //学校名称
       schoolList: [],
-      addForm: {
+      schoolListInner: [],
+      form: {
         regionId: []
       },
-      edit: {},
       tableData: []
     };
   },
@@ -219,8 +176,16 @@ export default {
       this.query.page = curr;
       this.showRepairList();
     },
-    show() {},
-    close() {},
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.showRepairList();
+    },
+    show() {
+      this.resetForm();
+    },
+    close() {
+      this.resetForm();
+    },
     //搜索
     search() {
       let page = this.query.page;
@@ -238,15 +203,25 @@ export default {
         this.schoolList = list;
       }
     },
+    lastInnerChange(value) {
+      this.form.regionId = value;
+    },
     handleSchool(value) {
       this.query.schoolId = value;
     },
     handleClearSchool() {
       this.query.schoolId = 0;
     },
+    handleAdd() {
+      this.isShow = true;
+      this.dialogFormVisible = true;
+    },
     handleEdit(row) {
-      this.dialogEdit = true;
-      this.edit = { ...row };
+      let { address, deviceId, deviceNo, schoolName, ...args } = row;
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.$refs.formRef.resetFields();
+      this.form = Object.assign({}, args);
     },
     handleDel(row) {
       let that = this;
@@ -262,41 +237,36 @@ export default {
           return false;
         });
     },
-    addsForm(formName) {
+    resetForm() {
+      this.$nextTick(() => {
+        this.$refs.formRef.resetFields();
+      });
+    },
+    formAction(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnloading = true;
-          let { regionId, ...args } = this.addForm;
-          this.addDeviceRepair(args);
-        } else {
-          return false;
+          let { regionId, schoolId, ...args } = this.form;
+          if (schoolId && this.isShow) {
+            //新增
+            let obj = Object.assign({}, args, { schoolId });
+            this.addDeviceRepair(obj);
+          } else {
+            this.updateDeviceRepair(this.form);
+          }
         }
       });
     },
-    editorForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.btnloading = true;
-          let {
-            address,
-            deviceNo,
-            schoolName,
-            postTime,
-            deviceId,
-            ...args
-          } = this.edit;
-          this.updateDeviceRepair(args);
-        } else {
-          return false;
-        }
-      });
-    },
+    //获取学校
     async queryRegion(value) {
-      this.addForm.regionId = value;
+      this.form.regionId = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
       if (res.errorCode === 0) {
-        this.schoolList = res.data;
+        if (this.isShow) {
+          this.schoolListInner = res.data;
+        } else {
+          this.schoolList = res.data;
+        }
       } else {
         return false;
       }
@@ -320,12 +290,12 @@ export default {
     async addDeviceRepair(params = {}) {
       let res = await service.addDeviceRepair(params);
       if (res.errorCode === 0) {
-        this.dialogAdd = false;
-        this.btnloading = false;
+        this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showRepairList(this.query);
+        this.resetForm();
       } else {
-        this.btnloading = false;
+        this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     },
@@ -333,10 +303,10 @@ export default {
     async updateDeviceRepair(params = {}) {
       let res = await service.updateDeviceRepair(params);
       if (res.errorCode === 0) {
-        this.dialogEdit = false;
-        this.btnloading = false;
+        this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showRepairList(this.query);
+        this.resetForm();
       }
     },
     //删除检修记录
@@ -355,4 +325,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.dialog-title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #303133;
+}
 </style>

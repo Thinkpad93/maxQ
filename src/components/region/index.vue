@@ -13,7 +13,6 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import service from "@/api";
 export default {
   name: "region",
   props: {
@@ -30,7 +29,6 @@ export default {
   },
   data() {
     return {
-      //allData: [],
       propss: {
         value: "id",
         label: "name",
@@ -49,17 +47,8 @@ export default {
         this.$emit("last", value);
       }
     }
-    //初始化查询省市区所有数据
-    // async init() {
-    //   let res = await service.findAll({});
-    //   if (res.errorCode === 0) {
-    //     this.allData = res.data;
-    //   }
-    // },
   },
-  mounted() {
-    //this.init();
-  }
+  mounted() {}
 };
 </script>
 <style lang="less" scoped>

@@ -58,6 +58,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize" 
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -68,7 +69,7 @@
       <el-dialog center top="40px" title="" :visible.sync="dialogView">
         <el-row :gutter="10">
           <el-col :span="10">
-            <img src="http://temp.im/300x600/4CD964/fff" class="image">
+            <img src="https://fakeimg.pl/500x736/4CD964/fff" class="image">
           </el-col>
           <el-col :span="14">
             <el-form ref="check" :model="form" status-icon size="mini" :label-width="formLabelWidth">
@@ -138,6 +139,10 @@ export default {
       this.query.page = curr;
       this.querycheckContentList();
     },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.querycheckContentList();
+    },
     search() {
       this.queryCheckContentList();
     },
@@ -162,6 +167,7 @@ export default {
         this.dialogView = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryCheckContentList();
+        this.$refs.check.resetFields();
       }
     },
     //查询审核内容列表
@@ -169,6 +175,7 @@ export default {
       let res = await service.queryCheckContentList(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     }
   },

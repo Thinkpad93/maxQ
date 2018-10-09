@@ -23,7 +23,7 @@
           <el-table-column label="发布区域" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <span style="color:#409EFF" @click="handleViewSchool(scope.row)">查看</span>
+              <span style="color:#409EFF;cursor:pointer;" @click="handleViewSchool(scope.row)">查看</span>
             </template>
           </el-table-column>
           <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
@@ -38,6 +38,7 @@
       <template>
         <qx-pagination 
           @page-change="pageChange" 
+          @page-size="pageSize" 
           :page="query.page" 
           :pageSize="query.pageSize" 
           :total="totalCount">
@@ -45,7 +46,18 @@
       </template>         
       <!-- 发布学校 -->
       <template>
-        <el-dialog center top="40px" title="" :visible.sync="dialogView"></el-dialog>
+        <el-dialog center top="40px" title="发布学校查看" :visible.sync="dialogView">
+          <el-table :data="schoolData" style="width: 100%" border stripe size="mini">
+            <el-table-column label="发布学校" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
+            <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
+              <template slot-scope="scope">
+                <span v-if="scope.row.status === 1">已更新到栏目</span>
+                <span v-if="scope.row.status === 2">已更新到终端</span>
+                <span v-else>更新到终端失败</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-dialog>
       </template>
     </div>
   </div>
@@ -57,10 +69,10 @@ export default {
   name: "release",
   components: {
     "qx-pagination": pagination
-  },  
+  },
   data() {
     return {
-      activeName: 'first',
+      activeName: "first",
       dialogView: false,
       query: {
         status: "1",
@@ -68,7 +80,8 @@ export default {
         pageSize: 10
       },
       totalCount: 0,
-      tableData: []
+      tableData: [],
+      schoolData: []
     };
   },
   computed: {
@@ -76,14 +89,19 @@ export default {
     tableHeight() {
       return window.innerHeight - 255;
     }
-  },  
+  },
   methods: {
     pageChange(curr) {
       this.query.page = curr;
       this.queryChannel();
-    },    
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryChannel();
+    },
     handleViewSchool(row) {
       this.dialogView = true;
+      this.queryPublishContent(row.contentId);
     },
     handleClick(tab) {
       //tab 实例
@@ -102,7 +120,7 @@ export default {
         })
         .catch(error => {
           return false;
-        });       
+        });
     },
     //查询待发布内容列表
     async queryPublishContentList(params = {}) {

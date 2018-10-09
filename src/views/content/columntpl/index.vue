@@ -48,6 +48,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize"
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -341,8 +342,8 @@ import { disabledDate, hours } from "@/utils/tools";
 export default {
   name: "columnTpl",
   components: {
-    'qx-pagination': pagination
-  },  
+    "qx-pagination": pagination
+  },
   mixins: [Mixin],
   data() {
     return {
@@ -406,7 +407,11 @@ export default {
     pageChange(curr) {
       this.query.page = curr;
       this.queryChannelTemplate();
-    },    
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryChannelTemplate();
+    },
     search() {},
     addShow() {
       this.is = 0;
@@ -618,10 +623,7 @@ export default {
       let res = await service.deleteChannelTemplateDetail({ id });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.queryChannelTemplateDetail(
-          this.tplDetailform.templateId,
-          "edit"
-        );
+        this.queryChannelTemplateDetail(this.tplDetailform.templateId, "edit");
       }
     },
     //新增栏目模板详细项
@@ -642,10 +644,7 @@ export default {
     async updateChannelTemplateDetail(params = {}) {
       let res = await service.updateChannelTemplateDetail(params);
       if (res.errorCode === 0) {
-        this.queryChannelTemplateDetail(
-          this.tplDetailform.templateId,
-          "edit"
-        );
+        this.queryChannelTemplateDetail(this.tplDetailform.templateId, "edit");
       }
     },
     //查询栏目模板详细

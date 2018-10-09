@@ -46,6 +46,7 @@
     <template>
       <qx-pagination 
         @page-change="pageChange" 
+        @page-size="pageSize" 
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -182,7 +183,15 @@ export default {
       this.query.page = curr;
       this.queryPrepublishContentList(this.query);
     },
-    search() {},
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryPrepublishContentList(this.query);
+    },
+    search() {
+      if (this.query.title != "") {
+        this.queryPrepublishContentList(this.query);
+      }
+    },
     handleRelease(row) {
       let { contentId, resources, title } = row;
       this.dialogAdd = true;
@@ -209,7 +218,7 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        this.dialogAdd = true;
+        this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryPrepublishContentList(this.query);
       }
