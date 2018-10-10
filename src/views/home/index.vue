@@ -1,5 +1,18 @@
 <template>
    <div class="page">
+      <el-form size="small">
+        <el-form-item label="区域选择" prop="area">
+          <el-select v-model="province" @change="handleProvince">
+            <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>  
+          <el-select v-model="city" @change="handleCity">
+            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>      
+          <el-select v-model="area" @change="handleArea">
+            <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>                                     
+        </el-form-item>
+      </el-form>     
       <div class="exception-content">
         <img src="@/assets/empty-content.png" alt="" style="max-width: 260px;">
           <div>
@@ -10,13 +23,48 @@
     </div> 
 </template>
 <script>
+import service from "@/api";
 import { mapActions } from "vuex";
 export default {
   name: "home",
   data() {
-    return {};
+    return {
+      province: null,
+      city: null,
+      area: null,
+      provinceList: [],
+      cityList: [],
+      areaList: []
+    };
+  },
+  methods: {
+    handleProvince(value) {
+      this.queryRegion(value, 1);
+      this.city = null;
+      this.area = null;
+    },
+    handleCity(value) {
+      this.queryRegion(value, 2);
+      this.area = null;
+    },
+    handleArea(value) {},
+    async queryRegion(queryId, queryType) {
+      let res = await service.queryRegion({ queryId, queryType });
+      if (res.errorCode === 0) {
+        if (queryType === 0) {
+          this.provinceList = res.data;
+        }
+        if (queryType === 1) {
+          this.cityList = res.data;
+        }
+        if (queryType === 2) {
+          this.areaList = res.data;
+        }
+      }
+    }
   },
   mounted() {
+    this.queryRegion(0, 0);
     //this.$store.dispatch("comm/qxregion");
   }
 };

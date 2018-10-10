@@ -228,6 +228,8 @@ export default {
         this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryPrepublishContentList(this.query);
+      } else if (res.errorCode === -1) {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //查询标签 1.学校 3.冠名企业

@@ -515,7 +515,7 @@ export default {
         linkMan: []
       },
       addForm: {
-        channelTemplateId: 1,
+        channelTemplateId: null,
         regionId: [],
         reviewFlag: 0,
         schoolImage: [{}, {}],
@@ -580,7 +580,19 @@ export default {
     //   this.$store.dispatch("comm/querySchoolInfo", schoolId);
     // },
     //学校删除
-    handleDel(row) {},
+    handleDel(row) {
+      this.$confirm(`确定要删除学校吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deteleSchool(row.schoolId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
     handleEdit(row) {
       this.dialogEdit = true;
       this.edit = Object.assign({}, row, { regionId: [] });
@@ -726,6 +738,9 @@ export default {
       let res = await service.queryChannelTemplateAll({});
       if (res.errorCode === 0) {
         this.templateidList = res.data;
+        //设置默认栏目模板
+        let d = this.templateidList.find(item => item.type === 1);
+        this.addForm.channelTemplateId = d.templateId;
       }
     },
     //查询标签
@@ -765,6 +780,13 @@ export default {
       if (res.errorCode === 0) {
         this.dialogEdit = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.showSchoolList();
+      }
+    },
+    //删除学校
+    async deteleSchool(schoolId) {
+      let res = await service.deteleSchool({ schoolId });
+      if (res.errorCode === 0) {
         this.showSchoolList();
       }
     },

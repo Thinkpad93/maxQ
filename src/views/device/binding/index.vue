@@ -405,7 +405,7 @@ export default {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.dialogAdd = false;
         this.showDeviceList();
-      } else if (res.errorCode === 1) {
+      } else if (res.errorCode === -1) {
         //MAC码已存在
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
         return false;

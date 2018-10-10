@@ -18,7 +18,7 @@
         <span slot="title">首页</span>        
       </el-menu-item>       
       <template v-for="item in menu">
-        <template v-if="item.children.length >= 2">
+        <template v-if="item.children.length >= 1">
           <el-submenu :index="item.path" :key="item.path">
             <template slot="title">
               <i class="el-icon-menu"></i>

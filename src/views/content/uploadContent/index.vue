@@ -6,8 +6,8 @@
                     <el-form ref="query" :model="query" size="mini" label-width="100px" label-position="left">
                         <el-form-item label="内容类型">
                             <el-radio-group v-model="query.contentType" @change="handleRadio">
-                                <el-radio-button :label="0" size="mini">全屏播放</el-radio-button>
-                                <el-radio-button :label="1" size="mini">滚动播放</el-radio-button>
+                                <el-radio-button :label="1" size="mini">全屏播放</el-radio-button>
+                                <el-radio-button :label="0" size="mini">滚动播放</el-radio-button>
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="内容标题" prop="title" :rules="[
@@ -15,7 +15,7 @@
                         ]">
                             <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="20"></el-input>
                         </el-form-item>                            
-                        <template v-if="query.contentType === 0">
+                        <template v-if="query.contentType === 1">
                             <el-form-item label="内容作者" prop="author" :rules="[
                               { required: true, message: '请输入内容作者', trigger: 'blur' }
                             ]">
@@ -31,8 +31,10 @@
                                 </el-select>
                             </el-form-item> 
                             <!-- 有上传学校和上传促进会 默认上传学校时不需要选择栏目 -->
-                            <template v-if="!query.belongTo"> 
-                              <el-form-item label="所属栏目" prop="channelId">
+                            <template v-if="type !== 1">
+                              <el-form-item label="所属栏目" prop="channelId" :rules="[
+                              { required: true, message: '请选择所属栏目', trigger: 'blur' }
+                            ]">
                                   <el-select v-model="query.channelId" placeholder="请选择" style="width: 100%;">
                                       <el-option v-for="item in channelList" 
                                           :key="item.channelId" 
@@ -196,7 +198,7 @@ export default {
         showType: 0,
         templateId: null,
         contentProperty: 0,
-        contentType: 0,
+        contentType: 1,
         durationTime: "",
         componentValue: null
       },
@@ -222,11 +224,11 @@ export default {
     handleSaveChange() {},
     handleRadio(value) {
       this.query.contentType = value;
-      let params = {
-        //schoolId: this.query.schoolId,
-        contentType: this.query.contentType
-      };
-      this.querySchoolPlayListTimeAction(params);
+      // let params = {
+      //   schoolId: this.query.schoolId,
+      //   contentType: this.query.contentType
+      // };
+      this.querySchoolPlayListTimeAction(this.query.contentType);
       this.$refs.query.clearValidate();
     },
     handleChange(value) {
@@ -265,7 +267,6 @@ export default {
       this.dialogViewVideo = true;
     },
     handleImageSuccess(response, file, fileList) {
-      console.log(response);
       if (response.errorCode === 0) {
         this.query.imageUrl = response.data.url;
         this.query.imageName = response.data.imageName;
@@ -282,29 +283,37 @@ export default {
         if (valid) {
           let obj = {};
           let channelId = [];
-          let rolling = "";
           let { showType, playTime, ...args } = this.query;
           if (
             this.query.videoUrl === "" &&
             (showType == 1 || showType == 2 || showType == 4 || showType == 5)
           ) {
-            this.$message({ message: `请上传视频`, type: "warning" });
-            return false;
+            if (this.query.contentType !== 0) {
+              this.$message({ message: `请上传视频`, type: "warning" });
+              return false;
+            }
           }
           if (
             this.query.imageUrl === "" &&
             (showType == 3 || showType == 4 || showType == 5)
           ) {
-            this.$message({ message: `请上传图片`, type: "warning" });
-            return false;
-          }
-          this.schoolPlayTime.forEach(oldItem => {
-            if (playTime.find(newItem => oldItem.itemId == newItem)) {
-              channelId.push(oldItem.channelId);
+            if (this.query.contentType !== 0) {
+              this.$message({ message: `请上传图片`, type: "warning" });
+              return false;
             }
-          });
+          }
+          if (this.type === 1) {
+            this.schoolPlayTime.forEach(oldItem => {
+              if (playTime.find(newItem => oldItem.itemId == newItem)) {
+                channelId.push(oldItem.channelId);
+              }
+            });
+          } else {
+            channelId.push(this.query.channelId);
+          }
           obj = Object.assign({}, args, { channelId });
           this.uploadContentAction(obj);
+          //console.log(obj);
         }
       });
     },
@@ -323,8 +332,8 @@ export default {
       }
     },
     //查询栏目模板时间段
-    async querySchoolPlayListTimeAction(paramss = {}) {
-      let res = await service.querySchoolPlayListTime(paramss);
+    async querySchoolPlayListTimeAction(contentType) {
+      let res = await service.querySchoolPlayListTime({ contentType });
       if (res.errorCode === 0) {
         this.schoolPlayTime = res.data;
       }
@@ -337,7 +346,7 @@ export default {
       if (res.errorCode === 0) {
         this.resetForm("query");
         if (
-          this.query.contentType === 0 &&
+          this.query.contentType === 1 &&
           (this.query.showType == 0 ||
             this.query.showType == 1 ||
             this.query.showType == 2)
@@ -359,12 +368,13 @@ export default {
     }
   },
   mounted() {
-    let { schoolId, contentType } = this.query;
-    if (this.query.belongTo === 0) {
+    //let { contentType } = this.query;
+    if (this.type !== 1) {
       this.queryChannelInner();
+    } else {
+      this.querySchoolPlayListTimeAction(this.query.contentType);
     }
     this.queryContentTemplateAction(0);
-    this.querySchoolPlayListTimeAction({ schoolId, contentType });
   }
 };
 </script>
