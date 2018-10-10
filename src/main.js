@@ -72,7 +72,9 @@ new Vue({
   template: '<App/>',
   created() {},
   mounted() {
-    this.$store.dispatch("comm/qxregion");
+    if (getToken()) {
+      this.$store.dispatch("comm/qxregion");
+    }
     //this.$store.commit('menu/dbget');
     //this.$store.commit('user/dbget');
   },

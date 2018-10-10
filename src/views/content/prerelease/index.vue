@@ -19,25 +19,26 @@
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="账户类型" prop="type" :show-overflow-tooltip="true">
+        <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
+        <!-- <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column> -->
+        <!-- <el-table-column label="账户类型" prop="type" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span v-if="scope.row.type === 0">促进会</span>
             <span v-else-if="scope.row.type === 1">学校</span>
             <span v-else-if="scope.row.type === 2">教育局</span>
             <span v-else>培训机构</span>
           </template>
-        </el-table-column>
-        <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column>
+        </el-table-column> -->
+        <!-- <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作" prop="contentId" :show-overflow-tooltip="true">
+        <el-table-column label="操作" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="handleRelease(scope.row)">预发布</el-button>
+            <el-button size="mini" type="primary" @click="handleRelease(scope.row)">预发布</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,7 +56,7 @@
     <!-- 预发布 -->
     <template>
       <el-dialog title="预发布" center top="40px" :visible.sync="dialogAdd">
-        <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+        <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="内容标题" prop="title">
             <el-input v-model="form.title" disabled></el-input>
           </el-form-item>
@@ -139,10 +140,13 @@ export default {
       },
       totalCount: 0,
       form: {
-        scopeType: 3,
+        scopeType: 0,
         scopeId: null,
+        propertyId: null,
+        typeId: null,
+        labelIds: [],
         regionId: [],
-        sponsorIds: [0, 1]
+        sponsorIds: []
       },
       rules: {
         regionId: [
@@ -201,10 +205,13 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { regionId, scopeId, resources, title, ...args } = this.form;
-          if (Array.isArray(regionId)) {
+          if (regionId.length) {
             scopeId = regionId[regionId.length - 1];
+          } else {
+            scopeId = null;
           }
           let obj = Object.assign({}, args, { scopeId });
+          console.log(obj);
           this.prepublishContent(obj);
         }
       });

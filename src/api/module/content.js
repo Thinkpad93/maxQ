@@ -199,9 +199,9 @@ export function prepublishContent(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-//内容发布学校信息
-export function queryPublishContent(params) {
-  return ax.post('/action/mod-xiaojiao/content/prePublish/queryPublishContent.do', params)
+//内容发布（待发布）学校信息
+export function queryPrePublishSchoolInfo(params) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/queryPrePublishSchoolInfo.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

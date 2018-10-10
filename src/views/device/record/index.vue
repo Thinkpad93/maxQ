@@ -45,8 +45,8 @@
           <el-table-column :resizable="false" label="检修人员" prop="repairMan" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="操作" width="200">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
             </template>            
           </el-table-column>
       </el-table>        
@@ -63,7 +63,7 @@
     </template>    
     <!-- 新增 or 编辑检修记录 -->
     <template>
-      <el-dialog center top="40px" :visible.sync="dialogFormVisible" @close="close">
+      <el-dialog center top="40px" :visible.sync="dialogFormVisible" @close="close" @open="show">
         <span slot="title" class="dialog-title">{{ isShow ? '新增检修记录': '编辑检修记录' }}</span>
         <el-form ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <template v-if="isShow">
@@ -180,11 +180,9 @@ export default {
       this.query.pageSize = size;
       this.showRepairList();
     },
-    show() {
-      this.resetForm();
-    },
+    show() {},
     close() {
-      this.resetForm();
+      this.$refs.formRef.resetFields();
     },
     //搜索
     search() {
@@ -215,12 +213,13 @@ export default {
     handleAdd() {
       this.isShow = true;
       this.dialogFormVisible = true;
+      //this.$refs.formRef.resetFields();
     },
     handleEdit(row) {
       let { address, deviceId, deviceNo, schoolName, ...args } = row;
       this.isShow = false;
       this.dialogFormVisible = true;
-      this.$refs.formRef.resetFields();
+      //this.$refs.formRef.resetFields();
       this.form = Object.assign({}, args);
     },
     handleDel(row) {

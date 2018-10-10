@@ -47,7 +47,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <template v-if="scope.row.verifyStatus === 0">
-              <el-button size="mini" type="text" @click="handleStage(scope.row)">预览审核</el-button>
+              <el-button size="mini" type="primary" @click="handleStage(scope.row)">预览审核</el-button>
             </template>
           </template>
         </el-table-column>

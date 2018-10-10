@@ -109,6 +109,7 @@ export default {
       info: {}
     };
   },
+  computed: {},
   methods: {
     async schoolInfo(id) {
       let res = await service.querySchoolInfo({ schoolId: id });
@@ -117,7 +118,8 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted() {},
+  activated() {
     this.schoolInfo(this.schoolId);
   }
 };
@@ -169,7 +171,7 @@ export default {
   display: table-cell;
   line-height: 22px;
   padding-bottom: 16px;
-  color: #409EFF;
+  color: #409eff;
   //color: rgba(0, 0, 0, 0.65);
   span {
     color: #fff;

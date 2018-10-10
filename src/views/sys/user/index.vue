@@ -54,7 +54,7 @@
          </el-table-column>
          <el-table-column label="操作" prop="" :show-overflow-tooltip="true">
            <template slot-scope="scope">
-             <el-button size="mini" type="primary" plain @click="handleReset(scope.row)">重置密码</el-button>
+             <el-button size="mini" type="primary" @click="handleReset(scope.row)">重置密码</el-button>
            </template>
          </el-table-column>
        </el-table>
@@ -189,7 +189,6 @@ export default {
       },
       form: {
         password: "",
-        type: 1,
         regionId: []
       },
       reset: {
@@ -206,6 +205,7 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         checkPass: [{ required: true, validator: checkPass, trigger: "blur" }],
         roleId: [{ required: true, message: "选择用户角色", trigger: "blur" }],
+        type: [{ required: true, message: "选择用户类型", trigger: "blur" }],
         regionId: [
           { required: true, message: "选择对应区域", trigger: "blur" }
         ],

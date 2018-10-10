@@ -34,6 +34,7 @@
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
+            <!-- <span style="color:#409EFF;cursor:pointer;" @click="handleSchoolInfo(scope.row.schoolId)">{{ scope.row.name }}</span> -->
             <router-link style="color:#409EFF" 
               :to="{path: `/school/views/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
           </template>                    
@@ -55,7 +56,8 @@
         <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
           </template>                       
         </el-table-column>        
       </el-table>
@@ -572,6 +574,12 @@ export default {
         this.showSchoolList();
       }
     },
+    // handleSchoolInfo(schoolId) {
+    //   this.$router.push({ path: `/school/views/${schoolId}` });
+    //   this.$store.dispatch("comm/querySchoolInfo", schoolId);
+    // },
+    //学校删除
+    handleDel(row) {},
     handleEdit(row) {
       this.dialogEdit = true;
       this.edit = Object.assign({}, row, { regionId: [] });
@@ -584,9 +592,13 @@ export default {
       }
       this.findRegion(row.regionId);
     },
-    handleDel(row) {},
     show() {},
-    close() {},
+    close() {
+      this.$nextTick(() => {
+        this.editImageUrl3 = "";
+        this.editImageUrl4 = "";
+      });
+    },
     addsForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

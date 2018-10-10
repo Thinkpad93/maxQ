@@ -148,7 +148,7 @@
               <!-- <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a> -->
               <el-popover placement="left" trigger="hover">
                 <el-table :data="scope.row.contents" border stripe size="mini">
-                  <el-table-column width="200" property="title" label="播放内容" :show-overflow-tooltip="true">
+                  <el-table-column width="260" property="title" label="播放内容" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                       <a href="javascript:;" style="color:#409EFF">{{ scope.row.title }}</a>
                     </template>
@@ -161,9 +161,10 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" plain @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
-            <el-button :disabled="scope.row.state === 0" size="mini" type="primary" plain @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
-            <el-button :disabled="scope.row.state === 0" size="mini" type="danger" plain @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
+            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
+            <!-- <el-button :disabled="scope.row.state === 0" size="mini" type="info" v-show="scope.row.show" @click="handleCancel(scope.$index, scope.row)">取消</el-button> -->
+            <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -413,6 +414,10 @@ export default {
     handleClearSchool() {
       this.query.schoolId = null;
     },
+    //取消
+    // handleCancel(index, row) {
+    //   this.setEditStateAll(this.tableData, { show: false, state: 0 });
+    // },
     handleEdit(index, row) {
       let { channelId, schoolId } = row;
       let tableData = this.tableData;
