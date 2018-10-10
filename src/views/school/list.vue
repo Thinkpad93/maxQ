@@ -515,6 +515,7 @@ export default {
         linkMan: []
       },
       addForm: {
+        channelTemplateId: 1,
         regionId: [],
         reviewFlag: 0,
         schoolImage: [{}, {}],

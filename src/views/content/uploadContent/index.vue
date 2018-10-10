@@ -110,18 +110,20 @@
                               style="width: 100%;">
                             </el-time-picker>
                         </el-form-item>   
-                        <el-form-item label="播放时段" prop="playTime" :rules="[
-                          { required: true, message: '请选择播放时段', trigger: 'blur' }
-                        ]">
-                            <el-select style="width: 100%;" v-model="query.playTime" placeholder="请选择播放时段" value-key="itemId" multiple collapse-tags>
-                              <el-option 
-                                v-for="item in schoolPlayTime" 
-                                :key="item.itemId" 
-                                :label="item.time" 
-                                :value="item.itemId">
-                              </el-option>
-                            </el-select>
-                        </el-form-item>                                                                                                                                            
+                        <template v-if="type === 1">
+                          <el-form-item label="播放时段" prop="playTime" :rules="[
+                            { required: true, message: '请选择播放时段', trigger: 'blur' }
+                          ]">
+                              <el-select style="width: 100%;" v-model="query.playTime" placeholder="请选择播放时段" value-key="itemId" multiple collapse-tags>
+                                <el-option 
+                                  v-for="item in schoolPlayTime" 
+                                  :key="item.itemId" 
+                                  :label="item.time" 
+                                  :value="item.itemId">
+                                </el-option>
+                              </el-select>
+                          </el-form-item>  
+                        </template>                                                                                                                                          
                         <el-form-item>
                             <el-button size="mini" type="primary" @click="upload('query')">新增上传</el-button>
                         </el-form-item>                        
@@ -164,6 +166,7 @@
    </div> 
 </template>
 <script>
+import { mapState } from "vuex";
 import service from "@/api";
 export default {
   name: "uploadAdd",
@@ -211,7 +214,9 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+    ...mapState("qxuser", ["type"])
+  },
   methods: {
     loadSuccess() {},
     handleSaveChange() {},

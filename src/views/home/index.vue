@@ -1,12 +1,12 @@
 <template>
    <div class="page">
-     <div class="exception-content">
+      <div class="exception-content">
         <img src="@/assets/empty-content.png" alt="" style="max-width: 260px;">
-        <div>
-          <h3>页面暂无内容</h3>
-          <p>抱歉，页面暂无内容，请看看其他页面</p>
-        </div>
-     </div>
+          <div>
+            <h3>页面暂无内容</h3>
+            <p>抱歉，页面暂无内容，请看看其他页面</p>
+          </div>
+      </div>
     </div> 
 </template>
 <script>

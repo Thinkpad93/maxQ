@@ -11,11 +11,15 @@ export default {
   state: {
     token: getToken(),
     name: "",
+    type: null, //账号类型 0-促进会 1-学校 2-教育局 3-培训机构
     menu: []
   },
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token;
+    },
+    SET_TYPE: (state, type) => {
+      state.type = type;
     },
     SET_NAME: (state, name) => {
       state.name = name;
@@ -54,6 +58,7 @@ export default {
           if (res.errorCode === 0) {
             if (res.data.router) {
               commit('SET_NAME', res.data.name);
+              commit('SET_TYPE', res.data.type);
               commit('SET_MENU', res.data.router);
             }
             resolve(res);

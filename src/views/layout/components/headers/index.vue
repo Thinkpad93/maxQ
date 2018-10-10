@@ -10,7 +10,7 @@
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
           <!-- {{ info.name }} -->
-          {{ name }}
+          {{ name }} - {{type}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -22,6 +22,7 @@
 </template>
 <script>
 import bus from "@/utils/bus";
+import { getToken } from "@/utils/auth";
 //在组件中分发 Action
 import { mapState, mapActions } from "vuex";
 
@@ -33,7 +34,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("qxuser", ["name"])
+    ...mapState("qxuser", ["name", "type"])
   },
   methods: {
     collapseChage() {
@@ -60,7 +61,10 @@ export default {
   },
   created() {},
   mounted() {
-    console.log(this.$root);
+    //console.log(this.$root);
+    if (getToken()) {
+      this.$store.dispatch("comm/qxregion");
+    }
   }
 };
 </script>

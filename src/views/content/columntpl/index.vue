@@ -81,14 +81,14 @@
       <el-dialog width="70%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
         <el-form ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="24">
               <el-form-item label="栏目模板ID">
                 <el-input v-model="tplDetailform.templateId" :disabled="true"></el-input>
               </el-form-item>  
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="播放时段" prop="playTime" :rules="[
             { required: true, message: '请选择播放时段', trigger: 'blur' }
           ]">
@@ -107,7 +107,7 @@
                 </el-time-picker>                           
               </el-form-item>  
             </el-col>
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="时间段选择" prop="validTime">
                 <el-date-picker
                   :disabled="tplDetailform.validType === 0"
@@ -126,7 +126,7 @@
             </el-col>
           </el-row>   
           <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="栏目名称" prop="channelId" :rules="[
             { required: true, message: '请选择栏目名称', trigger: 'blur' }
           ]">
@@ -139,7 +139,7 @@
                 </el-select>                             
               </el-form-item>              
             </el-col>
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="播放优先级" prop="priority" :rules="[
             { required: true, message: '请选择播放优先级', trigger: 'blur' }
           ]">
@@ -155,7 +155,7 @@
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="栏目属性" prop="scrollType">
                 <el-radio-group v-model="tplDetailform.scrollType">
                   <el-radio :label="0">非滚动</el-radio>
@@ -163,7 +163,7 @@
                 </el-radio-group>
               </el-form-item>   
             </el-col>
-            <el-col :span="6">
+            <el-col :span="12">
               <el-form-item label="栏目有效期" prop="validType">
                 <el-radio-group v-model="tplDetailform.validType">
                   <el-radio :label="0">长期</el-radio>
@@ -212,7 +212,7 @@
     </template> 
     <!-- 编辑栏目模板详细项 -->
     <template>
-      <el-dialog width="70%" title="编辑栏目模板详细项" center top="40px" :visible.sync="dialogEdit">
+      <el-dialog width="80%" title="编辑栏目模板详细项" center top="40px" :visible.sync="dialogEdit">
         <!-- <el-alert title="已有的模板详细项" type="success" :closable="false"></el-alert> -->
         <el-table :data="tplEditData"  style="width: 100%" :height="450" stripe size="mini">
           <el-table-column width="400" label="播放时段">
@@ -320,7 +320,7 @@
               </template>              
             </template>
           </el-table-column>    
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="180">
             <template slot-scope="scope">
               <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleInnerSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
               <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleInnerEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
