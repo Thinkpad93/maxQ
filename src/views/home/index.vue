@@ -1,16 +1,26 @@
 <template>
    <div class="page">
-      <el-form size="small">
-        <el-form-item label="区域选择" prop="area">
-          <el-select v-model="province" @change="handleProvince">
+      <el-form :inline="true" size="small">
+        <el-form-item label="区域选择">
+          <el-select v-model="province" @change="handleProvince" style="width:150px;">
             <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>  
-          <el-select v-model="city" @change="handleCity">
+          <el-select v-model="city" @change="handleCity" style="width:150px;">
             <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>      
-          <el-select v-model="area" @change="handleArea">
+          <el-select v-model="area" @change="handleArea" style="width:150px;">
             <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>                                     
+        </el-form-item>
+        <el-form-item label="学校名称">
+          <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
+            <el-option
+              v-for="item in schoolList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option> 
+          </el-select>          
         </el-form-item>
       </el-form>     
       <div class="exception-content">
@@ -32,6 +42,8 @@ export default {
       province: null,
       city: null,
       area: null,
+      schoolId: null,
+      schoolList: [],
       provinceList: [],
       cityList: [],
       areaList: []
@@ -48,6 +60,8 @@ export default {
       this.area = null;
     },
     handleArea(value) {},
+    handleSchool() {},
+    handleClearSchool() {},
     async queryRegion(queryId, queryType) {
       let res = await service.queryRegion({ queryId, queryType });
       if (res.errorCode === 0) {

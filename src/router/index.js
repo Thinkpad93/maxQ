@@ -23,6 +23,20 @@ export const constantRouterMap = [{
       }
     }]
   },
+  {
+    path: '/newUpload',
+    component: layout,
+    redirect: '/newUpload',
+    children: [{
+      path: '/newUpload',
+      name: 'newUpload',
+      component: () =>
+        import ('@/views/newUpload'),
+      meta: {
+        title: "上传内容新版"
+      }
+    }]
+  },
   // {
   //   path: '*',
   //   component: layout,
