@@ -6,7 +6,7 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
+              <!-- <el-form-item label="区域选择">
                 <qx-region @last="lastChange"></qx-region>
               </el-form-item>  
               <el-form-item label="学校名称">
@@ -18,12 +18,17 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>
-              </el-form-item>   
-              <el-form-item label="账号">
+              </el-form-item>    -->
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="学校名称">
+                <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
+              </el-form-item>  
+              <el-form-item label="账号名称">
                 <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
               </el-form-item>                                       
               <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
               </el-form-item>                          
             </el-form>
@@ -92,8 +97,8 @@
                 </el-option>                
              </el-select>
            </el-form-item>
-           <el-form-item label="类型" prop="type">
-             <el-select v-model="form.type" placeholder="选择类型" @change="handleType">
+           <el-form-item label="账户类型" prop="type">
+             <el-select v-model="form.type" placeholder="选择账户类型" @change="handleType">
                 <el-option
                   v-for="item in typeList"
                   :key="item.id"
@@ -101,10 +106,11 @@
                   :value="item.id">
                 </el-option>               
              </el-select>
-           </el-form-item>           
-           <el-form-item label="对应区域" prop="regionId">
+           </el-form-item>  
+           <qx-region-t @regionChange="handleRegionChanges"></qx-region-t>         
+           <!-- <el-form-item label="对应区域" prop="regionId">
              <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
-           </el-form-item>
+           </el-form-item> -->
            <template v-if="form.type === 1">
             <el-form-item label="对应学校" prop="schoolId">
               <el-select v-model="form.schoolId" placeholder="选择学校" @change="handleSchool" :disabled="disabled === 1">
@@ -153,10 +159,12 @@
 import service from "@/api";
 import pagination from "@/components/pagination";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
 export default {
   name: "account",
   components: {
     "qx-region": region,
+    "qx-region-t": regiont,
     "qx-pagination": pagination
   },
   data() {
@@ -182,14 +190,18 @@ export default {
       formLabelWidth: "100px",
       disabled: 0,
       query: {
-        schoolId: null,
+        queryId: 0,
+        queryType: 0,
+        schoolName: "",
         userName: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       form: {
-        password: "",
-        regionId: []
+        queryType: null,
+        queryId: null,
+        password: ""
+        //regionId: []
       },
       reset: {
         accountId: null,
@@ -203,12 +215,12 @@ export default {
           { validator: checkUserName, trigger: "blur" }
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        checkPass: [{ required: true, validator: checkPass, trigger: "blur" }],
+        checkPass: [{ validator: checkPass, trigger: "blur" }],
         roleId: [{ required: true, message: "选择用户角色", trigger: "blur" }],
         type: [{ required: true, message: "选择用户类型", trigger: "blur" }],
-        regionId: [
-          { required: true, message: "选择对应区域", trigger: "blur" }
-        ],
+        // regionId: [
+        //   { required: true, message: "选择对应区域", trigger: "blur" }
+        // ],
         schoolId: [{ required: true, message: "选择学校", trigger: "blur" }]
       },
       rules2: {
@@ -241,8 +253,22 @@ export default {
       this.query.pageSize = size;
       this.queryFuzzy();
     },
-    search() {
+    // search() {
+    //   this.queryFuzzy(this.query);
+    // },
+    handleSearch() {
       this.queryFuzzy(this.query);
+    },
+    handleRegionChange(queryId, queryType) {
+      if (queryId || queryType) {
+        this.query.queryId = queryId;
+        this.query.queryType = queryType;
+      }
+    },
+    handleRegionChanges(queryId, queryType) {
+      this.form.queryId = queryId;
+      this.form.queryType = queryType;
+      this.queryRegion(queryId, queryType);
     },
     handleType(value) {
       if (value !== 1) {
@@ -252,7 +278,7 @@ export default {
       }
     },
     handleSchool(value) {
-      this.query.schoolId = value;
+      this.form.schoolId = value;
     },
     handleSwitch(row) {
       let { status, accountId } = row;
@@ -266,10 +292,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { regionId, checkPass, ...args } = this.form;
-          let lasts = regionId[regionId.length - 1];
-          let obj = Object.assign({}, args, { regionId: lasts });
-          this.addAccount(obj);
+          console.log(this.form);
+          // let { regionId, checkPass, ...args } = this.form;
+          // let lasts = regionId[regionId.length - 1];
+          // let obj = Object.assign({}, args, { regionId: lasts });
+          this.addAccount(this.form);
         } else {
           return false;
         }
@@ -286,16 +313,27 @@ export default {
       });
     },
     //加载学校数据
-    async lastChange(value) {
-      this.form.regionId = value;
-      let last = value[value.length - 1];
-      let res = await service.queryRegion({ queryId: last, queryType: 3 });
-      if (res.errorCode === 0) {
-        this.schoolList = res.data;
-      } else {
-        return false;
+    async queryRegion(queryId, queryType) {
+      if (queryType === 2) {
+        queryType = 3;
+        let res = await service.queryRegion({ queryId, queryType });
+        if (res.errorCode === 0) {
+          this.schoolList = res.data;
+        } else {
+          return false;
+        }
       }
     },
+    // async lastChange(value) {
+    //   this.form.regionId = value;
+    //   let last = value[value.length - 1];
+    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
+    //   if (res.errorCode === 0) {
+    //     this.schoolList = res.data;
+    //   } else {
+    //     return false;
+    //   }
+    // },
     //检查用户名是否重复
     async queryAccountName(params = {}) {
       let res = await service.queryAccountName(params);
@@ -312,6 +350,7 @@ export default {
       let res = await service.addAccount(params);
       if (res.errorCode === 0) {
         this.dialogAdd = false;
+        this.$refs.form.resetFields();
         this.queryFuzzy();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
       }

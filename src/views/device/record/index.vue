@@ -123,7 +123,7 @@
             <el-input v-model="form.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
           <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
+            <el-button size="mini" @click="handleCancle('formRef')">取消</el-button>
             <el-button size="mini" type="primary" @click="formAction('formRef')">保存</el-button>
           </el-row>                                           
         </el-form>
@@ -171,6 +171,9 @@ export default {
       return window.innerHeight - 255;
     }
   },
+  watch: {
+    dialogFormVisible(val) {}
+  },
   methods: {
     pageChange(curr) {
       this.query.page = curr;
@@ -182,7 +185,7 @@ export default {
     },
     show() {},
     close() {
-      this.$refs.formRef.resetFields();
+      this.resetForm("formRef");
     },
     //搜索
     search() {
@@ -195,6 +198,9 @@ export default {
         this.query.page = 1;
       }
       this.showRepairList();
+    },
+    handleCancle(formName) {
+      this.dialogFormVisible = false;
     },
     handleRegion(list) {
       if (Array.isArray(list)) {
@@ -213,13 +219,12 @@ export default {
     handleAdd() {
       this.isShow = true;
       this.dialogFormVisible = true;
-      //this.$refs.formRef.resetFields();
+      this.form = Object.assign({}); //这里不加的话 共用的表单会有问题
     },
     handleEdit(row) {
       let { address, deviceId, deviceNo, schoolName, ...args } = row;
       this.isShow = false;
       this.dialogFormVisible = true;
-      //this.$refs.formRef.resetFields();
       this.form = Object.assign({}, args);
     },
     handleDel(row) {
@@ -236,10 +241,8 @@ export default {
           return false;
         });
     },
-    resetForm() {
-      this.$nextTick(() => {
-        this.$refs.formRef.resetFields();
-      });
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
     formAction(formName) {
       this.$refs[formName].validate(valid => {

@@ -62,7 +62,7 @@
                 </el-option> 
              </el-select>
            </el-form-item>           
-           <el-form-item label="备注">
+           <el-form-item label="备注" prop="description">
              <el-input type="textarea" v-model="form.description" :rows="4" placeholder="请输入备注"></el-input>
            </el-form-item>
            <el-form-item label="菜单权限设置">
@@ -104,7 +104,7 @@ export default {
       query: {
         roleName: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0, //分页总数
       form: {
@@ -193,6 +193,7 @@ export default {
       let res = await service.addRole(params);
       if (res.errorCode === 0) {
         this.dialogAdd = false;
+        this.$refs.form.resetFields();
         this.queryRoleList(this.query);
       }
     },

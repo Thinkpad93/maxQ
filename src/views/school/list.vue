@@ -6,10 +6,10 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
+              <!-- <el-form-item label="区域选择">
                 <qx-region @last="queryRegion"></qx-region>
-              </el-form-item>
-              <el-form-item label="学校名称">
+              </el-form-item> -->
+              <!-- <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClear">
                   <el-option
                     v-for="item in schoolList"
@@ -18,9 +18,14 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="学校名称">
+                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+              </el-form-item>                     
               <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增学校</el-button>
               </el-form-item>                
             </el-form>
@@ -477,11 +482,13 @@
 <script>
 import service from "@/api";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
 import pagination from "@/components/pagination";
 export default {
   name: "schoolManagement",
   components: {
     "qx-region": region,
+    "qx-region-t": regiont,
     "qx-pagination": pagination
   },
   data() {
@@ -489,10 +496,18 @@ export default {
       dialogAdd: false,
       dialogEdit: false,
       formLabelWidth: "100px",
+      // province: null,
+      // city: null,
+      // area: null,
+      // provinceList: [],
+      // cityList: [],
+      // areaList: [],
       query: {
-        schoolId: 0,
+        queryId: 0,
+        queryType: 0,
+        schoolName: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0,
       schoolId: null,
@@ -527,9 +542,6 @@ export default {
         name: [{ required: true, message: "请输入学校名称", trigger: "blur" }],
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
-        ],
-        labelIds: [
-          { required: true, message: "请选择冠名企业", trigger: "blur" }
         ],
         typeId: [
           { required: true, message: "请选择学校类型", trigger: "blur" }
@@ -568,17 +580,22 @@ export default {
         editLinkMan.push({ linkMan: "", phone: "", email: "" });
       }
     },
-    search() {
-      if (this.schoolId === null) {
-        this.$message({ message: "请选择学校名称", type: "warning" });
-      } else {
-        this.showSchoolList();
+    // search() {
+    //   if (this.schoolId === null) {
+    //     this.$message({ message: "请选择学校名称", type: "warning" });
+    //   } else {
+    //     this.showSchoolList();
+    //   }
+    // },
+    handleRegionChange(queryId, queryType) {
+      if (queryId || queryType) {
+        this.query.queryId = queryId;
+        this.query.queryType = queryType;
       }
     },
-    // handleSchoolInfo(schoolId) {
-    //   this.$router.push({ path: `/school/views/${schoolId}` });
-    //   this.$store.dispatch("comm/querySchoolInfo", schoolId);
-    // },
+    handleSearch() {
+      this.showSchoolList(this.query);
+    },
     //学校删除
     handleDel(row) {
       this.$confirm(`确定要删除学校吗?`, "提示", {
@@ -587,7 +604,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.deteleSchool(row.schoolId);
+          this.deleteSchool(row.schoolId);
         })
         .catch(error => {
           return false;
@@ -713,15 +730,28 @@ export default {
       }
       return isLt2M;
     },
-    async queryRegion(value) {
-      let last = value[value.length - 1];
-      let res = await service.queryRegion({ queryId: last, queryType: 3 });
-      if (res.errorCode === 0) {
-        this.schoolList = res.data;
-      } else {
-        return false;
-      }
-    },
+    // async queryRegion(queryId, queryType) {
+    //   let res = await service.queryRegion({ queryId, queryType });
+    //   //默认查询全部
+    //   if (res.errorCode === 0) {
+    //     if (queryType === 0) {
+    //       this.provinceList = res.data;
+    //     } else if (queryType === 1) {
+    //       this.cityList = res.data;
+    //     } else if (queryType === 2) {
+    //       this.areaList = res.data;
+    //     }
+    //   }
+    // },
+    // async queryRegion(value) {
+    //   let last = value[value.length - 1];
+    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
+    //   if (res.errorCode === 0) {
+    //     this.schoolList = res.data;
+    //   } else {
+    //     return false;
+    //   }
+    // },
     //根据区域ID查省市
     async findRegion(regionId) {
       let res = await service.findRegion({ regionId });
@@ -770,6 +800,7 @@ export default {
         this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showSchoolList();
+        this.$refs.addForm.resetFields();
       }
     },
     //编辑学校
@@ -784,9 +815,10 @@ export default {
       }
     },
     //删除学校
-    async deteleSchool(schoolId) {
-      let res = await service.deteleSchool({ schoolId });
+    async deleteSchool(schoolId) {
+      let res = await service.deleteSchool({ schoolId });
       if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showSchoolList();
       }
     },
@@ -794,12 +826,7 @@ export default {
     async showSchoolList() {
       let res = await service.showSchoolList(this.query);
       if (res.errorCode === 0) {
-        let data = res.data.data;
-        if (!Array.isArray(data)) {
-          data = [];
-        } else {
-          this.tableData = data;
-        }
+        this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       } else if (res.errorCode === -1) {
       }
@@ -811,6 +838,7 @@ export default {
     this.querySchoolCategory({ queryType: 0 });
     this.querySchoolCategory({ queryType: 1 });
     this.showSchoolList();
+    //this.queryRegion(0, 0);
   }
 };
 </script>

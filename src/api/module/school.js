@@ -19,8 +19,8 @@ export function updateSchool(params, config) {
     .catch(e => console.log(e));
 }
 //删除学校
-export function deteleSchool(params) {
-  return ax.post('/action/mod-xiaojiao/region/deteleSchool.do', params)
+export function deleteSchool(params) {
+  return ax.post('/action/mod-xiaojiao/region/deleteSchool.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
