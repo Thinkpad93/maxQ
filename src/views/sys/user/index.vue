@@ -107,10 +107,14 @@
                 </el-option>               
              </el-select>
            </el-form-item>  
-           <qx-region-t @regionChange="handleRegionChanges"></qx-region-t>         
-           <!-- <el-form-item label="对应区域" prop="regionId">
-             <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
-           </el-form-item> -->
+           <template v-if="form.type === 1">
+              <el-form-item label="区域选择" prop="regionId">
+                <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
+              </el-form-item>
+           </template>
+           <template v-else>
+             <qx-region-t :clear="false" @regionChange="handleRegionChanges"></qx-region-t>         
+           </template>
            <template v-if="form.type === 1">
             <el-form-item label="对应学校" prop="schoolId">
               <el-select v-model="form.schoolId" placeholder="选择学校" @change="handleSchool" :disabled="disabled === 1">
@@ -160,8 +164,10 @@ import service from "@/api";
 import pagination from "@/components/pagination";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
+import typeList from "@/mixins/typeList";
 export default {
   name: "account",
+  mixins: [typeList],
   components: {
     "qx-region": region,
     "qx-region-t": regiont,
@@ -190,6 +196,7 @@ export default {
       formLabelWidth: "100px",
       disabled: 0,
       query: {
+        //regionId: "regionId",
         queryId: 0,
         queryType: 0,
         schoolName: "",
@@ -200,8 +207,8 @@ export default {
       form: {
         queryType: null,
         queryId: null,
-        password: ""
-        //regionId: []
+        password: "",
+        regionId: null
       },
       reset: {
         accountId: null,
@@ -218,9 +225,9 @@ export default {
         checkPass: [{ validator: checkPass, trigger: "blur" }],
         roleId: [{ required: true, message: "选择用户角色", trigger: "blur" }],
         type: [{ required: true, message: "选择用户类型", trigger: "blur" }],
-        // regionId: [
-        //   { required: true, message: "选择对应区域", trigger: "blur" }
-        // ],
+        regionId: [
+          { required: true, message: "选择对应区域", trigger: "blur" }
+        ],
         schoolId: [{ required: true, message: "选择学校", trigger: "blur" }]
       },
       rules2: {
@@ -228,12 +235,6 @@ export default {
         checkPass: [{ required: true, validator: checkPass, trigger: "blur" }]
       },
       schoolList: [],
-      typeList: [
-        { id: 0, name: "促进会" },
-        { id: 1, name: "学校" },
-        { id: 2, name: "教育局" },
-        { id: 3, name: "培训机构" }
-      ],
       roleList: [],
       tableData: []
     };
@@ -268,6 +269,7 @@ export default {
     handleRegionChanges(queryId, queryType) {
       this.form.queryId = queryId;
       this.form.queryType = queryType;
+      this.form.regionId = queryId;
       this.queryRegion(queryId, queryType);
     },
     handleType(value) {
@@ -292,11 +294,14 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.form);
-          // let { regionId, checkPass, ...args } = this.form;
-          // let lasts = regionId[regionId.length - 1];
-          // let obj = Object.assign({}, args, { regionId: lasts });
-          this.addAccount(this.form);
+          //this.$refs["region"].clearValidate();
+          let { regionId, queryId, queryType, checkPass, ...args } = this.form;
+          if (Array.isArray(regionId)) {
+            queryId = regionId[regionId.length - 1]; //区域ID
+            queryType = 2;
+          }
+          let obj = Object.assign({}, args, { queryId, queryType });
+          this.addAccount(obj);
         } else {
           return false;
         }
@@ -324,16 +329,16 @@ export default {
         }
       }
     },
-    // async lastChange(value) {
-    //   this.form.regionId = value;
-    //   let last = value[value.length - 1];
-    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
-    //   if (res.errorCode === 0) {
-    //     this.schoolList = res.data;
-    //   } else {
-    //     return false;
-    //   }
-    // },
+    async lastChange(value) {
+      this.form.regionId = value;
+      let last = value[value.length - 1];
+      let res = await service.queryRegion({ queryId: last, queryType: 3 });
+      if (res.errorCode === 0) {
+        this.schoolList = res.data;
+      } else {
+        return false;
+      }
+    },
     //检查用户名是否重复
     async queryAccountName(params = {}) {
       let res = await service.queryAccountName(params);

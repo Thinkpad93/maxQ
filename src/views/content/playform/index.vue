@@ -6,10 +6,10 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
+              <!-- <el-form-item label="区域选择">
                 <region @last="queryRegion"></region>
-              </el-form-item>
-              <el-form-item label="学校名称">
+              </el-form-item> -->
+              <!-- <el-form-item label="学校名称">
                 <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @clear="handleClearSchool">
                   <el-option
                     v-for="item in schoolList"
@@ -18,9 +18,20 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>
-              </el-form-item>           
+              </el-form-item>            -->
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="学校名称">
+                <el-autocomplete 
+                  v-model="query.schoolName" 
+                  placeholder="请输入学校名称" 
+                  :trigger-on-focus="false"
+                  :fetch-suggestions="querySearch"
+                  @select="handleSelectSchool">
+                </el-autocomplete>
+                <!-- <el-input v-model="query.schoolName" placeholder="请输入学校名称" @change="handleSelectSchool"></el-input> -->
+              </el-form-item>                  
               <el-form-item>
-                <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="handleaddChannel">新增</el-button>
                 <el-button :disabled="disabled === 1" type="primary">更新播放表单</el-button>
               </el-form-item>              
@@ -280,13 +291,16 @@
 <script>
 import service from "@/api";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
 import Mixin from "@/mixins/priority";
 import { disabledDate, hours } from "@/utils/tools";
 export default {
   name: "playform",
   mixins: [Mixin],
   components: {
-    region
+    region,
+    "qx-region": region,
+    "qx-region-t": regiont
   },
   data() {
     return {
@@ -311,7 +325,10 @@ export default {
       playContendata: [],
       channelList: [],
       query: {
-        schoolId: null
+        //schoolId: null
+        schoolName: "",
+        scopeType: "",
+        scopeId: ""
       },
       channelForm: {
         schoolId: null,
@@ -340,11 +357,33 @@ export default {
     };
   },
   methods: {
-    search() {
-      if (this.query.schoolId === null) {
-        return;
-      }
+    // search() {
+    //   if (this.query.schoolId === null) {
+    //     return;
+    //   }
+    //   this.querySchoolPlayChannel();
+    // },
+    handleSearch() {
       this.querySchoolPlayChannel();
+    },
+    async querySearch(queryString, cb) {
+      let { scopeId, scopeType } = this.query;
+      let res = await service.selectSchoolNameLike({
+        scopeId,
+        scopeType,
+        schoolName: queryString
+      });
+      if (res.errorCode === 0) {
+        cb(res.data);
+      }
+    },
+    //根据关键字查询学校名称
+    handleSelectSchool(value) {
+      this.query.schoolName = value.value;
+    },
+    handleRegionChange(queryId, queryType) {
+      this.query.scopeId = queryId;
+      this.query.scopeType = queryType;
     },
     show() {
       this.$nextTick(() => {
@@ -411,9 +450,9 @@ export default {
       let schoolId = this.channelForm.schoolId;
       this.queryPlayContent({ schoolId, channelId: value });
     },
-    handleClearSchool() {
-      this.query.schoolId = null;
-    },
+    // handleClearSchool() {
+    //   this.query.schoolId = null;
+    // },
     //取消
     // handleCancel(index, row) {
     //   this.setEditStateAll(this.tableData, { show: false, state: 0 });
@@ -544,18 +583,22 @@ export default {
         }
       });
     },
-    //加载学校数据
-    async queryRegion(value) {
-      let last = value[value.length - 1];
-      let res = await service.queryRegion({ queryId: last, queryType: 3 });
-      if (res.errorCode === 0) {
-        this.schoolList = res.data;
-      } else {
-        return false;
-      }
-    },
     viewChannelContent(row) {
       let { channelId, schoolId } = row;
+    },
+    // async queryRegion(value) {
+    //   let last = value[value.length - 1];
+    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
+    //   if (res.errorCode === 0) {
+    //     this.schoolList = res.data;
+    //   } else {
+    //     return false;
+    //   }
+    // },
+    //加载学校数据
+    async selectSchoolNameLike(params = {}) {
+      let res = await service.selectSchoolNameLike(params);
+      console.log(res);
     },
     //查询栏目名称
     async queryChannelAll() {

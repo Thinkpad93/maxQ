@@ -42,6 +42,12 @@ export function queryChannelTemplateAll(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//栏目模板详细预览
+export function previewChannelTemplateDetail(params) {
+  return ax.post('/action/mod-xiaojiao/channel/templateDetail/previewChannelTemplateDetail.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //新增栏目模板
 export function addChannelTemplate(params) {
   return ax.post('/action/mod-xiaojiao/channel/template/addChannelTemplate.do', params)
@@ -108,7 +114,12 @@ export function queryPlayContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-
+//根据关键字查询学校名称
+export function selectSchoolNameLike(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/selectSchoolNameLike.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //编辑学校播放频道
 export function updateSchoolPlayChannel(params, config) {
   return ax.post('/action/mod-xiaojiao/content/schoolPlay/updateSchoolPlayChannel.do', params, config)

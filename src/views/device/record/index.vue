@@ -5,7 +5,7 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
+              <!-- <el-form-item label="区域选择">
                 <qx-region @last="queryRegion"></qx-region>
               </el-form-item>              
               <el-form-item label="学校名称">
@@ -17,9 +17,14 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>
-              </el-form-item>       
+              </el-form-item>        -->
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="学校名称">
+                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+              </el-form-item>                 
               <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
                 <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
               </el-form-item>              
             </el-form>
@@ -135,10 +140,12 @@
 import service from "@/api";
 import pagination from "@/components/pagination";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
 export default {
   name: "record",
   components: {
     "qx-region": region,
+    "qx-region-t": regiont,
     "qx-pagination": pagination
   },
   data() {
@@ -150,7 +157,10 @@ export default {
       formLabelWidth: "100px",
       //默认参数
       query: {
-        schoolId: 0,
+        //schoolId: 0,
+        schoolName: "",
+        scopeType: "",
+        scopeId: "",
         page: 1,
         pageSize: 20
       },
@@ -188,34 +198,41 @@ export default {
       this.resetForm("formRef");
     },
     //搜索
-    search() {
-      let page = this.query.page;
-      if (this.schoolId === null) {
-        this.$message({ message: "请选择学校名称", type: "warning" });
-        return;
-      }
-      if (page > 1) {
-        this.query.page = 1;
-      }
+    handleSearch() {
       this.showRepairList();
     },
+    handleRegionChange(queryId, queryType) {
+      this.query.scopeId = queryId;
+      this.query.scopeType = queryType;
+    },
+    // search() {
+    //   let page = this.query.page;
+    //   if (this.schoolId === null) {
+    //     this.$message({ message: "请选择学校名称", type: "warning" });
+    //     return;
+    //   }
+    //   if (page > 1) {
+    //     this.query.page = 1;
+    //   }
+    //   this.showRepairList();
+    // },
     handleCancle(formName) {
       this.dialogFormVisible = false;
     },
-    handleRegion(list) {
-      if (Array.isArray(list)) {
-        this.schoolList = list;
-      }
-    },
-    lastInnerChange(value) {
-      this.form.regionId = value;
-    },
-    handleSchool(value) {
-      this.query.schoolId = value;
-    },
-    handleClearSchool() {
-      this.query.schoolId = 0;
-    },
+    // handleRegion(list) {
+    //   if (Array.isArray(list)) {
+    //     this.schoolList = list;
+    //   }
+    // },
+    // lastInnerChange(value) {
+    //   this.form.regionId = value;
+    // },
+    // handleSchool(value) {
+    //   this.query.schoolId = value;
+    // },
+    // handleClearSchool() {
+    //   this.query.schoolId = 0;
+    // },
     handleAdd() {
       this.isShow = true;
       this.dialogFormVisible = true;

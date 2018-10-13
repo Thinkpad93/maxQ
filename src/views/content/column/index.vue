@@ -10,7 +10,7 @@
                             <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                             <el-button icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">新增栏目</el-button>
                         </el-form-item>   
                     </el-form>
@@ -81,7 +81,7 @@ export default {
       query: {
         channelName: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       form: {
         name: "",
@@ -115,17 +115,20 @@ export default {
       this.query.pageSize = size;
       this.queryChannel();
     },
-    search() {
-      let page = this.query.page;
-      if (!this.query.channelName.length) {
-        this.$message({ message: "请选择栏目名称", type: "warning" });
-        return;
-      }
-      if (page > 1) {
-        this.query.page = 1;
-      }
+    handleSearch() {
       this.queryChannel();
     },
+    // search() {
+    //   let page = this.query.page;
+    //   if (!this.query.channelName.length) {
+    //     this.$message({ message: "请选择栏目名称", type: "warning" });
+    //     return;
+    //   }
+    //   if (page > 1) {
+    //     this.query.page = 1;
+    //   }
+    //   this.queryChannel();
+    // },
     close() {
       this.resetForm("formRef");
     },

@@ -6,10 +6,14 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
+              <!-- <el-form-item label="区域选择">
                 <qx-region @last="queryRegion"></qx-region>
-              </el-form-item>
+              </el-form-item> -->
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
               <el-form-item label="学校名称">
+                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+              </el-form-item>                
+              <!-- <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
                   <el-option
                     v-for="item in schoolList"
@@ -18,9 +22,10 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>
-              </el-form-item>           
+              </el-form-item>            -->
               <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增绑定</el-button>
               </el-form-item>              
             </el-form>
@@ -167,12 +172,14 @@
 import service from "@/api";
 import pagination from "@/components/pagination";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
 import { isMac, isPhone } from "@/utils/validator";
 
 export default {
   name: "binding",
   components: {
     "qx-region": region,
+    "qx-region-t": regiont,
     "qx-pagination": pagination
   },
   data() {
@@ -183,7 +190,7 @@ export default {
       btnloading: false,
       formLabelWidth: "100px",
       selected: "",
-      form: {},
+      //form: {},
       rules: {
         regionId: [
           {
@@ -267,7 +274,9 @@ export default {
       },
       //默认参数
       query: {
-        schoolId: 0,
+        schoolName: "",
+        scopeType: "",
+        scopeId: "",
         page: 1,
         pageSize: 20
       },
@@ -297,23 +306,30 @@ export default {
       this.showDeviceList();
     },
     //搜索
-    search() {
-      let page = this.query.page;
-      if (this.schoolId === null) {
-        this.$message({ message: "请选择学校名称", type: "warning" });
-        return;
-      }
-      if (page > 1) {
-        this.query.page = 1;
-      }
+    // search() {
+    //   let page = this.query.page;
+    //   if (this.schoolId === null) {
+    //     this.$message({ message: "请选择学校名称", type: "warning" });
+    //     return;
+    //   }
+    //   if (page > 1) {
+    //     this.query.page = 1;
+    //   }
+    //   this.showDeviceList();
+    // },
+    handleSearch() {
       this.showDeviceList();
     },
-    handleSchool(value) {
-      this.query.schoolId = value;
+    handleRegionChange(queryId, queryType) {
+      this.query.scopeId = queryId;
+      this.query.scopeType = queryType;
     },
-    handleClearSchool() {
-      this.query.schoolId = 0;
-    },
+    // handleSchool(value) {
+    //   this.query.schoolId = value;
+    // },
+    // handleClearSchool() {
+    //   this.query.schoolId = 0;
+    // },
     handleEdit(row) {
       this.dialogEdit = true;
       if (row.labelIds === null) {

@@ -79,7 +79,15 @@
     </template>      
     <!-- 新增 -->
     <template>
-      <el-dialog center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
+      <el-dialog append-to-body center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
+        <el-dialog center width="60%" :visible.sync="previewChannel">
+          <el-table :data="channelData" style="width: 100%" stripe size="mini">
+            <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column :resizable="false" label="栏目播放时间" prop="playTime" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column :resizable="false" label="滚动类型" prop="scrollType" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column :resizable="false" label="有效期" prop="validTime" :show-overflow-tooltip="true"></el-table-column>
+          </el-table>
+        </el-dialog>
         <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="区域选择" prop="regionId">
             <qx-region @last="lastInnerChange" v-model="addForm.regionId"></qx-region>
@@ -222,7 +230,7 @@
                 :value="item.templateId">
               </el-option>            
             </el-select>    
-            <a href="javascript:;" style="color:#409EFF;margin-left:10px;" v-show="addForm.templateid">预览</a>                          
+            <a href="javascript:;" style="color:#409EFF;margin-left:10px;" @click="handlePreviewChannelTemplate">栏目模板预览</a>                          
           </el-form-item>           
           <el-form-item label="内容复审">
             <el-radio-group v-model="addForm.reviewFlag">
@@ -476,7 +484,8 @@
         </el-form>
       </el-dialog>
     </template>
-    <!-- 查看学校信息 -->
+    <!-- 栏目模板详细预览 -->
+    <template></template>
   </div>  
 </template>
 <script>
@@ -495,13 +504,8 @@ export default {
     return {
       dialogAdd: false,
       dialogEdit: false,
+      previewChannel: false,
       formLabelWidth: "100px",
-      // province: null,
-      // city: null,
-      // area: null,
-      // provinceList: [],
-      // cityList: [],
-      // areaList: [],
       query: {
         queryId: 0,
         queryType: 0,
@@ -525,6 +529,7 @@ export default {
       editImageUrl3: "",
       editImageUrl4: "",
       tableData: [],
+      channelData: [],
       edit: {
         schoolImage: [{}, {}],
         linkMan: []
@@ -771,6 +776,15 @@ export default {
         //设置默认栏目模板
         let d = this.templateidList.find(item => item.type === 1);
         this.addForm.channelTemplateId = d.templateId;
+      }
+    },
+    //栏目模板详细预览
+    async handlePreviewChannelTemplate() {
+      let templateId = this.addForm.channelTemplateId;
+      let res = await service.previewChannelTemplateDetail({ templateId });
+      if (res.errorCode === 0) {
+        this.previewChannel = true;
+        this.channelData = res.data;
       }
     },
     //查询标签

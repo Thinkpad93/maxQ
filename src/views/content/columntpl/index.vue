@@ -7,10 +7,10 @@
                 <div class="page-form">
                     <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
                         <el-form-item label="栏目模板">
-                            <el-input v-model="query.channelName" placeholder="请输入栏目模板" maxlength="40"></el-input>
+                            <el-input v-model="query.templateName" placeholder="请输入栏目模板" maxlength="40"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                             <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增栏目模板</el-button>
                         </el-form-item>   
                     </el-form>
@@ -34,7 +34,7 @@
                     <el-button size="mini" type="primary" @click="handleEdit(scope.row)">修改模板详细</el-button>
                     <!-- 默认模板不能删除 -->
                     <template v-if="scope.row.type">
-                        <el-button :disabled="scope.row.type === 1" size="mini" type="primary">默认模板</el-button>   
+                        <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>   
                     </template>   
                     <template v-else>
                         <el-button size="mini" type="primary" @click="setChannelDefautl(scope.row)">设置默认模板</el-button>
@@ -81,14 +81,14 @@
       <el-dialog width="70%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
         <el-form ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="20">
-            <el-col :span="24">
+            <el-col :span="20">
               <el-form-item label="栏目模板ID">
                 <el-input v-model="tplDetailform.templateId" :disabled="true"></el-input>
               </el-form-item>  
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="播放时段" prop="playTime" :rules="[
             { required: true, message: '请选择播放时段', trigger: 'blur' }
           ]">
@@ -107,7 +107,7 @@
                 </el-time-picker>                           
               </el-form-item>  
             </el-col>
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="时间段选择" prop="validTime">
                 <el-date-picker
                   :disabled="tplDetailform.validType === 0"
@@ -126,7 +126,7 @@
             </el-col>
           </el-row>   
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="栏目名称" prop="channelId" :rules="[
             { required: true, message: '请选择栏目名称', trigger: 'blur' }
           ]">
@@ -139,7 +139,7 @@
                 </el-select>                             
               </el-form-item>              
             </el-col>
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="播放优先级" prop="priority" :rules="[
             { required: true, message: '请选择播放优先级', trigger: 'blur' }
           ]">
@@ -155,7 +155,7 @@
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="栏目属性" prop="scrollType">
                 <el-radio-group v-model="tplDetailform.scrollType">
                   <el-radio :label="0">非滚动</el-radio>
@@ -163,7 +163,7 @@
                 </el-radio-group>
               </el-form-item>   
             </el-col>
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="栏目有效期" prop="validType">
                 <el-radio-group v-model="tplDetailform.validType">
                   <el-radio :label="0">长期</el-radio>
@@ -366,7 +366,7 @@ export default {
       query: {
         templateName: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0, //分页总数
       tplform: {
@@ -412,13 +412,15 @@ export default {
       this.query.pageSize = size;
       this.queryChannelTemplate();
     },
-    search() {},
-    addShow() {
-      this.is = 0;
+    handleSearch() {
+      this.queryChannelTemplate();
     },
-    editShow() {
-      this.is = 1;
-    },
+    // addShow() {
+    //   this.is = 0;
+    // },
+    // editShow() {
+    //   this.is = 1;
+    // },
     show() {},
     close() {
       this.resetForm("tplDetailform");

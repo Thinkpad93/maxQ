@@ -4,17 +4,18 @@
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
-        </div>            
-        <template>
+        </div>      
+        <div class="tip-box">     
           <el-alert
             title="上传说明"
-            type="info"
+            type="warning"
+            show-icon
             :closable="false"
-            description="选择海报模板后进行内容编辑">
-          </el-alert>
-        </template>       
+            description="1.选择展示形式 2.选择海报模板 3.编辑海报">
+          </el-alert>  
+        </div>          
         <el-row :gutter="30">
-          <el-col :span="10">
+          <el-col :span="14" :offset="4">              
             <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
               <el-tabs class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
                 <el-tab-pane label="全屏播放上传" name="1">
@@ -144,7 +145,7 @@
                       </div>               
                     </el-col>
                   </el-row>
-                  <el-button size="small" type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
+                  <el-button type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
                 </el-tab-pane>
                 <el-tab-pane label="滚动播放上传" name="0">
                   <el-row :gutter="10">
@@ -190,12 +191,27 @@
               </el-tabs>                              
             </el-form>
           </el-col>
-          <el-col :span="10">
-            <!-- <div class="video">
-              <span>视频预览区</span>
-            </div> -->
+        </el-row>     
+        <el-row :gutter="30">
+          <el-col :span="24">
+            <div class="tip-box">     
+              <el-alert
+                title="编辑海报"
+                type="warning"
+                show-icon
+                :closable="false"
+                description="编辑海报时，请先选择海报模板">
+              </el-alert>  
+            </div> 
           </el-col>
-        </el-row>  
+        </el-row>      
+        <el-row :gutter="30">
+          <el-col :span="24">
+            <div class="element-box">
+              <iframe id="posterFrame" ref="iframe" :src="url"></iframe>
+            </div>
+          </el-col>
+        </el-row>
      </div>
      <!-- 内容模板选择 -->
      <template>
@@ -221,8 +237,10 @@
 import { mapState } from "vuex";
 import bus from "@/utils/bus";
 import service from "@/api";
+import contentPropertyList from "@/mixins/contentPropertyList";
 export default {
   name: "newUpload",
+  mixins: [contentPropertyList],
   data() {
     return {
       disabledImg: 0,
@@ -234,6 +252,7 @@ export default {
       screenIndex: 0,
       posterIndex: -1,
       collapse: true,
+      url: "",
       form: {
         title: "",
         componentValue: "",
@@ -245,19 +264,7 @@ export default {
         imageUrl: "",
         videoUrl: ""
       },
-      contentPropertyList: [
-        { value: 0, label: "原创" },
-        { value: 1, label: "摘要" }
-      ],
       channelList: [],
-      contentTemplateList: [
-        { value: 0, label: "纯海报方式" },
-        { value: 1, label: "上视频下海报方式" },
-        { value: 2, label: "上海报下视频方式" },
-        { value: 3, label: "纯图片" },
-        { value: 4, label: "上视频下图片" },
-        { value: 5, label: "上图片下视频" }
-      ],
       posterList: [],
       schoolPlayTime: []
     };
@@ -271,7 +278,6 @@ export default {
     handlePictureCardPreview(file) {},
     handleTabClick(tab) {
       this.form.contentType = parseInt(tab.name);
-      //this.$refs.form.resetFields();
     },
     handleScreenSelect(index, value) {
       this.screenIndex = index;
@@ -308,7 +314,6 @@ export default {
   },
   mounted() {
     bus.$on("collapse", msg => {
-      console.log(msg);
       return msg ? (this.collapse = false) : (this.collapse = true);
     });
     if (this.type !== 1) {
@@ -364,30 +369,11 @@ export default {
     }
   }
 }
-.video {
-  border-radius: 2px;
-  min-height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px dashed #d9d9d9;
-  background-size: 44%;
-  background-image: -webkit-linear-gradient(
-    135deg,
-    #f6f6f6 25%,
-    transparent 25%,
-    transparent 50%,
-    #f6f6f6 50%,
-    #f6f6f6 75%,
-    transparent 75%,
-    transparent
-  );
-}
 .showType-item {
   margin: 10px 0;
   color: #909399;
   cursor: pointer;
-  height: 150px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,5 +384,16 @@ export default {
   .image {
     width: 100%;
   }
+}
+.tip-box {
+  margin: 30px 0;
+}
+.element-box {
+  width: 1080px;
+  height: 1590px;
+  margin: 0px auto 30px auto;
+  position: relative;
+  background-color: #fff;
+  box-shadow: 0 4px 20px 0 rgba(28, 31, 33, 0.1);
 }
 </style>

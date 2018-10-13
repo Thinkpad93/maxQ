@@ -1,20 +1,30 @@
 <template>
-    <el-form-item label="区域选择">
-        <el-select v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
-            <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>  
-        <el-select v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
-            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>      
-        <el-select v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
-            <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>                                     
+    <el-form-item label="区域选择" prop="regionId" ref="region">
+      <el-select :clearable="clear" v-model="province" @change="handleProvince" @clear="handleClear" placeholder="选择省" style="width:150px;">
+        <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>  
+      <el-select :clearable="clear" v-model="city" @change="handleCity" @clear="handleClear" placeholder="选择市" style="width:150px;">
+        <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>      
+      <el-select :clearable="clear" v-model="area" @change="handleArea" @clear="handleClear" placeholder="选择区" style="width:150px;">
+        <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>                                     
     </el-form-item>       
 </template>
 <script>
 import service from "@/api";
 export default {
   name: "",
+  props: {
+    clear: {
+      type: Boolean,
+      default: true
+    },
+    propName: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       province: null,
@@ -27,18 +37,33 @@ export default {
   },
   methods: {
     handleProvince(value) {
+      //不触发点击清空时的调用
+      if (typeof value === "number") {
+        this.queryRegion(value, 1);
+        this.handleEmit(value, 0); //0查省份
+      } else if (typeof value === "string") {
+        this.cityList.length = 0;
+        this.areaList.length = 0;
+      }
       this.city = null;
       this.area = null;
-      this.queryRegion(value, 1);
-      this.handleEmit(value, 0); //0查省份
     },
     handleCity(value) {
+      if (typeof value === "number") {
+        this.queryRegion(value, 2);
+        this.handleEmit(value, 1); //1查市级
+      } else if (typeof value === "string") {
+        this.areaList.length = 0;
+      }
       this.area = null;
-      this.queryRegion(value, 2);
-      this.handleEmit(value, 1); //1查市级
     },
     handleArea(value) {
-      this.handleEmit(value, 2); //2查区级
+      if (typeof value === "number") {
+        this.handleEmit(value, 2); //2查区级
+      }
+    },
+    handleClear() {
+      console.log("10");
     },
     //emit
     handleEmit(queryId, queryType) {

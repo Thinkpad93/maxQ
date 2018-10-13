@@ -5,10 +5,10 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
+              <!-- <el-form-item label="区域选择">
                 <qx-region @last="lastChange"></qx-region>
-              </el-form-item>  
-              <el-form-item label="学校名称">
+              </el-form-item>   -->
+              <!-- <el-form-item label="学校名称">
                 <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
                   <el-option
                     v-for="item in schoolList"
@@ -17,11 +17,15 @@
                     :value="item.id">
                   </el-option> 
                 </el-select>
-              </el-form-item>                         
+              </el-form-item>                          -->
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="学校名称">
+                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+              </el-form-item>                 
               <el-form-item label="设备状态">
                 <el-select v-model="query.status" placeholder="请选择设备状态">
                   <el-option
-                    v-for="item in options"
+                    v-for="item in deviceStatus"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -29,7 +33,8 @@
                 </el-select>
               </el-form-item> 
               <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
               </el-form-item>              
             </el-form>
           </div>
@@ -131,11 +136,15 @@
 <script>
 import service from "@/api";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
+import deviceStatus from "@/mixins/deviceStatus";
 export default {
   name: "monitoring",
   components: {
-    "qx-region": region
+    "qx-region": region,
+    "qx-region-t": regiont
   },
+  mixins: [deviceStatus],
   data() {
     return {
       dialogAdd: false,
@@ -146,25 +155,14 @@ export default {
       schoolList: [],
       schoolId: null,
       query: {
-        schoolId: 0,
+        //schoolId: 0,
+        schoolName: "",
+        scopeType: "",
+        scopeId: "",
         status: 0,
         page: 1,
         pageSize: 20
       },
-      options: [
-        {
-          value: 0,
-          label: "正常"
-        },
-        {
-          value: 1,
-          label: "故障"
-        },
-        {
-          value: 2,
-          label: "正常关机"
-        }
-      ],
       viewDevice: {},
       tableData: [],
       runlogData: []
@@ -176,33 +174,39 @@ export default {
     }
   },
   methods: {
-    search() {
-      if (this.schoolId === null) {
-        this.$message({ message: "请选择学校名称", type: "warning" });
-      } else {
-        this.showDeviceStatus();
-      }
+    // search() {
+    //   if (this.schoolId === null) {
+    //     this.$message({ message: "请选择学校名称", type: "warning" });
+    //   } else {
+    //     this.showDeviceStatus();
+    //   }
+    // },
+    handleSearch() {
+      this.showDeviceStatus();
     },
-    async lastChange(value) {
-      let last = value[value.length - 1];
-      let res = await service.queryRegion({ queryId: last, queryType: 3 });
-      if (res.errorCode === 0) {
-        this.schoolList = res.data;
-      } else {
-        return false;
-      }
+    handleRegionChange(queryId, queryType) {
+      this.query.scopeId = queryId;
+      this.query.scopeType = queryType;
     },
-    handleSchool(value) {
-      this.query.schoolId = value;
-    },
-    handleRegion(list) {
-      if (Array.isArray(list)) {
-        this.schoolList = list;
-      }
-    },
-    handleSelect() {},
+    // async lastChange(value) {
+    //   let last = value[value.length - 1];
+    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
+    //   if (res.errorCode === 0) {
+    //     this.schoolList = res.data;
+    //   } else {
+    //     return false;
+    //   }
+    // },
+    // handleSchool(value) {
+    //   this.query.schoolId = value;
+    // },
+    // handleRegion(list) {
+    //   if (Array.isArray(list)) {
+    //     this.schoolList = list;
+    //   }
+    // },
+    //handleSelect() {},
     handleRunlog(row) {
-      console.log(row);
       this.dialogRunlog = true;
       this.showDeviceRunlog(row.deviceId);
     },
