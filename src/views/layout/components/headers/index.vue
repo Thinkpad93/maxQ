@@ -5,10 +5,10 @@
      </h1>  
      --> 
       <div class="account-type">
-        <span v-if="type === 0">促进会</span>
-        <span v-else-if="type === 1">学校</span>
-        <span v-else-if="type === 2">教育局</span>
-        <span v-else-if="type === 3">培训机构</span>
+        <span v-if="type === 0">促进会{{type}}</span>
+        <span v-else-if="type === 1">学校{{type}}</span>
+        <span v-else-if="type === 2">教育局{{type}}</span>
+        <span v-else-if="type === 3">培训机构{{type}}</span>
         <span v-else>admin</span>
       </div>
       <div class="toggle-aside" @click="collapseChage">
@@ -31,7 +31,7 @@
 import bus from "@/utils/bus";
 import { getToken } from "@/utils/auth";
 //在组件中分发 Action
-import { mapState, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "headers",
@@ -41,7 +41,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("qxuser", ["name", "type"])
+    ...mapGetters(["name", "type"])
   },
   methods: {
     collapseChage() {

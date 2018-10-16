@@ -88,10 +88,12 @@
             ]">
               <el-input v-model="form.name" placeholder="请输入标签名称"></el-input>
             </el-form-item>  
-            <el-form-item label="标签类型" prop="type">
+            <el-form-item label="标签类型" prop="type" :rules="[
+              { required: true, message: '请选择标签类型', trigger: 'blur' }
+            ]">
               <el-select v-model="form.type" placeholder="选择标签类型">
                 <el-option
-                    v-for="item in labelsType"
+                    v-for="item in labelsFilter"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id">
@@ -127,7 +129,7 @@ export default {
       },
       form: {
         labelId: null,
-        type: 0,
+        type: null,
         name: "",
         description: ""
       },
@@ -139,6 +141,11 @@ export default {
       ],
       tableData: []
     };
+  },
+  computed: {
+    labelsFilter() {
+      return this.labelsType.filter(elem => elem.id > 0);
+    }
   },
   methods: {
     search() {

@@ -132,10 +132,10 @@
              <el-input v-model="edit.address"></el-input>
            </el-form-item>
             <el-form-item label="设备批次" prop="batch">
-              <el-input v-model="edit.batch" placeholder="请输入设备批次" :disabled="true"></el-input>
+              <el-input v-model="edit.batch" placeholder="请输入设备批次"></el-input>
             </el-form-item>    
             <el-form-item label="设备序号" prop="serial">
-              <el-input v-model="edit.serial" placeholder="请选择设备序号" :disabled="true" maxlength="30"></el-input>
+              <el-input v-model="edit.serial" placeholder="请选择设备序号"></el-input>
             </el-form-item>  
             <!-- 如果存在冠名企业 -->  
             <template>
@@ -151,7 +151,7 @@
               </el-form-item>
             </template>
            <el-form-item label="MAC地址" prop="mac">
-             <el-input v-model="edit.mac" :disabled="true"></el-input>
+             <el-input v-model="edit.mac"></el-input>
            </el-form-item>
            <el-form-item label="设备管理员" prop="manager">
              <el-input v-model="edit.manager" maxlength="4"></el-input>

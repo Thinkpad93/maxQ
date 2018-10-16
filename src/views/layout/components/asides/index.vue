@@ -17,10 +17,10 @@
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
       </el-menu-item>  
-      <el-menu-item index="/newUpload">
+      <!-- <el-menu-item index="/newUpload">
         <i class="el-icon-menu"></i>
         <span slot="title">上传内容新版</span>        
-      </el-menu-item>               
+      </el-menu-item>                -->
       <template v-for="item in menu">
         <template v-if="item.children.length >= 1">
           <el-submenu :index="item.path" :key="item.path">

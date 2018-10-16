@@ -79,8 +79,8 @@
     </template>      
     <!-- 新增 -->
     <template>
-      <el-dialog append-to-body center width="60%" @open="show" @close="close" top="40px" title="新增学校" :visible.sync="dialogAdd">
-        <el-dialog center width="60%" :visible.sync="previewChannel">
+      <el-dialog center width="60%" @open="show" @close="close" top="20px" title="新增学校" :visible.sync="dialogAdd">
+        <el-dialog append-to-body center width="60%" :visible.sync="previewChannel">
           <el-table :data="channelData" style="width: 100%" stripe size="mini">
             <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column :resizable="false" label="栏目播放时间" prop="playTime" :show-overflow-tooltip="true"></el-table-column>
@@ -219,7 +219,7 @@
             <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan(true)">新增联系人</el-button>
           </el-form-item>  
           <el-form-item label="学校简介" prop="description">
-            <el-input type="textarea" v-model="addForm.description" placeholder="请输入学校简介" :rows="3"></el-input>
+            <el-input type="textarea" v-model="addForm.description" placeholder="请输入学校简介" :rows="4"></el-input>
           </el-form-item> 
           <el-form-item label="栏目模板" prop="channelTemplateId">
             <el-select v-model="addForm.channelTemplateId" placeholder="请选择栏目播放模板">
@@ -230,7 +230,7 @@
                 :value="item.templateId">
               </el-option>            
             </el-select>    
-            <a href="javascript:;" style="color:#409EFF;margin-left:10px;" @click="handlePreviewChannelTemplate">栏目模板预览</a>                          
+            <a href="javascript:;" style="color:#409EFF;margin-left:10px;" @click="handlePreviewChannelTemplate">栏目模板预览</a>
           </el-form-item>           
           <el-form-item label="内容复审">
             <el-radio-group v-model="addForm.reviewFlag">
@@ -417,7 +417,7 @@
             <el-button icon="el-icon-plus" size="mini" type="primary" @click="addlinkMan(false)">新增联系人</el-button>
           </el-form-item>      
           <el-form-item label="学校简介" prop="description">
-            <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="3"></el-input>
+            <el-input type="textarea" v-model="edit.description" placeholder="请输入学校简介" :rows="4"></el-input>
           </el-form-item>  
           <el-row :gutter="5"></el-row>
           <el-form-item label="栏目模板">
@@ -429,7 +429,7 @@
                 :value="item.templateId">
               </el-option>            
             </el-select>    
-            <a href="javascript:;" style="color:#409EFF;margin-left:10px;" v-show="edit.templateid">预览</a>                          
+            <!-- <a href="javascript:;" style="color:#409EFF;margin-left:10px;" v-show="edit.templateid">预览</a>                           -->
           </el-form-item>       
           <el-form-item label="内容复审">
             <el-radio-group v-model="edit.reviewFlag">
@@ -493,6 +493,7 @@ import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import pagination from "@/components/pagination";
+import { isPhone } from "@/utils/validator";
 export default {
   name: "schoolManagement",
   components: {
@@ -538,6 +539,8 @@ export default {
         channelTemplateId: null,
         regionId: [],
         reviewFlag: 0,
+        masterEmail: "",
+        headEmail: "",
         schoolImage: [{}, {}],
         linkMan: []
       },
@@ -548,15 +551,32 @@ export default {
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
         ],
+        masterEmail: [
+          //{ required: true, message: "请输入邮箱地址", trigger: "blur" },
+          {
+            required: false,
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["blur"]
+          }
+        ],
+        headEmail: [
+          //{ required: true, message: "请输入邮箱地址", trigger: "blur" },
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["blur"]
+          }
+        ],
         typeId: [
           { required: true, message: "请选择学校类型", trigger: "blur" }
         ],
         address: [
           { required: true, message: "请输入详细地址", trigger: "blur" }
-        ],
-        channelTemplateId: [
-          { required: true, message: "请选择栏目模板", trigger: "blur" }
         ]
+        // channelTemplateId: [
+        //   { required: true, message: "请选择栏目模板", trigger: "blur" }
+        // ]
       }
     };
   },
@@ -585,13 +605,6 @@ export default {
         editLinkMan.push({ linkMan: "", phone: "", email: "" });
       }
     },
-    // search() {
-    //   if (this.schoolId === null) {
-    //     this.$message({ message: "请选择学校名称", type: "warning" });
-    //   } else {
-    //     this.showSchoolList();
-    //   }
-    // },
     handleRegionChange(queryId, queryType) {
       if (queryId || queryType) {
         this.query.queryId = queryId;

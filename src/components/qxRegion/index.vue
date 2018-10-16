@@ -1,18 +1,19 @@
 <template>
-    <el-form-item label="区域选择" prop="regionId" ref="region">
-      <el-select :clearable="clear" v-model="province" @change="handleProvince" @clear="handleClear" placeholder="选择省" style="width:150px;">
+    <el-form-item label="区域选择" prop="regionId" ref="region">   
+      <el-select :clearable="clear" v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
         <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>  
-      <el-select :clearable="clear" v-model="city" @change="handleCity" @clear="handleClear" placeholder="选择市" style="width:150px;">
+      <el-select :clearable="clear" v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
         <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>      
-      <el-select :clearable="clear" v-model="area" @change="handleArea" @clear="handleClear" placeholder="选择区" style="width:150px;">
+      <el-select :clearable="clear" v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
         <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>                                     
     </el-form-item>       
 </template>
 <script>
 import service from "@/api";
+import { mapState } from "vuex";
 export default {
   name: "",
   props: {
@@ -35,6 +36,9 @@ export default {
       areaList: []
     };
   },
+  computed: {
+    ...mapState("comm", ["distpickerData"])
+  },
   methods: {
     handleProvince(value) {
       //不触发点击清空时的调用
@@ -44,6 +48,7 @@ export default {
       } else if (typeof value === "string") {
         this.cityList.length = 0;
         this.areaList.length = 0;
+        this.handleEmit(0, 0);
       }
       this.city = null;
       this.area = null;
@@ -54,16 +59,19 @@ export default {
         this.handleEmit(value, 1); //1查市级
       } else if (typeof value === "string") {
         this.areaList.length = 0;
+        this.handleEmit(this.province, 0);
       }
       this.area = null;
     },
     handleArea(value) {
       if (typeof value === "number") {
         this.handleEmit(value, 2); //2查区级
+      } else if (typeof value === "string") {
+        this.handleEmit(this.city, 1);
       }
     },
-    handleClear() {
-      console.log("10");
+    handleClear(value) {
+      console.log(value);
     },
     //emit
     handleEmit(queryId, queryType) {

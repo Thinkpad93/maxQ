@@ -98,7 +98,7 @@
 import service from "@/api";
 import pagination from "@/components/pagination";
 export default {
-  name: "review",
+  name: "final",
   components: {
     "qx-pagination": pagination
   },

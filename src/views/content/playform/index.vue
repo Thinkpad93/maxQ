@@ -379,6 +379,7 @@ export default {
     },
     //根据关键字查询学校名称
     handleSelectSchool(value) {
+      this.channelForm.schoolId = value.schoolId;
       this.query.schoolName = value.value;
     },
     handleRegionChange(queryId, queryType) {
@@ -433,14 +434,14 @@ export default {
     },
     //新增学校播放表单
     handleaddChannel() {
-      if (this.query.schoolId === null) {
+      if (this.query.schoolName == "") {
         this.$message({
-          message: `请先查询播放表单在进行新增`,
+          message: `请先搜索完学校名称后在进行新增`,
           type: "warning"
         });
         return false;
       }
-      this.channelForm.schoolId = this.query.schoolId;
+      //this.channelForm.schoolId = this.query.schoolId;
       this.dialogChannel = true;
     },
     handleChangeTime(value) {

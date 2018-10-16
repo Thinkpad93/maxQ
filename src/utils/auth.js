@@ -1,9 +1,5 @@
 import Cookies from 'js-cookie';
 
-
-//const TokenKey = 'QX-Token';
-//const Token = 'Authorization';
-
 export function getToken() {
   return Cookies.get('Authorization');
 }

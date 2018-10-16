@@ -5,7 +5,7 @@
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
-        <div class="tip-box">     
+        <!-- <div class="tip-box">     
           <el-alert
             title="上传说明"
             type="warning"
@@ -13,7 +13,7 @@
             :closable="false"
             description="1.选择展示形式 2.选择海报模板 3.编辑海报">
           </el-alert>  
-        </div>          
+        </div>           -->
         <el-row :gutter="30">
           <el-col :span="14" :offset="4">              
             <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
@@ -112,8 +112,13 @@
                         <el-upload
                           :disabled="disabledImg === 0"
                           name="honorImage"
+                          :limit="1"
                           action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
-                          accept="image/jpeg,image/gif,image/png,image/bmp">
+                          accept="image/jpeg,image/gif,image/png,image/bmp"
+                          :on-remove="handleRemove" 
+                          :before-remove="handleRemove"
+                          :on-preview="handlePreviewImg"
+                          :on-success="handleImageSuccess">
                           <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
                             <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
                           <span class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</span>
@@ -125,8 +130,13 @@
                         <el-upload
                           :disabled="disabledVideo === 0"
                           name="file"
+                          :limit="1"
                           action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
-                          accept="video/mp4,video/flv,video/mov">
+                          accept="video/mp4,video/flv,video/mov"
+                          :on-remove="handleRemove" 
+                          :before-remove="handleRemove"
+                          :on-preview="handlePreviewVideo"
+                          :on-success="handleVideoSuccess">
                           <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
                             <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
                           <span class="el-upload__tip" slot="tip">视频大小不超过100MB</span>
@@ -145,7 +155,9 @@
                       </div>               
                     </el-col>
                   </el-row>
-                  <el-button type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
+                  <el-row style="text-align: center;">
+                    <el-button :disabled="disabledScreen === 0" type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
+                  </el-row>
                 </el-tab-pane>
                 <el-tab-pane label="滚动播放上传" name="0">
                   <el-row :gutter="10">
@@ -175,7 +187,7 @@
                         </el-form-item>                    
                       </el-col>   
                     </template>                 
-                  </el-row>                     
+                  </el-row>   
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 0">
                       <el-col :span="24">
@@ -192,7 +204,7 @@
             </el-form>
           </el-col>
         </el-row>     
-        <el-row :gutter="30">
+        <!-- <el-row :gutter="30">
           <el-col :span="24">
             <div class="tip-box">     
               <el-alert
@@ -204,14 +216,14 @@
               </el-alert>  
             </div> 
           </el-col>
-        </el-row>      
-        <el-row :gutter="30">
+        </el-row>       -->
+        <!-- <el-row :gutter="30">
           <el-col :span="24">
             <div class="element-box">
               <iframe id="posterFrame" ref="iframe" :src="url"></iframe>
             </div>
           </el-col>
-        </el-row>
+        </el-row> -->
      </div>
      <!-- 内容模板选择 -->
      <template>
@@ -219,7 +231,7 @@
          <el-row :gutter="10">
            <el-col :span="4" v-for="(item, index) in posterList" :key="index">
              <div class="poster"
-               @click="handlePosterSelect(index)">
+               @click="handlePosterSelect(index, item)">
                <img v-if="item.smallUrl" :src="item.smallUrl" class="image" :class="[ index === posterIndex ? 'selected' : '']"> 
                <div class="text">{{ item.title }}</div>
              </div> 
@@ -229,6 +241,22 @@
             <el-button size="small" @click="dialogTemplate = false">取消</el-button>
             <el-button size="small" type="primary" @click="handlePosterSave">确定</el-button>           
          </div>         
+       </el-dialog>
+     </template>
+     <!-- 图片查看 -->
+     <template>
+       <el-dialog center top="40px" :visible.sync="dialogViewImg">
+          <div class="views-image" v-if="previewImg">
+            <img :src="previewImg" width="500" height="736">
+          </div>         
+       </el-dialog>
+     </template>
+     <!-- 视频查看 --> 
+     <template>
+       <el-dialog center top="40px" :visible.sync="dialogViewVideo">
+          <div class="views-video" v-if="form.videoUrl">
+            <video :src="form.videoUrl" controls autoplay loop height="450" style="width:100%"></video>
+          </div>         
        </el-dialog>
      </template>
    </div> 
@@ -245,6 +273,10 @@ export default {
     return {
       disabledImg: 0,
       disabledVideo: 0,
+      disabledUpload: 0,
+      disabledScreen: 1,
+      dialogViewImg: false,
+      dialogViewVideo: false,
       dialogShowType: false,
       dialogTemplate: false,
       formLabelWidth: "80px",
@@ -253,15 +285,21 @@ export default {
       posterIndex: -1,
       collapse: true,
       url: "",
+      posterUrl: "",
+      previewImg: "",
       form: {
         title: "",
-        componentValue: "",
+        componentValue: null,
         durationTime: "",
         contentProperty: 0,
         contentType: 1,
         author: "",
+        playTime: [],
         channelId: null,
+        belongTo: 0, // 0-不专属 1-专属对应学校
+        templateId: 0,
         imageUrl: "",
+        imageName: "",
         videoUrl: ""
       },
       channelList: [],
@@ -270,30 +308,156 @@ export default {
     };
   },
   computed: {
+    //type 账号类型 0-促进会 1-学校 2-教育局 3-培训机构
     ...mapState("qxuser", ["type"])
   },
+  watch: {
+    "form.templateId"(value) {
+      console.log(value);
+    }
+  },
   methods: {
-    handleChange() {},
-    handleRemove(file, fileList) {},
-    handlePictureCardPreview(file) {},
+    handleRemove() {
+      return false;
+    },
+    handlePreviewImg(file) {
+      this.previewImg = file.response.data.url;
+      this.dialogViewImg = true;
+    },
+    handlePreviewVideo() {
+      this.dialogViewVideo = true;
+    },
+    //上传图片成功
+    handleImageSuccess(response, file, fileList) {
+      if (response.errorCode === 0) {
+        this.form.imageUrl = response.data.url;
+        this.form.imageName = response.data.imageName;
+      }
+    },
+    //上传视频成功
+    handleVideoSuccess(response, file, fileList) {
+      if (response.errorCode === 0) {
+        this.form.videoUrl = response.data.url;
+      }
+    },
     handleTabClick(tab) {
       this.form.contentType = parseInt(tab.name);
     },
     handleScreenSelect(index, value) {
       this.screenIndex = index;
-      this.queryContentTemplate(value);
+      if (index == 1 || index == 2 || index == 4 || index == 5) {
+        this.disabledVideo = 1;
+      } else {
+        this.disabledVideo = 0;
+      }
+      if (index === 3 || index === 4 || index === 5) {
+        this.disabledImg = 1;
+        this.disabledScreen = 0;
+        this.form.templateId = 0;
+        this.posterIndex = -1;
+      } else {
+        this.disabledImg = 0;
+        this.disabledScreen = 1;
+      }
+      //只能在选择海报的形式才加载
+      if (index === 0 || index === 1 || index === 2) {
+        this.disabledScreen = 1;
+        this.form.templateId = 0;
+        this.posterIndex = -1;
+        this.queryContentTemplate(value);
+      }
     },
-    handlePosterSelect(index) {
+    handlePosterSelect(index, item) {
+      if ("templateId" in item) {
+        this.form.templateId = item.templateId;
+      }
       this.posterIndex = index;
+      //回选html
+      this.posterUrl = item.posterUrl;
     },
     handlePosterSave() {
-      this.dialogShowType = false;
-      //let posterFind = this.posterList.find(item => )
+      if (this.posterIndex !== -1) {
+        this.dialogTemplate = false;
+        this.url = this.posterUrl;
+      }
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
     handleUpload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(valid);
+          let channelId = [];
+          let { playTime, belongTo, ...args } = this.form;
+          if (
+            this.form.templateId === 0 &&
+            (this.screenIndex == 0 ||
+              this.screenIndex == 1 ||
+              this.screenIndex == 2)
+          ) {
+            if (this.form.contentType != 0) {
+              this.$message({
+                message: `你选择的展示形式是${
+                  this.contentTemplateList[this.screenIndex].label
+                },必须要选择海报模板`,
+                type: "warning"
+              });
+              return false;
+            }
+          }
+          //图片判断
+          if (
+            this.form.imageUrl === "" &&
+            (this.screenIndex == 3 ||
+              this.screenIndex == 4 ||
+              this.screenIndex == 5)
+          ) {
+            if (this.form.contentType === 1) {
+              this.$message({
+                message: `你选择的展示形式是${
+                  this.contentTemplateList[this.screenIndex].label
+                },必须要上传图片`,
+                type: "warning"
+              });
+              return false;
+            }
+          }
+          //视频判断
+          if (
+            this.form.videoUrl === "" &&
+            (this.screenIndex == 1 ||
+              this.screenIndex == 2 ||
+              this.screenIndex == 4 ||
+              this.screenIndex == 5)
+          ) {
+            if (this.form.contentType === 1) {
+              this.$message({
+                message: `你选择的展示形式是${
+                  this.contentTemplateList[this.screenIndex].label
+                },必须要上传视频`,
+                type: "warning"
+              });
+              return false;
+            }
+          }
+          //如果是学校账号
+          if (this.type === 1) {
+            belongTo = this.type;
+            this.schoolPlayTime.forEach(oldItem => {
+              if (playTime.find(newItem => oldItem.itemId == newItem)) {
+                channelId.push(oldItem.channelId);
+              }
+            });
+          } else {
+            if (this.form.contentType === 0) {
+              channelId.push(1);
+            } else {
+              channelId.push(args.channelId);
+            }
+          }
+          let obj = Object.assign({}, args, { channelId, belongTo });
+          //console.log(obj);
+          this.uploadContentAction(obj);
         }
       });
     },
@@ -304,23 +468,44 @@ export default {
         this.channelList = res.data;
       }
     },
+    //查询栏目模板时间段
+    async querySchoolPlayListTime(contentType) {
+      let res = await service.querySchoolPlayListTime({ contentType });
+      if (res.errorCode === 0) {
+        this.schoolPlayTime = res.data;
+      }
+    },
     //查询内容模板列表
     async queryContentTemplate(showType) {
       let res = await service.queryContentTemplate({ showType });
       if (res.errorCode === 0) {
         this.posterList = res.data;
       }
+    },
+    //上传内容
+    async uploadContentAction(params = {}) {
+      let res = await service.uploadContent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.resetForm("form");
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }
     }
   },
   mounted() {
+    console.log(this.type);
     bus.$on("collapse", msg => {
       return msg ? (this.collapse = false) : (this.collapse = true);
     });
-    if (this.type !== 1) {
+    if (this.$store.state.qxuser.type == 1) {
+      this.querySchoolPlayListTime(this.form.contentType);
+    } else {
       this.queryChannelAll();
     }
     this.queryContentTemplate(0);
-  }
+  },
+  updated() {}
 };
 </script>
 <style lang="less" scoped>
@@ -395,5 +580,8 @@ export default {
   position: relative;
   background-color: #fff;
   box-shadow: 0 4px 20px 0 rgba(28, 31, 33, 0.1);
+}
+.views-image {
+  text-align: center;
 }
 </style>

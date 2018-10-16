@@ -6,7 +6,7 @@
                   <div class="page-form">
                       <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
                           <el-form-item label="内容标题">
-                              <el-input v-model="query.title" placeholder="请输入栏目模板" maxlength="40"></el-input>
+                              <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="40"></el-input>
                           </el-form-item>
                           <el-form-item label="审核状态">
                             <el-select v-model="query.verifyStatus" clearable placeholder="请选择设备状态">
@@ -33,44 +33,36 @@
               <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <span style="color:#409EFF">{{ scope.row.title }}</span>
+                    <span style="color:#409EFF">{{ scope.row.title }}</span>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <p v-if="scope.row.channelName == null">无</p>
-                      <p v-else>{{ scope.row.channelName }}</p>
+                    <p v-if="scope.row.channelName == null">无</p>
+                    <p v-else>{{ scope.row.channelName }}</p>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <p v-if="scope.row.contentType === 0">全屏播放</p>
-                      <p v-else>滚动播放</p>
+                    <p v-if="scope.row.contentType === 1">全屏播放</p>
+                    <p v-else>滚动播放</p>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <p v-if="scope.row.contentProperty === 0">原创</p>
-                      <p v-else>摘要</p>
+                    <p v-if="scope.row.contentProperty === 0">原创</p>
+                    <p v-else>摘要</p>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
-              <!-- <el-table-column :resizable="false" label="审核节点" prop="checkStage" :show-overflow-tooltip="true">
-                  <template slot-scope="scope">
-                      <p v-if="scope.row.checkStage === 0">待审核</p>
-                      <p v-else-if="scope.row.checkStage === 1">初审</p>
-                      <p v-else-if="scope.row.checkStage === 2">复审</p>
-                      <p v-else>终审</p>
-                  </template>
-              </el-table-column> -->
               <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
                   <template slot-scope="scope">
-                      <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
-                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
-                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
-                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
-                      <span v-else style="color:#F56C6C;cursor: pointer;" 
-                      @click="handleCheckNode(scope.row)">审核不通过</span>
+                    <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
+                    <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
+                    <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
+                    <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
+                    <span v-else style="color:#F56C6C;cursor: pointer;" 
+                    @click="handleCheckNode(scope.row)">审核不通过</span>
                   </template>
               </el-table-column>
               <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
@@ -215,6 +207,8 @@ export default {
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryContentList();
+      } else if (res.errorCode === -1) {
+        this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     }
   },

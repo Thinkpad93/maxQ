@@ -292,16 +292,9 @@ export default {
     },
     //显示检修列表
     async showRepairList() {
-      this.loading = true;
       let res = await service.showRepairList(this.query);
       if (res.errorCode === 0) {
-        let data = res.data.data;
-        if (!Array.isArray(data)) {
-          data = [];
-        } else {
-          this.tableData = data;
-        }
-        this.loading = false;
+        this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       }
     },

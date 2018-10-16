@@ -57,8 +57,8 @@
     <!-- 分页 -->
     <template>
       <qx-pagination 
-        @page-change="pageChange"
-        @page-size="pageSize" 
+        @page-change="pageChange" 
+        @page-size="pageSize"
         :page="query.page" 
         :pageSize="query.pageSize" 
         :total="totalCount">
@@ -99,7 +99,7 @@
 import service from "@/api";
 import pagination from "@/components/pagination";
 export default {
-  name: "review",
+  name: "trial",
   components: {
     "qx-pagination": pagination
   },
@@ -137,11 +137,11 @@ export default {
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.querycheckContentList();
+      this.queryCheckContentList();
     },
     pageSize(size) {
       this.query.pageSize = size;
-      this.querycheckContentList();
+      this.queryCheckContentList();
     },
     search() {
       this.queryCheckContentList();

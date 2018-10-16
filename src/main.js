@@ -40,11 +40,6 @@ router.beforeEach((to, from, next) => {
           let r = filterAsyncRouter(rou);
           router.addRoutes(r);
         })
-        // store.dispatch('qxuser/qxGetUserInfo').then(res => {
-        //   let rou = res.router;
-        //   let r = filterAsyncRouter(rou);
-        //   router.addRoutes(r);
-        // })
         next();
       } else {
         next();
@@ -54,7 +49,8 @@ router.beforeEach((to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      next(`/login?redirect=${to.path}`)
+      //next(`/login?redirect=${to.path}`)
+      next(`/login?redirect`);
     }
   }
 });

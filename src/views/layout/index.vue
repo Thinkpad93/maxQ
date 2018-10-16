@@ -42,12 +42,5 @@ export default {
 #main {
   position: relative;
   padding: 0 !important;
-  // position: absolute;
-  // top: 60px;
-  // bottom: 0;
-  // right: 0;
-  // z-index: 998;
-  // transition: left linear 0.3s;
-  //   height: calc(~'100% - 60px');
 }
 </style>
