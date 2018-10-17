@@ -335,16 +335,15 @@
 <script>
 import service from "@/api";
 import pagination from "@/components/pagination";
-
-import Mixin from "@/mixins/priority";
+import { scrollType, priority } from "@/mixins";
 import { disabledDate, hours } from "@/utils/tools";
 
 export default {
   name: "columnTpl",
+  mixins: [scrollType, priority],
   components: {
     "qx-pagination": pagination
   },
-  mixins: [Mixin],
   data() {
     return {
       dialogAdd: false,

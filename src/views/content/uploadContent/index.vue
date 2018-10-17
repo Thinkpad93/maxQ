@@ -281,10 +281,10 @@
 import { mapGetters } from "vuex";
 import bus from "@/utils/bus";
 import service from "@/api";
-import contentPropertyList from "@/mixins/contentPropertyList";
+import { contentProperty, contentTemplate } from "@/mixins";
 export default {
   name: "newUpload",
-  mixins: [contentPropertyList],
+  mixins: [contentProperty, contentTemplate],
   data() {
     return {
       disabledImg: 0,

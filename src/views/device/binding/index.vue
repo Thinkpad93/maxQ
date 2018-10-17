@@ -190,7 +190,6 @@ export default {
       btnloading: false,
       formLabelWidth: "100px",
       selected: "",
-      //form: {},
       rules: {
         regionId: [
           {

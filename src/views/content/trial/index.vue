@@ -33,16 +33,6 @@
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-        <!-- 
-        <el-table-column label="内容类型" prop="contentType" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contentType === 0">全屏播放</span>
-            <span v-else>全屏播放</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="时长" prop="duration" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="专属类别" prop="belongTo" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="审批的详细内容" prop="verifyDescrition" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
@@ -68,10 +58,15 @@
     <template>
       <el-dialog center top="40px" title="" :visible.sync="dialogView">
         <el-row :gutter="10">
-          <el-col :span="10">
-            <img src="https://fakeimg.pl/500x736/4CD964/fff" class="image">
+          <el-col :span="12">
+            <div class="video-box">
+              <video src="" controls width="400" height="200"></video>
+            </div>
+            <div class="image-box">
+              <img src="https://fakeimg.pl/400x589/4CD964/fff" class="image">
+            </div>
           </el-col>
-          <el-col :span="14">
+          <el-col :span="12">
             <el-form ref="check" :model="form" status-icon size="mini" :label-width="formLabelWidth">
               <el-form-item label="是否通过" prop="name">
                 <el-radio-group v-model="form.verifyStatus">
@@ -89,7 +84,9 @@
                 <el-button size="mini" type="primary" @click="checkForm('check')">审核</el-button>
               </el-row>
             </el-form>
-          </el-col>          
+          </el-col>           
+        </el-row>
+        <el-row :gutter="10">         
         </el-row>
       </el-dialog>
     </template>      
@@ -116,9 +113,12 @@ export default {
       },
       form: {
         verifyStatus: 1,
+        verifyDescrition: "",
         checkStage: null,
         contentId: null
       },
+      videoUrl: "",
+      showType: null,
       totalCount: 0,
       tableData: [],
       verifyStatusList: [
@@ -147,9 +147,9 @@ export default {
       this.queryCheckContentList();
     },
     handleStage(row) {
-      this.form.contentId = row.contentId;
-      this.form.checkStage = row.checkStage;
-      this.dialogView = true;
+      this.queryContentByContentId(row.contentId);
+      //this.form.contentId = row.contentId;
+      //this.form.checkStage = row.checkStage;
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -177,6 +177,15 @@ export default {
         this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       }
+    },
+    //查询编辑内容
+    async queryContentByContentId(contentId) {
+      let res = await service.queryContentByContentId({ contentId });
+      if (res.errorCode === 0) {
+        console.log(res);
+        this.videoUrl = res.data.videoUrl;
+        this.dialogView = true;
+      }
     }
   },
   mounted() {
@@ -185,4 +194,14 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.video-box {
+  margin: 0 auto;
+  text-align: center;
+  video {
+    vertical-align: top;
+  }
+}
+.image-box {
+  text-align: center;
+}
 </style>

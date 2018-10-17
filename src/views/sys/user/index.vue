@@ -164,10 +164,10 @@ import service from "@/api";
 import pagination from "@/components/pagination";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
-import typeList from "@/mixins/typeList";
+import { accountType } from "@/mixins";
 export default {
   name: "account",
-  mixins: [typeList],
+  mixins: [accountType],
   components: {
     "qx-region": region,
     "qx-region-t": regiont,

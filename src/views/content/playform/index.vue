@@ -292,11 +292,11 @@
 import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
-import Mixin from "@/mixins/priority";
+import { scrollType, priority } from "@/mixins";
 import { disabledDate, hours } from "@/utils/tools";
 export default {
   name: "playform",
-  mixins: [Mixin],
+  mixins: [scrollType, priority],
   components: {
     region,
     "qx-region": region,

@@ -137,14 +137,14 @@
 import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
-import deviceStatus from "@/mixins/deviceStatus";
+import { device } from "@/mixins";
 export default {
   name: "monitoring",
   components: {
     "qx-region": region,
     "qx-region-t": regiont
   },
-  mixins: [deviceStatus],
+  mixins: [device],
   data() {
     return {
       dialogAdd: false,
