@@ -169,8 +169,8 @@ export function queryContentByContentId(params, config) {
     .catch(e => console.log(e));
 }
 //编辑上传内容
-export function updateContent(params) {
-  return ax.post('/action/mod-xiaojiao/channel/content/updateContent.do', params)
+export function updateContent(params, config) {
+  return ax.post('/action/mod-xiaojiao/channel/content/updateContent.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

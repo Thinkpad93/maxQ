@@ -243,12 +243,18 @@ export default {
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
+    },
+    computedPage() {
+      return this.tableData.slice(
+        (this.page - 1) * this.page_size,
+        this.page * this.page_size
+      );
     }
   },
   methods: {
     pageChange(curr) {
       this.query.page = curr;
-      this.queryFuzzy();
+      this.queryAccount();
     },
     pageSize(size) {
       this.query.pageSize = size;
@@ -258,13 +264,11 @@ export default {
     //   this.queryFuzzy(this.query);
     // },
     handleSearch() {
-      this.queryFuzzy(this.query);
+      this.queryAccount(this.query);
     },
     handleRegionChange(queryId, queryType) {
-      if (queryId || queryType) {
-        this.query.queryId = queryId;
-        this.query.queryType = queryType;
-      }
+      this.query.queryId = queryId;
+      this.query.queryType = queryType;
     },
     handleRegionChanges(queryId, queryType) {
       this.form.queryId = queryId;
@@ -294,7 +298,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //this.$refs["region"].clearValidate();
           let { regionId, queryId, queryType, checkPass, ...args } = this.form;
           if (Array.isArray(regionId)) {
             queryId = regionId[regionId.length - 1]; //区域ID
@@ -356,7 +359,7 @@ export default {
       if (res.errorCode === 0) {
         this.dialogAdd = false;
         this.$refs.form.resetFields();
-        this.queryFuzzy();
+        this.queryAccount();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
@@ -372,7 +375,7 @@ export default {
     async changeStatus({ accountId, status }) {
       let res = await service.changeStatus({ accountId, status });
       if (res.errorCode === 0) {
-        this.queryFuzzy();
+        this.queryAccount();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
@@ -383,10 +386,18 @@ export default {
         this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       }
+    },
+    //测试-查询用户
+    async queryAccount() {
+      let res = await service.query({ queryId: "", queryType: "" });
+      if (res.errorCode === 0) {
+        this.tableData = res.data;
+      }
     }
   },
   mounted() {
-    this.queryFuzzy();
+    //this.queryFuzzy();
+    this.queryAccount();
     this.queryRoleName();
   }
 };

@@ -1,0 +1,58 @@
+{
+  "schoolname": "黄村幼儿园",
+  "playchannel": [{
+      "playstarttime": [0, 0, 0, 13, 30, 0],
+      "playendtime": [0, 0, 0, 14, 0, 0],
+      "channelname": "科普知识",
+      "scrolltype": "0",
+      "priority": "1",
+      "validtype": "0",
+      "validstarttime": [2018, 10, 1, 0, 0, 0],
+      "validendtime": [2018, 11, 1, 0, 0, 0],
+      "contents": [{
+          "title": "这是一条测试内容",
+          "duration": "100",
+          "showtype": "1",
+          "posterurl": "http://192.168.8.254:8080/poster1.html",
+          "video": {
+            "videourl": "/local_school/video/G01004.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "G01004.mp4"
+            }
+          },
+          "images": [{
+              "imageurl": "/local_school/image/abc.png",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "abc.png"
+              }
+            },
+            {
+              "imageurl": "/local_school/image/cde.png",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "abc.png"
+              }
+            }
+          ]
+        },
+        {}
+      ]
+    },
+    {
+      "playstarttime": [0, 0, 0, 13, 30, 0],
+      "playendtime": [0, 0, 0, 14, 0, 0],
+      "channelname": "安全护理",
+      "scrolltype": "0",
+      "priority": "1",
+      "validtype": "0",
+      "validstarttime": [2018, 10, 1, 0, 0, 0],
+      "validendtime": [2018, 11, 1, 0, 0, 0],
+      "contents": [{}]
+    }
+  ]
+}

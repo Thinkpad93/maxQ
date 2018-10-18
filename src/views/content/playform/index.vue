@@ -357,12 +357,6 @@ export default {
     };
   },
   methods: {
-    // search() {
-    //   if (this.query.schoolId === null) {
-    //     return;
-    //   }
-    //   this.querySchoolPlayChannel();
-    // },
     handleSearch() {
       this.querySchoolPlayChannel();
     },

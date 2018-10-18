@@ -3,17 +3,9 @@
      <div class="newUpload">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
+          <el-button :disabled="disabledScreen === 0" type="primary" @click="dialogTemplate = true">请选择海报模板</el-button>                                                             
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
-        <!-- <div class="tip-box">     
-          <el-alert
-            title="上传说明"
-            type="warning"
-            show-icon
-            :closable="false"
-            description="1.选择展示形式 2.选择海报模板 3.编辑海报">
-          </el-alert>  
-        </div>           -->
         <el-row :gutter="30">
           <el-col :xs="24" :sm="24" :md="20" :lg="16" :xl="14" :offset="4">              
             <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
@@ -90,15 +82,15 @@
                     <template v-if="type === 1">
                       <template v-if="form.contentType === 1">
                         <el-col :span="24">
-                          <el-form-item label="播放时段" prop="playTime" :rules="[
+                          <el-form-item label="播放时段" prop="channelId" :rules="[
                             { required: true, message: '请选择播放时段', trigger: 'blur' }
                             ]">
-                            <el-select style="width: 100%;" v-model="form.playTime" placeholder="请选择播放时段" value-key="itemId" multiple collapse-tags>
+                            <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="channelId">
                               <el-option 
                                 v-for="item in schoolPlayTime" 
-                                :key="item.itemId" 
+                                :key="item.channelId" 
                                 :label="item.time" 
-                                :value="item.itemId">
+                                :value="item.channelId">
                               </el-option>
                             </el-select>
                           </el-form-item>                   
@@ -111,12 +103,10 @@
                       <el-form-item label="图片上传" prop="imageUrl">
                         <el-upload
                           :disabled="disabledImg === 0"
-                          name="honorImage"
-                          :limit="1"
-                          action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                          name="files"
+                          action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
                           accept="image/jpeg,image/gif,image/png,image/bmp"
-                          :on-remove="handleRemove" 
-                          :before-remove="handleRemove"
+                          :on-remove="handleBeforeRemove" 
                           :on-preview="handlePreviewImg"
                           :on-success="handleImageSuccess">
                           <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
@@ -133,8 +123,8 @@
                           :limit="1"
                           action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                           accept="video/mp4,video/flv,video/mov"
-                          :on-remove="handleRemove" 
-                          :before-remove="handleRemove"
+                          :on-remove="handleBeforeRemove" 
+                          :before-remove="handleBeforeRemove"
                           :on-preview="handlePreviewVideo"
                           :on-success="handleVideoSuccess">
                           <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
@@ -155,9 +145,9 @@
                       </div>               
                     </el-col>
                   </el-row>
-                  <el-row style="text-align: left;">
+                  <!-- <el-row style="text-align: left;">
                     <el-button :disabled="disabledScreen === 0" type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
-                  </el-row>
+                  </el-row> -->
                 </el-tab-pane>
                 <el-tab-pane label="滚动播放上传" name="0">
                   <el-row :gutter="10">
@@ -186,18 +176,33 @@
                           </el-time-picker>
                         </el-form-item>                    
                       </el-col>   
-                    </template>   
+                    </template>  
+                    <template v-if="type !== 1">
+                      <el-col :span="24">
+                        <el-form-item label="所属栏目" prop="channelId" :rules="[
+                          { required: true, message: '请选择所属栏目', trigger: 'blur' }
+                          ]">
+                          <el-select v-model="form.channelId" placeholder="请选择" style="width: 100%;">
+                            <el-option v-for="item in channelList" 
+                              :key="item.channelId" 
+                              :value="item.channelId"
+                              :label="item.name">
+                            </el-option>
+                          </el-select>      
+                        </el-form-item>                         
+                      </el-col>
+                    </template>                     
                     <template v-if="type === 1">
                         <el-col :span="24">
-                          <el-form-item label="播放时段" prop="playTime" :rules="[
+                          <el-form-item label="播放时段" prop="channelId" :rules="[
                             { required: true, message: '请选择播放时段', trigger: 'blur' }
                             ]">
-                            <el-select style="width: 100%;" v-model="form.playTime" placeholder="请选择播放时段" value-key="itemId" multiple collapse-tags>
+                            <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="channelId">
                               <el-option 
                                 v-for="item in schoolPlayTime" 
-                                :key="item.itemId" 
+                                :key="item.channelId" 
                                 :label="item.time" 
-                                :value="item.itemId">
+                                :value="item.channelId">
                               </el-option>
                             </el-select>
                           </el-form-item>                   
@@ -220,26 +225,27 @@
             </el-form>
           </el-col>
         </el-row>     
-        <!-- <el-row :gutter="30">
+        <el-row :gutter="30">
           <el-col :span="24">
-            <div class="tip-box">     
-              <el-alert
-                title="编辑海报"
-                type="warning"
-                show-icon
-                :closable="false"
-                description="编辑海报时，请先选择海报模板">
-              </el-alert>  
+            <div class="tip-box">
+              <el-button type="info">上一页</el-button>
+              <el-button type="info">下一页</el-button>
+              <el-button type="info" @click="handlePosterSaveData">保存编辑</el-button>
             </div> 
           </el-col>
-        </el-row>       -->
-        <!-- <el-row :gutter="30">
+        </el-row>      
+        <!-- 如果有多页海报模板 -->
+        <!-- 保存修改 -->
+        <!-- 保存修改 -->
+        <el-row :gutter="30">
           <el-col :span="24">
             <div class="element-box">
+              <div class="poster-page"></div>
+              <div class="poster-save"></div> 
               <iframe id="posterFrame" ref="iframe" :src="url"></iframe>
             </div>
           </el-col>
-        </el-row> -->
+        </el-row>
      </div>
      <!-- 内容模板选择 -->
      <template>
@@ -261,15 +267,19 @@
      </template>
      <!-- 图片查看 -->
      <template>
-       <el-dialog center top="40px" :visible.sync="dialogViewImg">
-          <div class="views-image" v-if="previewImg">
-            <img :src="previewImg" width="500" height="736">
+       <el-dialog custom-class="qx-dialog" width="700px" title="图片查看" center top="40px" :visible.sync="dialogViewImg">
+          <div class="views-image" v-if="imageList.length">
+            <el-carousel :autoplay="false" height="1030px">
+              <el-carousel-item v-for="(item, index) in imageList" :key="index">
+                <img :src="item.url" width="700" height="1030" :alt="item.name">
+              </el-carousel-item>
+            </el-carousel>
           </div>         
        </el-dialog>
      </template>
      <!-- 视频查看 --> 
      <template>
-       <el-dialog center top="40px" :visible.sync="dialogViewVideo">
+       <el-dialog title="视频查看" center top="40px" :visible.sync="dialogViewVideo">
           <div class="views-video" v-if="form.videoUrl">
             <video :src="form.videoUrl" controls autoplay loop height="450" style="width:100%"></video>
           </div>         
@@ -300,9 +310,10 @@ export default {
       screenIndex: 0,
       posterIndex: -1,
       collapse: true,
-      url: "",
+      url: "./static/20180908/index.html",
       posterUrl: "",
-      previewImg: "",
+      //previewImg: "",
+      imageList: [], //多图片查看
       form: {
         title: "",
         componentValue: null,
@@ -310,14 +321,14 @@ export default {
         contentProperty: 0,
         contentType: 1,
         author: "",
-        playTime: [],
+        //playTime: [],
         channelId: null,
         belongTo: 0, // 0-不专属 1-专属对应学校
         templateId: 0,
-        imageUrl: "",
-        imageName: "",
+        showType: 0,
         videoUrl: ""
       },
+      iframeWin: {},
       channelList: [],
       posterList: [],
       schoolPlayTime: []
@@ -333,11 +344,17 @@ export default {
     }
   },
   methods: {
-    handleRemove() {
-      return false;
+    //iframe操作
+    handlePosterSaveData() {
+      this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
+    },
+    handleBeforeRemove(file, fileList) {
+      let name = file.name;
+      //图片删除
+      this.imageList = this.imageList.filter(elem => elem.imageName !== name);
     },
     handlePreviewImg(file) {
-      this.previewImg = file.response.data.url;
+      //this.previewImg = file.response.data.url;
       this.dialogViewImg = true;
     },
     handlePreviewVideo() {
@@ -346,8 +363,8 @@ export default {
     //上传图片成功
     handleImageSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.imageUrl = response.data.url;
-        this.form.imageName = response.data.imageName;
+        let { name, url } = response.data;
+        this.imageList.push({ name, url });
       }
     },
     //上传视频成功
@@ -359,11 +376,13 @@ export default {
     handleTabClick(tab) {
       this.form.contentType = parseInt(tab.name);
       if (this.type == 1) {
+        this.form.channelId = null;
         this.querySchoolPlayListTime(this.form.contentType);
       }
     },
     handleScreenSelect(index, value) {
       this.screenIndex = index;
+      this.form.showType = index;
       if (index == 1 || index == 2 || index == 4 || index == 5) {
         this.disabledVideo = 1;
       } else {
@@ -406,8 +425,9 @@ export default {
     handleUpload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let channelId = [];
-          let { playTime, belongTo, ...args } = this.form;
+          //let channelId = [];
+          let images = [];
+          let { belongTo, showType, ...args } = this.form;
           if (
             this.form.templateId === 0 &&
             (this.screenIndex == 0 ||
@@ -426,10 +446,8 @@ export default {
           }
           //图片判断
           if (
-            this.form.imageUrl === "" &&
-            (this.screenIndex == 3 ||
-              this.screenIndex == 4 ||
-              this.screenIndex == 5)
+            !this.imageList.length &&
+            (showType == 3 || showType == 4 || showType == 5)
           ) {
             if (this.form.contentType === 1) {
               this.$message({
@@ -460,21 +478,32 @@ export default {
             }
           }
           //如果是学校账号
-          if (this.type === 1) {
-            belongTo = this.type;
-            this.schoolPlayTime.forEach(oldItem => {
-              if (playTime.find(newItem => oldItem.itemId == newItem)) {
-                channelId.push(oldItem.channelId);
-              }
-            });
-          } else {
-            if (this.form.contentType === 0) {
-              channelId.push(1);
-            } else {
-              channelId.push(args.channelId);
-            }
+          // if (this.type === 1) {
+          //   belongTo = this.type;
+          //   this.schoolPlayTime.forEach(oldItem => {
+          //     if (playTime.find(newItem => oldItem.itemId == newItem)) {
+          //       channelId.push(oldItem.channelId);
+          //     }
+          //   });
+          // } else {
+          //   if (this.form.contentType === 0) {
+          //     channelId.push(1);
+          //   } else {
+          //     channelId.push(args.channelId);
+          //   }
+          // }
+          //上传的图片数据
+          if (showType == 3 || showType == 4 || showType == 5) {
+            //images = [].concat(this.imageList);
+            images = [...this.imageList];
           }
-          let obj = Object.assign({}, args, { channelId, belongTo });
+          let obj = Object.assign({}, args, {
+            //channelId,
+            belongTo,
+            showType,
+            images
+          });
+          console.log(obj);
           this.uploadContentAction(obj);
         }
       });
@@ -521,12 +550,15 @@ export default {
       this.queryChannelAll();
     }
     this.queryContentTemplate(0);
+
+    this.iframeWin = this.$refs.iframe.contentWindow;
   }
 };
 </script>
 <style lang="less" scoped>
 .newUpload {
   padding: 20px;
+  min-height: 600px;
   margin-bottom: 100px;
   background-color: #fff;
 }
@@ -589,6 +621,7 @@ export default {
 }
 .tip-box {
   margin: 30px 0;
+  text-align: center;
 }
 .element-box {
   width: 1080px;

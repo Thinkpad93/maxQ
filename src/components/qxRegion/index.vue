@@ -28,35 +28,35 @@ export default {
   },
   data() {
     return {
-      province: null,
-      city: null,
-      area: null,
+      province: "",
+      city: "",
+      area: "",
       provinceList: [],
       cityList: [],
       areaList: []
     };
   },
   computed: {
-    ...mapState("comm", ["distpickerData"])
+    //...mapState("comm", ["distpickerData"])
   },
   methods: {
     handleProvince(value) {
       //不触发点击清空时的调用
       if (typeof value === "number") {
-        this.queryRegion(value, 1);
+        this.queryRegion(value, 1); //查省份下的市
         this.handleEmit(value, 0); //0查省份
       } else if (typeof value === "string") {
         this.cityList.length = 0;
         this.areaList.length = 0;
-        this.handleEmit(0, 0);
+        this.handleEmit("", ""); //如果清空了省，则传空字符串
       }
       this.city = null;
       this.area = null;
     },
     handleCity(value) {
       if (typeof value === "number") {
-        this.queryRegion(value, 2);
-        this.handleEmit(value, 1); //1查市级
+        this.queryRegion(value, 2); //查市级下的区
+        this.handleEmit(value, 1); //查市级
       } else if (typeof value === "string") {
         this.areaList.length = 0;
         this.handleEmit(this.province, 0);
@@ -65,13 +65,10 @@ export default {
     },
     handleArea(value) {
       if (typeof value === "number") {
-        this.handleEmit(value, 2); //2查区级
+        this.handleEmit(value, 2); //查区级
       } else if (typeof value === "string") {
         this.handleEmit(this.city, 1);
       }
-    },
-    handleClear(value) {
-      console.log(value);
     },
     //emit
     handleEmit(queryId, queryType) {

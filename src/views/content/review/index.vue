@@ -33,16 +33,6 @@
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-        <!-- 
-        <el-table-column label="内容类型" prop="contentType" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contentType === 0">全屏播放</span>
-            <span v-else>全屏播放</span>
-          </template>          
-        </el-table-column>
-        <el-table-column label="时长" prop="duration" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="专属类别" prop="belongTo" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="审批的详细内容" prop="verifyDescription" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
@@ -66,12 +56,23 @@
     </template>        
     <!-- 预览审核 -->
     <template>
-      <el-dialog center top="40px" title="" :visible.sync="dialogView">
+      <el-dialog width="60%" :title="title" center top="40px" :visible.sync="dialogView">
         <el-row :gutter="10">
-          <el-col :span="10">
-            <img src="https://fakeimg.pl/500x736/4CD964/fff" class="image">
+          <el-col :span="12">
+            <div class="video-box" v-if="showType == 1 || showType == 2 || showType == 4 || showType == 5">
+              <video :src="videoUrl" controls width="500" height="200"></video>
+            </div>  
+            <!-- v-if="showType == 3 || showType == 4 || showType == 5" -->
+            <div class="image-box" v-if="showType == 3 || showType == 4 || showType == 5">
+              <el-carousel height="736px">
+                <el-carousel-item v-for="(item, index) in imageList" :key="index">
+                  <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <!-- <div class="iframe-box"></div> -->                      
           </el-col>
-          <el-col :span="14">
+          <el-col :span="12">
             <el-form ref="check" :model="form" status-icon size="mini" :label-width="formLabelWidth">
               <el-form-item label="是否通过" prop="name">
                 <el-radio-group v-model="form.verifyStatus">
@@ -79,9 +80,7 @@
                   <el-radio :label="2">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="审核意见" prop="verifyDescrition" :rules="[
-              { required: true, message: '请输入审核意见', trigger: 'blur' }
-            ]">
+              <el-form-item label="审核意见" prop="verifyDescrition">
                 <el-input type="textarea" v-model="form.verifyDescrition" :rows="6" placeholder="审核意见"></el-input>
               </el-form-item>
               <el-row style="text-align:center">
@@ -112,13 +111,17 @@ export default {
         checkStage: 2,
         verifyStatus: 0,
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       form: {
         verifyStatus: 1,
+        verifyDescrition: "",
         checkStage: null,
         contentId: null
       },
+      videoUrl: "",
+      showType: null,
+      imageList: [],
       totalCount: 0,
       tableData: [],
       verifyStatusList: [
@@ -147,9 +150,10 @@ export default {
       this.queryCheckContentList();
     },
     handleStage(row) {
+      this.title = row.title;
       this.form.contentId = row.contentId;
       this.form.checkStage = row.checkStage;
-      this.dialogView = true;
+      this.queryContentByContentId(row.contentId);
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -177,12 +181,42 @@ export default {
         this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       }
+    },
+    //查询编辑内容
+    async queryContentByContentId(contentId) {
+      let res = await service.queryContentByContentId({ contentId });
+      if (res.errorCode === 0) {
+        let data = res.data;
+        let { images, videoUrl } = data;
+        this.dialogView = true;
+        this.showType = data.showType;
+        this.imageList = [].concat(images);
+        this.videoUrl = data.videoUrl;
+      }
     }
   },
-  mounted() {
+  mounted() {},
+  activated() {
     this.queryCheckContentList();
   }
 };
 </script>
 <style lang="less" scoped>
+.video-box {
+  margin: 0 auto;
+  text-align: center;
+  video {
+    vertical-align: top;
+  }
+}
+.image-box {
+  text-align: center;
+  min-height: 736px;
+}
+.iframe-box {
+  margin: 0 auto;
+  width: 400px;
+  min-height: 589px;
+  box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
+}
 </style>

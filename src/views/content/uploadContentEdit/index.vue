@@ -81,15 +81,15 @@
                     <template v-if="type === 1">
                       <template v-if="form.contentType === 1">
                         <el-col :span="24">
-                          <el-form-item label="播放时段" prop="playTime" :rules="[
+                          <el-form-item label="播放时段" prop="channelId" :rules="[
                             { required: true, message: '请选择播放时段', trigger: 'blur' }
                             ]">
-                            <el-select style="width: 100%;" v-model="form.playTime" placeholder="请选择播放时段" value-key="itemId" multiple collapse-tags>
+                            <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="channelId">
                               <el-option 
                                 v-for="item in schoolPlayTime" 
-                                :key="item.itemId" 
+                                :key="item.channelId" 
                                 :label="item.time" 
-                                :value="item.itemId">
+                                :value="item.channelId">
                               </el-option>
                             </el-select>
                           </el-form-item>                   
@@ -102,13 +102,11 @@
                       <el-form-item label="图片上传" prop="imageUrl">
                         <el-upload
                           :disabled="disabledImg === 0"
-                          name="honorImage"
-                          :limit="1"
-                          :file-list="imageFileList"
-                          action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                          name="files"
+                          :file-list="imageList"
+                          action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
                           accept="image/jpeg,image/gif,image/png,image/bmp"
-                          :on-remove="handleRemove" 
-                          :before-remove="handleRemove"
+                          :on-remove="handleBeforeRemove" 
                           :on-preview="handlePreviewImg"
                           :on-success="handleImageSuccess">
                           <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
@@ -125,8 +123,8 @@
                           :file-list="videoFileList"
                           action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                           accept="video/mp4,video/flv,video/mov"
-                          :on-remove="handleRemove" 
-                          :before-remove="handleRemove"
+                          :on-remove="handleBeforeRemove" 
+                          :before-remove="handleBeforeRemove"
                           :on-preview="handlePreviewVideo"
                           :on-success="handleVideoSuccess">
                           <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
@@ -177,7 +175,38 @@
                           </el-time-picker>
                         </el-form-item>                    
                       </el-col>   
-                    </template>                 
+                    </template> 
+                    <template v-if="type !== 1">
+                      <el-col :span="24">
+                        <el-form-item label="所属栏目" prop="channelId" :rules="[
+                          { required: true, message: '请选择所属栏目', trigger: 'blur' }
+                          ]">
+                          <el-select v-model="form.channelId" placeholder="请选择" style="width: 100%;">
+                            <el-option v-for="item in channelList" 
+                              :key="item.channelId" 
+                              :value="item.channelId"
+                              :label="item.name">
+                            </el-option>
+                          </el-select>      
+                        </el-form-item>                         
+                      </el-col>
+                    </template>   
+                    <template v-if="type === 1">
+                      <el-col :span="24">
+                        <el-form-item label="播放时段" prop="channelId" :rules="[
+                          { required: true, message: '请选择播放时段', trigger: 'blur' }
+                          ]">
+                          <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="channelId">
+                            <el-option 
+                              v-for="item in schoolPlayTime" 
+                              :key="item.channelId" 
+                              :label="item.time" 
+                              :value="item.channelId">
+                            </el-option>
+                          </el-select>
+                        </el-form-item>                   
+                      </el-col>
+                    </template>                                                          
                   </el-row>   
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 0">
@@ -216,9 +245,13 @@
      </template>
      <!-- 图片查看 -->
      <template>
-       <el-dialog center top="40px" :visible.sync="dialogViewImg">
-          <div class="views-image" v-if="previewImg">
-            <img :src="previewImg" width="500" height="736">
+       <el-dialog custom-class="qx-dialog" width="700px" title="图片查看" center top="40px" :visible.sync="dialogViewImg">
+          <div class="views-image">
+            <el-carousel :autoplay="false" height="1030px">
+              <el-carousel-item v-for="(item, index) in imageList" :key="index">
+                <img :src="item.url" width="700" height="1030" :alt="item.name">
+              </el-carousel-item>
+            </el-carousel>
           </div>         
        </el-dialog>
      </template>
@@ -256,9 +289,10 @@ export default {
       screenIndex: 0,
       posterIndex: -1,
       collapse: true,
-      url: "",
+      //url: "",
       posterUrl: "",
       previewImg: "",
+      imageList: [], //多图片查看
       form: {},
       channelList: [],
       posterList: [],
@@ -277,11 +311,11 @@ export default {
     }
   },
   methods: {
-    handleRemove() {
-      return false;
+    handleBeforeRemove(file) {
+      let name = file.name;
+      this.imageList = this.imageList.filter(elem => elem.name !== name);
     },
     handlePreviewImg(file) {
-      this.previewImg = file.response.data.url;
       this.dialogViewImg = true;
     },
     handlePreviewVideo() {
@@ -290,8 +324,8 @@ export default {
     //上传图片成功
     handleImageSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.imageUrl = response.data.url;
-        this.form.imageName = response.data.imageName;
+        let { name, url } = response.data;
+        this.imageList.push({ name, url });
       }
     },
     //上传视频成功
@@ -303,30 +337,6 @@ export default {
     handleTabClick(tab) {
       this.form.contentType = parseInt(tab.name);
     },
-    // handleScreenSelect(index, value) {
-    //   this.screenIndex = index;
-    //   if (index == 1 || index == 2 || index == 4 || index == 5) {
-    //     this.disabledVideo = 1;
-    //   } else {
-    //     this.disabledVideo = 0;
-    //   }
-    //   if (index === 3 || index === 4 || index === 5) {
-    //     this.disabledImg = 1;
-    //     this.disabledScreen = 0;
-    //     this.form.templateId = 0;
-    //     this.posterIndex = -1;
-    //   } else {
-    //     this.disabledImg = 0;
-    //     this.disabledScreen = 1;
-    //   }
-    //   //只能在选择海报的形式才加载
-    //   if (index === 0 || index === 1 || index === 2) {
-    //     this.disabledScreen = 1;
-    //     this.form.templateId = 0;
-    //     this.posterIndex = -1;
-    //     this.queryContentTemplate(value);
-    //   }
-    // },
     handlePosterSelect(index, item) {
       if ("templateId" in item) {
         this.form.templateId = item.templateId;
@@ -347,16 +357,24 @@ export default {
     handleUpload(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let images = [];
           let {
             schoolId,
             showType,
-            contnetDetail,
+            contentDetail,
             posterUrl,
             templateTitle,
+            templateId,
             duration,
             ...args
           } = this.form;
-          let obj = Object.assign({}, args);
+          if (this.imageList.length) {
+            images = this.imageList.map(elem => {
+              return { name: elem.name, url: elem.url };
+            });
+          }
+          let obj = Object.assign({}, args, { images });
+          //console.log(obj);
           this.updateContent(obj);
         }
       });
@@ -392,10 +410,11 @@ export default {
       if (res.errorCode === 0) {
         this.loading = false;
         this.form = res.data;
+        this.imageList = this.form.images;
         this.screenIndex = this.form.showType; //回选展示形式
         //this.queryContentTemplate(this.form.showType);
         this.status = this.form.contentType.toString();
-        if (this.$store.state.qxuser.type == 1) {
+        if (this.type === 1) {
           this.querySchoolPlayListTime(this.form.contentType);
         } else {
           this.queryChannelAll();

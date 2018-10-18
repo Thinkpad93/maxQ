@@ -18,8 +18,6 @@ import {
 } from '@/utils/auth';
 
 
-
-
 Vue.use(Element);
 
 
@@ -36,7 +34,7 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.menu.length === 0) {
         store.dispatch('qxuser/querySystemMenus').then(res => {
-          let rou = res.data.router;
+          let rou = res.data.router; //返回的权限路由数据
           let r = filterAsyncRouter(rou);
           router.addRoutes(r);
         })
@@ -67,12 +65,5 @@ new Vue({
   },
   template: '<App/>',
   created() {},
-  mounted() {
-    // if (getToken()) {
-
-    // }
-
-    //this.$store.commit('menu/dbget');
-    //this.$store.commit('user/dbget');
-  },
+  mounted() {},
 })

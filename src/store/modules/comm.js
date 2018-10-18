@@ -27,7 +27,6 @@ export default {
         })
       });
     },
-
     //查询学校详情信息
     querySchoolInfo({
       commit,

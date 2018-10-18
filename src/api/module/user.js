@@ -67,3 +67,9 @@ export function QXLogin2(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//测试-查询用户
+export function query(params) {
+  return ax.post('/action/mod-xiaojiao/account/query.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}

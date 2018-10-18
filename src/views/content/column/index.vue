@@ -118,17 +118,6 @@ export default {
     handleSearch() {
       this.queryChannel();
     },
-    // search() {
-    //   let page = this.query.page;
-    //   if (!this.query.channelName.length) {
-    //     this.$message({ message: "请选择栏目名称", type: "warning" });
-    //     return;
-    //   }
-    //   if (page > 1) {
-    //     this.query.page = 1;
-    //   }
-    //   this.queryChannel();
-    // },
     close() {
       this.resetForm("formRef");
     },
@@ -137,6 +126,7 @@ export default {
     },
     handleEdit(row) {
       this.dialogFormVisible = true;
+      //this.form = { ...row };
       this.form = Object.assign({}, row);
     },
     handleDel(row) {

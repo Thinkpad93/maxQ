@@ -508,8 +508,8 @@ export default {
       previewChannel: false,
       formLabelWidth: "100px",
       query: {
-        queryId: 0,
-        queryType: 0,
+        queryId: "",
+        queryType: "",
         schoolName: "",
         page: 1,
         pageSize: 20
@@ -606,10 +606,8 @@ export default {
       }
     },
     handleRegionChange(queryId, queryType) {
-      if (queryId || queryType) {
-        this.query.queryId = queryId;
-        this.query.queryType = queryType;
-      }
+      this.query.queryId = queryId;
+      this.query.queryType = queryType;
     },
     handleSearch() {
       this.showSchoolList(this.query);

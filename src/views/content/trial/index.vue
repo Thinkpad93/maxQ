@@ -56,15 +56,21 @@
     </template>    
     <!-- 预览审核 -->
     <template>
-      <el-dialog center top="40px" title="" :visible.sync="dialogView">
+      <el-dialog width="60%" :title="title" center top="40px" :visible.sync="dialogView">
         <el-row :gutter="10">
           <el-col :span="12">
-            <div class="video-box">
-              <video src="" controls width="400" height="200"></video>
+            <div class="video-box" v-if="showType == 1 || showType == 2 || showType == 4 || showType == 5">
+              <video :src="videoUrl" controls width="500" height="200"></video>
             </div>
-            <div class="image-box">
-              <img src="https://fakeimg.pl/400x589/4CD964/fff" class="image">
+            <!-- v-if="showType == 3 || showType == 4 || showType == 5" -->
+            <div class="image-box" v-if="showType == 3 || showType == 4 || showType == 5">
+              <el-carousel height="736px">
+                <el-carousel-item v-for="(item, index) in imageList" :key="index">
+                  <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
             </div>
+            <!-- <div class="iframe-box"></div> -->
           </el-col>
           <el-col :span="12">
             <el-form ref="check" :model="form" status-icon size="mini" :label-width="formLabelWidth">
@@ -74,9 +80,7 @@
                   <el-radio :label="2">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="审核意见" prop="verifyDescrition" :rules="[
-              { required: true, message: '请输入审核意见', trigger: 'blur' }
-            ]">
+              <el-form-item label="审核意见" prop="verifyDescrition">
                 <el-input type="textarea" v-model="form.verifyDescrition" :rows="6" placeholder="审核意见"></el-input>
               </el-form-item>
               <el-row style="text-align:center">
@@ -104,12 +108,13 @@ export default {
     return {
       dialogView: false,
       formLabelWidth: "100px",
+      title: "",
       query: {
         title: "",
         checkStage: 1,
         verifyStatus: 0,
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       form: {
         verifyStatus: 1,
@@ -119,6 +124,7 @@ export default {
       },
       videoUrl: "",
       showType: null,
+      imageList: [],
       totalCount: 0,
       tableData: [],
       verifyStatusList: [
@@ -147,9 +153,10 @@ export default {
       this.queryCheckContentList();
     },
     handleStage(row) {
+      this.title = row.title;
+      this.form.contentId = row.contentId;
+      this.form.checkStage = row.checkStage;
       this.queryContentByContentId(row.contentId);
-      //this.form.contentId = row.contentId;
-      //this.form.checkStage = row.checkStage;
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -166,7 +173,7 @@ export default {
       if (res.errorCode === 0) {
         this.dialogView = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.$refs.check.resetFields();
+        //this.$refs.check.resetFields();
         this.queryCheckContentList();
       }
     },
@@ -182,13 +189,17 @@ export default {
     async queryContentByContentId(contentId) {
       let res = await service.queryContentByContentId({ contentId });
       if (res.errorCode === 0) {
-        console.log(res);
-        this.videoUrl = res.data.videoUrl;
+        let data = res.data;
+        let { images, videoUrl } = data;
         this.dialogView = true;
+        this.showType = data.showType;
+        this.imageList = [].concat(images);
+        this.videoUrl = data.videoUrl;
       }
     }
   },
-  mounted() {
+  mounted() {},
+  activated() {
     this.queryCheckContentList();
   }
 };
@@ -203,5 +214,12 @@ export default {
 }
 .image-box {
   text-align: center;
+  min-height: 736px;
+}
+.iframe-box {
+  margin: 0 auto;
+  width: 400px;
+  min-height: 589px;
+  box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
 }
 </style>

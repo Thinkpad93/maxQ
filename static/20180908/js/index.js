@@ -37,9 +37,15 @@ const qx = new Vue({
     "v-edit-div": d
   },
   data: {
-    baseUrl: "http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/channel/content/saveContentDetail.do",
+    baseUrl: "http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/channel/content/saveContentDetail.do",
     query: {},
-    contentDetail: []
+    contentDetail: [{
+      componentValue: "大吉大利",
+      contentId: 34,
+    }, {
+      componentValue: "肯定有一个ids[i]的值是，所以导致转换成int失败。",
+      contentId: 35,
+    }]
   },
   methods: {
     //contentId
@@ -62,14 +68,15 @@ const qx = new Vue({
     handleMessage: function (event) {
       //数据源
       let data = event.data;
-      switch (data.cmd) {
-        case "get":
-          this.handleGet(data.params.contentId);
-          break;
-        case "save":
-          this.saveContentDetail();
-          break;
-      }
+      console.log(data);
+      // switch (data.cmd) {
+      //   case "get":
+      //     this.handleGet(data.params.contentId);
+      //     break;
+      //   case "save":
+      //     this.saveContentDetail();
+      //     break;
+      // }
     },
     handleGet(contentId) {
       let that = this;
@@ -77,7 +84,7 @@ const qx = new Vue({
       params.append("contentId", contentId);
       axios
         .post(
-          "http://192.168.18.106:8080/qxiao-cms/action/mod-xiaojiao/channel/content/queryDetailTemplate.do",
+          "http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/channel/content/queryDetailTemplate.do",
           params
         )
         .then(function (res) {
