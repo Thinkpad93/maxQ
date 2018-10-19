@@ -4,7 +4,7 @@
         <img src="@/assets/empty-content.png" alt="" style="max-width: 260px;">
           <div>
             <h3>页面暂无内容</h3>
-            <p>抱歉，页面暂无内容，请看看其他页面</p>
+            <p v-if="$route.meta.title">抱歉，页面暂无内容，请看看其他页面</p>
           </div>
       </div>
     </div> 
@@ -18,6 +18,7 @@ export default {
   },
   methods: {},
   mounted() {
+    console.log(this.$route);
     //this.$store.dispatch("comm/qxregion");
   }
 };

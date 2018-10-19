@@ -5,19 +5,6 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <!-- <el-form-item label="区域选择">
-                <qx-region @last="lastChange"></qx-region>
-              </el-form-item>   -->
-              <!-- <el-form-item label="学校名称">
-                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>
-              </el-form-item>                          -->
               <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
@@ -78,6 +65,16 @@
         </el-row>
       </div>
     </template>
+    <!-- 分页 -->
+    <template>
+      <qx-pagination 
+        @page-change="pageChange" 
+        @page-size="pageSize"
+        :page="query.page" 
+        :pageSize="query.pageSize" 
+        :total="totalCount">
+      </qx-pagination>
+    </template>         
     <!-- 设备详情 -->
     <template>
       <el-dialog width="60%" center top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
@@ -135,13 +132,13 @@
 </template>
 <script>
 import service from "@/api";
-import region from "@/components/region";
 import regiont from "@/components/qxregion";
+import pagination from "@/components/pagination";
 import { device } from "@/mixins";
 export default {
   name: "monitoring",
   components: {
-    "qx-region": region,
+    "qx-pagination": pagination,
     "qx-region-t": regiont
   },
   mixins: [device],
@@ -188,24 +185,6 @@ export default {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
-    // async lastChange(value) {
-    //   let last = value[value.length - 1];
-    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
-    //   if (res.errorCode === 0) {
-    //     this.schoolList = res.data;
-    //   } else {
-    //     return false;
-    //   }
-    // },
-    // handleSchool(value) {
-    //   this.query.schoolId = value;
-    // },
-    // handleRegion(list) {
-    //   if (Array.isArray(list)) {
-    //     this.schoolList = list;
-    //   }
-    // },
-    //handleSelect() {},
     handleRunlog(row) {
       this.dialogRunlog = true;
       this.showDeviceRunlog(row.deviceId);
@@ -256,12 +235,8 @@ export default {
     async showDeviceStatus() {
       let res = await service.showDeviceStatus(this.query);
       if (res.errorCode === 0) {
-        let data = res.data.data;
-        if (!Array.isArray(data)) {
-          data = [];
-        } else {
-          this.tableData = data;
-        }
+        this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     },
     //发送设备命令

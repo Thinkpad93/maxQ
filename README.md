@@ -12,27 +12,13 @@ git push -u origin master
 > 代码
 
 ```javascript
-// loading = Loading.service({
-//   text: '加载中',
-// }); 123
-//this.$router.push({ path: `/content/poster/${field}` });
-//this.$router.push({ name: "poster", params: { id: `${field}` } });
-//this.$router.push({ path: "poster", query: { id: `${field}` } });
-// 这里就拿到了iframe的对象
-//console.log(this.$refs.iframe);
-// 这里就拿到了iframe的window对象
-//console.log(this.$refs.iframe.contentWindow);
 ```
 
-```html
-
-```
-
-> 状态码解释
+> 后端返回状态码
 
 - 415
-- 400 后台
-- 404
+- 400 请求参数错误
+- 404 请求地址错误
 
 * 发送设备指令还没有做完
 * 运行日志页面需要完善

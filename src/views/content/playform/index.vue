@@ -6,19 +6,6 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <!-- <el-form-item label="区域选择">
-                <region @last="queryRegion"></region>
-              </el-form-item> -->
-              <!-- <el-form-item label="学校名称">
-                <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @clear="handleClearSchool">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>
-              </el-form-item>            -->
               <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
               <el-form-item label="学校名称">
                 <el-autocomplete 
@@ -28,7 +15,6 @@
                   :fetch-suggestions="querySearch"
                   @select="handleSelectSchool">
                 </el-autocomplete>
-                <!-- <el-input v-model="query.schoolName" placeholder="请输入学校名称" @change="handleSelectSchool"></el-input> -->
               </el-form-item>                  
               <el-form-item>
                 <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
@@ -85,8 +71,8 @@
               </el-select>
             </template>
             <template v-else>
-              <p v-if="scope.row.scrollType === 0">非滚动</p>
-              <p v-else>滚动</p>
+              <p v-if="scope.row.scrollType === 0">滚动</p>
+              <p v-else>非滚动</p>
             </template>
           </template>
         </el-table-column>
@@ -325,7 +311,6 @@ export default {
       playContendata: [],
       channelList: [],
       query: {
-        //schoolId: null
         schoolName: "",
         scopeType: "",
         scopeId: ""
@@ -358,23 +343,32 @@ export default {
   },
   methods: {
     handleSearch() {
-      this.querySchoolPlayChannel();
+      if (this.query.schoolName && this.schoolId) {
+        this.querySchoolPlayChannel(this.schoolId);
+      }
     },
     async querySearch(queryString, cb) {
       let { scopeId, scopeType } = this.query;
-      let res = await service.selectSchoolNameLike({
-        scopeId,
-        scopeType,
-        schoolName: queryString
-      });
-      if (res.errorCode === 0) {
-        cb(res.data);
+      if (queryString) {
+        let res = await service.selectSchoolNameLike({
+          scopeId,
+          scopeType,
+          schoolName: queryString
+        });
+        if (res.errorCode === 0) {
+          if (!res.data.length) {
+            this.query.schoolName = "";
+            return;
+          }
+          cb(res.data);
+        }
       }
     },
     //根据关键字查询学校名称
     handleSelectSchool(value) {
+      this.schoolId = value.schoolId;
       this.channelForm.schoolId = value.schoolId;
-      this.query.schoolName = value.value;
+      //this.query.schoolName = value.value;
     },
     handleRegionChange(queryId, queryType) {
       this.query.scopeId = queryId;
@@ -428,15 +422,12 @@ export default {
     },
     //新增学校播放表单
     handleaddChannel() {
-      if (this.query.schoolName == "") {
-        this.$message({
-          message: `请先搜索完学校名称后在进行新增`,
-          type: "warning"
-        });
+      if (this.schoolId || this.tableData.length) {
+        this.dialogChannel = true;
+        this.channelForm.schoolId = this.schoolId || this.tableData[0].schoolId;
+      } else {
         return false;
       }
-      //this.channelForm.schoolId = this.query.schoolId;
-      this.dialogChannel = true;
     },
     handleChangeTime(value) {
       this.isChangeTime = true;
@@ -445,13 +436,6 @@ export default {
       let schoolId = this.channelForm.schoolId;
       this.queryPlayContent({ schoolId, channelId: value });
     },
-    // handleClearSchool() {
-    //   this.query.schoolId = null;
-    // },
-    //取消
-    // handleCancel(index, row) {
-    //   this.setEditStateAll(this.tableData, { show: false, state: 0 });
-    // },
     handleEdit(index, row) {
       let { channelId, schoolId } = row;
       let tableData = this.tableData;
@@ -581,20 +565,6 @@ export default {
     viewChannelContent(row) {
       let { channelId, schoolId } = row;
     },
-    // async queryRegion(value) {
-    //   let last = value[value.length - 1];
-    //   let res = await service.queryRegion({ queryId: last, queryType: 3 });
-    //   if (res.errorCode === 0) {
-    //     this.schoolList = res.data;
-    //   } else {
-    //     return false;
-    //   }
-    // },
-    //加载学校数据
-    async selectSchoolNameLike(params = {}) {
-      let res = await service.selectSchoolNameLike(params);
-      console.log(res);
-    },
     //查询栏目名称
     async queryChannelAll() {
       let res = await service.queryChannelAll({});
@@ -621,12 +591,12 @@ export default {
       if (res.errorCode === 0) {
         this.dialogChannel = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.querySchoolPlayChannel();
+        this.querySchoolPlayChannel(this.schoolId);
       }
     },
     //显示学校播放表单列表
-    async querySchoolPlayChannel() {
-      let res = await service.querySchoolPlayChannel(this.query);
+    async querySchoolPlayChannel(schoolId) {
+      let res = await service.querySchoolPlayChannel({ schoolId });
       if (res.errorCode === 0) {
         if (res.data.length) {
           this.tableData = res.data;
@@ -644,7 +614,7 @@ export default {
         this.saveloading = false;
         this.disabled = 0;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.querySchoolPlayChannel();
+        this.querySchoolPlayChannel(this.schoolId);
       }
     },
     //删除学校播放频道
@@ -652,12 +622,11 @@ export default {
       let res = await service.deleteSchoolPlayChannel(params);
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.querySchoolPlayChannel();
+        this.querySchoolPlayChannel(this.schoolId);
       }
     }
   },
   mounted() {
-    //this.querySchoolPlayChannel();
     this.queryChannelAll();
   }
 };

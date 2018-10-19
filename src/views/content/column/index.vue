@@ -2,24 +2,21 @@
   <div class="page">
     <!-- 表单 -->
     <template>
-        <el-row :gutter="10">
-            <el-col :span="24">
-                <div class="page-form">
-                    <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-                        <el-form-item label="栏目名称">
-                            <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                            <el-button icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">新增栏目</el-button>
-                        </el-form-item>   
-                    </el-form>
-                </div>
-            </el-col>
-        </el-row> 
+      <div class="page-form">
+        <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+          <el-form-item label="栏目名称">
+            <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">新增栏目</el-button>
+          </el-form-item>   
+        </el-form>
+      </div>
     </template> 
     <!-- 表格数据 -->
     <template>
+      <!--  -->
         <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
             <el-table-column width="300" label="栏目ID" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>

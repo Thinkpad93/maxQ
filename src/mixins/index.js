@@ -27,11 +27,11 @@ export const scrollType = {
   data() {
     return {
       scrollTypeList: [{
-          name: "非滚动",
+          name: "滚动",
           value: 0
         },
         {
-          name: "滚动",
+          name: "非滚动",
           value: 1
         }
       ],
