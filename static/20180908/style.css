@@ -41,29 +41,33 @@ body {
   position: relative;
   overflow: hidden;
   background-color: #fff;
-  background-image: url(./images/medium-fill.jpg);
+  /* background-image: url(./images/medium-fill.jpg);
   background-repeat: no-repeat;
   background-position: 0 0;
-  background-size: cover;
+  background-size: cover; */
 }
 
 .component {
-  width: 438px;
-  height: 229px;
+  width: 944px;
+  height: 494px;
   background-color: #fff;
   position: absolute;
-  left: 31px;
-  bottom: 91px;
+  left: 68px;
+  bottom: 197px;
   z-index: 100;
   overflow: auto;
   padding: 20px 10px;
 }
 
 .component>div {
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: bold;
   margin: 0 0 10px 0;
+  padding: 10px;
+  color: #494949;
   line-height: 1.4;
-  text-indent: 2em;
+  /* line-height: 1.4;
+  text-indent: 2em; */
   text-align: left;
   border: 1px dashed #d9d9d9;
 }

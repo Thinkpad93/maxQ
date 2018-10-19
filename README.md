@@ -12,6 +12,7 @@ git push -u origin master
 > 代码
 
 ```javascript
+const ws = new WebSocket("ws://localhost:8080");
 ```
 
 > 后端返回状态码

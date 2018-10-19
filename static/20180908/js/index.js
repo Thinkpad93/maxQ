@@ -40,12 +40,17 @@ const qx = new Vue({
     baseUrl: "http://192.168.18.107:8080/qxiao-cms/action/mod-xiaojiao/channel/content/saveContentDetail.do",
     query: {},
     contentDetail: [{
-      componentValue: "大吉大利",
-      contentId: 34,
-    }, {
-      componentValue: "肯定有一个ids[i]的值是，所以导致转换成int失败。",
-      contentId: 35,
-    }]
+        componentValue: "这里记录过去一周，我看到的值得分享的东西，每周五发布。",
+        contentId: 34,
+      }, {
+        componentValue: "上图中，按钮的宽度没变，但是输入框变宽了，等于当前行的宽度减去按钮的宽度。我们做一点改变，在按钮里面插入一张图片。",
+        contentId: 35,
+      },
+      {
+        componentValue: "前面说过，弹性布局默认不改变项目的宽度，但是它默认改变项目的高度。如果项目没有显式指定高度，就将占据容器的所有高度。 本例中，按钮变高了，导致表单元素也变高了，使得输入框的高度自动拉伸了。",
+        contentId: 36
+      }
+    ]
   },
   methods: {
     //contentId

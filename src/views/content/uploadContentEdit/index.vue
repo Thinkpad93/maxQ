@@ -96,44 +96,7 @@
                         </el-col>
                       </template>
                     </template>
-                  </el-row>   
-                  <el-row :gutter="10">
-                    <el-col :span="12">
-                      <el-form-item label="图片上传" prop="imageUrl">
-                        <el-upload
-                          :disabled="disabledImg === 0"
-                          name="files"
-                          :file-list="imageList"
-                          action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
-                          accept="image/jpeg,image/gif,image/png,image/bmp"
-                          :on-remove="handleBeforeRemove" 
-                          :on-preview="handlePreviewImg"
-                          :on-success="handleImageSuccess">
-                          <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
-                            <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
-                          <span class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</span>
-                        </el-upload>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-form-item label="视频上传" prop="videoUrl">
-                        <el-upload
-                          :disabled="disabledVideo === 0"
-                          name="file"
-                          :file-list="videoFileList"
-                          action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
-                          accept="video/mp4,video/flv,video/mov"
-                          :on-remove="handleBeforeRemove" 
-                          :before-remove="handleBeforeRemove"
-                          :on-preview="handlePreviewVideo"
-                          :on-success="handleVideoSuccess">
-                          <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
-                            <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
-                          <span class="el-upload__tip" slot="tip">视频大小不超过100MB</span>
-                        </el-upload>
-                      </el-form-item>
-                    </el-col>
-                  </el-row>       
+                  </el-row>     
                   <el-alert title="选择展示类型" type="info" :closable="false"></el-alert>
                   <el-row :gutter="10">
                     <el-col :span="4" v-for="(item, index) in contentTemplateList" :key="index">
@@ -144,9 +107,38 @@
                       </div>               
                     </el-col>
                   </el-row>
-                  <!-- <el-row style="text-align: center;">
-                    <el-button :disabled="disabledScreen === 0" type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
-                  </el-row> -->
+                  <el-row :gutter="10">
+                    <el-col :span="12">
+                      <el-upload
+                        :disabled="disabledImg === 0"
+                        name="files"
+                        :file-list="imageList"
+                        action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
+                        accept="image/jpeg,image/gif,image/png,image/bmp"
+                        :on-remove="handleRemoveImg" 
+                        :on-preview="handlePreviewImg"
+                        :on-success="handleImageSuccess">
+                        <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
+                        <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
+                        <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div>
+                      </el-upload>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-upload
+                        :disabled="disabledVideo === 0"
+                        name="file"
+                        :file-list="videoFileList"
+                        action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
+                        accept="video/mp4,video/flv,video/mov"
+                        :on-remove="handleRemoveVideo" 
+                        :on-preview="handlePreviewVideo"
+                        :on-success="handleVideoSuccess">
+                        <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
+                        <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
+                        <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div>
+                      </el-upload>
+                    </el-col>
+                  </el-row>                       
                 </el-tab-pane>
                 <el-tab-pane label="滚动播放上传" name="0" :disabled="form.contentType === 1">
                   <el-row :gutter="10">
@@ -311,12 +303,17 @@ export default {
     }
   },
   methods: {
-    handleBeforeRemove(file) {
-      let name = file.name;
-      this.imageList = this.imageList.filter(elem => elem.name !== name);
+    handleRemoveImg(file) {
+      //图片删除
+      return (this.imageList = this.imageList.filter(
+        elem => elem.name !== file.name
+      ));
     },
     handlePreviewImg(file) {
       this.dialogViewImg = true;
+    },
+    handleRemoveVideo(file) {
+      console.log(file);
     },
     handlePreviewVideo() {
       this.dialogViewVideo = true;
@@ -465,7 +462,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .newUpload {
-  padding: 20px;
+  padding: 20px 20px 50px 20px;
+  min-height: 600px;
   margin-bottom: 100px;
   background-color: #fff;
 }
@@ -510,7 +508,7 @@ export default {
   }
 }
 .showType-item {
-  margin: 10px 0;
+  margin: 20px 0;
   color: #909399;
   height: 160px;
   display: flex;

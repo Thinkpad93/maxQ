@@ -10,32 +10,31 @@
       "validstarttime": [2018, 10, 1, 0, 0, 0],
       "validendtime": [2018, 11, 1, 0, 0, 0],
       "contents": [{
-          "title": "这是一条测试内容",
-          "duration": "100",
-          "showtype": "1",
-          "posterurl": "http://192.168.8.254:8080/poster1.html",
+          "title": "禅与摩托车维修艺术",
+          "duration": "1000",
+          "showtype": "4",
           "video": {
-            "videourl": "/local_school/video/G01004.mp4",
+            "videourl": "/localSchool/video/G01004.mp4",
             "update_info": {
               "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
               "size": 41184440,
-              "filename": "G01004.mp4"
+              "filename": "03002.mp4"
             }
           },
           "images": [{
-              "imageurl": "/local_school/image/abc.png",
+              "imageurl": "/localSchool/image/medium.jpg",
               "update_info": {
                 "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
                 "size": 41184440,
-                "filename": "abc.png"
+                "filename": "medium.png"
               }
             },
             {
-              "imageurl": "/local_school/image/cde.png",
+              "imageurl": "/localSchool/image/medium-fill.jpg",
               "update_info": {
                 "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
                 "size": 41184440,
-                "filename": "abc.png"
+                "filename": "medium-fill.png"
               }
             }
           ]

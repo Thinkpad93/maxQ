@@ -19,7 +19,7 @@
                   </el-option> 
                 </el-select>
               </el-form-item>    -->
-              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <!-- <qx-region-t @regionChange="handleRegionChange"></qx-region-t> -->
               <el-form-item label="学校名称">
                 <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
               </el-form-item>  
@@ -197,8 +197,8 @@ export default {
       disabled: 0,
       query: {
         //regionId: "regionId",
-        queryId: 0,
-        queryType: 0,
+        //queryId: 0,
+        //queryType: 0,
         schoolName: "",
         userName: "",
         page: 1,
@@ -255,16 +255,18 @@ export default {
     pageChange(curr) {
       this.query.page = curr;
       this.queryAccount();
+      //this.queryAccount();
     },
     pageSize(size) {
       this.query.pageSize = size;
-      this.queryFuzzy();
+      this.queryAccount();
+      //this.queryFuzzy();
     },
     // search() {
     //   this.queryFuzzy(this.query);
     // },
     handleSearch() {
-      this.queryAccount(this.query);
+      this.queryAccount();
     },
     handleRegionChange(queryId, queryType) {
       this.query.queryId = queryId;
@@ -389,9 +391,10 @@ export default {
     },
     //测试-查询用户
     async queryAccount() {
-      let res = await service.query({ queryId: "", queryType: "" });
+      let res = await service.query(this.query);
       if (res.errorCode === 0) {
-        this.tableData = res.data;
+        this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     }
   },

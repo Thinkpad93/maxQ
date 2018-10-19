@@ -98,42 +98,6 @@
                       </template>
                     </template>
                   </el-row>   
-                  <el-row :gutter="10">
-                    <el-col :span="12">
-                      <el-form-item label="图片上传" prop="imageUrl">
-                        <el-upload
-                          :disabled="disabledImg === 0"
-                          name="files"
-                          action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
-                          accept="image/jpeg,image/gif,image/png,image/bmp"
-                          :on-remove="handleBeforeRemove" 
-                          :on-preview="handlePreviewImg"
-                          :on-success="handleImageSuccess">
-                          <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
-                            <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
-                          <span class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</span>
-                        </el-upload>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-form-item label="视频上传" prop="videoUrl">
-                        <el-upload
-                          :disabled="disabledVideo === 0"
-                          name="file"
-                          :limit="1"
-                          action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
-                          accept="video/mp4,video/flv,video/mov"
-                          :on-remove="handleBeforeRemove" 
-                          :before-remove="handleBeforeRemove"
-                          :on-preview="handlePreviewVideo"
-                          :on-success="handleVideoSuccess">
-                          <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
-                            <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
-                          <span class="el-upload__tip" slot="tip">视频大小不超过100MB</span>
-                        </el-upload>
-                      </el-form-item>
-                    </el-col>
-                  </el-row>       
                   <el-alert title="选择展示类型" type="info" :closable="false"></el-alert>
                   <el-row :gutter="10">
                     <el-col :span="4" v-for="(item, index) in contentTemplateList" :key="index">
@@ -144,10 +108,44 @@
                         <!-- <img src="https://fakeimg.pl/100x150/f4f4f5/fff" class="image"> -->
                       </div>               
                     </el-col>
-                  </el-row>
-                  <!-- <el-row style="text-align: left;">
-                    <el-button :disabled="disabledScreen === 0" type="primary" @click="dialogTemplate = true" style="margin-top:10px">请选择海报模板</el-button>                                                             
-                  </el-row> -->
+                  </el-row>                  
+                  <el-row :gutter="10">
+                    <el-col :span="12">
+                      <!-- <div style="opacity: 0;">图片</div> -->
+                      <template>
+                        <el-upload
+                          :disabled="disabledImg === 0"
+                          name="files"
+                          action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
+                          accept="image/jpeg,image/gif,image/png,image/bmp"
+                          :on-remove="handleRemoveImg" 
+                          :on-preview="handlePreviewImg"
+                          :on-success="handleImageSuccess">
+                          <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
+                          <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
+                          <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div>
+                        </el-upload>   
+                      </template>                   
+                    </el-col>
+                    <el-col :span="12">
+                      <!-- <div style="opacity: 0;">视频</div> -->
+                      <template>
+                        <el-upload
+                          :disabled="disabledVideo === 0"
+                          name="file"
+                          :limit="1"
+                          action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
+                          accept="video/mp4,video/flv,video/mov"
+                          :on-remove="handleRemoveVideo" 
+                          :on-preview="handlePreviewVideo"
+                          :on-success="handleVideoSuccess">
+                          <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
+                          <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
+                          <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div>
+                        </el-upload>  
+                      </template>                      
+                    </el-col>
+                  </el-row>       
                 </el-tab-pane>
                 <el-tab-pane label="滚动播放上传" name="0">
                   <el-row :gutter="10">
@@ -225,7 +223,7 @@
             </el-form>
           </el-col>
         </el-row>     
-        <el-row :gutter="30">
+        <!-- <el-row :gutter="30">
           <el-col :span="24">
             <div class="tip-box">
               <el-button type="info">上一页</el-button>
@@ -233,11 +231,11 @@
               <el-button type="info" @click="handlePosterSaveData">保存编辑</el-button>
             </div> 
           </el-col>
-        </el-row>      
+        </el-row>       -->
         <!-- 如果有多页海报模板 -->
         <!-- 保存修改 -->
         <!-- 保存修改 -->
-        <el-row :gutter="30">
+        <!-- <el-row :gutter="30">
           <el-col :span="24">
             <div class="element-box">
               <div class="poster-page"></div>
@@ -245,7 +243,7 @@
               <iframe id="posterFrame" ref="iframe" :src="url"></iframe>
             </div>
           </el-col>
-        </el-row>
+        </el-row> -->
      </div>
      <!-- 内容模板选择 -->
      <template>
@@ -348,14 +346,17 @@ export default {
     handlePosterSaveData() {
       this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
     },
-    handleBeforeRemove(file, fileList) {
-      let name = file.name;
+    handleRemoveImg(file, fileList) {
       //图片删除
-      this.imageList = this.imageList.filter(elem => elem.imageName !== name);
+      return (this.imageList = this.imageList.filter(
+        elem => elem.name !== file.name
+      ));
     },
     handlePreviewImg(file) {
-      //this.previewImg = file.response.data.url;
       this.dialogViewImg = true;
+    },
+    handleRemoveVideo(file) {
+      console.log(file);
     },
     handlePreviewVideo() {
       this.dialogViewVideo = true;
@@ -551,13 +552,13 @@ export default {
     }
     this.queryContentTemplate(0);
 
-    this.iframeWin = this.$refs.iframe.contentWindow;
+    //this.iframeWin = this.$refs.iframe.contentWindow;
   }
 };
 </script>
 <style lang="less" scoped>
 .newUpload {
-  padding: 20px;
+  padding: 20px 20px 50px 20px;
   min-height: 600px;
   margin-bottom: 100px;
   background-color: #fff;
@@ -604,7 +605,7 @@ export default {
   }
 }
 .showType-item {
-  margin: 10px 0;
+  margin: 20px 0;
   color: #909399;
   cursor: pointer;
   height: 160px;

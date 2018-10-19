@@ -20,17 +20,6 @@
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
-        <!-- <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column> -->
-        <!-- <el-table-column label="账户类型" prop="type" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="scope.row.type === 0">促进会</span>
-            <span v-else-if="scope.row.type === 1">学校</span>
-            <span v-else-if="scope.row.type === 2">教育局</span>
-            <span v-else>培训机构</span>
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
@@ -58,10 +47,10 @@
       <el-dialog title="预发布" center top="40px" :visible.sync="dialogAdd">
         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="内容标题" prop="title">
-            <el-input v-model="form.title" disabled></el-input>
+            <el-input v-model="form.title"></el-input>
           </el-form-item>
           <el-form-item label="发布来源" prop="resources">
-            <el-input v-model="form.resources" disabled></el-input>
+            <el-input v-model="form.resources"></el-input>
           </el-form-item>          
           <el-form-item label="发布区域" prop="regionId">
             <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
