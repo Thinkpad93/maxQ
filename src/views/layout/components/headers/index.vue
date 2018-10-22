@@ -16,12 +16,10 @@
       </div> 
       <el-dropdown class="us" @command="handleCommand">
         <span class="el-dropdown-link">
-          <!-- {{ info.name }} -->
           {{ name }}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <!-- <el-dropdown-item>个人信息</el-dropdown-item> -->
           <el-dropdown-item>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>     

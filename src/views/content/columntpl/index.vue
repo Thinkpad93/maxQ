@@ -414,12 +414,6 @@ export default {
     handleSearch() {
       this.queryChannelTemplate();
     },
-    // addShow() {
-    //   this.is = 0;
-    // },
-    // editShow() {
-    //   this.is = 1;
-    // },
     show() {},
     close() {
       this.resetForm("tplDetailform");

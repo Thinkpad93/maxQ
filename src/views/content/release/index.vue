@@ -44,20 +44,35 @@
           :total="totalCount">
         </qx-pagination>
       </template>         
-      <!-- 发布学校 -->
+      <!-- 待发布学校 -->
       <template>
-        <el-dialog center top="40px" title="发布学校查看" :visible.sync="dialogView">
+        <el-dialog center top="40px" title="待发布学校查看" :visible.sync="dialogView">
           <el-table :data="schoolData" style="width: 100%" border stripe size="mini">
-            <el-table-column label="发布学校" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
+            <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
             <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
               <template slot-scope="scope">
-                <span v-if="scope.row.status === 1" style="color:#409EFF">已更新到栏目</span>
+                <span v-if="scope.row.status === 0" style="color:#409EFF">待发布</span>
+                <span v-else style="color:#67C23A">已发布</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-dialog>
+      </template>
+      <!-- 已发布学校 -->
+      <template>
+        <el-dialog center top="40px" title="已发布学校查看" :visible.sync="dialogViewPublish">
+          <el-table :data="schoolDataPublish" style="width: 100%" border stripe size="mini">
+            <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
+            <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
+              <template slot-scope="scope">
+                <span v-if="scope.row.status === 0" style="color:#909399">初始</span>
+                <span v-else-if="scope.row.status === 1" style="color:#409EFF">已更新到栏目</span>
                 <span v-else-if="scope.row.status === 2" style="color:#67C23A">已更新到终端</span>
                 <span v-else style="color:#F56C6C">更新到终端失败</span>
               </template>
             </el-table-column>
           </el-table>
-        </el-dialog>
+        </el-dialog>        
       </template>
     </div>
   </div>
@@ -74,6 +89,7 @@ export default {
     return {
       activeName: "first",
       dialogView: false,
+      dialogViewPublish: false,
       query: {
         status: "0",
         page: 1,
@@ -81,7 +97,8 @@ export default {
       },
       totalCount: 0,
       tableData: [],
-      schoolData: []
+      schoolData: [],
+      schoolDataPublish: []
     };
   },
   computed: {
@@ -100,8 +117,11 @@ export default {
       this.queryPublishContentList(this.query);
     },
     handleViewSchool(row) {
-      this.dialogView = true;
-      this.queryPrePublishSchoolInfo(row.prePublishId);
+      if (this.query.status == 1) {
+        this.queryPublishSchoolInfo(row.prePublishId);
+      } else {
+        this.queryPrePublishSchoolInfo(row.prePublishId);
+      }
     },
     handleClick(tab) {
       //tab 实例
@@ -138,11 +158,20 @@ export default {
         this.queryPublishContentList(this.query);
       }
     },
-    //查询内容发布学校信息
+    //内容发布（待发布）学校信息
     async queryPrePublishSchoolInfo(prePublishId) {
       let res = await service.queryPrePublishSchoolInfo({ prePublishId });
       if (res.errorCode === 0) {
+        this.dialogView = true;
         this.schoolData = res.data;
+      }
+    },
+    //内容发布（已发布）学校信息
+    async queryPublishSchoolInfo(prePublishId) {
+      let res = await service.queryPublishSchoolInfo({ prePublishId });
+      if (res.errorCode === 0) {
+        this.dialogViewPublish = true;
+        this.schoolDataPublish = res.data;
       }
     }
   },

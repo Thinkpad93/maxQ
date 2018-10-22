@@ -51,10 +51,11 @@
           </el-form-item>
           <el-form-item label="发布来源" prop="resources">
             <el-input v-model="form.resources"></el-input>
-          </el-form-item>          
-          <el-form-item label="发布区域" prop="regionId">
+          </el-form-item>    
+          <qx-region-t @regionChange="handleRegionChange"></qx-region-t>      
+          <!-- <el-form-item label="发布区域" prop="regionId">
             <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="学校性质" prop="propertyId">
             <el-select v-model="form.propertyId" placeholder="请选择学校性质">
               <el-option
@@ -90,14 +91,6 @@
               <el-checkbox :label="1">广州市华侨文化发展基金会</el-checkbox>
               <el-checkbox :label="2">广州市科普知识促进会</el-checkbox>
             </el-checkbox-group>
-            <!-- <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
-              <el-option
-                v-for="item in labelsList"
-                :key="item.labelId"
-                :label="item.name"
-                :value="item.labelId">
-              </el-option>              
-            </el-select> -->
           </el-form-item>
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
@@ -111,11 +104,13 @@
 <script>
 import service from "@/api";
 import region from "@/components/region";
+import regiont from "@/components/qxregion";
 import pagination from "@/components/pagination";
 export default {
   name: "prerelease",
   components: {
     "qx-region": region,
+    "qx-region-t": regiont,
     "qx-pagination": pagination
   },
   data() {
@@ -125,26 +120,26 @@ export default {
       query: {
         title: "",
         page: 1,
-        pageSize: 10
+        pageSize: 20
       },
       totalCount: 0,
       form: {
-        scopeType: 0,
+        scopeType: null,
         scopeId: null,
         propertyId: null,
         typeId: null,
         labelIds: [],
-        regionId: [],
+        //regionId: [],
         sponsorIds: []
       },
       rules: {
-        regionId: [
-          {
-            required: true,
-            message: "请选择发布区域",
-            trigger: "blur"
-          }
-        ],
+        // regionId: [
+        //   {
+        //     required: true,
+        //     message: "请选择发布区域",
+        //     trigger: "blur"
+        //   }
+        // ],
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
         ],
@@ -185,6 +180,11 @@ export default {
         this.queryPrepublishContentList(this.query);
       }
     },
+    handleRegionChange(queryId, queryType) {
+      console.log(queryId);
+      this.form.scopeId = queryId;
+      this.form.scopeType = queryType;
+    },
     handleRelease(row) {
       let { contentId, resources, title } = row;
       this.dialogAdd = true;
@@ -193,15 +193,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { regionId, scopeId, resources, title, ...args } = this.form;
-          if (regionId.length) {
-            scopeId = regionId[regionId.length - 1];
-          } else {
-            scopeId = null;
-          }
-          let obj = Object.assign({}, args, { scopeId });
-          console.log(obj);
-          this.prepublishContent(obj);
+          let { title, resources, ...args } = this.form;
+          // let { regionId, scopeId, resources, title, ...args } = this.form;
+          // if (regionId.length) {
+          //   scopeId = regionId[regionId.length - 1];
+          // } else {
+          //   scopeId = null;
+          // }
+          //let obj = Object.assign({}, args, { scopeId });
+          console.log(args);
+          this.prepublishContent(args);
         }
       });
     },

@@ -33,15 +33,6 @@
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-        <!-- <el-table-column label="内容类型" prop="contentType" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="scope.row.contentType === 0">全屏播放</span>
-            <span v-else>全屏播放</span>
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="时长" prop="duration" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="专属类别" prop="belongTo" :show-overflow-tooltip="true"></el-table-column> -->
-        <!-- <el-table-column label="审批的详细内容" prop="verifyDescrition" :show-overflow-tooltip="true"></el-table-column> -->
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
@@ -73,7 +64,7 @@
             </div>
             <!-- v-if="showType == 3 || showType == 4 || showType == 5" -->
             <div class="image-box" v-if="showType == 3 || showType == 4 || showType == 5">
-              <el-carousel height="736px">
+              <el-carousel height="736px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in imageList" :key="index">
                   <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
                 </el-carousel-item>
@@ -106,11 +97,13 @@
 <script>
 import service from "@/api";
 import pagination from "@/components/pagination";
+import { verifyStatus } from "@/mixins";
 export default {
   name: "final",
   components: {
     "qx-pagination": pagination
   },
+  mixins: [verifyStatus],
   data() {
     return {
       dialogView: false,
@@ -132,12 +125,7 @@ export default {
       showType: null,
       imageList: [],
       totalCount: 0,
-      tableData: [],
-      verifyStatusList: [
-        { value: 0, label: "待审核" },
-        { value: 1, label: "审核通过" },
-        { value: 2, label: "审核不通过 " }
-      ]
+      tableData: []
     };
   },
   computed: {
@@ -211,4 +199,21 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.video-box {
+  margin: 0 auto;
+  text-align: center;
+  video {
+    vertical-align: top;
+  }
+}
+.image-box {
+  text-align: center;
+  min-height: 736px;
+}
+.iframe-box {
+  margin: 0 auto;
+  width: 400px;
+  min-height: 589px;
+  box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
+}
 </style>

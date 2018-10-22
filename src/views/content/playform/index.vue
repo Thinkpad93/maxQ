@@ -356,10 +356,10 @@ export default {
           schoolName: queryString
         });
         if (res.errorCode === 0) {
-          if (!res.data.length) {
-            this.query.schoolName = "";
-            return;
-          }
+          // if (!res.data.length) {
+          //   this.query.schoolName = "";
+          //   return;
+          // }
           cb(res.data);
         }
       }

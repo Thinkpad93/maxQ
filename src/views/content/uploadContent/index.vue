@@ -3,7 +3,7 @@
      <div class="newUpload">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
-          <el-button :disabled="disabledScreen === 0" type="primary" @click="dialogTemplate = true">请选择海报模板</el-button>                                                             
+          <el-button :disabled="disabledScreen === 0" type="info" @click="dialogTemplate = true">选择海报模板</el-button>                                                             
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
         <el-row :gutter="30">
@@ -116,6 +116,7 @@
                         <el-upload
                           :disabled="disabledImg === 0"
                           name="files"
+                          ref="uploadImage"
                           action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
                           accept="image/jpeg,image/gif,image/png,image/bmp"
                           :on-remove="handleRemoveImg" 
@@ -267,7 +268,7 @@
      <template>
        <el-dialog custom-class="qx-dialog" width="700px" title="图片查看" center top="40px" :visible.sync="dialogViewImg">
           <div class="views-image" v-if="imageList.length">
-            <el-carousel :autoplay="false" height="1030px">
+            <el-carousel :autoplay="false" height="1030px" :initial-index="0">
               <el-carousel-item v-for="(item, index) in imageList" :key="index">
                 <img :src="item.url" width="700" height="1030" :alt="item.name">
               </el-carousel-item>
@@ -353,6 +354,10 @@ export default {
       ));
     },
     handlePreviewImg(file) {
+      let uploadFiles = this.$refs.uploadImage.uploadFiles;
+      console.log(this.$refs.uploadImage.uploadFiles);
+      //console.log(file);
+      //console.log(fileList);
       this.dialogViewImg = true;
     },
     handleRemoveVideo(file) {

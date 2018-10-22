@@ -64,7 +64,7 @@
             </div>
             <!-- v-if="showType == 3 || showType == 4 || showType == 5" -->
             <div class="image-box" v-if="showType == 3 || showType == 4 || showType == 5">
-              <el-carousel height="736px">
+              <el-carousel height="736px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in imageList" :key="index">
                   <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
                 </el-carousel-item>
@@ -99,11 +99,13 @@
 <script>
 import service from "@/api";
 import pagination from "@/components/pagination";
+import { verifyStatus } from "@/mixins";
 export default {
   name: "trial",
   components: {
     "qx-pagination": pagination
   },
+  mixins: [verifyStatus],
   data() {
     return {
       dialogView: false,
@@ -126,12 +128,7 @@ export default {
       showType: null,
       imageList: [],
       totalCount: 0,
-      tableData: [],
-      verifyStatusList: [
-        { value: 0, label: "待审核" },
-        { value: 1, label: "审核通过" },
-        { value: 2, label: "审核不通过 " }
-      ]
+      tableData: []
     };
   },
   computed: {
@@ -173,7 +170,7 @@ export default {
       if (res.errorCode === 0) {
         this.dialogView = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        //this.$refs.check.resetFields();
+        this.$refs.check.resetFields();
         this.queryCheckContentList();
       }
     },

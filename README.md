@@ -30,4 +30,3 @@ const ws = new WebSocket("ws://localhost:8080");
 * 海报模板需要缩略图或者名称
 * 海报模板宽高是 1080\*1590 默认等比缩放
 * 海报模板根据内容填充 key 和 value
-*

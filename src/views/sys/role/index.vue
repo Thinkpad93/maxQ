@@ -195,6 +195,8 @@ export default {
         this.dialogAdd = false;
         this.$refs.form.resetFields();
         this.queryRoleList(this.query);
+      } else if (res.errorCode === -1) {
+        this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     },
     //编辑角色

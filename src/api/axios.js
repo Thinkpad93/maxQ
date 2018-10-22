@@ -19,8 +19,8 @@ const service = axios.create({
 
 //请求拦截器
 service.interceptors.request.use(config => {
-  console.log("请求拦截器");
-  console.log(config);
+  //console.log("请求拦截器");
+  //console.log(config);
   //Nprogress.start();
   if (store.getters.token) {
     config.headers['Authorization'] = getToken();
@@ -40,13 +40,13 @@ service.interceptors.request.use(config => {
 
 // 响应拦截器
 service.interceptors.response.use(config => {
-  console.log("响应拦截器");
-  console.log(config);
+  //console.log("响应拦截器");
+  //console.log(config);
   //Nprogress.done();
   return config;
 }, error => {
   //Nprogress.done();
-  console.log('err' + error) // for debug
+  //console.log('err' + error) // for debug
   return Promise.reject(error);
 });
 

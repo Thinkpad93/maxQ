@@ -216,6 +216,12 @@ export function queryPrePublishSchoolInfo(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//内容发布（已发布）学校信息
+export function queryPublishSchoolInfo(params) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/queryPublishSchoolInfo.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //查询终审通过内容
 export function queryCheckedContent(params) {
   return ax.post('/action/mod-xiaojiao/content/queryCheckedContent.do', params)

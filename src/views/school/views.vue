@@ -73,7 +73,7 @@
                    <el-col :span="24">
                        <div class="qx-trem">学校标签</div>
                        <div class="qx-detail">
-                           <span v-for="(tag, index) in info.labelName" :key="index">{{ tag }}</span>
+                           <span v-for="(tag, index) in info.labelName" :key="index">{{ tag.labelName }}</span>
                        </div>
                    </el-col>
                </el-row>

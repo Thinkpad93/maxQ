@@ -205,34 +205,9 @@ export default {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
-    // search() {
-    //   let page = this.query.page;
-    //   if (this.schoolId === null) {
-    //     this.$message({ message: "请选择学校名称", type: "warning" });
-    //     return;
-    //   }
-    //   if (page > 1) {
-    //     this.query.page = 1;
-    //   }
-    //   this.showRepairList();
-    // },
     handleCancle(formName) {
       this.dialogFormVisible = false;
     },
-    // handleRegion(list) {
-    //   if (Array.isArray(list)) {
-    //     this.schoolList = list;
-    //   }
-    // },
-    // lastInnerChange(value) {
-    //   this.form.regionId = value;
-    // },
-    // handleSchool(value) {
-    //   this.query.schoolId = value;
-    // },
-    // handleClearSchool() {
-    //   this.query.schoolId = 0;
-    // },
     handleAdd() {
       this.isShow = true;
       this.dialogFormVisible = true;
