@@ -10,17 +10,16 @@
     </div> 
 </template>
 <script>
-import { mapActions } from "vuex";
+import service from "@/api";
 export default {
   name: "home",
   data() {
     return {};
   },
-  methods: {},
-  mounted() {
-    console.log(this.$route);
-    //this.$store.dispatch("comm/qxregion");
-  }
+  methods: {
+    async init() {}
+  },
+  mounted() {}
 };
 </script>
 <style lang="less" scoped>

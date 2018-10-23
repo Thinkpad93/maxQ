@@ -268,7 +268,7 @@
      <template>
        <el-dialog custom-class="qx-dialog" width="700px" title="图片查看" center top="40px" :visible.sync="dialogViewImg">
           <div class="views-image" v-if="imageList.length">
-            <el-carousel :autoplay="false" height="1030px" :initial-index="0">
+            <el-carousel :autoplay="false" height="1030px" :initial-index="carouselIndex">
               <el-carousel-item v-for="(item, index) in imageList" :key="index">
                 <img :src="item.url" width="700" height="1030" :alt="item.name">
               </el-carousel-item>
@@ -308,6 +308,7 @@ export default {
       status: "1",
       screenIndex: 0,
       posterIndex: -1,
+      carouselIndex: 0,
       collapse: true,
       url: "./static/20180908/index.html",
       posterUrl: "",
@@ -355,10 +356,11 @@ export default {
     },
     handlePreviewImg(file) {
       let uploadFiles = this.$refs.uploadImage.uploadFiles;
-      console.log(this.$refs.uploadImage.uploadFiles);
-      //console.log(file);
-      //console.log(fileList);
-      this.dialogViewImg = true;
+      let index = uploadFiles.findIndex(elem => elem.name === file.name);
+      if (index != -1) {
+        this.carouselIndex = index;
+        this.dialogViewImg = true;
+      }
     },
     handleRemoveVideo(file) {
       console.log(file);

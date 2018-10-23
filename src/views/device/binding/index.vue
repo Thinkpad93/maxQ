@@ -123,10 +123,10 @@
        <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
          <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
            <el-form-item label="区域">
-             <el-input v-model="selected" :disabled="true"></el-input>
+             <el-input v-model="selected" disabled></el-input>
            </el-form-item>           
            <el-form-item label="学校名称">
-             <el-input v-model="edit.schoolName" :disabled="true"></el-input>
+             <el-input v-model="edit.schoolName" disabled></el-input>
            </el-form-item>
            <el-form-item label="安装位置" prop="address">
              <el-input v-model="edit.address"></el-input>
@@ -403,12 +403,8 @@ export default {
     async showDeviceList() {
       let res = await service.showDeviceList(this.query);
       if (res.errorCode === 0) {
-        let data = res.data.data;
-        if (!Array.isArray(data)) {
-          data = [];
-        }
+        this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
-        this.tableData = data;
       } else if (res.errorCode === 1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }

@@ -47,17 +47,17 @@
       <el-dialog title="预发布" center top="40px" :visible.sync="dialogAdd">
         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="内容标题" prop="title">
-            <el-input v-model="form.title"></el-input>
+            <el-input v-model="form.title" disabled></el-input>
           </el-form-item>
           <el-form-item label="发布来源" prop="resources">
-            <el-input v-model="form.resources"></el-input>
+            <el-input v-model="form.resources" disabled></el-input>
           </el-form-item>    
           <qx-region-t @regionChange="handleRegionChange"></qx-region-t>      
           <!-- <el-form-item label="发布区域" prop="regionId">
             <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
           </el-form-item> -->
           <el-form-item label="学校性质" prop="propertyId">
-            <el-select v-model="form.propertyId" placeholder="请选择学校性质">
+            <el-select v-model="form.propertyId" clearable placeholder="请选择学校性质">
               <el-option
                 v-for="item in propertyidList"
                 :key="item.id"
@@ -67,7 +67,7 @@
             </el-select>                          
           </el-form-item>  
           <el-form-item label="学校类型" prop="typeId">
-            <el-select v-model="form.typeId" placeholder="请选择学校类型">
+            <el-select v-model="form.typeId" clearable placeholder="请选择学校类型">
               <el-option
                 v-for="item in typeidList"
                 :key="item.id"
@@ -181,7 +181,6 @@ export default {
       }
     },
     handleRegionChange(queryId, queryType) {
-      console.log(queryId);
       this.form.scopeId = queryId;
       this.form.scopeType = queryType;
     },
@@ -218,6 +217,7 @@ export default {
         this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryPrepublishContentList(this.query);
+        this.$refs.form.resetFields(); //清空表单的值
       } else if (res.errorCode === -1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
@@ -254,11 +254,13 @@ export default {
     }
   },
   mounted() {
-    this.queryPrepublishContentList(this.query);
     this.queryLabel(1);
     //this.queryLabel(3);
     this.querySchoolCategory({ queryType: 0 });
     this.querySchoolCategory({ queryType: 1 });
+  },
+  activated() {
+    this.queryPrepublishContentList(this.query);
   }
 };
 </script>

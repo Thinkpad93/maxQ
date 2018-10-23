@@ -323,6 +323,7 @@
           <el-table-column label="操作" width="180">
             <template slot-scope="scope">
               <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleInnerSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
+              <el-button :disabled="scope.row.state === 0" size="mini" v-show="scope.row.show" @click="handleCancel(scope.row)">取消</el-button>
               <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleInnerEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
               <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleInnerDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
             </template>
@@ -450,6 +451,12 @@ export default {
       this.dialogView = true;
       this.queryChannelTemplateDetail(row.templateId, "view");
     },
+    handleCancel() {
+      this.tplEditData.forEach((elem, value) => {
+        this.$set(elem, "show", false);
+        this.$set(elem, "state", 1);
+      });
+    },
     handleInnerSave(index, row) {
       this.$confirm(`确定要保存吗?`, "提示", {
         confirmButtonText: "确定",
@@ -503,8 +510,17 @@ export default {
         });
     },
     setChannelDefautl(row) {
-      let { templateId } = row;
-      this.updateDefaultTemplate(templateId);
+      this.$confirm(`确定设置成默认模板吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.updateDefaultTemplate(row.templateId);
+        })
+        .catch(error => {
+          return false;
+        });
     },
     setEditState(tableData) {
       if (Array.isArray(tableData)) {

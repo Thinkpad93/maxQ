@@ -179,11 +179,12 @@ export default {
           let permitIds = ids.map(elem => elem.permitId);
           let obj = Object.assign({}, this.form, { permitIds });
           //编辑模式
-          if (obj.roleId) {
-            delete obj.permits;
-          } else {
-            delete obj.roleId;
-          }
+          obj.roleId ? delete obj.permits : delete obj.roleId;
+          // if (obj.roleId) {
+          //   delete obj.permits;
+          // } else {
+          //   delete obj.roleId;
+          // }
           this.addRole(obj);
         }
       });
@@ -196,6 +197,7 @@ export default {
         this.$refs.form.resetFields();
         this.queryRoleList(this.query);
       } else if (res.errorCode === -1) {
+        //角色名称已存在
         this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     },

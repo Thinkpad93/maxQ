@@ -71,8 +71,8 @@
               </el-select>
             </template>
             <template v-else>
-              <p v-if="scope.row.scrollType === 0">滚动</p>
-              <p v-else>非滚动</p>
+              <p v-if="scope.row.scrollType === 0">非滚动</p>
+              <p v-else>滚动</p>
             </template>
           </template>
         </el-table-column>
@@ -159,7 +159,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
-            <!-- <el-button :disabled="scope.row.state === 0" size="mini" type="info" v-show="scope.row.show" @click="handleCancel(scope.$index, scope.row)">取消</el-button> -->
+            <el-button :disabled="scope.row.state === 0" size="mini" v-show="scope.row.show" @click="handleCancel(scope.row)">取消</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
@@ -459,6 +459,14 @@ export default {
         .catch(error => {
           return false;
         });
+    },
+    //取消操作
+    handleCancel(row) {
+      this.disabled = 0;
+      this.tableData.forEach((elem, value) => {
+        this.$set(elem, "show", false);
+        this.$set(elem, "state", 1);
+      });
     },
     handleSave(row) {
       var countCheckbox = this.countCheckbox; //选中的数据

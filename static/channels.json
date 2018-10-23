@@ -1,9 +1,9 @@
 {
   "schoolname": "黄村幼儿园",
   "playchannel": [{
-      "playstarttime": [0, 0, 0, 13, 30, 0],
-      "playendtime": [0, 0, 0, 14, 0, 0],
-      "channelname": "科普知识",
+      "playstarttime": [0, 0, 0, 10, 0, 0],
+      "playendtime": [0, 0, 0, 11, 0, 0],
+      "channelname": "科普知识1",
       "scrolltype": "0",
       "priority": "1",
       "validtype": "0",
@@ -18,7 +18,7 @@
             "update_info": {
               "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
               "size": 41184440,
-              "filename": "03002.mp4"
+              "filename": "G01004.mp4"
             }
           },
           "images": [{
@@ -43,9 +43,9 @@
       ]
     },
     {
-      "playstarttime": [0, 0, 0, 13, 30, 0],
-      "playendtime": [0, 0, 0, 14, 0, 0],
-      "channelname": "安全护理",
+      "playstarttime": [0, 0, 0, 6, 0, 0],
+      "playendtime": [0, 0, 0, 9, 0, 0],
+      "channelname": "科普2",
       "scrolltype": "0",
       "priority": "1",
       "validtype": "0",

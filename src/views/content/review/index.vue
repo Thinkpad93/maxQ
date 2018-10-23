@@ -30,7 +30,11 @@
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span style="color:#409EFF;cursor:pointer;">{{ scope.row.title }}</span>
+          </template>          
+        </el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
