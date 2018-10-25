@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div id="root">
+        <div class="main" :data-channel="channelname">
+            <div :class="[index === contentsIndex ? 'active': '']" :data-showtype="item.showtype" :data-title="item.title"
+                class="section" v-for="(item, index) in contents" :key="index">
+                <!-- 纯图片 -->
+                <template v-if="item.showtype === 3">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide" v-for="(slide, index) in item.images" :key="index">
+                                <img :src="slide.imageurl" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <!-- 纯图片 -->
+                <!-- 上视频下图片 -->
+                <template v-if="item.showtype === 4">
+                    <div class="video">
+                        <video :src="item.video.videourl" height="300" loop autoplay controls></video>
+                    </div>
+                    <div class="swiper">
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide" v-for="(slide, index) in item.images" :key="index">
+                                    <img :src="slide.imageurl" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <!-- 上视频下图片 -->
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./js/vue.min.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/swiper.min.js"></script>
+<script src="./index.js"></script>
+
+</html>

@@ -434,17 +434,18 @@ export default {
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
-      this.queryPlayContent({ schoolId, channelId: value });
+      //this.queryPlayContent({ schoolId, channelId: value });
     },
     handleEdit(index, row) {
-      let { channelId, schoolId } = row;
+      let { channelId, schoolId, scrollType } = row;
       let tableData = this.tableData;
+      console.log(row);
       this.setEditState(row, { show: true, state: 1 });
       this.setEditStateAll(tableData, { show: false, state: 0 });
       this.value4[0] = row.playStartTime;
       this.value4[1] = row.playEndTime;
       this.disabled = 1;
-      this.queryPlayContent({ channelId, schoolId }, "edit");
+      this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
     },
     handleDelete(index, row) {
       let { itemId, schoolId } = row;

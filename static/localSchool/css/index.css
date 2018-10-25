@@ -1,0 +1,66 @@
+@charset "UTF-8";
+
+html,
+body {
+    min-height: 100%;
+    background-color: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 10px;
+    border-radius: 8px;
+    background: #aaa;
+    opacity: .5;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece {
+    width: 10px;
+    height: 10px;
+    border-radius: 0;
+    background: #f0f0f0;
+}
+
+.main {
+    width: 1080px;
+    height: 1590px;
+    margin: 0 auto;
+    position: relative
+}
+
+.main .channel,
+.main .section {
+    height: 100%;
+    display: none !important;
+}
+
+.main .on-channel {
+    display: block !important;
+}
+
+.main .on-contents {
+    display: block !important;
+}
+
+.video {
+    background-color: #fff;
+}
+
+.scroll {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+}
+
+video {
+    width: 100%;
+    display: block;
+}
+
+img {
+    vertical-align: top;
+    max-width: 100%;
+}

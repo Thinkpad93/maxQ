@@ -1,0 +1,235 @@
+{
+  "schoolname": "幼儿园",
+  "playchannel": [{
+      "playstarttime": "08:00:00",
+      "playendtime": "11:00:00",
+      "channelname": "科普知识",
+      "scrolltype": 0,
+      "priority": 1,
+      "validtype": 1,
+      "validstarttime": "2018-10-25",
+      "validendtime": "2018-10-30",
+      "contents": [{
+          "title": "禅与摩托车维修艺术",
+          "duration": "50000",
+          "showtype": 4,
+          "video": {
+            "videourl": "/video/017001.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "017001.mp4"
+            }
+          },
+          "images": [{
+              "imageurl": "/image/201810232043.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "201810232043.png"
+              }
+            },
+            {
+              "imageurl": "/image/201810232044.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "201810232044.png"
+              }
+            },
+            {
+              "imageurl": "/image/medium.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "medium.png"
+              }
+            }
+          ]
+        },
+        {
+          "title": "说文解字",
+          "duration": "50000",
+          "showtype": 5,
+          "video": {
+            "videourl": "/video/017001.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "017001.mp4"
+            }
+          },
+          "images": [{
+            "imageurl": "/image/medium.jpg",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "medium.png"
+            }
+          }]
+        }
+      ]
+    },
+    {
+      "playstarttime": "11:00:00",
+      "playendtime": "15:10:00",
+      "channelname": "国故论衡",
+      "scrolltype": 0,
+      "priority": 3,
+      "validtype": 1,
+      "validstarttime": "2018-10-25",
+      "validendtime": "2018-10-30",
+      "contents": [{
+          "title": "天行健",
+          "duration": "2000",
+          "showtype": 4,
+          "video": {
+            "videourl": "/video/017001.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "017001.mp4"
+            }
+          },
+          "images": [{
+              "imageurl": "/image/201810232045.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "201810232045.png"
+              }
+            },
+            {
+              "imageurl": "/image/201810232046.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "201810232046.png"
+              }
+            }
+          ]
+        },
+        {
+          "title": "说人话",
+          "duration": "100",
+          "showtype": 3,
+          "images": [{
+            "imageurl": "/image/201810232043.jpg",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "201810232043.png"
+            }
+          }]
+        }
+      ]
+    },
+    {
+      "playstarttime": "19:00:00",
+      "playendtime": "19:27:00",
+      "channelname": "明清小说",
+      "scrolltype": 0,
+      "priority": 4,
+      "validtype": 1,
+      "validstarttime": "2018-10-25",
+      "validendtime": "2018-10-30",
+      "contents": [{
+          "title": "西游记",
+          "duration": "100",
+          "showtype": 3,
+          "images": [{
+              "imageurl": "/image/201810232045.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "201810232045.png"
+              }
+            },
+            {
+              "imageurl": "/image/201810232046.jpg",
+              "update_info": {
+                "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+                "size": 41184440,
+                "filename": "201810232046.png"
+              }
+            }
+          ]
+        },
+        {
+          "title": "续资治通鉴长编",
+          "duration": "200",
+          "showtype": 4,
+          "video": {
+            "videourl": "/video/017001.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "017001.mp4"
+            }
+          },
+          "images": [{
+            "imageurl": "/image/201810232046.jpg",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "201810232046.png"
+            }
+          }]
+        }
+      ]
+    },
+    {
+      "playstarttime": "19:27:00",
+      "playendtime": "19:50:00",
+      "channelname": "白话小说",
+      "scrolltype": 0,
+      "priority": 5,
+      "validtype": 1,
+      "validstarttime": "2018-10-25",
+      "validendtime": "2018-10-30",
+      "contents": [{
+          "title": "推荐答案",
+          "duration": "10",
+          "showtype": 4,
+          "video": {
+            "videourl": "/video/017001.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "017001.mp4"
+            }
+          },
+          "images": [{
+            "imageurl": "/image/201810232045.jpg",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "201810232045.png"
+            }
+          }]
+        },
+        {
+          "title": "章太炎",
+          "duration": "15",
+          "showtype": 4,
+          "video": {
+            "videourl": "/video/2001.mp4",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "2001.mp4"
+            }
+          },
+          "images": [{
+            "imageurl": "/image/medium.jpg",
+            "update_info": {
+              "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
+              "size": 41184440,
+              "filename": "medium.png"
+            }
+          }]
+        }
+      ]
+    }
+  ]
+}
