@@ -102,6 +102,12 @@ export function querySchoolPlayChannel(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//更新表单播放列表
+export function updatePlayList(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/updatePlayList.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //新增学校播放频道
 export function addSchoolPlayChannel(params, config) {
   return ax.post('/action/mod-xiaojiao/content/schoolPlay/addSchoolPlayChannel.do', params, config)

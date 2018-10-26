@@ -32,7 +32,7 @@
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span style="color:#409EFF;cursor:pointer;">{{ scope.row.title }}</span>
+            <span style="color:#409EFF;">{{ scope.row.title }}</span>
           </template>            
         </el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
@@ -57,27 +57,50 @@
         :pageSize="query.pageSize" 
         :total="totalCount">
       </qx-pagination>
-    </template>    
+    </template>  
+    <!-- 查看上传详情信息 -->
     <!-- 预览审核 -->
     <template>
-      <el-dialog width="60%" :title="title" center top="40px" :visible.sync="dialogView">
+      <el-dialog width="60%" :title="info.title" center top="0px" :visible.sync="dialogView">
         <el-row :gutter="10">
           <el-col :span="12">
-            <div class="video-box" v-if="showType == 1 || showType == 2 || showType == 4 || showType == 5">
-              <video :src="videoUrl" controls width="500" height="200"></video>
-            </div>
-            <!-- v-if="showType == 3 || showType == 4 || showType == 5" -->
-            <div class="image-box" v-if="showType == 3 || showType == 4 || showType == 5">
+            <template v-if="info.showType === 4">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="500" height="200"></video>
+              </div>
+            </template>
+            <div class="image-box" v-if="info.showType == 3 || info.showType == 4 || info.showType == 5">
               <el-carousel height="736px" :autoplay="false">
-                <el-carousel-item v-for="(item, index) in imageList" :key="index">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
                   <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
                 </el-carousel-item>
               </el-carousel>
             </div>
+            <template v-if="info.showType === 5">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="500" height="200"></video>
+              </div>
+            </template>            
             <!-- <div class="iframe-box"></div> -->
           </el-col>
           <el-col :span="12">
-            <el-form ref="check" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+            <div class="list">
+              <p>标题：<span>{{ info.title }}</span></p>
+              <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
+              <p>内容类型：<span v-if="info.contentProperty === 0">全屏播放</span><span v-else>滚动播放</span></p>
+              <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
+              <p>播放时长：<span>{{ info.durationTime }}</span></p>
+              <p>
+                展示类型：
+                <span v-if="info.showType === 0">上视频下海报方式</span>
+                <span v-else-if="info.showType === 1">纯海报方式</span>
+                <span v-else-if="info.showType === 2">上海报下视频方式</span>
+                <span v-else-if="info.showType === 3">纯图片</span>
+                <span v-else-if="info.showType === 4">上视频下图片</span>
+                <span v-else>上图片下视频</span>
+              </p>
+            </div>
+            <el-form ref="check" label-position="left" :model="form" status-icon size="mini" :label-width="formLabelWidth">
               <el-form-item label="是否通过" prop="name">
                 <el-radio-group v-model="form.verifyStatus">
                   <el-radio :label="1">通过</el-radio>
@@ -85,17 +108,15 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="审核意见" prop="verifyDescrition">
-                <el-input type="textarea" v-model="form.verifyDescrition" :rows="6" placeholder="审核意见"></el-input>
+                <el-input type="textarea" v-model="form.verifyDescrition" :rows="3" placeholder="审核意见"></el-input>
               </el-form-item>
-              <el-row style="text-align:center">
-                <el-button size="mini" @click="dialogView = false">取消</el-button>
-                <el-button size="mini" type="primary" @click="checkForm('check')">审核</el-button>
-              </el-row>
             </el-form>
           </el-col>           
         </el-row>
-        <el-row :gutter="10">         
-        </el-row>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogView = false">取消</el-button>
+          <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
+        </span>
       </el-dialog>
     </template>      
   </div>    
@@ -113,7 +134,7 @@ export default {
   data() {
     return {
       dialogView: false,
-      formLabelWidth: "100px",
+      formLabelWidth: "80px",
       title: "",
       query: {
         title: "",
@@ -128,11 +149,12 @@ export default {
         checkStage: null,
         contentId: null
       },
-      videoUrl: "",
-      showType: null,
-      imageList: [],
-      totalCount: 0,
-      tableData: []
+      info: {},
+      //videoUrl: "",
+      //showType: null,
+      //imageList: [],
+      tableData: [],
+      totalCount: 0
     };
   },
   computed: {
@@ -189,13 +211,16 @@ export default {
     //查询编辑内容
     async queryContentByContentId(contentId) {
       let res = await service.queryContentByContentId({ contentId });
+      console.log(res);
       if (res.errorCode === 0) {
-        let data = res.data;
-        let { images, videoUrl } = data;
+        this.info = Object.assign({}, res.data);
         this.dialogView = true;
-        this.showType = data.showType;
-        this.imageList = [].concat(images);
-        this.videoUrl = data.videoUrl;
+        // let data = res.data;
+        // let { images, videoUrl } = data;
+        // this.dialogView = true;
+        // this.showType = data.showType;
+        // this.imageList = [].concat(images);
+        // this.videoUrl = data.videoUrl;
       }
     }
   },
@@ -215,6 +240,8 @@ export default {
 }
 .image-box {
   text-align: center;
+  width: 500px;
+  margin: 0 auto;
   min-height: 736px;
 }
 .iframe-box {
@@ -222,5 +249,17 @@ export default {
   width: 400px;
   min-height: 589px;
   box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
+}
+.list {
+  font-size: 14px;
+  margin-bottom: 50px;
+  color: #333;
+  p {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
+  }
+  span {
+    color: #409eff;
+  }
 }
 </style>

@@ -51,47 +51,46 @@
           </el-form-item>
           <el-form-item label="发布来源" prop="resources">
             <el-input v-model="form.resources" disabled></el-input>
-          </el-form-item>    
-          <qx-region-t @regionChange="handleRegionChange"></qx-region-t>      
-          <!-- <el-form-item label="发布区域" prop="regionId">
-            <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
-          </el-form-item> -->
-          <el-form-item label="学校性质" prop="propertyId">
-            <el-select v-model="form.propertyId" clearable placeholder="请选择学校性质">
-              <el-option
-                v-for="item in propertyidList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>            
-            </el-select>                          
           </el-form-item>  
-          <el-form-item label="学校类型" prop="typeId">
-            <el-select v-model="form.typeId" clearable placeholder="请选择学校类型">
-              <el-option
-                v-for="item in typeidList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>            
-            </el-select>                           
-          </el-form-item>                   
-          <el-form-item label="学校标签" prop="labelIds">
-            <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择学校标签">
-              <el-option
-                v-for="item in schoolLabel"
-                :key="item.labelId"
-                :label="item.name"
-                :value="item.labelId">
-              </el-option>              
-            </el-select>
-          </el-form-item>
-          <el-form-item label="冠名企业" prop="sponsorIds">
-            <el-checkbox-group v-model="form.sponsorIds">
-              <el-checkbox :label="1">广州市华侨文化发展基金会</el-checkbox>
-              <el-checkbox :label="2">广州市科普知识促进会</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
+          <template v-if="type !== 1">
+            <qx-region-t @regionChange="handleRegionChange"></qx-region-t>      
+            <el-form-item label="学校性质" prop="propertyId">
+              <el-select v-model="form.propertyId" clearable placeholder="请选择学校性质">
+                <el-option
+                  v-for="item in propertyidList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>            
+              </el-select>                          
+            </el-form-item>  
+            <el-form-item label="学校类型" prop="typeId">
+              <el-select v-model="form.typeId" clearable placeholder="请选择学校类型">
+                <el-option
+                  v-for="item in typeidList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>            
+              </el-select>                           
+            </el-form-item>                   
+            <el-form-item label="学校标签" prop="labelIds">
+              <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择学校标签">
+                <el-option
+                  v-for="item in schoolLabel"
+                  :key="item.labelId"
+                  :label="item.name"
+                  :value="item.labelId">
+                </el-option>              
+              </el-select>
+            </el-form-item>
+            <el-form-item label="冠名企业" prop="sponsorIds">
+              <el-checkbox-group v-model="form.sponsorIds">
+                <el-checkbox :label="1">广州市华侨文化发展基金会</el-checkbox>
+                <el-checkbox :label="2">广州市科普知识促进会</el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </template>    
           <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
             <el-button size="mini" type="primary" @click="submitForm('form')">预发布</el-button>
@@ -102,14 +101,13 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import service from "@/api";
-import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import pagination from "@/components/pagination";
 export default {
   name: "prerelease",
   components: {
-    "qx-region": region,
     "qx-region-t": regiont,
     "qx-pagination": pagination
   },
@@ -133,13 +131,6 @@ export default {
         sponsorIds: []
       },
       rules: {
-        // regionId: [
-        //   {
-        //     required: true,
-        //     message: "请选择发布区域",
-        //     trigger: "blur"
-        //   }
-        // ],
         propertyId: [
           { required: true, message: "请选择学校性质", trigger: "blur" }
         ],
@@ -161,6 +152,8 @@ export default {
     };
   },
   computed: {
+    //type 账号类型 0-促进会 1-学校 2-教育局 3-培训机构
+    ...mapGetters(["type"]),
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
@@ -254,8 +247,8 @@ export default {
     }
   },
   mounted() {
+    console.log(this.type);
     this.queryLabel(1);
-    //this.queryLabel(3);
     this.querySchoolCategory({ queryType: 0 });
     this.querySchoolCategory({ queryType: 1 });
   },

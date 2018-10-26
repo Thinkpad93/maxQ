@@ -68,13 +68,6 @@ export function QXLogin2(params) {
     .catch(e => console.log(e));
 }
 
-//模板屏端播放数据
-export function terminalSchoolData(params) {
-  return ax.get('http://localhost:9527/static/channels.json', {})
-    .then(res => res.data)
-    .catch(e => console.log(e));
-}
-
 //测试-查询用户
 export function query(params) {
   return ax.post('/action/mod-xiaojiao/account/query.do', params)

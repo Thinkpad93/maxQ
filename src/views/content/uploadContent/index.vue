@@ -10,9 +10,9 @@
           <el-col :xs="24" :sm="24" :md="20" :lg="16" :xl="14" :offset="4">              
             <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
               <el-tabs class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
-                <el-tab-pane label="全屏播放上传" name="1">
+                <el-tab-pane label="全屏播放上传" name="0">
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
+                    <template v-if="form.contentType === 0">
                       <el-col :span="24">
                         <el-form-item label="内容标题" prop="title" :rules="[
                             { required: true, message: '请输入内容标题', trigger:'blur' }
@@ -23,7 +23,7 @@
                     </template>
                   </el-row>                      
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
+                    <template v-if="form.contentType === 0">
                       <el-col :span="12">
                           <el-form-item label="内容作者" prop="author" :rules="[
                             { required: true, message: '请输入内容作者', trigger: 'blur' }
@@ -46,7 +46,7 @@
                   </el-row>  
                   <el-row :gutter="10">
                     <template v-if="type !== 1">
-                      <template v-if="form.contentType === 1">
+                      <template v-if="form.contentType === 0">
                         <el-col :span="24">
                             <el-form-item label="所属栏目" prop="channelId" :rules="[
                                 { required: true, message: '请选择所属栏目', trigger: 'blur' }
@@ -64,7 +64,7 @@
                     </template>
                   </el-row>       
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
+                    <template v-if="form.contentType === 0">
                       <el-col :span="24">
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
                           { required: true, message: '请选择播放时长', trigger: 'blur' }
@@ -80,7 +80,7 @@
                       </el-col>
                     </template>
                     <template v-if="type === 1">
-                      <template v-if="form.contentType === 1">
+                      <template v-if="form.contentType === 0">
                         <el-col :span="24">
                           <el-form-item label="播放时段" prop="channelId" :rules="[
                             { required: true, message: '请选择播放时段', trigger: 'blur' }
@@ -148,9 +148,9 @@
                     </el-col>
                   </el-row>       
                 </el-tab-pane>
-                <el-tab-pane label="滚动播放上传" name="0">
+                <el-tab-pane label="滚动播放上传" name="1">
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
+                    <template v-if="form.contentType === 1">
                       <el-col :span="24">
                         <el-form-item label="内容标题" prop="title" :rules="[
                             { required: true, message: '请输入内容标题', trigger:'blur' }
@@ -161,7 +161,7 @@
                     </template>
                   </el-row>
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
+                    <template v-if="form.contentType === 1">
                       <el-col :span="24">
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
                           { required: true, message: '请选择播放时长', trigger: 'blur' }
@@ -209,7 +209,7 @@
                     </template>                                  
                   </el-row>   
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
+                    <template v-if="form.contentType === 1">
                       <el-col :span="24">
                           <el-form-item label="文字内容" prop="componentValue" :rules="[
                             { required: true, message: '请输入文字内容', trigger: 'blur' }
@@ -305,7 +305,7 @@ export default {
       dialogShowType: false,
       dialogTemplate: false,
       formLabelWidth: "80px",
-      status: "1",
+      status: "0",
       screenIndex: 0,
       posterIndex: -1,
       carouselIndex: 0,
@@ -319,7 +319,7 @@ export default {
         componentValue: null,
         durationTime: "",
         contentProperty: 0,
-        contentType: 1,
+        contentType: 0,
         author: "",
         //playTime: [],
         channelId: null,
@@ -442,7 +442,7 @@ export default {
               this.screenIndex == 1 ||
               this.screenIndex == 2)
           ) {
-            if (this.form.contentType != 0) {
+            if (this.form.contentType != 1) {
               this.$message({
                 message: `你选择的展示形式是${
                   this.contentTemplateList[this.screenIndex].label
@@ -457,7 +457,7 @@ export default {
             !this.imageList.length &&
             (showType == 3 || showType == 4 || showType == 5)
           ) {
-            if (this.form.contentType === 1) {
+            if (this.form.contentType === 0) {
               this.$message({
                 message: `你选择的展示形式是${
                   this.contentTemplateList[this.screenIndex].label
@@ -475,7 +475,7 @@ export default {
               this.screenIndex == 4 ||
               this.screenIndex == 5)
           ) {
-            if (this.form.contentType === 1) {
+            if (this.form.contentType === 0) {
               this.$message({
                 message: `你选择的展示形式是${
                   this.contentTemplateList[this.screenIndex].label

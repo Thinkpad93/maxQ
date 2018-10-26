@@ -9,9 +9,9 @@
           <el-col :span="14" :offset="4">              
             <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
               <el-tabs class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
-                <el-tab-pane label="全屏播放上传" name="1" :disabled="form.contentType === 0">
+                <el-tab-pane label="全屏播放上传" name="0" :disabled="form.contentType === 0">
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
+                    <template v-if="form.contentType === 0">
                       <el-col :span="24">
                         <el-form-item label="内容标题" prop="title" :rules="[
                             { required: true, message: '请输入内容标题', trigger:'blur' }
@@ -22,7 +22,7 @@
                     </template>
                   </el-row>                      
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
+                    <template v-if="form.contentType === 0">
                       <el-col :span="12">
                           <el-form-item label="内容作者" prop="author" :rules="[
                             { required: true, message: '请输入内容作者', trigger: 'blur' }
@@ -45,7 +45,7 @@
                   </el-row>  
                   <el-row :gutter="10">
                     <template v-if="type !== 1">
-                      <template v-if="form.contentType === 1">
+                      <template v-if="form.contentType === 0">
                         <el-col :span="24">
                             <el-form-item label="所属栏目" prop="channelId" :rules="[
                                 { required: true, message: '请选择所属栏目', trigger: 'blur' }
@@ -63,7 +63,7 @@
                     </template>
                   </el-row>       
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
+                    <template v-if="form.contentType === 0">
                       <el-col :span="24">
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
                           { required: true, message: '请选择播放时长', trigger: 'blur' }
@@ -79,7 +79,7 @@
                       </el-col>
                     </template>
                     <template v-if="type === 1">
-                      <template v-if="form.contentType === 1">
+                      <template v-if="form.contentType === 0">
                         <el-col :span="24">
                           <el-form-item label="播放时段" prop="channelId" :rules="[
                             { required: true, message: '请选择播放时段', trigger: 'blur' }
@@ -140,9 +140,9 @@
                     </el-col>
                   </el-row>                       
                 </el-tab-pane>
-                <el-tab-pane label="滚动播放上传" name="0" :disabled="form.contentType === 1">
+                <el-tab-pane label="滚动播放上传" name="1" :disabled="form.contentType === 1">
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
+                    <template v-if="form.contentType === 1">
                       <el-col :span="24">
                         <el-form-item label="内容标题" prop="title" :rules="[
                             { required: true, message: '请输入内容标题', trigger:'blur' }
@@ -153,7 +153,7 @@
                     </template>
                   </el-row>
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
+                    <template v-if="form.contentType === 1">
                       <el-col :span="24">
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
                           { required: true, message: '请选择播放时长', trigger: 'blur' }
@@ -201,7 +201,7 @@
                     </template>                                                          
                   </el-row>   
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
+                    <template v-if="form.contentType === 1">
                       <el-col :span="24">
                           <el-form-item label="文字内容" prop="componentValue" :rules="[
                             { required: true, message: '请输入文字内容', trigger: 'blur' }
@@ -277,7 +277,7 @@ export default {
       dialogShowType: false,
       dialogTemplate: false,
       formLabelWidth: "80px",
-      status: "1",
+      status: "0",
       screenIndex: 0,
       posterIndex: -1,
       collapse: true,

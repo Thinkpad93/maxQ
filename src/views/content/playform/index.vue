@@ -19,7 +19,7 @@
               <el-form-item>
                 <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="handleaddChannel">新增</el-button>
-                <el-button :disabled="disabled === 1" type="primary">更新播放表单</el-button>
+                <el-button :disabled="disabled === 1" type="primary" @click="handleUpdate">更新播放表单</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -356,10 +356,6 @@ export default {
           schoolName: queryString
         });
         if (res.errorCode === 0) {
-          // if (!res.data.length) {
-          //   this.query.schoolName = "";
-          //   return;
-          // }
           cb(res.data);
         }
       }
@@ -418,6 +414,12 @@ export default {
           this.$delete(e, "show");
           this.$delete(e, "state");
         });
+      }
+    },
+    //更新表单播放列表
+    handleUpdate() {
+      if (this.schoolId || this.tableData.length) {
+        this.updatePlayList(this.schoolId);
       }
     },
     //新增学校播放表单
@@ -590,6 +592,13 @@ export default {
         } else {
           this.playContendata = res.data;
         }
+      }
+    },
+    //更新表单播放列表
+    async updatePlayList(schoolId) {
+      let res = await service.updatePlayList({ schoolId });
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
     //新增学校播放频道
