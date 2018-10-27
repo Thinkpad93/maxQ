@@ -61,28 +61,28 @@
     <!-- 预览审核 -->
     <template>
       <el-dialog width="60%" :title="info.title" center top="40px" :visible.sync="dialogView">
-        <el-row :gutter="10">
-          <el-col :span="12">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one">
             <template v-if="info.showType === 4">
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="500" height="200"></video>
               </div>
             </template>
             <div class="image-box" v-if="info.showType == 3 || info.showType == 4 || info.showType == 5">
-              <el-carousel height="736px" :autoplay="false">
+              <el-carousel height="589px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in info.images" :key="index">
-                  <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
+                  <img :src="item.url" class="image" :alt="item.name" width="400" height="589">
                 </el-carousel-item>
               </el-carousel>
             </div>
             <template v-if="info.showType === 5">
               <div class="video-box">
-                <video :src="info.videoUrl" controls width="500" height="200"></video>
+                <video :src="info.videoUrl" controls width="400" height="200"></video>
               </div>
-            </template>    
-            <!-- <div class="iframe-box"></div> -->
-          </el-col>
-          <el-col :span="12">
+            </template>     
+            <!-- <div class="iframe-box"></div> -->             
+          </div>
+          <div class="two">
             <div class="list">
               <p>标题：<span>{{ info.title }}</span></p>
               <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
@@ -98,7 +98,7 @@
                 <span v-else-if="info.showType === 4">上视频下图片</span>
                 <span v-else>上图片下视频</span>
               </p>
-            </div>              
+            </div>
             <el-form ref="check" label-position="left" :model="form" status-icon size="mini" :label-width="formLabelWidth">
               <el-form-item label="是否通过" prop="name">
                 <el-radio-group v-model="form.verifyStatus">
@@ -107,10 +107,10 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="审核意见" prop="verifyDescrition">
-                <el-input type="textarea" v-model="form.verifyDescrition" :rows="3" placeholder="审核意见"></el-input>
+                <el-input type="textarea" v-model="form.verifyDescrition" :rows="5" placeholder="审核意见"></el-input>
               </el-form-item>
             </el-form>
-          </el-col>          
+          </div>
         </el-row>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogView = false">取消</el-button>
@@ -148,10 +148,6 @@ export default {
         contentId: null
       },
       info: {},
-      //videoUrl: "",
-      //showType: null,
-      //imageList: [],
-
       tableData: [],
       totalCount: 0
     };
@@ -213,12 +209,6 @@ export default {
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
         this.dialogView = true;
-        // let data = res.data;
-        // let { images, videoUrl } = data;
-        // this.dialogView = true;
-        // this.showType = data.showType;
-        // this.imageList = [].concat(images);
-        // this.videoUrl = data.videoUrl;
       }
     }
   },
@@ -229,6 +219,14 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.row-bg {
+  > div {
+    margin: 0 15px;
+  }
+  .two {
+    flex: 1;
+  }
+}
 .video-box {
   margin: 0 auto;
   text-align: center;
@@ -238,7 +236,7 @@ export default {
 }
 .image-box {
   text-align: center;
-  width: 500px;
+  width: 400px;
   margin: 0 auto;
   min-height: 736px;
 }

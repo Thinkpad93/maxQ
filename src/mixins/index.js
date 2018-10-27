@@ -39,6 +39,23 @@ export const scrollType = {
   }
 }
 
+//栏目有效期
+export const validType = {
+  data() {
+    return {
+      validTypelist: [{
+          name: "长期",
+          value: 0
+        },
+        {
+          name: "按时段有效",
+          value: 1
+        }
+      ]
+    }
+  }
+}
+
 //账号类型
 export const accountType = {
   data() {

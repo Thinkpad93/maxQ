@@ -1,17 +1,17 @@
 {
   "schoolname": "幼儿园",
   "playchannel": [{
-      "playstarttime": "08:00:00",
+      "playstarttime": "10:06:00",
       "playendtime": "11:00:00",
       "channelname": "科普知识",
       "scrolltype": 0,
       "priority": 1,
       "validtype": 1,
-      "validstarttime": "2018-10-25",
+      "validstarttime": "2018-10-27",
       "validendtime": "2018-10-30",
       "contents": [{
           "title": "禅与摩托车维修艺术",
-          "duration": "50000",
+          "duration": "20000",
           "showtype": 4,
           "video": {
             "videourl": "/video/017001.mp4",
@@ -30,11 +30,11 @@
               }
             },
             {
-              "imageurl": "/image/201810232044.jpg",
+              "imageurl": "/image/2018102260938.jpg",
               "update_info": {
                 "md5": "ef23e1cd6a0278f80c3ecf664ab8f3bd",
                 "size": 41184440,
-                "filename": "201810232044.png"
+                "filename": "2018102260938.png"
               }
             },
             {
@@ -49,7 +49,7 @@
         },
         {
           "title": "说文解字",
-          "duration": "50000",
+          "duration": "20000",
           "showtype": 5,
           "video": {
             "videourl": "/video/017001.mp4",
@@ -77,7 +77,7 @@
       "scrolltype": 0,
       "priority": 3,
       "validtype": 1,
-      "validstarttime": "2018-10-25",
+      "validstarttime": "2018-10-26",
       "validendtime": "2018-10-30",
       "contents": [{
           "title": "天行健",
@@ -131,7 +131,7 @@
       "scrolltype": 0,
       "priority": 4,
       "validtype": 1,
-      "validstarttime": "2018-10-25",
+      "validstarttime": "2018-10-26",
       "validendtime": "2018-10-30",
       "contents": [{
           "title": "西游记",
@@ -185,7 +185,7 @@
       "scrolltype": 0,
       "priority": 5,
       "validtype": 1,
-      "validstarttime": "2018-10-25",
+      "validstarttime": "2018-10-26",
       "validendtime": "2018-10-30",
       "contents": [{
           "title": "推荐答案",

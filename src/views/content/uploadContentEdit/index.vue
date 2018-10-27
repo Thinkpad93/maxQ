@@ -9,7 +9,7 @@
           <el-col :span="14" :offset="4">              
             <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
               <el-tabs class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
-                <el-tab-pane label="全屏播放上传" name="0" :disabled="form.contentType === 0">
+                <el-tab-pane label="全屏播放上传" name="0" :disabled="form.contentType === 1">
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 0">
                       <el-col :span="24">
@@ -140,7 +140,7 @@
                     </el-col>
                   </el-row>                       
                 </el-tab-pane>
-                <el-tab-pane label="滚动播放上传" name="1" :disabled="form.contentType === 1">
+                <el-tab-pane label="滚动播放上传" name="1" :disabled="form.contentType === 0">
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 1">
                       <el-col :span="24">
@@ -409,7 +409,6 @@ export default {
         this.form = res.data;
         this.imageList = this.form.images;
         this.screenIndex = this.form.showType; //回选展示形式
-        //this.queryContentTemplate(this.form.showType);
         this.status = this.form.contentType.toString();
         if (this.type === 1) {
           this.querySchoolPlayListTime(this.form.contentType);
