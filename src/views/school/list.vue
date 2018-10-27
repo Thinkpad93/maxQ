@@ -278,11 +278,15 @@
                 </el-form-item>
             </el-col>
           </el-row>                                
-          <el-row style="text-align:center">
+          <!-- <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
             <el-button size="mini" type="primary" @click="addsForm('addForm')">保存</el-button>
-          </el-row>                             
+          </el-row>                              -->
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogAdd = false">取消</el-button>
+          <el-button size="small" type="primary" @click="addsForm('addForm')">确定</el-button>
+        </span>            
       </el-dialog>
     </template>
     <!-- 编辑 -->
@@ -477,11 +481,15 @@
                 </el-form-item>
             </el-col>
           </el-row>            
-          <el-row style="text-align:center">
+          <!-- <el-row style="text-align:center">
             <el-button size="mini" @click="dialogEdit = false">取消</el-button>
             <el-button size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
-          </el-row>                                             
+          </el-row>                                              -->
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogEdit = false">取消</el-button>
+          <el-button size="small" type="primary" @click="editorForm('editForm')">确定</el-button>
+        </span>          
       </el-dialog>
     </template>
     <!-- 栏目模板详细预览 -->

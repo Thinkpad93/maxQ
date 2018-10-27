@@ -19,7 +19,7 @@
               <el-form-item>
                 <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="handleaddChannel">新增</el-button>
-                <el-button :disabled="disabled === 1" type="primary" @click="handleUpdate">更新播放表单</el-button>
+                <el-button :disabled="disabled === 1" type="primary" @click="handleUpdate">更新表单到终端</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -191,85 +191,98 @@
         ref="channelForm" 
         :model="channelForm" 
         status-icon size="small" :label-width="formLabelWidth">
-            <el-row :gutter="20">
+            <!-- <el-row :gutter="20">
               <el-col :span="24">
                 <el-form-item label="学校ID">
                   <el-input v-model="channelForm.schoolId" disabled></el-input>
                 </el-form-item>
               </el-col>
+            </el-row> -->
+            <el-row :gutter="10">
+              <el-col :span="12">
+                <el-form-item label="栏目名称" prop="channelId">
+                  <el-select v-model="channelForm.channelId" placeholder="请选择" style="width:100%;" @change="handleQueryContent">
+                    <el-option v-for="item in channelList" 
+                      :key="item.channelId" 
+                      :value="item.channelId"
+                      :label="item.name">
+                    </el-option>
+                  </el-select>                  
+                </el-form-item>                
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="栏目属性" prop="scrollType">
+                  <el-select v-model="channelForm.scrollType" @change="handleQueryContents" style="width:100%;">
+                    <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
+                  </el-select>              
+                </el-form-item>  
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="栏目有效期" prop="validType">
+                  <el-select v-model="channelForm.validType" style="width:100%;">
+                    <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
+                  </el-select> 
+                </el-form-item>  
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="播放优先级" prop="priority">
+                  <el-select v-model="channelForm.priority" placeholder="请选择" style="width:100%;">
+                    <el-option 
+                      v-for="item in priorityList" 
+                      :key="item.value" 
+                      :value="item.value"
+                      :label="item.label">
+                    </el-option>
+                  </el-select> 
+                </el-form-item>  
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="播放时段" prop="playTime">
+                  <el-time-picker
+                    is-range
+                    format="HH:mm:ss"
+                    value-format="HH:mm:ss"
+                    v-model="channelForm.playTime"
+                    :clearable="false"
+                    range-separator="至"
+                    start-placeholder="开始时间"
+                    end-placeholder="结束时间"
+                    placeholder="选择时间范围">
+                  </el-time-picker>                
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="时间段选择" prop="validTime">
+                  <el-date-picker
+                    value-format="yyyy-MM-dd"
+                    format="yyyy-MM-dd"
+                    v-model="channelForm.validTime"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions">
+                  </el-date-picker>                
+                </el-form-item>                    
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="播放内容" prop="contents">
+                  <el-select v-model="channelForm.contents" value-key="contentId" multiple collapse-tags placeholder="请选择播放内容" style="width:100%;">
+                    <el-option
+                      v-for="item in contentsList"
+                      :key="item.contentId"
+                      :label="item.title"
+                      :value="item.contentId">
+                    </el-option>
+                  </el-select>  
+                </el-form-item>  
+              </el-col>
             </el-row>
-            <el-form-item label="栏目名称" prop="channelId">
-              <el-select v-model="channelForm.channelId" placeholder="请选择" style="width:100%;" @change="handleQueryContent">
-                <el-option v-for="item in channelList" 
-                  :key="item.channelId" 
-                  :value="item.channelId"
-                  :label="item.name">
-                </el-option>
-              </el-select>                  
-            </el-form-item>
-            <el-form-item label="播放内容" prop="contents">
-              <el-select v-model="channelForm.contents" value-key="contentId" multiple collapse-tags placeholder="请选择播放内容" style="width:100%;">
-                <el-option
-                  v-for="item in contentsList"
-                  :key="item.contentId"
-                  :label="item.title"
-                  :value="item.contentId">
-                </el-option>
-              </el-select>  
-            </el-form-item> 
-            <el-form-item label="播放优先级" prop="priority">
-              <el-select v-model="channelForm.priority" placeholder="请选择">
-                <el-option 
-                  v-for="item in priorityList" 
-                  :key="item.value" 
-                  :value="item.value"
-                  :label="item.label">
-                </el-option>
-              </el-select> 
-            </el-form-item>                         
-            <el-form-item label="播放时段" prop="playTime">
-              <el-time-picker
-                is-range
-                format="HH:mm:ss"
-                value-format="HH:mm:ss"
-                v-model="channelForm.playTime"
-                :clearable="false"
-                range-separator="至"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-                placeholder="选择时间范围">
-              </el-time-picker>                
-            </el-form-item>
-            <el-form-item label="时间段选择" prop="validTime">
-              <el-date-picker
-                :disabled="channelForm.validType === 0"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="channelForm.validTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions">
-              </el-date-picker>                
-            </el-form-item>
-            <el-form-item label="栏目属性" prop="scrollType">
-              <el-radio-group v-model="channelForm.scrollType">
-                <el-radio :label="0">非滚动</el-radio>
-                <el-radio :label="1">滚动</el-radio>
-              </el-radio-group>
-            </el-form-item>    
-            <el-form-item label="栏目有效期" prop="validType">
-              <el-radio-group v-model="channelForm.validType">
-                <el-radio :label="0">长期</el-radio>
-                <el-radio :label="1">按时段有效</el-radio>
-              </el-radio-group>                            
-            </el-form-item>               
-            <el-row :gutter="20" style="text-align:center">
-              <el-button size="mini" @click="dialogChannel = false">取消</el-button>
-              <el-button size="mini" type="primary" @click="addChannelForm('channelForm')">保存</el-button>
-            </el-row>            
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogChannel = false">取消</el-button>
+          <el-button size="small" type="primary" @click="addChannelForm('channelForm')">保存</el-button>
+        </span>        
       </el-dialog>
     </template>       
    </div> 
@@ -278,11 +291,11 @@
 import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
-import { scrollType, priority } from "@/mixins";
+import { scrollType, priority, validType } from "@/mixins";
 import { disabledDate, hours } from "@/utils/tools";
 export default {
   name: "playform",
-  mixins: [scrollType, priority],
+  mixins: [scrollType, priority, validType],
   components: {
     region,
     "qx-region": region,
@@ -318,7 +331,7 @@ export default {
       channelForm: {
         schoolId: null,
         scrollType: 0,
-        validType: 0,
+        validType: 1,
         contents: []
       },
       rules: {
@@ -416,6 +429,9 @@ export default {
         });
       }
     },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
     //更新表单播放列表
     handleUpdate() {
       if (this.schoolId || this.tableData.length) {
@@ -436,12 +452,17 @@ export default {
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
-      //this.queryPlayContent({ schoolId, channelId: value });
+      let scrollType = this.channelForm.scrollType;
+      this.queryPlayContent({ schoolId, channelId: value, scrollType });
+    },
+    handleQueryContents(value) {
+      let schoolId = this.channelForm.schoolId;
+      let channelId = this.channelForm.channelId;
+      this.queryPlayContent({ schoolId, channelId, scrollType: value });
     },
     handleEdit(index, row) {
       let { channelId, schoolId, scrollType } = row;
       let tableData = this.tableData;
-      console.log(row);
       this.setEditState(row, { show: true, state: 1 });
       this.setEditStateAll(tableData, { show: false, state: 0 });
       this.value4[0] = row.playStartTime;
@@ -588,6 +609,7 @@ export default {
       let res = await service.queryPlayContent(params);
       if (res.errorCode === 0) {
         if (str === "add") {
+          this.channelForm.contents = [];
           this.contentsList = res.data;
         } else {
           this.playContendata = res.data;
@@ -608,6 +630,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogChannel = false;
+        this.resetForm("channelForm");
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.querySchoolPlayChannel(this.schoolId);
       }

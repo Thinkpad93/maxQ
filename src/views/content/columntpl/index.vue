@@ -76,10 +76,10 @@
     </template> 
     <!-- 新增栏目模板详细项 -->
     <template>
-      <el-dialog width="80%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail" @close="close">
+      <el-dialog width="80%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
         <el-form ref="tplDetailform" :model="tplDetailform" size="mini" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="20">
-            <el-col :span="10">
+            <el-col :span="8">
               <el-form-item label="播放时段" prop="playTime">
                 <el-time-picker
                   style="width:100%;"
@@ -100,7 +100,7 @@
                 </el-time-picker>                           
               </el-form-item>  
             </el-col>
-            <el-col :span="10">
+            <el-col :span="8">
               <el-form-item label="时间段选择" prop="validTime" :rules="tplDetailform.validType === 1 ? validTimeRules : []">
                 <el-date-picker
                   
@@ -119,7 +119,7 @@
             </el-col>
           </el-row>   
           <el-row :gutter="20">
-            <el-col :span="10">
+            <el-col :span="8">
               <el-form-item label="栏目名称" prop="channelId" :rules="[
             { required: true, message: '请选择栏目名称', trigger: 'blur' }
           ]">
@@ -132,7 +132,7 @@
                 </el-select>                             
               </el-form-item>              
             </el-col>
-            <el-col :span="10">
+            <el-col :span="8">
               <el-form-item label="播放优先级" prop="priority" :rules="[
             { required: true, message: '请选择播放优先级', trigger: 'blur' }
           ]">
@@ -148,14 +148,14 @@
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="10">
+            <el-col :span="8">
               <el-form-item label="栏目属性" prop="scrollType">
                 <el-select v-model="tplDetailform.scrollType" style="width:100%;">
                   <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
                 </el-select>
               </el-form-item>   
             </el-col>
-            <el-col :span="10">
+            <el-col :span="8">
               <el-form-item label="栏目有效期" prop="validType">
                 <el-select v-model="tplDetailform.validType" style="width:100%;">
                   <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
@@ -170,7 +170,7 @@
         </el-form>
         <div class="plac"></div> 
         <el-alert title="已新增的模板详细项" type="info" :closable="false"></el-alert>
-        <el-table :data="tplAddData" style="width: 100%" stripe size="mini">
+        <el-table :data="tplAddData" style="width: 100%" :height="300" stripe size="mini">
           <el-table-column width="400" label="播放时段">
             <template slot-scope="scope">
               <template v-if="scope.row.show">
@@ -309,7 +309,7 @@ export default {
       dialogView: false,
       dialogValidity: false,
       disabled: 0,
-      is: null, //判断是新增窗口还是编辑窗口
+      //is: null, //判断是新增窗口还是编辑窗口
       formLabelWidth: "100px",
       radio: 0,
       templateId: null, //栏目模板ID
@@ -347,17 +347,6 @@ export default {
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
-    },
-    hours() {
-      const start = new Date(
-        new Date(new Date().toLocaleDateString()).getTime()
-      );
-      const end = new Date(
-        new Date(new Date().toLocaleDateString()).getTime() +
-          24 * 60 * 60 * 1000 -
-          1
-      );
-      return [start, end];
     }
   },
   methods: {
@@ -371,10 +360,6 @@ export default {
     },
     handleSearch() {
       this.queryChannelTemplate();
-    },
-    show() {},
-    close() {
-      this.resetForm("tplDetailform");
     },
     selectChannelName(value) {
       let obj = {};

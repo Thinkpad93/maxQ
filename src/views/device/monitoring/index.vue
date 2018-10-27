@@ -162,6 +162,7 @@ export default {
       },
       viewDevice: {},
       tableData: [],
+      totalCount: 0,
       runlogData: []
     };
   },
@@ -171,13 +172,14 @@ export default {
     }
   },
   methods: {
-    // search() {
-    //   if (this.schoolId === null) {
-    //     this.$message({ message: "请选择学校名称", type: "warning" });
-    //   } else {
-    //     this.showDeviceStatus();
-    //   }
-    // },
+    pageChange(curr) {
+      this.query.page = curr;
+      this.queryChannel();
+    },
+    pageSize(size) {
+      this.query.pageSize = size;
+      this.queryChannel();
+    },
     handleSearch() {
       this.showDeviceStatus();
     },

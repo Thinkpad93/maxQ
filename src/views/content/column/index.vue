@@ -16,18 +16,17 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-      <!--  -->
-        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
-            <el-table-column width="300" label="栏目ID" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column width="200" label="操作">
-                <template slot-scope="scope">
-                    <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>        
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+        <el-table-column width="300" label="栏目ID" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column width="200" label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>        
     </template>
     <!-- 分页 -->
     <template>
@@ -51,11 +50,11 @@
           <el-form-item label="栏目描述" prop="description">
             <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入栏目描述"></el-input>
           </el-form-item>
-          <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="formAction('formRef')">确定</el-button>
-          </el-row>
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
+          <el-button size="small" type="primary" @click="formAction('formRef')">确定</el-button>
+        </span>          
       </el-dialog>
     </template>
   </div>      

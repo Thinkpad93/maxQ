@@ -91,11 +91,15 @@
               </el-checkbox-group>
             </el-form-item>
           </template>    
-          <el-row style="text-align:center">
+          <!-- <el-row style="text-align:center">
             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
             <el-button size="mini" type="primary" @click="submitForm('form')">预发布</el-button>
-          </el-row>          
+          </el-row>           -->
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogAdd = false">取消</el-button>
+          <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
+        </span>         
       </el-dialog>
     </template>
   </div>

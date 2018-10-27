@@ -127,11 +127,15 @@
           ]">
             <el-input v-model="form.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
-          <el-row style="text-align:center">
+          <!-- <el-row style="text-align:center">
             <el-button size="mini" @click="handleCancle('formRef')">取消</el-button>
             <el-button size="mini" type="primary" @click="formAction('formRef')">保存</el-button>
-          </el-row>                                           
+          </el-row>                                            -->
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="handleCancle('formRef')">取消</el-button>
+          <el-button size="small" type="primary" @click="formAction('formRef')">确定</el-button>
+        </span>           
       </el-dialog>
     </template>
   </div>  

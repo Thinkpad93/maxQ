@@ -105,11 +105,11 @@
             ]">
               <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入标签描述"></el-input>
             </el-form-item> 
-            <el-row style="text-align:center">
-              <el-button size="mini" @click="dialogFormVisible = false">取消</el-button>
-              <el-button size="mini" type="primary" @click="submitForm('form')">确定</el-button>
-            </el-row>              
          </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
+          <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
+        </span>             
        </el-dialog>
      </template>
    </div> 
