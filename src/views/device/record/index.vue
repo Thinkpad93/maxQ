@@ -127,10 +127,6 @@
           ]">
             <el-input v-model="form.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
-          <!-- <el-row style="text-align:center">
-            <el-button size="mini" @click="handleCancle('formRef')">取消</el-button>
-            <el-button size="mini" type="primary" @click="formAction('formRef')">保存</el-button>
-          </el-row>                                            -->
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="handleCancle('formRef')">取消</el-button>
@@ -215,7 +211,8 @@ export default {
     handleAdd() {
       this.isShow = true;
       this.dialogFormVisible = true;
-      this.form = Object.assign({}); //这里不加的话 共用的表单会有问题
+      this.form = {};
+      //this.form = Object.assign({}); //这里不加的话 共用的表单会有问题
     },
     handleEdit(row) {
       let { address, deviceId, deviceNo, schoolName, ...args } = row;

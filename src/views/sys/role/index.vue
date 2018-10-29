@@ -11,7 +11,7 @@
                     </el-form-item>                          
                     <el-form-item>
                       <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                      <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增角色</el-button>
+                      <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增角色</el-button>
                     </el-form-item>                          
                   </el-form>
                 </div>
@@ -79,10 +79,6 @@
               :props="defaultProps">
              </el-tree>
            </el-form-item>
-           <!-- <el-row style="text-align:center">
-             <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-             <el-button size="mini" type="primary" @click="formSubmit('form')">确定</el-button>
-           </el-row>            -->
          </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
@@ -154,6 +150,10 @@ export default {
     close() {
       this.$refs.tree.setCheckedKeys([]);
     },
+    handleAdd() {
+      this.dialogAdd = true;
+      this.form = {};
+    },
     handleEdit(row) {
       this.dialogAdd = true;
       this.form = Object.assign({}, row);
@@ -184,11 +184,6 @@ export default {
           let obj = Object.assign({}, this.form, { permitIds });
           //编辑模式
           obj.roleId ? delete obj.permits : delete obj.roleId;
-          // if (obj.roleId) {
-          //   delete obj.permits;
-          // } else {
-          //   delete obj.roleId;
-          // }
           this.addRole(obj);
         }
       });

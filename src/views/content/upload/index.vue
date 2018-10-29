@@ -88,8 +88,8 @@
     <!-- 查看上传详情信息 -->
     <template>
       <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogView">
-        <el-row :gutter="10">
-          <el-col :span="12">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one">
             <template v-if="info.showType === 4">
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="500" height="200"></video>
@@ -107,26 +107,27 @@
                 <video :src="info.videoUrl" controls width="500" height="200"></video>
               </div>
             </template>            
-            <!-- <div class="iframe-box"></div> -->            
-          </el-col>
-          <el-col :span="12">
+            <!-- <div class="iframe-box"></div> -->                 
+          </div>
+          <div class="two">
            <div class="list">
               <p>标题：<span>{{ info.title }}</span></p>
               <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
-              <p>内容类型：<span v-if="info.contentProperty === 0">全屏播放</span><span v-else>滚动播放</span></p>
+              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
               <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
               <p>播放时长：<span>{{ info.durationTime }}</span></p>
-              <p>
+              <p v-if="info.contentType === 1">滚动内容：<span>{{ info.componentValue }}</span></p>
+              <p v-if="info.contentType === 0">
                 展示类型：
-                <span v-if="info.showType === 0">上视频下海报方式</span>
-                <span v-else-if="info.showType === 1">纯海报方式</span>
+                <span v-if="info.showType === 0">纯海报方式</span>
+                <span v-else-if="info.showType === 1">上视频下海报方式</span>
                 <span v-else-if="info.showType === 2">上海报下视频方式</span>
                 <span v-else-if="info.showType === 3">纯图片</span>
                 <span v-else-if="info.showType === 4">上视频下图片</span>
                 <span v-else>上图片下视频</span>
               </p>
-            </div>            
-          </el-col>
+            </div>  
+          </div>
         </el-row>
       </el-dialog>
     </template> 
@@ -278,6 +279,14 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.row-bg {
+  > div {
+    margin: 0 15px;
+  }
+  .two {
+    flex: 1;
+  }
+}
 .video-box {
   margin: 0 auto;
   text-align: center;
@@ -302,11 +311,12 @@ export default {
   margin-bottom: 50px;
   color: #333;
   p {
-    padding: 10px 0;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(220, 223, 230, 0.5);
   }
   span {
     color: #409eff;
+    line-height: 1.6;
   }
 }
 </style>

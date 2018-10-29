@@ -212,7 +212,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="栏目属性" prop="scrollType">
-                  <el-select v-model="channelForm.scrollType" @change="handleQueryContents" style="width:100%;">
+                  <el-select v-model="channelForm.scrollType" style="width:100%;">
                     <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
                   </el-select>              
                 </el-form-item>  
@@ -332,6 +332,7 @@ export default {
         schoolId: null,
         scrollType: 0,
         validType: 1,
+        validTime: [],
         contents: []
       },
       rules: {
@@ -341,9 +342,9 @@ export default {
         playTime: [
           { required: true, message: "请选择播放时段", trigger: "blur" }
         ],
-        // validTime: [
-        //   { required: true, message: "请选择时间段", trigger: "blur" }
-        // ],
+        validTime: [
+          { required: true, message: "请选择时间段", trigger: "blur" }
+        ],
         channelId: [
           { required: true, message: "请选择栏目名称", trigger: "blur" }
         ],
@@ -452,14 +453,15 @@ export default {
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
-      let scrollType = this.channelForm.scrollType;
-      this.queryPlayContent({ schoolId, channelId: value, scrollType });
+      //let scrollType = this.channelForm.scrollType;
+      this.queryPlayContent({ schoolId, channelId: value });
+      //this.queryPlayContent({ schoolId, channelId: value, scrollType });
     },
-    handleQueryContents(value) {
-      let schoolId = this.channelForm.schoolId;
-      let channelId = this.channelForm.channelId;
-      this.queryPlayContent({ schoolId, channelId, scrollType: value });
-    },
+    // handleQueryContents(value) {
+    //   let schoolId = this.channelForm.schoolId;
+    //   let channelId = this.channelForm.channelId;
+    //   this.queryPlayContent({ schoolId, channelId, scrollType: value });
+    // },
     handleEdit(index, row) {
       let { channelId, schoolId, scrollType } = row;
       let tableData = this.tableData;
@@ -468,7 +470,8 @@ export default {
       this.value4[0] = row.playStartTime;
       this.value4[1] = row.playEndTime;
       this.disabled = 1;
-      this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
+      this.queryPlayContent({ channelId, schoolId }, "edit");
+      //this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
     },
     handleDelete(index, row) {
       let { itemId, schoolId } = row;
@@ -590,6 +593,7 @@ export default {
             playEndTime: playTime[1],
             ...validObj
           });
+          console.log(obj);
           this.addSchoolPlayChannel(obj);
         }
       });

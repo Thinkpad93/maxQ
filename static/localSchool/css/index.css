@@ -3,7 +3,7 @@
 html,
 body {
     min-height: 100%;
-    background-color: #000;
+    background-color: #949494;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -43,6 +43,29 @@ body {
     display: block !important;
 }
 
+.main .marquee {
+    color: #f00;
+    height: 60px;
+    padding: 0 15px;
+    font-size: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    border-bottom: 1px solid #ebeef5;
+    background-color: #fff;
+}
+
+.marquee p {
+    display: inline-block;
+    margin: 0;
+    white-space: nowrap;
+    animation-name: carousel;
+    animation-duration: 15s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+
 .video {
     background-color: #fff;
 }
@@ -63,4 +86,14 @@ video {
 img {
     vertical-align: top;
     max-width: 100%;
+}
+
+@-webkit-keyframes carousel {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-33.3%);
+    }
 }

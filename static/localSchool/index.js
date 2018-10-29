@@ -1,13 +1,17 @@
 var vm = new Vue({
     el: "#root",
     data: {
+        imgDelay: 0, //多少秒之后切换图片
+        isMarquee: false, //是否滚动
+        min: 60000, //每一分钟刷新一次
         timer: null, //内容定时器
         currChannelPlay: -1, //当前正在播放的栏目
         currChannelPlaying: -1,
         imgduration: 0, //每张图片播放的是长
         duration: 0, //单条内容时长
+        contents: null,
         contentsLen: 0, //每个栏目下有多少条内容
-        currContent: 0, //当前正在显示的内容
+        currContentIndex: 0, //当前正在显示的内容索引
         channelData: [] //栏目数据
     },
     methods: {
@@ -40,6 +44,10 @@ var vm = new Vue({
                 return hours + ":" + minutes + ":" + seconds;
             }
         },
+        //文字滚动
+        handleMarquee() {
+
+        },
         //根据日期时间获取需要播放的栏目
         getRunPlayChannel: function () {
             var that = this;
@@ -58,10 +66,10 @@ var vm = new Vue({
                     if (hms >= playstarttime && hms <= playendtime) {
                         //如果存在多个栏目，那么保存栏目优先级
                         priorityArr.push(channels.priority);
-                        //console.log("有栏目要播放了！");
+                        console.log("有栏目要播放了！");
                     } else {
                         //如果当前时间没有要播放的栏目，那么随机播放视频
-                        //console.log("没有栏目要播放了！");
+                        console.log("没有栏目要播放了！");
                     }
                 }
             }
@@ -92,7 +100,7 @@ var vm = new Vue({
                     return;
                 } else {
                     this.currChannelPlaying = this.currChannelPlay;
-                    this.runPlayChannelContents(getChannel.contents);
+                    this.runPlayChannelContents(getChannel.contents); //当前要播放的内容
                 }
             }
         },
@@ -102,40 +110,57 @@ var vm = new Vue({
             var durationArr = []; //时长
             if (Array.isArray(contents)) {
                 for (var i = 0; i < contents.length; i++) {
-                    var single = contents[i]; //每条内容数据
-                    durationArr.push(single.duration); //保存每条内容的时长
+                    durationArr.push(contents[i].duration); //保存每条内容的时长
                 }
                 this.contentsLen = durationArr.length;
+                this.contents = contents;
                 if (durationArr.length > 0) {
-                    this.currContent = 0;
-                    this.duration = durationArr[this.currContent];
+                    this.currContentIndex = 0;
+                    this.duration = durationArr[this.currContentIndex];
                     if (this.timer != null) {
                         clearInterval(this.timer);
-                        this.currContent = 0;
+                        this.currContentIndex = 0;
                     }
                     this.timer = setInterval(function () {
-                        that.changeContens(durationArr); // 传入内容时长
+                        that.handleChangeContens(durationArr); // 传入内容时长
                     }, 1000);
-                    console.log("timer:" + this.timer);
+                    //console.log("timer:" + this.timer);
+                    this.handleImgdelay(this.contents[this.currContentIndex]);
                 }
             }
         },
         //切换内容
-        changeContens: function (durationArr) {
+        handleChangeContens: function (durationArr) {
             //时长还在走
             if (this.duration > 0) {
                 this.duration = this.duration - 1;
                 console.log(this.duration);
             } else {
-                if (this.currContent < this.contentsLen) {
-                    this.currContent++;
-                    this.duration = durationArr[this.currContent];
+                if (this.currContentIndex < this.contentsLen) {
+                    this.currContentIndex++;
+                    if (this.currContentIndex == this.contentsLen) {
+                        this.currContentIndex = 0;
+                    }
+                    this.duration = durationArr[this.currContentIndex];
+                    //console.log("下一条");
+                    this.handleImgdelay(this.contents[this.currContentIndex]);
                 } else {
                     //clearInterval(this.timerC);
-                    this.currContent = 0;
-                    this.duration = durationArr[this.currContent];
+                    this.currContentIndex = 0;
+                    this.duration = durationArr[this.currContentIndex];
+                    console.log("没有下一条，重新为0");
+                    //this.handleImgdelay(this.contents[this.currContentIndex]);
+                    //console.log("没有下一条，重新为0");
                 }
             }
+        },
+        //获取图片需要播放的时长
+        handleImgdelay(singleContents) {
+            console.log(singleContents);
+            console.log("10110101");
+            var duration = singleContents.duration;
+            var len = singleContents.images.length;
+            this.delay = Math.floor(duration / len) * 1000;
         },
         //获取学校播放列表
         getPlayChannel: function () {
@@ -150,11 +175,14 @@ var vm = new Vue({
             })
         },
         swiperInit: function () {
+            var that = this;
             var mySwiper = new Swiper('.swiper-container', {
                 autoplay: {
-                    delay: 5000,
+                    delay: that.delay,
                 },
                 loop: true,
+                noSwiping: true,
+                noSwipingClass: 'stop-swiping',
             })
         },
     },
@@ -165,7 +193,7 @@ var vm = new Vue({
         setInterval(function () {
             console.log("10")
             that.getRunPlayChannel()
-        }, 5000)
+        }, that.min);
     },
     updated: function () {
         this.swiperInit();

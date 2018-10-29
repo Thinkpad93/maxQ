@@ -287,7 +287,7 @@
    </div> 
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import bus from "@/utils/bus";
 import service from "@/api";
 import { contentProperty, contentTemplate } from "@/mixins";
@@ -344,6 +344,20 @@ export default {
     }
   },
   methods: {
+    // ...mapActions("tabs", ["removes"]),
+    // handleCloseTabs(tab) {
+    //   this.removes(tab).then(res => {
+    //     console.log(res);
+    //     if (tab.path === this.$route.path) {
+    //       const latestView = res.slice(-1)[0];
+    //       if (latestView) {
+    //         this.$router.push(latestView);
+    //       } else {
+    //         this.$router.push({ path: "/" });
+    //       }
+    //     }
+    //   });
+    // },
     //iframe操作
     handlePosterSaveData() {
       this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
@@ -544,7 +558,13 @@ export default {
       });
       if (res.errorCode === 0) {
         this.resetForm("form");
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.$alert(`${res.errorMsg}`, "提示", {
+          confirmButtonText: "确定",
+          type: "success",
+          callback: action => {
+            //this.handleCloseTabs(this.$route);
+          }
+        });
       }
     }
   },

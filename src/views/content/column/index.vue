@@ -9,7 +9,7 @@
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            <el-button icon="el-icon-plus" type="primary" @click="dialogFormVisible = true">新增栏目</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增栏目</el-button>
           </el-form-item>   
         </el-form>
       </div>
@@ -42,8 +42,8 @@
     <template>
       <el-dialog 
         center top="40px" 
-        title="" :visible.sync="dialogFormVisible" @close="close">
-        <el-form :rules="rules" ref="formRef" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+        title="" :visible.sync="dialogFormVisible">
+        <el-form :rules="rules" ref="form" :model="form" status-icon size="mini" :label-width="formLabelWidth">
           <el-form-item label="栏目名称" prop="name">
             <el-input v-model="form.name" placeholder="请输入栏目名称"></el-input>
           </el-form-item>
@@ -53,7 +53,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
-          <el-button size="small" type="primary" @click="formAction('formRef')">确定</el-button>
+          <el-button size="small" type="primary" @click="formAction('form')">确定</el-button>
         </span>          
       </el-dialog>
     </template>
@@ -101,7 +101,6 @@ export default {
       return window.innerHeight - 255;
     }
   },
-  watch: {},
   methods: {
     pageChange(curr) {
       this.query.page = curr;
@@ -114,15 +113,12 @@ export default {
     handleSearch() {
       this.queryChannel();
     },
-    close() {
-      this.resetForm("formRef");
-    },
-    addEquipment() {
+    handleAdd() {
+      this.form = {};
       this.dialogFormVisible = true;
     },
     handleEdit(row) {
       this.dialogFormVisible = true;
-      //this.form = { ...row };
       this.form = Object.assign({}, row);
     },
     handleDel(row) {
@@ -150,9 +146,6 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     //显示栏目列表
     async queryChannel() {
       let res = await service.queryChannel(this.query);
@@ -168,7 +161,6 @@ export default {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryChannel();
-        this.resetForm("formRef");
       } else if (res.errorCode === 1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }

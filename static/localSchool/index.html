@@ -13,36 +13,58 @@
 
 <body>
     <div id="root">
-        <div class="main" :data-channel="channelname">
-            <div :class="[index === contentsIndex ? 'active': '']" :data-showtype="item.showtype" :data-title="item.title"
-                class="section" v-for="(item, index) in contents" :key="index">
-                <!-- 纯图片 -->
-                <template v-if="item.showtype === 3">
-                    <div class="swiper-container">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide" v-for="(slide, index) in item.images" :key="index">
-                                <img :src="slide.imageurl" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </template>
-                <!-- 纯图片 -->
-                <!-- 上视频下图片 -->
-                <template v-if="item.showtype === 4">
-                    <div class="video">
-                        <video :src="item.video.videourl" height="300" loop autoplay controls></video>
-                    </div>
-                    <div class="swiper">
-                        <div class="swiper-container">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide" v-for="(slide, index) in item.images" :key="index">
-                                    <img :src="slide.imageurl" alt="">
+        <div class="main">
+            <!-- <div class="marquee">
+                <p class="content">关于国学的定义，除基本定义外，在具体的定义上，到目前为止，学术界尚未做出统一明确的界定动画。</p>
+                <p class="content">关于国学的定义，除基本定义外，在具体的定义上，到目前为止，学术界尚未做出统一明确的界定动画。</p>
+                <p class="content">关于国学的定义，除基本定义外，在具体的定义上，到目前为止，学术界尚未做出统一明确的界定动画。</p>
+            </div> -->
+            <div :class="[index === currChannelPlay ? 'on-channel' : '']" @click="handleChannel(index, $event)" ref="channel"
+                :data-channel="channel.channelname" class="channel" v-for="(channel, index) in channelData" :key="index">
+                <template v-if="index === currChannelPlay">
+                    <div :class="[cindex === currContentIndex ? 'on-contents': '']" :data-title="child.title" class="section"
+                        v-for="(child, cindex) in channel.contents" :key="cindex">
+                        <!-- 纯图片 -->
+                        <template v-if="child.showtype === 4">
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide" v-for="(slide, index) in child.images" :key="index">
+                                        <img :src="slide.imageurl" alt="">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </template>
+                        <!-- 纯图片 -->
+                        <!-- 上视频下图片 -->
+                        <template v-if="child.showtype === 5">
+                            <div class="video">
+                                <video :src="child.video.videourl" height="300" muted loop autoplay controls></video>
+                            </div>
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide stop-swiping" v-for="(slide, index) in child.images" :key="index">
+                                        <img :src="slide.imageurl" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <!-- 上视频下图片 -->
+                        <!-- 上图片下视频 -->
+                        <template v-if="child.showtype === 6">
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide stop-swiping" v-for="(slide, index) in child.images" :key="index">
+                                        <img :src="slide.imageurl" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="video">
+                                <video :src="child.video.videourl" height="300" muted loop autoplay controls></video>
+                            </div>
+                        </template>
+                        <!-- 上图片下视频 -->
                     </div>
                 </template>
-                <!-- 上视频下图片 -->
             </div>
         </div>
     </div>

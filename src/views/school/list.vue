@@ -278,10 +278,6 @@
                 </el-form-item>
             </el-col>
           </el-row>                                
-          <!-- <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="addsForm('addForm')">保存</el-button>
-          </el-row>                              -->
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
@@ -481,10 +477,6 @@
                 </el-form-item>
             </el-col>
           </el-row>            
-          <!-- <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogEdit = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="editorForm('editForm')">保存</el-button>
-          </el-row>                                              -->
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogEdit = false">取消</el-button>
@@ -833,6 +825,8 @@ export default {
         this.dialogAdd = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showSchoolList();
+        this.addImageUrl1 = "";
+        this.addImageUrl2 = "";
         this.$refs.addForm.resetFields();
       }
     },
