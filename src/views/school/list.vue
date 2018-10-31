@@ -6,19 +6,6 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <!-- <el-form-item label="区域选择">
-                <qx-region @last="queryRegion"></qx-region>
-              </el-form-item> -->
-              <!-- <el-form-item label="学校名称">
-                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClear">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>
-              </el-form-item> -->
               <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
@@ -39,7 +26,6 @@
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <!-- <span style="color:#409EFF;cursor:pointer;" @click="handleSchoolInfo(scope.row.schoolId)">{{ scope.row.name }}</span> -->
             <router-link style="color:#409EFF" 
               :to="{path: `/school/views/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link>
           </template>                    
@@ -574,9 +560,6 @@ export default {
         address: [
           { required: true, message: "请输入详细地址", trigger: "blur" }
         ]
-        // channelTemplateId: [
-        //   { required: true, message: "请选择栏目模板", trigger: "blur" }
-        // ]
       }
     };
   },

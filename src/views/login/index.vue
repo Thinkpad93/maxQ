@@ -14,7 +14,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button style="width:100%;" type="primary" native-type="submit" @click="submit">登陆</el-button>
+            <el-button style="width:100%;" type="primary" native-type="submit" @click="formSubmit">登陆</el-button>
           </el-form-item>               
         </el-form>     
       </div>        
@@ -38,7 +38,7 @@ export default {
     };
   },
   methods: {
-    submit() {
+    formSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.$store
@@ -57,9 +57,7 @@ export default {
         }
       });
     }
-  },
-  created() {},
-  mounted() {}
+  }
 };
 </script>
 <style lang="less" scoped>

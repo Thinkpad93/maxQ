@@ -6,20 +6,6 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <!-- <el-form-item label="区域选择">
-                <qx-region @last="lastChange"></qx-region>
-              </el-form-item>  
-              <el-form-item label="学校名称">
-                <el-select v-model="query.schoolId" clearable filterable placeholder="选择学校" @change="handleSchool">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>
-              </el-form-item>    -->
-              <!-- <qx-region-t @regionChange="handleRegionChange"></qx-region-t> -->
               <el-form-item label="学校名称">
                 <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
               </el-form-item>  
@@ -27,7 +13,6 @@
                 <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
               </el-form-item>                                       
               <el-form-item>
-                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
               </el-form-item>                          
@@ -127,10 +112,6 @@
               </el-select>
             </el-form-item>
            </template>
-           <!-- <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="submitForm('form')">保存</el-button>             
-           </el-row> -->
          </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>

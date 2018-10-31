@@ -111,14 +111,10 @@
             <el-form-item label="联系电话" prop="phone">
               <el-input v-model="addForm.phone" placeholder="请输入联系电话"></el-input>
             </el-form-item>
-            <!-- <el-row style="text-align:center">
-                <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-                <el-button :loading="btnloading" size="mini" type="primary" @click="addsForm('addForm')">绑定</el-button>
-            </el-row>             -->
           </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
-          <el-button :loading="btnloading" size="small" type="primary" @click="addsForm('addForm')">确定</el-button>
+          <el-button size="small" type="primary" @click="addsForm('addForm')">确定</el-button>
         </span>             
        </el-dialog>      
     </template> 
@@ -163,14 +159,10 @@
            <el-form-item label="联系电话" prop="phone">
              <el-input v-model="edit.phone"></el-input>
            </el-form-item>
-           <!-- <el-row style="text-align:center">
-              <el-button size="mini" @click="dialogEdit = false">取消</el-button>
-              <el-button :loading="btnloading" size="mini" type="primary" @click="editorForm('editForm')">确定</el-button>
-           </el-row> -->
          </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogEdit = false">取消</el-button>
-          <el-button :loading="btnloading" size="small" type="primary" @click="editorForm('editForm')">确定</el-button>
+          <el-button size="small" type="primary" @click="editorForm('editForm')">确定</el-button>
         </span>          
        </el-dialog>
      </template> 
@@ -195,7 +187,6 @@ export default {
       dialogAdd: false,
       dialogView: false,
       dialogEdit: false,
-      btnloading: false,
       formLabelWidth: "100px",
       selected: "",
       rules: {
@@ -373,7 +364,6 @@ export default {
     editorForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnloading = true;
           let { postTime, schoolName, totalCount, ...args } = this.edit;
           this.updateDeviceBind(args);
         } else {
@@ -435,7 +425,6 @@ export default {
       let res = await service.updateDeviceBind(params);
       if (res.errorCode === 0) {
         this.dialogEdit = false;
-        this.btnloading = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showDeviceList();
       }

@@ -139,7 +139,7 @@
         <el-table-column label="播放内容" prop="content">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
-              <p class="simInput" @click="dialogContent = true">查看播放内容</p>
+              <p class="simInput" @click="handleViewPlayData(scope.row)">查看播放内容</p>
             </template>
             <template v-else>
               <!-- <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a> -->
@@ -158,7 +158,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button :loading="saveloading" :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
+            <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" v-show="scope.row.show" @click="handleCancel(scope.row)">取消</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
             <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
@@ -174,12 +174,18 @@
           :data="playContendata" style="width: 100%" border stripe size="mini">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column property="title" label="播放内容"></el-table-column>
+          <el-table-column property="contentType" label="栏目属性">
+            <template slot-scope="scope">
+              <span v-if="scope.row.contentType === 0">非滚动</span>
+              <span v-else>滚动</span>
+            </template>
+          </el-table-column>
           <el-table-column property="postTime" label="发布时间"></el-table-column>
           <el-table-column property="duration" label="单次播放时长"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button size="mini" @click="dialogContent = false">取消</el-button>
-          <el-button size="mini" type="primary" @click="toggleSelection">确定</el-button>
+          <el-button size="small" @click="dialogContent = false">取消</el-button>
+          <el-button size="small" type="primary" @click="toggleSelection">确定</el-button>
         </div>
       </el-dialog>      
     </template>
@@ -191,13 +197,6 @@
         ref="channelForm" 
         :model="channelForm" 
         status-icon size="small" :label-width="formLabelWidth">
-            <!-- <el-row :gutter="20">
-              <el-col :span="24">
-                <el-form-item label="学校ID">
-                  <el-input v-model="channelForm.schoolId" disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row> -->
             <el-row :gutter="10">
               <el-col :span="12">
                 <el-form-item label="栏目名称" prop="channelId">
@@ -307,7 +306,7 @@ export default {
       dialogValidity: false,
       dialogContent: false,
       btnloading: false,
-      saveloading: false,
+      //saveloading: false,
       dialogChannel: false,
       formLabelWidth: "100px",
       countCheckbox: [], //记录选择的行数checkbox
@@ -322,6 +321,7 @@ export default {
       },
       contentsList: [],
       playContendata: [],
+      currPlayConten: [],
       channelList: [],
       query: {
         schoolName: "",
@@ -378,30 +378,65 @@ export default {
     handleSelectSchool(value) {
       this.schoolId = value.schoolId;
       this.channelForm.schoolId = value.schoolId;
-      //this.query.schoolName = value.value;
     },
     handleRegionChange(queryId, queryType) {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
+    //查看播放的内容
+    handleViewPlayData(row) {
+      this.dialogContent = true;
+      let { contents } = row;
+      let playContendata = this.playContendata;
+      let rows = [];
+      for (let i = 0; i < contents.length; i++) {
+        for (let j = 0; j < playContendata.length; j++) {
+          if (contents[i].contentId === playContendata[j].contentId) {
+            rows.push(playContendata[j]);
+          }
+        }
+      }
+      this.currPlayConten = rows;
+      console.log(contents);
+      console.log(playContendata);
+      console.log(rows);
+      //let rows = [];
+      // contents.forEach((elem, index) => {
+      //   playContendata.forEach((c, cindex) => {
+      //     if (elem.contentId === c.contentId) {
+      //       this.currPlayConten.push(c);
+      //     }
+      //   });
+      // });
+      //console.log(this.currPlayConten);
+    },
     show() {
       this.$nextTick(() => {
-        let countCheckbox = this.countCheckbox;
-        let playContendata = this.playContendata;
-        if (!countCheckbox.length) {
-          playContendata.forEach(row => {
-            if (!row.status) {
-              this.$refs.playCon.toggleRowSelection(row);
-            }
-          });
-        }
+        this.$refs.playCon.clearSelection();
+        this.currPlayConten.forEach(col => {
+          this.$refs.playCon.toggleRowSelection(col);
+        });
       });
+      // this.$nextTick(() => {
+      //   let countCheckbox = this.countCheckbox;
+      //   let playContendata = this.playContendata;
+      //   if (!countCheckbox.length) {
+      //     playContendata.forEach(row => {
+      //       if (!row.status) {
+      //         this.$refs.playCon.toggleRowSelection(row);
+      //       }
+      //     });
+      //   }
+      // });
     },
     close() {
-      this.$nextTick(() => {});
+      this.$nextTick(() => {
+        //this.$refs.playCon.clearSelection();
+      });
     },
     toggleSelection() {
       this.dialogContent = false;
+      console.log(this.countCheckbox);
     },
     selectCheckbox(selection) {
       this.countCheckbox = [].concat(selection);
@@ -453,9 +488,8 @@ export default {
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
-      //let scrollType = this.channelForm.scrollType;
       this.queryPlayContent({ schoolId, channelId: value });
-      //this.queryPlayContent({ schoolId, channelId: value, scrollType });
+      //this.queryPlayContentList({ schoolId, channelId: value });
     },
     // handleQueryContents(value) {
     //   let schoolId = this.channelForm.schoolId;
@@ -471,7 +505,6 @@ export default {
       this.value4[1] = row.playEndTime;
       this.disabled = 1;
       this.queryPlayContent({ channelId, schoolId }, "edit");
-      //this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
     },
     handleDelete(index, row) {
       let { itemId, schoolId } = row;
@@ -496,28 +529,14 @@ export default {
       });
     },
     handleSave(row) {
-      var countCheckbox = this.countCheckbox; //选中的数据
-      var playContendata = this.playContendata.slice();
-      var { show, state, channelName, postTime, ...args } = row;
-      var content = [];
-      var one = [];
-      var obj = {};
+      let countCheckbox = this.countCheckbox; //选中的数据
+      let playContendata = this.playContendata.slice();
+      let { show, state, channelName, postTime, ...args } = row;
+      let content = [];
+      let obj = {};
       if (countCheckbox.length) {
         content = countCheckbox.map(item => {
-          return { contentId: item.contentId, status: 0 };
-        });
-        playContendata.forEach(oldItem => {
-          if (
-            !content.find(newItem => {
-              return oldItem.contentId == newItem.contentId;
-            })
-          ) {
-            one.push({ contentId: oldItem.contentId, status: 1 });
-          }
-        });
-      } else {
-        content = playContendata.map(item => {
-          return { contentId: item.contentId, status: item.status };
+          return { contentId: item.contentId };
         });
       }
       if (this.isChangeTime) {
@@ -525,10 +544,40 @@ export default {
         args.playEndTime = this.value4[1];
       }
       obj = Object.assign({}, args, {
-        contents: content.concat(one)
+        contents: content
       });
-      this.saveloading = true;
+      console.log(obj);
       this.updateSchoolPlayChannel(obj);
+      // var one = [];
+      // var obj = {};
+      // if (countCheckbox.length) {
+      //   content = countCheckbox.map(item => {
+      //     return { contentId: item.contentId, status: 0 };
+      //   });
+      //   playContendata.forEach(oldItem => {
+      //     if (
+      //       !content.find(newItem => {
+      //         return oldItem.contentId == newItem.contentId;
+      //       })
+      //     ) {
+      //       one.push({ contentId: oldItem.contentId, status: 1 });
+      //     }
+      //   });
+      // } else {
+      //   content = playContendata.map(item => {
+      //     return { contentId: item.contentId, status: item.status };
+      //   });
+      // }
+      // if (this.isChangeTime) {
+      //   args.playStartTime = this.value4[0];
+      //   args.playEndTime = this.value4[1];
+      // }
+      // obj = Object.assign({}, args, {
+      //   contents: content.concat(one)
+      // });
+      // console.log(obj);
+      //this.saveloading = true;
+      //this.updateSchoolPlayChannel(obj);
     },
     //赋值自定义有效期时间
     validityShow(row) {},
@@ -608,7 +657,7 @@ export default {
         this.channelList = res.data;
       }
     },
-    //查询频道对应内容列表 添加和编辑时有用
+    //查询频道对应内容 查看
     async queryPlayContent(params = {}, str = "add") {
       let res = await service.queryPlayContent(params);
       if (res.errorCode === 0) {
@@ -618,6 +667,14 @@ export default {
         } else {
           this.playContendata = res.data;
         }
+      }
+    },
+    //查询频道对应内容列表  新增
+    async queryPlayContentList(params) {
+      let res = await service.queryPlayContentList(params);
+      if (res.errorCode === 0) {
+        this.channelForm.contents = [];
+        this.contentsList = res.data;
       }
     },
     //更新表单播放列表
@@ -656,7 +713,7 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        this.saveloading = false;
+        //this.saveloading = false;
         this.disabled = 0;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.querySchoolPlayChannel(this.schoolId);

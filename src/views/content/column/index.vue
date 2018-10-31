@@ -53,7 +53,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
-          <el-button size="small" type="primary" @click="formAction('form')">确定</el-button>
+          <el-button size="small" type="primary" @click="formSubmit('form')">确定</el-button>
         </span>          
       </el-dialog>
     </template>
@@ -69,10 +69,7 @@ export default {
   },
   data() {
     return {
-      dialogEdit: false,
-      dialogAdd: false,
       dialogFormVisible: false,
-      isSave: true,
       formLabelWidth: "100px",
       query: {
         channelName: "",
@@ -83,16 +80,14 @@ export default {
         name: "",
         description: ""
       },
+      tableData: [],
       totalCount: 0, //分页总数
-      addForm: {},
-      editForm: {},
       rules: {
         name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
         description: [
           { required: true, message: "请输入栏目描述", trigger: "blur" }
         ]
-      },
-      tableData: []
+      }
     };
   },
   computed: {
@@ -134,7 +129,7 @@ export default {
           return false;
         });
     },
-    formAction(formName) {
+    formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { postTime, ...args } = this.form;

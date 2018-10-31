@@ -174,9 +174,9 @@ export default {
       }
     }
   },
-  mounted() {
+  activated() {
     this.queryPublishContentList(this.query);
-  }
+  },
 };
 </script>
 <style lang="less">

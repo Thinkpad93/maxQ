@@ -150,8 +150,8 @@ export default {
   },
   data() {
     return {
-      dialogAdd: false,
-      dialogEdit: false,
+      //dialogAdd: false,
+      //dialogEdit: false,
       dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",

@@ -120,6 +120,12 @@ export function queryPlayContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//新增播放列表对应内容
+export function queryPlayContentList(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/queryPlayContentList.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //根据关键字查询学校名称
 export function selectSchoolNameLike(params) {
   return ax.post('/action/mod-xiaojiao/content/schoolPlay/selectSchoolNameLike.do', params)

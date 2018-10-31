@@ -243,12 +243,7 @@ export default {
     async queryContentList() {
       let res = await service.queryContentList(this.query);
       if (res.errorCode === 0) {
-        let data = res.data.data;
-        if (!Array.isArray(data)) {
-          data = [];
-        } else {
-          this.tableData = data;
-        }
+        this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       }
     },
