@@ -2,17 +2,17 @@
   "schoolname": "幼儿园",
   "playchannel": [{
       "playstarttime": "10:28:00",
-      "playendtime": "20:40:00",
+      "playendtime": "23:40:00",
       "channelname": "科普知识",
       "scrolltype": 0,
       "priority": 1,
       "validtype": 1,
       "validstarttime": "2018-10-29",
-      "validendtime": "2018-10-30",
+      "validendtime": "2018-11-02",
       "contents": [{
           "title": "禅与摩托车维修艺术",
-          "duration": "30",
-          "showtype": 6,
+          "duration": "300",
+          "showtype": 4,
           "video": {
             "videourl": "/video/017001.mp4",
             "update_info": {
@@ -49,7 +49,7 @@
         },
         {
           "title": "说文解字",
-          "duration": "10",
+          "duration": "1000",
           "showtype": 5,
           "video": {
             "videourl": "/video/017001.mp4",
@@ -121,7 +121,7 @@
         {
           "title": "说人话",
           "duration": "100",
-          "showtype": 4,
+          "showtype": 3,
           "images": [{
             "imageurl": "/image/201810232043.jpg",
             "update_info": {
@@ -145,7 +145,7 @@
       "contents": [{
           "title": "西游记",
           "duration": "100",
-          "showtype": 4,
+          "showtype": 3,
           "images": [{
               "imageurl": "/image/201810232045.jpg",
               "update_info": {
@@ -195,7 +195,7 @@
       "priority": 5,
       "validtype": 1,
       "validstarttime": "2018-10-26",
-      "validendtime": "2018-10-30",
+      "validendtime": "2018-10-29",
       "contents": [{
           "title": "推荐答案",
           "duration": "10",

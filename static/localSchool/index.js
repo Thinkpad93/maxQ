@@ -52,26 +52,40 @@ var vm = new Vue({
         getRunPlayChannel: function () {
             var that = this;
             var channelData = this.channelData;
-            var ymd = this.getNowDate(1);
+            //var ymd = this.getNowDate(1);
             var hms = this.getNowDate();
+            var now = new Date().getTime();
             var priorityArr = []; //优先级
             for (var i = 0; i < channelData.length; i++) {
                 var channels = channelData[i]; //每个栏目
                 var validstarttime = channels.validstarttime;
+                var validendtime = channels.validendtime;
                 var playstarttime = channels.playstarttime;
                 var playendtime = channels.playendtime;
-                //如果今天有要播放的栏目
-                if (ymd == validstarttime) {
-                    //当前时间hh:mm:ss是否在播放开始时间和结束时间内
+
+                var start = new Date(validstarttime + " " + playstarttime).getTime();
+                var end = new Date(validendtime + " " + playendtime).getTime();
+
+                if (now > start && now < end) {
                     if (hms >= playstarttime && hms <= playendtime) {
-                        //如果存在多个栏目，那么保存栏目优先级
                         priorityArr.push(channels.priority);
                         console.log("有栏目要播放了！");
-                    } else {
-                        //如果当前时间没有要播放的栏目，那么随机播放视频
-                        console.log("没有栏目要播放了！");
                     }
+                } else {
+                    console.log("没有栏目要播放了！");
                 }
+                //如果今天有要播放的栏目
+                //if (ymd == validstarttime) {
+                //当前时间hh:mm:ss是否在播放开始时间和结束时间内
+                //if (hms >= playstarttime && hms <= playendtime) {
+                //如果存在多个栏目，那么保存栏目优先级
+                //priorityArr.push(channels.priority);
+                //console.log("有栏目要播放了！");
+                // } else {
+                //如果当前时间没有要播放的栏目，那么随机播放视频
+                //console.log("没有栏目要播放了！");
+                //}
+                //}
             }
             if (priorityArr.length) {
                 //简单的排序
