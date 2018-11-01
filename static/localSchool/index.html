@@ -14,17 +14,19 @@
 <body>
     <div id="root">
         <div class="main">
-            <div class="marquee">
-                <div class="item on">
-                    <p>大佑凭借该曲获得第六届东南劲爆音乐榜华语乐坛杰出贡献奖</p>
-                    <p>大佑凭借该曲获得第六届东南劲爆音乐榜华语乐坛杰出贡献奖</p>
-                </div>
-                <div class="item">
-                    <p>收录在1985年发行的单曲专辑中</p>
-                </div>
-            </div>
-            <div :class="[index === currChannelPlay ? 'on-channel' : '']" @click="handleChannel(index, $event)" ref="channel"
-                :data-channel="channel.channelname" class="channel" v-for="(channel, index) in channelData" :key="index">
+            <div :class="[index === currChannelPlay ? 'on-channel' : '', 
+                index === currScrollChannelPlay ? 'on-scroll': '',
+                channel.scrolltype === 1 ? 'scroll': '']"
+                ref="channel" :data-channel="channel.channelname" class="channel" v-for="(channel, index) in channelData"
+                :key="index">
+                <template v-if="index === currScrollChannelPlay">
+                    <div :class="[sindex === currContentScrollIndex ? 'open-marquee': '']" class="marquee" :data-title="s.title"
+                        v-for="(s, sindex) in channel.scrool_content" :key="sindex">
+                        <template v-for="(item, ssindex) in 2" :key="ssindex">
+                            <p :class="[ssindex === 0 ? 'first': 'last' ]">{{ s.scroll_content }}</p>
+                        </template>
+                    </div>
+                </template>
                 <template v-if="index === currChannelPlay">
                     <div :class="[cindex === currContentIndex ? 'on-contents': '']" :data-title="child.title" class="section"
                         v-for="(child, cindex) in channel.contents" :key="cindex">
@@ -69,6 +71,7 @@
                         <!-- 上图片下视频 -->
                     </div>
                 </template>
+
             </div>
         </div>
     </div>
