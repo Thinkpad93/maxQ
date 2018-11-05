@@ -39,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["name", "type"])
+    ...mapGetters(["name", "type", "distpickerData"])
   },
   methods: {
     collapseChage() {
@@ -66,10 +66,9 @@ export default {
   },
   created() {},
   mounted() {
-    //console.log(this.$root);
-    if (getToken()) {
-      this.$store.dispatch("comm/qxregion");
-    }
+    // if (getToken()) {
+    //   this.$store.dispatch("comm/qxregion");
+    // }
   }
 };
 </script>

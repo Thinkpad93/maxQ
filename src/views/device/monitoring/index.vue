@@ -21,7 +21,6 @@
               </el-form-item> 
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
               </el-form-item>              
             </el-form>
           </div>
@@ -78,23 +77,27 @@
     <!-- 设备详情 -->
     <template>
       <el-dialog width="60%" center top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
-        <el-row :gutter="10">
-          <el-col :span="10">
-            <img src="https://fakeimg.pl/300x600/4CD964/fff" class="image">
-          </el-col>
-          <el-col :span="14">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one">
+            <img src="https://fakeimg.pl/500x736/4CD964/fff" class="image" width="500" height="736">
+          </div>
+          <div class="two">
             <div class="list">
-              <p>截屏时间：<span>{{ viewDevice.snapshotTime }}</span></p>
               <p>学校：<span>{{ viewDevice.schoolName }}</span></p>
               <p>设备编号：<span>{{ viewDevice.deviceNo }}</span></p>
               <p>设备IP：<span>{{ viewDevice.ip }}</span></p>
               <p>MAC地址：<span>{{ viewDevice.mac }}</span></p>
-              <p>设备状态：<span>{{ viewDevice.status }}</span></p>
+              <p>设备状态：
+                <span v-if="viewDevice.status === 0" style="color:#67C23A">正常</span>
+                <span v-else-if="viewDevice.status === 1" style="color:#F56C6C;">故障</span>
+                <span v-else style="color:#E6A23C;">正常关机</span>
+              </p>
               <p>安装位置：<span>{{ viewDevice.address }}</span></p>
               <p>设备管理员：<span>{{ viewDevice.manager }}</span></p>
               <p>联系电话：<span>{{ viewDevice.phone }}</span></p>
+              <p>快照时间：<span>{{ viewDevice.snapshotTime }}</span></p>
             </div>
-          </el-col>
+          </div>
         </el-row>
       </el-dialog>
     </template>
@@ -256,6 +259,14 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.row-bg {
+  > div {
+    margin: 0 15px;
+  }
+  .two {
+    flex: 1;
+  }
+}
 .container-block {
   padding: 20px 20px 0 20px;
   background-color: #fff;

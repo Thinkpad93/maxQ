@@ -198,7 +198,7 @@
         :model="channelForm" 
         status-icon size="small" :label-width="formLabelWidth">
             <el-row :gutter="10">
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="栏目名称" prop="channelId">
                   <el-select v-model="channelForm.channelId" placeholder="请选择" style="width:100%;" @change="handleQueryContent">
                     <el-option v-for="item in channelList" 
@@ -209,21 +209,21 @@
                   </el-select>                  
                 </el-form-item>                
               </el-col>
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="栏目属性" prop="scrollType">
-                  <el-select v-model="channelForm.scrollType" style="width:100%;">
+                  <el-select v-model="channelForm.scrollType" style="width:100%;" @change="handleQueryContents">
                     <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
                   </el-select>              
                 </el-form-item>  
               </el-col>
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="栏目有效期" prop="validType">
                   <el-select v-model="channelForm.validType" style="width:100%;">
                     <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
                   </el-select> 
                 </el-form-item>  
               </el-col>
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="播放优先级" prop="priority">
                   <el-select v-model="channelForm.priority" placeholder="请选择" style="width:100%;">
                     <el-option 
@@ -235,7 +235,7 @@
                   </el-select> 
                 </el-form-item>  
               </el-col>
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="播放时段" prop="playTime">
                   <el-time-picker
                     is-range
@@ -250,7 +250,7 @@
                   </el-time-picker>                
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="时间段选择" prop="validTime">
                   <el-date-picker
                     value-format="yyyy-MM-dd"
@@ -264,7 +264,7 @@
                   </el-date-picker>                
                 </el-form-item>                    
               </el-col>
-              <el-col :span="12">
+              <el-col :span="24">
                 <el-form-item label="播放内容" prop="contents">
                   <el-select v-model="channelForm.contents" value-key="contentId" multiple collapse-tags placeholder="请选择播放内容" style="width:100%;">
                     <el-option
@@ -488,14 +488,15 @@ export default {
     },
     handleQueryContent(value) {
       let schoolId = this.channelForm.schoolId;
-      this.queryPlayContent({ schoolId, channelId: value });
+      let scrollType = this.channelForm.scrollType;
+      this.queryPlayContent({ schoolId, channelId: value, scrollType });
       //this.queryPlayContentList({ schoolId, channelId: value });
     },
-    // handleQueryContents(value) {
-    //   let schoolId = this.channelForm.schoolId;
-    //   let channelId = this.channelForm.channelId;
-    //   this.queryPlayContent({ schoolId, channelId, scrollType: value });
-    // },
+    handleQueryContents(value) {
+      let schoolId = this.channelForm.schoolId;
+      let channelId = this.channelForm.channelId;
+      this.queryPlayContent({ schoolId, channelId, scrollType: value });
+    },
     handleEdit(index, row) {
       let { channelId, schoolId, scrollType } = row;
       let tableData = this.tableData;
@@ -504,7 +505,7 @@ export default {
       this.value4[0] = row.playStartTime;
       this.value4[1] = row.playEndTime;
       this.disabled = 1;
-      this.queryPlayContent({ channelId, schoolId }, "edit");
+      this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
     },
     handleDelete(index, row) {
       let { itemId, schoolId } = row;
@@ -647,9 +648,9 @@ export default {
         }
       });
     },
-    viewChannelContent(row) {
-      let { channelId, schoolId } = row;
-    },
+    // viewChannelContent(row) {
+    //   let { channelId, schoolId } = row;
+    // },
     //查询栏目名称
     async queryChannelAll() {
       let res = await service.queryChannelAll({});
@@ -667,14 +668,6 @@ export default {
         } else {
           this.playContendata = res.data;
         }
-      }
-    },
-    //查询频道对应内容列表  新增
-    async queryPlayContentList(params) {
-      let res = await service.queryPlayContentList(params);
-      if (res.errorCode === 0) {
-        this.channelForm.contents = [];
-        this.contentsList = res.data;
       }
     },
     //更新表单播放列表
@@ -702,8 +695,6 @@ export default {
       if (res.errorCode === 0) {
         if (res.data.length) {
           this.tableData = res.data;
-        } else {
-          this.tableData = [];
         }
       }
     },
@@ -713,7 +704,6 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        //this.saveloading = false;
         this.disabled = 0;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.querySchoolPlayChannel(this.schoolId);

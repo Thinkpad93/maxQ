@@ -1,19 +1,19 @@
 <template>
-    <el-form-item label="区域选择" prop="regionId" ref="region">   
-      <el-select :clearable="clear" v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
-        <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>  
-      <el-select :clearable="clear" v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
-        <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>      
-      <el-select :clearable="clear" v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
-        <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>                                     
-    </el-form-item>       
+  <el-form-item label="区域选择" prop="regionId" ref="region">   
+    <el-select :clearable="clear" v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
+      <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    </el-select>  
+    <el-select :clearable="clear" v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
+      <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    </el-select>      
+    <el-select :clearable="clear" v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
+      <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    </el-select>                                     
+  </el-form-item>        
 </template>
 <script>
 import service from "@/api";
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "",
   props: {
@@ -37,9 +37,31 @@ export default {
     };
   },
   computed: {
-    //...mapState("comm", ["distpickerData"])
+    ...mapGetters(["distpickerData"])
   },
   methods: {
+    handleProvinceCityArea() {
+      for (let p = 0; p < this.distpickerData.length; p++) {
+        let pName = this.distpickerData[p].name;
+        let pId = this.distpickerData[p].id;
+        let pChild = this.distpickerData[p].children;
+        this.provinceList.push({ pName, pId });
+        for (let c = 0; c < pChild.length; c++) {
+          let cName = pChild[c].name;
+          let cId = pChild[c].id;
+          let cChild = pChild[c].children;
+          this.cityList.push({ cName, cChild });
+          for (let a = 0; a < cChild.length; a++) {
+            let aName = cChild[a].name;
+            let aId = cChild[a].id;
+            this.areaList.push({ aName, aId });
+          }
+        }
+      }
+      console.log(this.provinceList);
+      console.log(this.cityList);
+      console.log(this.areaList);
+    },
     handleProvince(value) {
       //不触发点击清空时的调用
       if (typeof value === "number") {
@@ -88,6 +110,7 @@ export default {
     }
   },
   mounted() {
+    //this.handleProvinceCityArea();
     this.queryRegion(0, 0);
   }
 };

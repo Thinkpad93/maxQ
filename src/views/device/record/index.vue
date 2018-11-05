@@ -5,26 +5,12 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <!-- <el-form-item label="区域选择">
-                <qx-region @last="queryRegion"></qx-region>
-              </el-form-item>              
-              <el-form-item label="学校名称">
-                <el-select v-model="schoolId" clearable filterable placeholder="选择学校" @change="handleSchool" @clear="handleClearSchool">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>
-              </el-form-item>        -->
               <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
               </el-form-item>                 
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <!-- <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button> -->
                 <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
               </el-form-item>              
             </el-form>
@@ -150,14 +136,11 @@ export default {
   },
   data() {
     return {
-      //dialogAdd: false,
-      //dialogEdit: false,
       dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",
       //默认参数
       query: {
-        //schoolId: 0,
         schoolName: "",
         scopeType: "",
         scopeId: "",

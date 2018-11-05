@@ -304,17 +304,6 @@ export default {
       this.showDeviceList();
     },
     //搜索
-    // search() {
-    //   let page = this.query.page;
-    //   if (this.schoolId === null) {
-    //     this.$message({ message: "请选择学校名称", type: "warning" });
-    //     return;
-    //   }
-    //   if (page > 1) {
-    //     this.query.page = 1;
-    //   }
-    //   this.showDeviceList();
-    // },
     handleSearch() {
       this.showDeviceList();
     },
@@ -322,21 +311,11 @@ export default {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
-    // handleSchool(value) {
-    //   this.query.schoolId = value;
-    // },
-    // handleClearSchool() {
-    //   this.query.schoolId = 0;
-    // },
     handleEdit(row) {
       this.dialogEdit = true;
-      if (row.labelIds === null) {
-        row.labelIds = [];
-      }
       this.edit = { ...row };
       this.queryProvinceCityRegionBySchoolId(row.schoolId);
     },
-    handleSelect() {},
     handleDel(row) {
       let that = this;
       this.$confirm(`确定删除吗?`, "提示", {

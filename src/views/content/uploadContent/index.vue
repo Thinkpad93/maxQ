@@ -71,9 +71,9 @@
                           ]">
                           <el-time-picker 
                             format="mm:ss"
-                            value-format="mm:ss"                            
+                            value-format="mm:ss"                       
                             v-model="form.durationTime" 
-                            placeholder="选择分秒" 
+                            placeholder="选择播放时长" 
                             style="width: 100%;">
                           </el-time-picker>
                         </el-form-item>                    
@@ -111,7 +111,6 @@
                   </el-row>                  
                   <el-row :gutter="10">
                     <el-col :span="12">
-                      <!-- <div style="opacity: 0;">图片</div> -->
                       <template>
                         <el-upload
                           :disabled="disabledImg === 0"
@@ -129,7 +128,6 @@
                       </template>                   
                     </el-col>
                     <el-col :span="12">
-                      <!-- <div style="opacity: 0;">视频</div> -->
                       <template>
                         <el-upload
                           :disabled="disabledVideo === 0"

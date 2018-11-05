@@ -43,11 +43,15 @@
       <el-dialog 
         center top="40px" 
         title="" :visible.sync="dialogFormVisible">
-        <el-form :rules="rules" ref="form" :model="form" status-icon size="mini" :label-width="formLabelWidth">
-          <el-form-item label="栏目名称" prop="name">
+        <el-form ref="form" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+          <el-form-item label="栏目名称" prop="name" :rules="[
+              { required: true, message: '请输入栏目名称', trigger: 'blur' }
+            ]">
             <el-input v-model="form.name" placeholder="请输入栏目名称"></el-input>
           </el-form-item>
-          <el-form-item label="栏目描述" prop="description">
+          <el-form-item label="栏目描述" prop="description" :rules="[
+              { required: true, message: '请输入栏目描述', trigger: 'blur' }
+            ]">
             <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入栏目描述"></el-input>
           </el-form-item>
         </el-form>
@@ -81,13 +85,7 @@ export default {
         description: ""
       },
       tableData: [],
-      totalCount: 0, //分页总数
-      rules: {
-        name: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
-        description: [
-          { required: true, message: "请输入栏目描述", trigger: "blur" }
-        ]
-      }
+      totalCount: 0 //分页总数
     };
   },
   computed: {

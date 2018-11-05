@@ -446,6 +446,8 @@ export default {
       if (res.errorCode === 0) {
         //this.resetForm("form");
         this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }else if (res.errorCode === -1) {
+        this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     }
   },

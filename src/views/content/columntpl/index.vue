@@ -66,12 +66,12 @@
             { required: true, message: '请输入栏目模板描述', trigger: 'blur' }
           ]">
             <el-input type="textarea" v-model="tplform.description" :rows="5" placeholder="请输入模板描述"></el-input>
-          </el-form-item>                  
-          <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="addTemplate('tplform')">保存</el-button>
-          </el-row>                                            
+          </el-form-item>                                                           
         </el-form> 
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogAdd = false">取消</el-button>
+          <el-button size="small" type="primary" @click="addTemplate('tplform')">确定</el-button>
+        </span>          
       </el-dialog>
     </template> 
     <!-- 新增栏目模板详细项 -->
