@@ -6,11 +6,10 @@ import router from './router';
 import store from './store';
 
 
-import 'normalize.css/normalize.css';
+
 import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import '@/styles/site.less';
-import '@/iconfont/iconfont.css';
+
 
 import filterAsyncRouter from "@/utils/filterAsyncRouter";
 import {
@@ -64,7 +63,5 @@ new Vue({
   components: {
     App
   },
-  template: '<App/>',
-  created() {},
-  mounted() {},
+  template: '<App/>'
 })

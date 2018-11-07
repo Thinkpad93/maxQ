@@ -35,13 +35,18 @@
      </template> 
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize"
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>        
      <!-- 新增 or 编辑 -->
      <template>
@@ -90,12 +95,8 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 export default {
   name: "role",
-  components: {
-    "qx-pagination": pagination
-  },
   data() {
     return {
       dialogAdd: false,
@@ -105,7 +106,6 @@ export default {
         page: 1,
         pageSize: 20
       },
-      totalCount: 0, //分页总数
       form: {
         roleId: null,
         roleName: "",
@@ -115,6 +115,7 @@ export default {
       permitIds: [],
       roleLevelList: [{ id: 1, name: "1" }],
       tableData: [],
+      totalCount: 0, //分页总数
       menuData: [], //菜单数据
       defaultProps: {
         children: "children",
@@ -129,11 +130,11 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryRoleList(this.query);
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryRoleList(this.query);
     },

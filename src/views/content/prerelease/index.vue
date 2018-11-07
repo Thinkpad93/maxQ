@@ -34,13 +34,18 @@
     </template>
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize" 
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>      
     <!-- 预发布 -->
     <template>
@@ -104,12 +109,10 @@
 import { mapGetters } from "vuex";
 import service from "@/api";
 import regiont from "@/components/qxregion";
-import pagination from "@/components/pagination";
 export default {
   name: "prerelease",
   components: {
-    "qx-region-t": regiont,
-    "qx-pagination": pagination
+    "qx-region-t": regiont
   },
   data() {
     return {
@@ -120,14 +123,12 @@ export default {
         page: 1,
         pageSize: 20
       },
-      totalCount: 0,
       form: {
         scopeType: null,
         scopeId: null,
         propertyId: null,
         typeId: null,
         labelIds: [],
-        //regionId: [],
         sponsorIds: []
       },
       rules: {
@@ -148,7 +149,8 @@ export default {
       typeidList: [],
       schoolLabel: [],
       labelsList: [],
-      tableData: []
+      tableData: [],
+      totalCount: 0
     };
   },
   computed: {
@@ -160,11 +162,11 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryPrepublishContentList(this.query);
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryPrepublishContentList(this.query);
     },

@@ -5,9 +5,11 @@
 </template>
 <script>
 export default {
-  name: 'App'
-}
+  name: "App"
+};
 </script>
-<style lang="less" scoped>
-
+<style lang="less">
+@import "normalize.css/normalize.css";
+@import "./styles/site.less";
+@import "./iconfont/iconfont.css";
 </style>

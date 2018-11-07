@@ -44,13 +44,18 @@
     </template> 
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize" 
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>    
     <!-- 新增 or 编辑检修记录 -->
     <template>
@@ -124,15 +129,13 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
 export default {
   name: "record",
   components: {
     "qx-region": region,
-    "qx-region-t": regiont,
-    "qx-pagination": pagination
+    "qx-region-t": regiont
   },
   data() {
     return {
@@ -147,7 +150,6 @@ export default {
         page: 1,
         pageSize: 20
       },
-      totalCount: 0,
       schoolId: null,
       //学校名称
       schoolList: [],
@@ -155,7 +157,8 @@ export default {
       form: {
         regionId: []
       },
-      tableData: []
+      tableData: [],
+      totalCount: 0
     };
   },
   computed: {
@@ -168,15 +171,14 @@ export default {
     dialogFormVisible(val) {}
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.showRepairList();
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.showRepairList();
     },
-    show() {},
     close() {
       this.resetForm("formRef");
     },

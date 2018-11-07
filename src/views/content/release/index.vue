@@ -35,13 +35,18 @@
       </template>
       <!-- 分页 -->
       <template>
-        <qx-pagination 
-          @page-change="pageChange" 
-          @page-size="pageSize" 
-          :page="query.page" 
-          :pageSize="query.pageSize" 
-          :total="totalCount">
-        </qx-pagination>
+        <div class="qx-pagination">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination>
+        </div>
       </template>         
       <!-- 待发布学校 -->
       <template>
@@ -78,12 +83,8 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 export default {
   name: "release",
-  components: {
-    "qx-pagination": pagination
-  },
   data() {
     return {
       activeName: "first",
@@ -94,8 +95,8 @@ export default {
         page: 1,
         pageSize: 10
       },
-      totalCount: 0,
       tableData: [],
+      totalCount: 0,
       schoolData: [],
       schoolDataPublish: []
     };
@@ -107,11 +108,11 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryPublishContentList(this.query);
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryPublishContentList(this.query);
     },
@@ -176,7 +177,7 @@ export default {
   },
   activated() {
     this.queryPublishContentList(this.query);
-  },
+  }
 };
 </script>
 <style lang="less">

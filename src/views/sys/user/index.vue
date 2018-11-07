@@ -25,7 +25,11 @@
      <template>
        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
          <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+         <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
+           <template slot-scope="scope">
+             <span style="color:#409EFF;cursor:pointer;">{{ scope.row.userName }}</span>
+           </template>
+         </el-table-column>
          <el-table-column label="用户角色" prop="roleName" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column label="负责人" prop="masterName" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column label="负责人电话" prop="masterPhone" :show-overflow-tooltip="true"></el-table-column>
@@ -52,13 +56,18 @@
      <!-- 新增账号 -->
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize" 
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>       
      <template>
        <el-dialog center top="40px" title="新增账号" :visible.sync="dialogAdd">
@@ -146,7 +155,6 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import { accountType } from "@/mixins";
@@ -155,8 +163,7 @@ export default {
   mixins: [accountType],
   components: {
     "qx-region": region,
-    "qx-region-t": regiont,
-    "qx-pagination": pagination
+    "qx-region-t": regiont
   },
   data() {
     let checkUserName = async (rule, value, callback) => {
@@ -181,9 +188,6 @@ export default {
       formLabelWidth: "100px",
       disabled: 0,
       query: {
-        //regionId: "regionId",
-        //queryId: 0,
-        //queryType: 0,
         schoolName: "",
         userName: "",
         page: 1,
@@ -200,7 +204,6 @@ export default {
         name: "",
         password: ""
       },
-      totalCount: 0, //分页总数
       rules: {
         userName: [
           { required: true, message: "请输入账号名称", trigger: "blur" },
@@ -221,7 +224,8 @@ export default {
       },
       schoolList: [],
       roleList: [],
-      tableData: []
+      tableData: [],
+      totalCount: 0 //分页总数
     };
   },
   computed: {
@@ -237,12 +241,12 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryAccount();
       //this.queryAccount();
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryAccount();
       //this.queryFuzzy();

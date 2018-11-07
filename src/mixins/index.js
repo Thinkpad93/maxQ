@@ -173,3 +173,53 @@ export const verifyStatus = {
     }
   }
 }
+
+//学校性质
+export const property = {
+  data() {
+    return {
+      propertyidList: [{
+          id: 1,
+          name: "公立"
+        },
+        {
+          id: 2,
+          name: "私立"
+        },
+        {
+          id: 3,
+          name: "民办"
+        }
+      ]
+    }
+  }
+}
+
+//学校类型
+export const typeid = {
+  data() {
+    return {
+      typeidList: [{
+          id: 1,
+          name: "学龄前"
+        },
+        {
+          id: 2,
+          name: "小学"
+        },
+        {
+          id: 3,
+          name: "初中"
+        },
+        {
+          id: 4,
+          name: "高中"
+        },
+        {
+          id: 5,
+          name: "大学"
+        }
+      ]
+    }
+  }
+}

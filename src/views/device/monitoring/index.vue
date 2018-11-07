@@ -66,13 +66,18 @@
     </template>
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize"
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>         
     <!-- 设备详情 -->
     <template>
@@ -136,12 +141,10 @@
 <script>
 import service from "@/api";
 import regiont from "@/components/qxregion";
-import pagination from "@/components/pagination";
 import { device } from "@/mixins";
 export default {
   name: "monitoring",
   components: {
-    "qx-pagination": pagination,
     "qx-region-t": regiont
   },
   mixins: [device],
@@ -155,7 +158,6 @@ export default {
       schoolList: [],
       schoolId: null,
       query: {
-        //schoolId: 0,
         schoolName: "",
         scopeType: "",
         scopeId: "",
@@ -175,11 +177,11 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryChannel();
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryChannel();
     },

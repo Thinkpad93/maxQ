@@ -3,7 +3,7 @@
      <div class="newUpload">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
-          <el-button :disabled="disabledScreen === 0" type="info" @click="dialogTemplate = true">选择海报模板</el-button>                                                             
+          <!-- <el-button :disabled="disabledScreen === 0" type="info" @click="dialogTemplate = true">选择海报模板</el-button>                                                              -->
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
         <el-row :gutter="30">
@@ -304,7 +304,7 @@ export default {
       dialogTemplate: false,
       formLabelWidth: "80px",
       status: "0",
-      screenIndex: 0,
+      screenIndex: 3,
       posterIndex: -1,
       carouselIndex: 0,
       collapse: true,
@@ -342,20 +342,14 @@ export default {
     }
   },
   methods: {
-    // ...mapActions("tabs", ["removes"]),
-    // handleCloseTabs(tab) {
-    //   this.removes(tab).then(res => {
-    //     console.log(res);
-    //     if (tab.path === this.$route.path) {
-    //       const latestView = res.slice(-1)[0];
-    //       if (latestView) {
-    //         this.$router.push(latestView);
-    //       } else {
-    //         this.$router.push({ path: "/" });
-    //       }
-    //     }
-    //   });
-    // },
+    ...mapActions("tabs", ["removes"]),
+    removeAction(route) {
+      this.removes(route).then(res => {
+        if (route.path === this.$route.path) {
+          this.$router.push({ path: "/content/upload" });
+        }
+      });
+    },
     //iframe操作
     handlePosterSaveData() {
       this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
@@ -438,6 +432,9 @@ export default {
         this.dialogTemplate = false;
         this.url = this.posterUrl;
       }
+    },
+    handleResetForm() {
+      this.$refs.form.resetFields();
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -555,14 +552,18 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        this.resetForm("form");
-        this.$alert(`${res.errorMsg}`, "提示", {
+        this.$alert("内容上传成功", "提示", {
           confirmButtonText: "确定",
-          type: "success",
-          callback: action => {
-            //this.handleCloseTabs(this.$route);
-          }
-        });
+          showClose: false,
+          type: "success"
+        })
+          .then(() => {
+            this.removeAction(this.$route);
+            this.handleResetForm();
+          })
+          .catch(error => {
+            return false;
+          });
       }
     }
   },

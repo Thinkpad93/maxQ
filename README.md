@@ -15,8 +15,4 @@ git push -u origin master
 const ws = new WebSocket("ws://localhost:8080");
 ```
 
-> 后端返回状态码
-
-- 415
-- 400 请求参数错误
-- 404 请求地址错误
+> 项目结构

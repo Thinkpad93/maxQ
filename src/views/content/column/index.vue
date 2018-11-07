@@ -30,13 +30,18 @@
     </template>
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize"
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>      
     <!-- 新增 or 编辑 -->
     <template>
@@ -65,12 +70,8 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 export default {
   name: "column",
-  components: {
-    "qx-pagination": pagination
-  },
   data() {
     return {
       dialogFormVisible: false,
@@ -95,11 +96,11 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryChannel();
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryChannel();
     },

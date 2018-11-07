@@ -195,7 +195,7 @@ export default {
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.resetForm("form");
+        //this.resetForm("form");
         this.queryLabel(this.query);
       }
     },

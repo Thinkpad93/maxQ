@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-cascader
+      style="width: 100%"
       :clearable="true"
       :disabled="disabled"
       :value="value"
@@ -47,8 +48,7 @@ export default {
         this.$emit("last", value);
       }
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style lang="less" scoped>

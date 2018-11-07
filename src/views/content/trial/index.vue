@@ -32,7 +32,7 @@
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span style="color:#409EFF;">{{ scope.row.title }}</span>
+            <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
           </template>            
         </el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
@@ -50,15 +50,65 @@
     </template>
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize"
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>  
-    <!-- 查看上传详情信息 -->
+    <!-- 查看上传详情信息 --> 
+    <template>
+      <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogViewContent">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one">
+            <template v-if="info.showType === 4">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="500" height="200"></video>
+              </div>
+            </template>
+            <div class="image-box" v-if="info.showType == 3 || info.showType == 4 || info.showType == 5">
+              <el-carousel height="736px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
+                  <img :src="item.url" class="image" width="500" height="736" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <template v-if="info.showType === 5">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="500" height="200"></video>
+              </div>
+            </template>            
+            <!-- <div class="iframe-box"></div> -->                 
+          </div>
+          <div class="two">
+           <div class="list">
+              <p>标题：<span>{{ info.title }}</span></p>
+              <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
+              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
+              <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
+              <p>播放时长：<span>{{ info.durationTime }}</span></p>
+              <p v-if="info.contentType === 1">滚动内容：<span>{{ info.componentValue }}</span></p>
+              <p v-if="info.contentType === 0">
+                展示类型：
+                <span v-if="info.showType === 0">纯海报方式</span>
+                <span v-else-if="info.showType === 1">上视频下海报方式</span>
+                <span v-else-if="info.showType === 2">上海报下视频方式</span>
+                <span v-else-if="info.showType === 3">纯图片</span>
+                <span v-else-if="info.showType === 4">上视频下图片</span>
+                <span v-else>上图片下视频</span>
+              </p>
+            </div>  
+          </div>
+        </el-row>
+      </el-dialog>
+    </template>        
     <!-- 预览审核 -->
     <template>
       <el-dialog width="60%" :title="info.title" center top="0px" :visible.sync="dialogView">
@@ -124,16 +174,13 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 import { verifyStatus } from "@/mixins";
 export default {
   name: "trial",
-  components: {
-    "qx-pagination": pagination
-  },
   mixins: [verifyStatus],
   data() {
     return {
+      dialogViewContent: false,
       dialogView: false,
       formLabelWidth: "80px",
       title: "",
@@ -162,22 +209,25 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryCheckContentList();
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryCheckContentList();
     },
     search() {
       this.queryCheckContentList();
     },
+    handleViewContent(row) {
+      this.queryContentByContentId(row.contentId, "content");
+    },
     handleStage(row) {
       this.title = row.title;
       this.form.contentId = row.contentId;
       this.form.checkStage = row.checkStage;
-      this.queryContentByContentId(row.contentId);
+      this.queryContentByContentId(row.contentId, "view");
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -207,12 +257,15 @@ export default {
       }
     },
     //查询编辑内容
-    async queryContentByContentId(contentId) {
+    async queryContentByContentId(contentId, str = "view") {
       let res = await service.queryContentByContentId({ contentId });
-      console.log(res);
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
-        this.dialogView = true;
+        if (str == "view") {
+          this.dialogView = true;
+        } else {
+          this.dialogViewContent = true;
+        }
       }
     }
   },

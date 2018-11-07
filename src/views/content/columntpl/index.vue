@@ -45,13 +45,18 @@
     </template>  
     <!-- 分页 -->
     <template>
-      <qx-pagination 
-        @page-change="pageChange" 
-        @page-size="pageSize"
-        :page="query.page" 
-        :pageSize="query.pageSize" 
-        :total="totalCount">
-      </qx-pagination>
+      <div class="qx-pagination">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </template>        
     <!-- 新增栏目模板 -->
     <template>
@@ -288,16 +293,12 @@
 </template>
 <script>
 import service from "@/api";
-import pagination from "@/components/pagination";
 import { scrollType, priority, validType } from "@/mixins";
 import { disabledDate, hours } from "@/utils/tools";
 
 export default {
   name: "columnTpl",
   mixins: [scrollType, priority, validType],
-  components: {
-    "qx-pagination": pagination
-  },
   data() {
     return {
       dialogAdd: false,
@@ -318,7 +319,6 @@ export default {
         page: 1,
         pageSize: 20
       },
-      totalCount: 0, //分页总数
       tplform: {
         type: 0
       },
@@ -331,7 +331,8 @@ export default {
       },
       channelList: [], //栏目
       tplAddData: [],
-      tableData: []
+      tableData: [],
+      totalCount: 0 //分页总数
     };
   },
   computed: {
@@ -344,11 +345,11 @@ export default {
     }
   },
   methods: {
-    pageChange(curr) {
+    handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryChannelTemplate();
     },
-    pageSize(size) {
+    handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryChannelTemplate();
     },
@@ -552,6 +553,7 @@ export default {
     async updateChannelTemplateDetail(params = {}) {
       let res = await service.updateChannelTemplateDetail(params);
       if (res.errorCode === 0) {
+        this.disabled = 0;
         this.queryChannelTemplateDetail(this.tplDetailform.templateId);
       }
     },
