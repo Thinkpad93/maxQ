@@ -11,6 +11,13 @@ import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 
+import Nprogress from 'nprogress';
+import 'nprogress/nprogress.css';
+Nprogress.configure({
+  showSpinner: false
+});
+
+
 import filterAsyncRouter from "@/utils/filterAsyncRouter";
 import {
   getToken
@@ -25,11 +32,13 @@ Vue.config.productionTip = false;
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
+  Nprogress.start();
   if (getToken()) {
     if (to.path === '/login') {
       next({
         path: `${from.path}`
       })
+      Nprogress.done();
     } else {
       if (store.getters.menu.length === 0) {
         store.dispatch("comm/qxregion");
@@ -49,11 +58,14 @@ router.beforeEach((to, from, next) => {
     } else {
       //next(`/login?redirect=${to.path}`)
       next(`/login?redirect`);
+      Nprogress.done()
     }
   }
 });
 
-router.afterEach(() => {});
+router.afterEach(() => {
+  Nprogress.done()
+});
 
 /* eslint-disable no-new */
 new Vue({

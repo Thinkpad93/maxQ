@@ -3,7 +3,7 @@
     <div class="newSchool">
       <!-- 保存按钮 -->
       <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">                                                         
-        <el-button type="info" @click="handleResetForm">重置</el-button>
+        <!-- <el-button type="info" @click="handleResetForm">重置</el-button> -->
         <el-button type="primary" @click="formSubmit('form')">添加学校</el-button>
       </div>          
       <el-row :gutter="20">
@@ -242,6 +242,7 @@ export default {
     "qx-region": region
   },
   mixins: [property, typeid],
+  inject: ["reload"], //注入依赖
   data() {
     return {
       collapse: true,
@@ -362,10 +363,10 @@ export default {
       this.form.regionId = value;
     },
     handleResetForm() {
-      this.imgOneUrl = "";
-      this.imgTwoUrl = "";
+      //this.imgOneUrl = "";
+      //this.imgTwoUrl = "";
       //this.form.schoolImage = [];
-      this.$refs.form.resetFields();
+      //this.$refs.form.resetFields();
     },
     formSubmit(formName) {
       this.$refs[formName].validate(valid => {
@@ -416,7 +417,10 @@ export default {
         })
           .then(() => {
             this.removeAction(this.$route);
-            this.handleResetForm();
+            //this.handleResetForm();
+            setTimeout(() => {
+              this.reload();
+            }, 50);
           })
           .catch(error => {
             return false;

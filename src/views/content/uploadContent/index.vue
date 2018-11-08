@@ -132,6 +132,7 @@
                         <el-upload
                           :disabled="disabledVideo === 0"
                           name="file"
+                          ref="uploadVideo"
                           :limit="1"
                           action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                           accept="video/mp4,video/flv,video/mov"
@@ -292,6 +293,7 @@ import { contentProperty, contentTemplate } from "@/mixins";
 export default {
   name: "newUpload",
   mixins: [contentProperty, contentTemplate],
+  inject: ["reload"], //注入依赖
   data() {
     return {
       disabledImg: 0,
@@ -304,7 +306,7 @@ export default {
       dialogTemplate: false,
       formLabelWidth: "80px",
       status: "0",
-      screenIndex: 3,
+      screenIndex: 0,
       posterIndex: -1,
       carouselIndex: 0,
       collapse: true,
@@ -354,11 +356,9 @@ export default {
     handlePosterSaveData() {
       this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
     },
+    //图片删除
     handleRemoveImg(file, fileList) {
-      //图片删除
-      return (this.imageList = this.imageList.filter(
-        elem => elem.name !== file.name
-      ));
+      this.imageList = fileList;
     },
     handlePreviewImg(file) {
       let uploadFiles = this.$refs.uploadImage.uploadFiles;
@@ -377,8 +377,8 @@ export default {
     //上传图片成功
     handleImageSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        let { name, url } = response.data;
-        this.imageList.push({ name, url });
+        //let { name, url } = response.data;
+        this.imageList.push({ ...response.data });
       }
     },
     //上传视频成功
@@ -434,6 +434,9 @@ export default {
       }
     },
     handleResetForm() {
+      this.imageList = [];
+      this.$refs.uploadImage.clearFiles();
+      this.$refs.uploadVideo.clearFiles();
       this.$refs.form.resetFields();
     },
     resetForm(formName) {
@@ -559,7 +562,9 @@ export default {
         })
           .then(() => {
             this.removeAction(this.$route);
-            this.handleResetForm();
+            setTimeout(() => {
+              this.reload();
+            }, 50);
           })
           .catch(error => {
             return false;

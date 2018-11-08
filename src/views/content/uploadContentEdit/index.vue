@@ -258,13 +258,14 @@
    </div> 
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import bus from "@/utils/bus";
 import service from "@/api";
 import { contentProperty, contentTemplate } from "@/mixins";
 export default {
   name: "editUpload",
   mixins: [contentProperty, contentTemplate],
+  inject: ["reload"], //注入依赖
   data() {
     return {
       disabledImg: 0,
@@ -303,6 +304,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions("tabs", ["removes"]),
+    removeAction(route) {
+      this.removes(route).then(res => {
+        if (route.path === this.$route.path) {
+          this.$router.push({ path: "/content/upload" });
+        }
+      });
+    },
     handleRemoveImg(file) {
       //图片删除
       return (this.imageList = this.imageList.filter(
@@ -445,8 +454,22 @@ export default {
       });
       if (res.errorCode === 0) {
         //this.resetForm("form");
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-      }else if (res.errorCode === -1) {
+        //this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.$alert("内容编辑成功", "提示", {
+          confirmButtonText: "确定",
+          showClose: false,
+          type: "success"
+        })
+          .then(() => {
+            this.removeAction(this.$route);
+            setTimeout(() => {
+              this.reload();
+            }, 50);
+          })
+          .catch(error => {
+            return false;
+          });
+      } else if (res.errorCode === -1) {
         this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
     }

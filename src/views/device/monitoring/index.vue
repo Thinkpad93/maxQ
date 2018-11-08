@@ -31,15 +31,15 @@
     <template>
       <div class="container-block">
         <el-row :gutter="20">
-          <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4" v-for="(item,index) in tableData" :key="index">
+          <el-col :xs="6" :sm="6" :md="4" :lg="4" :xl="4" v-for="(item,index) in tableData" :key="index">
             <div class="waterfall-panel"
               v-loading="item.loading"
               :element-loading-text="loadingText"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)">
-              <a href="javascript:;" @click="showDeviceDetail(item.deviceId)">
-                <!-- <img src="http://temp.im/466x300/4CD964/fff" class="image"> -->
-                <img src="https://fakeimg.pl/446x300/4CD964/fff" class="image">
+              <a href="javascript:;" @click="showDeviceDetail(item.deviceId)" :style="{backgroundImage: `url(${item.snapshotUrl})`}">
+                <!-- <img :src="item.snapshotUrl" class="image"> -->
+                <!-- <img src="https://fakeimg.pl/446x300/4CD964/fff" class="image"> -->
               </a>
               <div class="layer">
                 <h4>
@@ -84,7 +84,7 @@
       <el-dialog width="60%" center top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
-            <img src="https://fakeimg.pl/500x736/4CD964/fff" class="image" width="500" height="736">
+            <img :src="viewDevice.snapshotUrl" class="image" width="500" height="736">
           </div>
           <div class="two">
             <div class="list">
@@ -197,29 +197,25 @@ export default {
       this.showDeviceRunlog(row.deviceId);
     },
     handleRestart(item) {
-      let that = this;
       let params = {
         deviceId: item.deviceId,
-        cmdName: "content_update",
-        cmdData: ""
+        cmd: "system_reboot"
       };
-      that.loadingText = "设备重启中";
-      that.$set(item, "loading", true);
+      this.loadingText = "设备重启中";
+      this.$set(item, "loading", true);
       setTimeout(() => {
-        that.sendDeviceCommand(params, item);
+        this.action(params, item);
       }, 1000);
     },
     handleUpdate(item) {
-      let that = this;
       let params = {
         deviceId: item.deviceId,
-        cmdName: "content_refresh",
-        cmdData: ""
+        cmd: "content_refresh"
       };
-      that.loadingText = "设备刷新中";
-      that.$set(item, "loading", true);
+      this.loadingText = "设备刷新中";
+      this.$set(item, "loading", true);
       setTimeout(() => {
-        that.sendDeviceCommand(params, item);
+        this.action(params, item);
       }, 1000);
     },
     handleMon() {},
@@ -247,11 +243,15 @@ export default {
       }
     },
     //发送设备命令
-    async sendDeviceCommand(params = {}, item) {
-      let res = await service.sendDeviceCommand(params);
+    async action(params = {}, item) {
+      let res = await service.action(params);
       if (res.errorCode === 0) {
+        if ("system_reboot" === params.cmd) {
+          this.$message({ message: `设备重启成功`, type: "success" });
+        } else {
+          this.$message({ message: `设备刷新成功`, type: "success" });
+        }
         this.$set(item, "loading", false);
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     }
   },
@@ -282,6 +282,9 @@ export default {
   box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1);
   > a {
     display: block;
+    height: 260px;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
   img {
     height: 260px;

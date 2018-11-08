@@ -246,6 +246,7 @@ export default {
     "qx-region": region
   },
   mixins: [property, typeid],
+  inject: ["reload"], //注入依赖
   data() {
     return {
       loading: true,
@@ -399,7 +400,10 @@ export default {
         })
           .then(() => {
             this.removeAction(this.$route);
-            this.handleResetForm();
+            //this.handleResetForm();
+            setTimeout(() => {
+              this.reload();
+            }, 50);
           })
           .catch(error => {
             return false;

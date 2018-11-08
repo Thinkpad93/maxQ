@@ -25,7 +25,7 @@
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span style="color:#409EFF">{{ scope.row.name }}</span>
+            <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.name }}</span>
             <!-- <router-link style="color:#409EFF" 
               :to="{path: `/school/views/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link> -->
           </template>                    
@@ -67,7 +67,102 @@
           :total="totalCount">
         </el-pagination>
       </div>
-    </template>      
+    </template>   
+    <!-- 查看学校信息 -->
+    <template>
+      <el-dialog width="70%" center top="40px" title="" :visible.sync="dialogView">
+        <div class="qx-card">
+          <div class="qx-card-head">
+            <div class="qx-card-head-wrapper">
+              <div class="qx-card-head-title">学校信息详情</div>
+            </div>
+          </div>
+          <div class="qx-card-body">
+            <el-row :gutter="10">
+              <el-col :span="8">
+                <div class="qx-trem">学校名称</div>
+                <div class="qx-detail">{{ info.name }}</div>
+              </el-col>
+              <el-col :span="8">
+                <div class="qx-trem">学校性质</div>
+                <div class="qx-detail">{{ info.propertyName }}</div>
+              </el-col>
+              <el-col :span="8">
+                <div class="qx-trem">学校类型</div>
+                <div class="qx-detail">{{ info.propertyName }}</div>
+              </el-col>
+              <el-col :span="8">
+                <div class="qx-trem">区域</div>
+                <div class="qx-detail">{{ info.provinceName }} {{ info.cityName }} {{ info.regionName }}</div>
+              </el-col>
+              <el-col :span="8">
+                <div class="qx-trem">详细地址</div>
+                <div class="qx-detail">{{ info.address }}</div>
+              </el-col>   
+              <el-col :span="8">
+                <div class="qx-trem">办学元年</div>
+                <div class="qx-detail">{{ info.firstYear }}</div>
+              </el-col>   
+              <el-col :span="8">
+                <div class="qx-trem">学校标语</div>
+                <div class="qx-detail">{{ info.slogan }}</div>
+              </el-col>   
+              <el-col :span="8">
+                <div class="qx-trem">班级数量</div>
+                <div class="qx-detail">{{ info.classNumber }}</div>
+              </el-col>   
+              <el-col :span="8">
+                <div class="qx-trem">学校人数</div>
+                <div class="qx-detail">{{ info.studentNumber }}</div>
+              </el-col>     
+              <el-col :span="8">
+                <div class="qx-trem">校长</div>
+                <div class="qx-detail">{{ info.masterName }}</div>
+              </el-col>  
+              <el-col :span="8">
+                <div class="qx-trem">校长电话</div>
+                <div class="qx-detail">{{ info.masterPhone }}</div>
+              </el-col>  
+              <el-col :span="8">
+                <div class="qx-trem">校长邮箱</div>
+                <div class="qx-detail">{{ info.masterEmail }}</div>
+              </el-col>  
+              <el-col :span="8">
+                <div class="qx-trem">负责人</div>
+                <div class="qx-detail">{{ info.headName }}</div>
+              </el-col>  
+              <el-col :span="8">
+                <div class="qx-trem">负责人电话</div>
+                <div class="qx-detail">{{ info.headPhone }}</div>
+              </el-col>     
+              <el-col :span="8">
+                <div class="qx-trem">负责人邮箱</div>
+                <div class="qx-detail">{{ info.headEmail }}</div>
+              </el-col>                                                                                                                                                                                               
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="24">
+                <div class="qx-trem">学校标签</div>
+                <div class="qx-detail">
+                  <span v-for="(tag, index) in info.label" :key="index">{{ tag.name }}</span>
+                </div>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="24">
+                <div class="qx-trem">学校描述</div>
+                <div class="qx-detail">{{ info.description }}</div>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="12" v-for="(item, index) in info.schoolImage" :key="index">
+                <div class="qx-honour" :style="{ backgroundImage: `url(${item.imageUrl})` }"></div>
+              </el-col>
+            </el-row>            
+          </div>
+        </div>
+      </el-dialog>
+    </template>   
   </div>  
 </template>
 <script>
@@ -80,6 +175,8 @@ export default {
   },
   data() {
     return {
+      dialogView: false,
+      info: {},
       query: {
         queryId: "",
         queryType: "",
@@ -117,6 +214,12 @@ export default {
     handleSearch() {
       this.showSchoolList(this.query);
     },
+    handleViewInfo(row) {
+      console.log(row);
+      this.dialogView = true;
+      this.info = { ...row };
+      //this.schoolInfo(row.schoolId);
+    },
     //新增学校
     handleAddSchool() {
       this.$router.push({ path: "/school/add" });
@@ -138,6 +241,13 @@ export default {
           return false;
         });
     },
+    // async schoolInfo(schoolId) {
+    //   let res = await service.querySchoolInfo({ schoolId });
+    //   if (res.errorCode === 0) {
+    //     this.dialogView = true;
+    //     this.info = Object.assign({}, res.data);
+    //   }
+    // },
     //根据区域ID查省市
     async findRegion(regionId) {
       let res = await service.findRegion({ regionId });
@@ -173,4 +283,73 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.qx-card {
+  color: rgba(0, 0, 0, 0.65);
+  background: #fff;
+  border-radius: 2px;
+  position: relative;
+}
+.qx-card-head {
+  font-size: 16px;
+  font-weight: 500;
+  min-height: 48px;
+  padding: 0;
+  border-bottom: 1px solid #e8e8e8;
+  border-radius: 2px 2px 0 0;
+}
+.qx-card-head-wrapper {
+  display: flex;
+}
+.qx-card-head-title {
+  display: inline-block;
+  flex: 1 1;
+  overflow: hidden;
+  padding: 16px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qx-card-body {
+  padding: 24px 0px;
+  transition: padding 0.3s;
+}
+.qx-trem {
+  display: table-cell;
+  white-space: nowrap;
+  line-height: 20px;
+  padding-bottom: 16px;
+  color: rgba(0, 0, 0, 0.85);
+  &::after {
+    content: ":";
+    margin: 0 8px 0 2px;
+    position: relative;
+    top: -0.5px;
+  }
+}
+.qx-detail {
+  display: table-cell;
+  line-height: 22px;
+  padding-bottom: 16px;
+  color: #409eff;
+  //color: rgba(0, 0, 0, 0.65);
+  span {
+    color: #fff;
+    padding: 1px 10px;
+    font-size: 12px;
+    margin-right: 3px;
+    display: inline-block;
+    background: -webkit-gradient(
+      linear,
+      0% 0%,
+      0% 100%,
+      from(#3c8ce7),
+      to(#0396ff)
+    );
+  }
+}
+.qx-honour {
+  width: 446px;
+  height: 240px;
+  margin-top: 10px;
+  background-size: cover;
+}
 </style>
