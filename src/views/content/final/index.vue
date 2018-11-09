@@ -32,7 +32,7 @@
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span style="color:#409EFF;">{{ scope.row.title }}</span>
+            <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
           </template>            
         </el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
@@ -64,28 +64,89 @@
       </div>
     </template>     
     <!-- 预览审核 -->
+    <!-- 查看上传详情信息 --> 
     <template>
-      <el-dialog width="60%" :title="info.title" center top="40px" :visible.sync="dialogView">
+      <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogViewContent">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
-            <template v-if="info.showType === 4">
-              <div class="video-box">
-                <video :src="info.videoUrl" controls width="500" height="200"></video>
-              </div>
-            </template>
-            <div class="image-box" v-if="info.showType == 3 || info.showType == 4 || info.showType == 5">
+            <div class="image-box" v-if="info.showType == 3">
               <el-carousel height="589px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in info.images" :key="index">
-                  <img :src="item.url" class="image" :alt="item.name" width="400" height="589">
+                  <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <template v-if="info.showType === 4">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="400" height="230"></video>
+              </div>
+            </template>
+            <div class="image-box" v-if="info.showType == 4 || info.showType == 5">
+              <el-carousel height="359px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
+                  <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
                 </el-carousel-item>
               </el-carousel>
             </div>
             <template v-if="info.showType === 5">
               <div class="video-box">
-                <video :src="info.videoUrl" controls width="400" height="200"></video>
+                <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
-            </template>     
-            <!-- <div class="iframe-box"></div> -->             
+            </template>            
+            <!-- <div class="iframe-box"></div> -->                 
+          </div>
+          <div class="two">
+           <div class="list">
+              <p>标题：<span>{{ info.title }}</span></p>
+              <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
+              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
+              <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
+              <p>播放时长：<span>{{ info.durationTime }}</span></p>
+              <p v-if="info.contentType === 1">滚动内容：<span>{{ info.componentValue }}</span></p>
+              <p v-if="info.contentType === 0">
+                展示类型：
+                <span v-if="info.showType === 0">纯海报方式</span>
+                <span v-else-if="info.showType === 1">上视频下海报方式</span>
+                <span v-else-if="info.showType === 2">上海报下视频方式</span>
+                <span v-else-if="info.showType === 3">纯图片</span>
+                <span v-else-if="info.showType === 4">上视频下图片</span>
+                <span v-else>上图片下视频</span>
+              </p>
+            </div>  
+          </div>
+        </el-row>
+      </el-dialog>
+    </template>  
+    <!-- 预览审核 -->    
+    <template>
+      <el-dialog width="60%" :title="info.title" center top="40px" :visible.sync="dialogView">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one">
+            <div class="image-box" v-if="info.showType == 3">
+              <el-carousel height="589px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
+                  <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <template v-if="info.showType === 4">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="400" height="230"></video>
+              </div>
+            </template>
+            <div class="image-box" v-if="info.showType == 4 || info.showType == 5">
+              <el-carousel height="359px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
+                  <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <template v-if="info.showType === 5">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="400" height="230"></video>
+              </div>
+            </template>            
+            <!-- <div class="iframe-box"></div> -->                 
           </div>
           <div class="two">
             <div class="list">
@@ -134,6 +195,7 @@ export default {
   mixins: [verifyStatus],
   data() {
     return {
+      dialogViewContent: false,
       dialogView: false,
       formLabelWidth: "100px",
       query: {
@@ -172,6 +234,9 @@ export default {
     search() {
       this.queryCheckContentList();
     },
+    handleViewContent(row) {
+      this.queryContentByContentId(row.contentId, "content");
+    },
     handleStage(row) {
       let { title, contentId, checkStage } = row;
       this.title = title;
@@ -207,11 +272,15 @@ export default {
       }
     },
     //查询编辑内容
-    async queryContentByContentId(contentId) {
+    async queryContentByContentId(contentId, str = "view") {
       let res = await service.queryContentByContentId({ contentId });
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
-        this.dialogView = true;
+        if (str == "view") {
+          this.dialogView = true;
+        } else {
+          this.dialogViewContent = true;
+        }
       }
     }
   },
@@ -240,7 +309,6 @@ export default {
   text-align: center;
   width: 400px;
   margin: 0 auto;
-  min-height: 736px;
 }
 .iframe-box {
   margin: 0 auto;

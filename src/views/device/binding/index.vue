@@ -395,6 +395,7 @@ export default {
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.dialogAdd = false;
+        this.$refs.addForm.resetFields();
         this.showDeviceList();
       } else if (res.errorCode === -1) {
         //MAC码已存在

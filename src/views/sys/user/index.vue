@@ -387,10 +387,12 @@ export default {
       }
     }
   },
-  mounted() {
-    //this.queryFuzzy();
+  activated() {
     this.queryAccount();
     this.queryRoleName();
+  },
+  mounted() {
+    //this.queryFuzzy();
   }
 };
 </script>

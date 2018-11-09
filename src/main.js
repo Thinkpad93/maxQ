@@ -43,9 +43,9 @@ router.beforeEach((to, from, next) => {
       if (store.getters.menu.length === 0) {
         store.dispatch("comm/qxregion");
         store.dispatch('qxuser/querySystemMenus').then(res => {
-          let rou = res.data.router; //返回的权限路由数据
-          let r = filterAsyncRouter(rou);
-          router.addRoutes(r);
+          let routeData = res.data.router; //返回的权限路由数据
+          let routeLocal = filterAsyncRouter(routeData);
+          router.addRoutes(routeLocal);
         })
         next();
       } else {

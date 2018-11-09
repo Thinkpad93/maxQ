@@ -59,7 +59,7 @@
     </template>    
     <!-- 新增 or 编辑检修记录 -->
     <template>
-      <el-dialog center top="40px" :visible.sync="dialogFormVisible" @close="close" @open="show">
+      <el-dialog center top="40px" :visible.sync="dialogFormVisible" @close="close">
         <span slot="title" class="dialog-title">{{ isShow ? '新增检修记录': '编辑检修记录' }}</span>
         <el-form ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <template v-if="isShow">
@@ -266,7 +266,7 @@ export default {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showRepairList(this.query);
-        this.resetForm();
+        this.$refs.formRef.resetFields();
       } else {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "error" });
@@ -279,7 +279,7 @@ export default {
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showRepairList(this.query);
-        this.resetForm();
+        //this.$refs.formRef.resetFields();
       }
     },
     //删除检修记录

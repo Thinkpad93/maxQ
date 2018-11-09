@@ -675,6 +675,8 @@ export default {
       let res = await service.updatePlayList({ schoolId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }else if (res.errorCode === -1) {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //新增学校播放频道

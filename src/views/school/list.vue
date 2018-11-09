@@ -80,6 +80,16 @@
           <div class="qx-card-body">
             <el-row :gutter="10">
               <el-col :span="8">
+                <div class="qx-trem">区域</div>
+                <div class="qx-detail">{{ info.provinceName }} {{ info.cityName }} {{ info.regionName }}</div>
+              </el-col>
+              <el-col :span="8">
+                <div class="qx-trem">详细地址</div>
+                <div class="qx-detail">{{ info.address }}</div>
+              </el-col>  
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="8">
                 <div class="qx-trem">学校名称</div>
                 <div class="qx-detail">{{ info.name }}</div>
               </el-col>
@@ -90,22 +100,10 @@
               <el-col :span="8">
                 <div class="qx-trem">学校类型</div>
                 <div class="qx-detail">{{ info.propertyName }}</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="qx-trem">区域</div>
-                <div class="qx-detail">{{ info.provinceName }} {{ info.cityName }} {{ info.regionName }}</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="qx-trem">详细地址</div>
-                <div class="qx-detail">{{ info.address }}</div>
-              </el-col>   
+              </el-col> 
               <el-col :span="8">
                 <div class="qx-trem">办学元年</div>
                 <div class="qx-detail">{{ info.firstYear }}</div>
-              </el-col>   
-              <el-col :span="8">
-                <div class="qx-trem">学校标语</div>
-                <div class="qx-detail">{{ info.slogan }}</div>
               </el-col>   
               <el-col :span="8">
                 <div class="qx-trem">班级数量</div>
@@ -114,7 +112,9 @@
               <el-col :span="8">
                 <div class="qx-trem">学校人数</div>
                 <div class="qx-detail">{{ info.studentNumber }}</div>
-              </el-col>     
+              </el-col>                
+            </el-row>
+            <el-row :gutter="10">
               <el-col :span="8">
                 <div class="qx-trem">校长</div>
                 <div class="qx-detail">{{ info.masterName }}</div>
@@ -127,6 +127,8 @@
                 <div class="qx-trem">校长邮箱</div>
                 <div class="qx-detail">{{ info.masterEmail }}</div>
               </el-col>  
+            </el-row>
+            <el-row :gutter="10">  
               <el-col :span="8">
                 <div class="qx-trem">负责人</div>
                 <div class="qx-detail">{{ info.headName }}</div>
@@ -147,6 +149,12 @@
                   <span v-for="(tag, index) in info.label" :key="index">{{ tag.name }}</span>
                 </div>
               </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="8">
+                <div class="qx-trem">学校标语</div>
+                <div class="qx-detail">{{ info.slogan }}</div>
+              </el-col>                
             </el-row>
             <el-row :gutter="10">
               <el-col :span="24">

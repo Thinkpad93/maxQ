@@ -15,7 +15,11 @@
       <template>
         <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
           <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+            </template>             
+          </el-table-column>
           <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="申请时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
@@ -47,7 +51,60 @@
             :total="totalCount">
           </el-pagination>
         </div>
-      </template>         
+      </template>  
+    <!-- 查看上传详情信息 --> 
+    <template>
+      <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogViewContent">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one">
+            <div class="image-box" v-if="info.showType == 3">
+              <el-carousel height="589px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
+                  <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <template v-if="info.showType === 4">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="400" height="230"></video>
+              </div>
+            </template>
+            <div class="image-box" v-if="info.showType == 4 || info.showType == 5">
+              <el-carousel height="359px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in info.images" :key="index">
+                  <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+            <template v-if="info.showType === 5">
+              <div class="video-box">
+                <video :src="info.videoUrl" controls width="400" height="230"></video>
+              </div>
+            </template>            
+            <!-- <div class="iframe-box"></div> -->                 
+          </div>
+          <div class="two">
+           <div class="list">
+              <p>标题：<span>{{ info.title }}</span></p>
+              <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
+              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
+              <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
+              <p>播放时长：<span>{{ info.durationTime }}</span></p>
+              <p v-if="info.contentType === 1">滚动内容：<span>{{ info.componentValue }}</span></p>
+              <p v-if="info.contentType === 0">
+                展示类型：
+                <span v-if="info.showType === 0">纯海报方式</span>
+                <span v-else-if="info.showType === 1">上视频下海报方式</span>
+                <span v-else-if="info.showType === 2">上海报下视频方式</span>
+                <span v-else-if="info.showType === 3">纯图片</span>
+                <span v-else-if="info.showType === 4">上视频下图片</span>
+                <span v-else>上图片下视频</span>
+              </p>
+            </div>  
+          </div>
+        </el-row>
+      </el-dialog>
+    </template>                
       <!-- 待发布学校 -->
       <template>
         <el-dialog center top="40px" title="待发布学校查看" :visible.sync="dialogView">
@@ -90,11 +147,13 @@ export default {
       activeName: "first",
       dialogView: false,
       dialogViewPublish: false,
+      dialogViewContent: false,
       query: {
         status: "0",
         page: 1,
         pageSize: 10
       },
+      info: {},
       tableData: [],
       totalCount: 0,
       schoolData: [],
@@ -115,6 +174,9 @@ export default {
     handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryPublishContentList(this.query);
+    },
+    handleViewContent(row) {
+      this.queryContentByContentId(row.contentId);
     },
     handleViewSchool(row) {
       if (this.query.status == 1) {
@@ -173,6 +235,14 @@ export default {
         this.dialogViewPublish = true;
         this.schoolDataPublish = res.data;
       }
+    },
+    //查询内容
+    async queryContentByContentId(contentId) {
+      let res = await service.queryContentByContentId({ contentId });
+      if (res.errorCode === 0) {
+        this.dialogViewContent = true;
+        this.info = Object.assign({}, res.data);
+      }
     }
   },
   activated() {
@@ -184,5 +254,38 @@ export default {
 .release {
   padding: 10px 20px 0 20px;
   background-color: #fff;
+}
+.row-bg {
+  > div {
+    margin: 0 15px;
+  }
+  .two {
+    flex: 1;
+  }
+}
+.video-box {
+  margin: 0 auto;
+  text-align: center;
+  video {
+    vertical-align: top;
+  }
+}
+.image-box {
+  text-align: center;
+  width: 400px;
+  margin: 0 auto;
+}
+.list {
+  font-size: 14px;
+  margin-bottom: 50px;
+  color: #333;
+  p {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
+  }
+  span {
+    color: #409eff;
+    line-height: 1.6;
+  }
 }
 </style>

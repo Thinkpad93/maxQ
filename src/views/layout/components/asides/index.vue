@@ -8,6 +8,7 @@
     router 
     unique-opened 
     :default-active="$route.path" 
+    @select="handleSelect"
     @open="handleOpen" 
     @close="handleClose" 
     :collapse="collapse"
@@ -49,6 +50,7 @@ import { mapState } from "vuex";
 import bus from "@/utils/bus";
 export default {
   name: "asides",
+  inject: ["reload"], //注入依赖
   data() {
     return {
       width: 200,
@@ -60,7 +62,12 @@ export default {
   },
   methods: {
     handleOpen() {},
-    handleClose() {}
+    handleClose() {},
+    handleSelect(index, indexPath) {
+      if (this.$route.path === index) {
+        console.log(index);
+      }
+    }
   },
   mounted() {
     bus.$on("collapse", msg => {

@@ -118,6 +118,7 @@
 import service from "@/api";
 export default {
   name: "labels",
+  inject: ["reload"], //注入依赖
   data() {
     return {
       dialogFormVisible: false,
@@ -193,18 +194,30 @@ export default {
     async addLabel(params = {}) {
       let res = await service.addLabel(params);
       if (res.errorCode === 0) {
-        this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.$notify({
+          title: "提示",
+          message: `${res.errorMsg}`,
+          type: "success"
+        });
+        this.reload();
+        //this.dialogFormVisible = false;
+        //this.$message({ message: `${res.errorMsg}`, type: "success" });
         //this.resetForm("form");
-        this.queryLabel(this.query);
+        //this.queryLabel(this.query);
       }
     },
     //删除标签
     async deleteLabel(labelId) {
       let res = await service.deleteLabel({ labelId });
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.queryLabel(this.query);
+        this.$notify({
+          title: "提示",
+          message: `${res.errorMsg}`,
+          type: "success"
+        });
+        this.reload();
+        //this.$message({ message: `${res.errorMsg}`, type: "success" });
+        //this.queryLabel(this.query);
       }
     }
   },

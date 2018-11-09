@@ -42,11 +42,13 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(config => {
   //console.log("响应拦截器");
   console.log(config);
+  console.log("上司上司上司");
   //Nprogress.done();
   return config;
 }, error => {
   //Nprogress.done();
-  //console.log('err' + error) // for debug
+  console.log("我上司我上司我上司");
+  console.log('err' + error) // for debug
   return Promise.reject(error);
 });
 

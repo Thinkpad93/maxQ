@@ -153,10 +153,10 @@ export default {
     async addChannel(params = {}) {
       let res = await service.addChannel(params);
       if (res.errorCode === 0) {
-        this.reload();
-        //this.dialogFormVisible = false;
-        //this.$message({ message: `${res.errorMsg}`, type: "success" });
-        //this.queryChannel();
+        //this.reload();
+        this.dialogFormVisible = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryChannel();
       } else if (res.errorCode === 1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
@@ -165,19 +165,19 @@ export default {
     async updateChannel(params = {}) {
       let res = await service.updateChannel(params);
       if (res.errorCode === 0) {
-        this.reload();
-        //this.dialogFormVisible = false;
-        //this.$message({ message: `${res.errorMsg}`, type: "success" });
-        //this.queryChannel();
+        //this.reload();
+        this.dialogFormVisible = false;
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryChannel();
       }
     },
     //删除栏目
     async deleteChannel(channelId) {
       let res = await service.deleteChannel({ channelId });
       if (res.errorCode === 0) {
-        this.reload();
-        //this.$message({ message: `${res.errorMsg}`, type: "success" });
-        //this.queryChannel();
+        //this.reload();
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.queryChannel();
       }
     }
   },
