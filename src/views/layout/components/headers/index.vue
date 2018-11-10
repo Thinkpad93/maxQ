@@ -39,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["name", "type", "distpickerData"])
+    ...mapGetters(["name", "type"])
   },
   methods: {
     collapseChage() {

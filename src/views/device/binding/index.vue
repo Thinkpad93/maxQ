@@ -276,8 +276,8 @@ export default {
       //默认参数
       query: {
         schoolName: "",
-        scopeType: "",
-        scopeId: "",
+        scopeType: this.$store.getters.scopeType,
+        scopeId: this.$store.getters.scopeId,
         page: 1,
         pageSize: 20
       },
@@ -311,6 +311,8 @@ export default {
       this.showDeviceList();
     },
     handleRegionChange(queryId, queryType) {
+      console.log(queryId);
+      console.log(queryType);
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },

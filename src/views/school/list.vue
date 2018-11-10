@@ -186,8 +186,8 @@ export default {
       dialogView: false,
       info: {},
       query: {
-        queryId: "",
-        queryType: "",
+        queryId: this.$store.getters.scopeId,
+        queryType: this.$store.getters.scopeType,
         schoolName: "",
         page: 1,
         pageSize: 20

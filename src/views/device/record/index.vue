@@ -145,8 +145,8 @@ export default {
       //默认参数
       query: {
         schoolName: "",
-        scopeType: "",
-        scopeId: "",
+        scopeType: this.$store.getters.scopeType,
+        scopeId: this.$store.getters.scopeId,
         page: 1,
         pageSize: 20
       },

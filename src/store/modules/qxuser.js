@@ -12,6 +12,8 @@ export default {
     token: getToken(),
     name: "",
     type: null, //账号类型 0-促进会 1-学校 2-教育局 3-培训机构
+    scopeId: null,
+    scopeType: null, // 0省 1市 2区 5admin
     menu: []
   },
   mutations: {
@@ -20,6 +22,12 @@ export default {
     },
     SET_TYPE: (state, type) => {
       state.type = type;
+    },
+    SET_SCOPEID: (state, scopeId) => {
+      state.scopeId = scopeId;
+    },
+    SET_SCOPETYPE: (state, scopeType) => {
+      state.scopeType = scopeType;
     },
     SET_NAME: (state, name) => {
       state.name = name;
@@ -59,11 +67,13 @@ export default {
             if (res.data.router) {
               commit('SET_NAME', res.data.name);
               commit('SET_TYPE', res.data.type);
+              commit('SET_SCOPEID', res.data.scopeId);
+              commit('SET_SCOPETYPE', res.data.scopeType);
               commit('SET_MENU', res.data.router);
             }
             resolve(res);
           } else if (res.errorCode === -1) {
-            console.log("获取用户权限菜单，登陆后的操作")
+            //console.log("获取用户权限菜单，登陆后的操作")
             commit('SET_TOKEN', '')
             removeToken();
             location.reload();

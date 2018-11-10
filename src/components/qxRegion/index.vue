@@ -1,13 +1,13 @@
 <template>
   <el-form-item label="区域选择" prop="regionId" ref="region">   
-    <el-select :clearable="clear" v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
-      <el-option v-for="item in provinceList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    <el-select clearable :disabled="pdisabled === 1" v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
+      <el-option v-for="item in provinceList" :key="item.pId" :label="item.pName" :value="item.pId"></el-option>
     </el-select>  
-    <el-select :clearable="clear" v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
-      <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    <el-select clearable :disabled="cdisabled === 1" v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
+      <el-option v-for="item in cityList" :key="item.cId" :label="item.cName" :value="item.cId"></el-option>
     </el-select>      
-    <el-select :clearable="clear" v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
-      <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    <el-select clearable :disabled="adisabled === 1" v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
+      <el-option v-for="item in areaList" :key="item.aId" :label="item.aName" :value="item.aId"></el-option>
     </el-select>                                     
   </el-form-item>        
 </template>
@@ -15,52 +15,108 @@
 import service from "@/api";
 import { mapGetters } from "vuex";
 export default {
-  name: "",
-  props: {
-    clear: {
-      type: Boolean,
-      default: true
-    },
-    propName: {
-      type: String,
-      default: ""
-    }
-  },
+  name: "qxRegion",
+  props: {},
   data() {
     return {
-      province: "",
-      city: "",
-      area: "",
+      province: null,
+      city: null,
+      area: null,
+      pdisabled: 0,
+      cdisabled: 0,
+      adisabled: 0,
       provinceList: [],
       cityList: [],
       areaList: []
     };
   },
   computed: {
-    ...mapGetters(["distpickerData"])
+    ...mapGetters(["scopeType", "distpickerData"])
   },
   methods: {
     handleProvinceCityArea() {
-      for (let p = 0; p < this.distpickerData.length; p++) {
-        let pName = this.distpickerData[p].name;
-        let pId = this.distpickerData[p].id;
-        let pChild = this.distpickerData[p].children;
-        this.provinceList.push({ pName, pId });
-        for (let c = 0; c < pChild.length; c++) {
-          let cName = pChild[c].name;
-          let cId = pChild[c].id;
-          let cChild = pChild[c].children;
-          this.cityList.push({ cName, cChild });
-          for (let a = 0; a < cChild.length; a++) {
-            let aName = cChild[a].name;
-            let aId = cChild[a].id;
-            this.areaList.push({ aName, aId });
+      if (this.scopeType === 0 || this.scopeType === null) {
+        for (let p = 0; p < this.distpickerData.length; p++) {
+          let pName = this.distpickerData[p].name;
+          let pId = this.distpickerData[p].id;
+          let pChild = this.distpickerData[p].children;
+          this.provinceList.push({ pName, pId });
+        }
+        if (this.scopeType === 0) {
+          this.queryRegion(this.provinceList[0].pId, 1);
+        }
+      }
+      if (this.scopeType === 1) {
+        for (let p = 0; p < this.distpickerData.length; p++) {
+          let pName = this.distpickerData[p].name;
+          let pId = this.distpickerData[p].id;
+          let pChild = this.distpickerData[p].children;
+          this.provinceList.push({ pName, pId });
+          for (let c = 0; c < pChild.length; c++) {
+            let cName = pChild[c].name;
+            let cId = pChild[c].id;
+            let cChild = pChild[c].children;
+            this.cityList.push({ cName, cId });
+          }
+        }
+        this.queryRegion(this.cityList[0].cId, 2);
+      }
+      if (this.scopeType === 2) {
+        for (let p = 0; p < this.distpickerData.length; p++) {
+          let pName = this.distpickerData[p].name;
+          let pId = this.distpickerData[p].id;
+          let pChild = this.distpickerData[p].children;
+          this.provinceList.push({ pName, pId });
+          for (let c = 0; c < pChild.length; c++) {
+            let cName = pChild[c].name;
+            let cId = pChild[c].id;
+            let cChild = pChild[c].children;
+            this.cityList.push({ cName, cId });
+            for (let a = 0; a < cChild.length; a++) {
+              let aName = cChild[a].name;
+              let aId = cChild[a].id;
+              this.areaList.push({ aName, aId });
+            }
           }
         }
       }
-      console.log(this.provinceList);
-      console.log(this.cityList);
-      console.log(this.areaList);
+      this.computedProvince();
+      this.computedCity();
+      this.computedArea();
+    },
+    computedProvince() {
+      //如果是省控制 则禁用选择省
+      if (this.scopeType === 0) {
+        this.pdisabled = 1;
+      }
+      if (this.provinceList.length && this.scopeType != null) {
+        return (this.province = this.provinceList[0].pId);
+      }
+    },
+    computedCity() {
+      //如果是市级控制 则禁用选择省和市
+      if (this.scopeType === 1) {
+        this.pdisabled = 1;
+        this.cdisabled = 1;
+      }
+      if (this.cityList.length === 1) {
+        this.city = this.cityList[0].cId;
+      } else {
+        this.city = null;
+      }
+    },
+    computedArea() {
+      //如果是区级控制 则禁用选择省和市和区
+      if (this.scopeType === 2) {
+        this.pdisabled = 1;
+        this.cdisabled = 1;
+        this.adisabled = 1;
+      }
+      if (this.areaList.length === 1) {
+        this.area = this.areaList[0].aId;
+      } else {
+        this.area = null;
+      }
     },
     handleProvince(value) {
       //不触发点击清空时的调用
@@ -99,19 +155,28 @@ export default {
     async queryRegion(queryId, queryType) {
       let res = await service.queryRegion({ queryId, queryType });
       if (res.errorCode === 0) {
+        let data = res.data;
         if (queryType === 0) {
-          this.provinceList = res.data;
         } else if (queryType === 1) {
-          this.cityList = res.data;
+          this.cityList = data.map((elem, index) => {
+            return {
+              cName: elem.name,
+              cId: elem.id
+            };
+          });
         } else if (queryType === 2) {
-          this.areaList = res.data;
+          this.areaList = data.map((elem, index) => {
+            return {
+              aName: elem.name,
+              aId: elem.id
+            };
+          });
         }
       }
     }
   },
   mounted() {
-    //this.handleProvinceCityArea();
-    this.queryRegion(0, 0);
+    this.handleProvinceCityArea();
   }
 };
 </script>

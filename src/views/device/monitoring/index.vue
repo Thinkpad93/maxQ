@@ -159,8 +159,8 @@ export default {
       schoolId: null,
       query: {
         schoolName: "",
-        scopeType: "",
-        scopeId: "",
+        scopeType: this.$store.getters.scopeType,
+        scopeId: this.$store.getters.scopeId,
         status: 0,
         page: 1,
         pageSize: 20
