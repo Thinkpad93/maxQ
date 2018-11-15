@@ -185,8 +185,8 @@ export default {
         pageSize: 20
       },
       form: {
-        scopeType: null,
-        scopeId: null,
+        scopeType: this.$store.getters.scopeType,
+        scopeId: this.$store.getters.scopeId,
         propertyId: null,
         typeId: null,
         labelIds: [],

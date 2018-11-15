@@ -6,10 +6,6 @@ import {
   getToken
 } from '@/utils/auth';
 
-//import Nprogress from 'nprogress';
-//import 'nprogress/nprogress.css';
-
-
 
 const service = axios.create({
   baseURL: process.env.BASE_API,
@@ -21,7 +17,6 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   //console.log("请求拦截器");
   console.log(config);
-  //Nprogress.start();
   if (store.getters.token) {
     config.headers['Authorization'] = getToken();
   }
@@ -43,10 +38,8 @@ service.interceptors.response.use(config => {
   //console.log("响应拦截器");
   console.log(config);
   console.log("上司上司上司");
-  //Nprogress.done();
   return config;
 }, error => {
-  //Nprogress.done();
   console.log("我上司我上司我上司");
   console.log('err' + error) // for debug
   return Promise.reject(error);

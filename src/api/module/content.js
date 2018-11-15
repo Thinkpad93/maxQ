@@ -174,6 +174,12 @@ export function uploadContent(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//删除图片
+export function deletePicture(params) {
+  return ax.post('/action/mod-xiaojiao/image/deletePicture.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //查询编辑内容
 export function queryContentByContentId(params, config) {
   return ax.post('/action/mod-xiaojiao/channel/content/queryContentByContentId.do', params, config)
@@ -255,6 +261,18 @@ export function queryPublishContentList(params) {
 //查询预发布内容列表
 export function queryPrepublishContentList(params) {
   return ax.post('/action/mod-xiaojiao/content/prePublish/queryPrepublishContentList.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//学校待审核内容列表
+export function schoolCheckQueryPrepublishContentList(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolCheck/queryPrepublishContentList.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//学校审核
+export function schoolCheckContent(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolCheck/schoolCheckContent.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

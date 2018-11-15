@@ -92,7 +92,7 @@
     </template> 
     <!-- 查看上传详情信息 -->
     <template>
-      <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogView">
+      <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -128,7 +128,7 @@
               <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
               <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
               <p>播放时长：<span>{{ info.durationTime }}</span></p>
-              <p v-if="info.contentType === 1">滚动内容：<span>{{ info.componentValue }}</span></p>
+              <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
               <p v-if="info.contentType === 0">
                 展示类型：
                 <span v-if="info.showType === 0">纯海报方式</span>

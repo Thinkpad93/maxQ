@@ -328,11 +328,19 @@ export default {
     },
     //图片上传大小限制为2M
     beforeImageUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      let isJPG = file.type === "image/jpeg";
+      let isGIF = file.type === "image/gif";
+      let isPNG = file.type === "image/png";
+      let isMBP = file.type === "image/bmp";
+      let isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG && !isGIF && !isPNG && !isMBP) {
+        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP格式!");
+      }
       if (!isLt2M) {
         this.$message.error("图片大小不能超过2MB!");
       }
-      return isLt2M;
+      return (isJPG || isGIF || isPNG || isMBP) && isLt2M;
     },
     lastInnerChange(value) {
       this.form.regionId = value;

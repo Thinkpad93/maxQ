@@ -52,7 +52,10 @@ export function queryProvinceCityRegionBySchoolId(params) {
 export function findAll(params) {
   return ax.post('/action/mod-xiaojiao/region/findAll.do', params)
     .then(res => res.data)
-    .catch(e => console.log(e));
+    .catch(e => {
+      console.log(e);
+      console.log("林场场");
+    });
 }
 //查询标签信息
 export function queryLabel(params) {

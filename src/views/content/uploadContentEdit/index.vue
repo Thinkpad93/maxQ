@@ -7,9 +7,9 @@
         </div>      
         <el-row :gutter="30">
           <el-col :span="14" :offset="4">              
-            <el-form ref="form" :model="form" size="small" status-icon :label-width="formLabelWidth">             
-              <el-tabs class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
-                <el-tab-pane label="全屏播放上传" name="0" :disabled="form.contentType === 1">
+            <el-form ref="form" :model="form" status-icon label-position="center" :label-width="formLabelWidth">             
+              <el-tabs type="card" class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
+                <el-tab-pane label="内容播放" name="0" :disabled="form.contentType === 1">
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 0">
                       <el-col :span="24">
@@ -23,14 +23,14 @@
                   </el-row>                      
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 0">
-                      <el-col :span="12">
+                      <el-col :span="24">
                           <el-form-item label="内容作者" prop="author" :rules="[
                             { required: true, message: '请输入内容作者', trigger: 'blur' }
                             ]">
                               <el-input v-model="form.author" placeholder="请输入内容作者" maxlength="20"></el-input>
                           </el-form-item>                 
                       </el-col>
-                      <el-col :span="12">
+                      <el-col :span="24">
                           <el-form-item label="内容属性" prop="contentProperty">
                             <el-select v-model="form.contentProperty" style="width: 100%;">
                               <el-option v-for="item in contentPropertyList" 
@@ -117,7 +117,8 @@
                         accept="image/jpeg,image/gif,image/png,image/bmp"
                         :on-remove="handleRemoveImg" 
                         :on-preview="handlePreviewImg"
-                        :on-success="handleImageSuccess">
+                        :on-success="handleImageSuccess"
+                        :before-upload="beforeImageUpload">
                         <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
                         <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
                         <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div>
@@ -132,7 +133,8 @@
                         accept="video/mp4,video/flv,video/mov"
                         :on-remove="handleRemoveVideo" 
                         :on-preview="handlePreviewVideo"
-                        :on-success="handleVideoSuccess">
+                        :on-success="handleVideoSuccess"
+                        :before-upload="beforeVideoUpload">
                         <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
                         <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
                         <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div>
@@ -140,7 +142,7 @@
                     </el-col>
                   </el-row>                       
                 </el-tab-pane>
-                <el-tab-pane label="滚动播放上传" name="1" :disabled="form.contentType === 0">
+                <el-tab-pane label="滚动通知" name="1" :disabled="form.contentType === 0">
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 1">
                       <el-col :span="24">
@@ -152,7 +154,7 @@
                       </el-col>
                     </template>
                   </el-row>
-                  <el-row :gutter="10">
+                  <!-- <el-row :gutter="10">
                     <template v-if="form.contentType === 1">
                       <el-col :span="24">
                         <el-form-item label="播放时长" prop="durationTime" :rules="[
@@ -199,18 +201,38 @@
                         </el-form-item>                   
                       </el-col>
                     </template>                                                          
-                  </el-row>   
+                  </el-row>    -->
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 1">
                       <el-col :span="24">
-                          <el-form-item label="文字内容" prop="componentValue" :rules="[
+                          <el-form-item label="文字内容" prop="rollContent" :rules="[
                             { required: true, message: '请输入文字内容', trigger: 'blur' }
                             ]">
-                            <el-input type="textarea" v-model="form.componentValue" :rows="5" placeholder="请输入文字内容"></el-input>
+                            <el-input type="textarea" v-model="form.rollContent" :rows="5" placeholder="请输入文字内容"></el-input>
                           </el-form-item>                
                       </el-col>
                     </template>
                   </el-row>
+                  <el-row :gutter="10">
+                    <template v-if="form.contentType === 1">
+                      <el-col :span="24">
+                        <el-form-item label="播放有效期" prop="rollTime" :rules="[
+                          { required: true, message: '请选择播放有效期', trigger: 'blur' }
+                        ]">
+                          <el-date-picker 
+                            value-format="yyyy-MM-dd"
+                            format="yyyy-MM-dd"
+                            v-model="form.rollTime"
+                            type="daterange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            :picker-options="pickerOptions">
+                          </el-date-picker>
+                        </el-form-item>
+                      </el-col>
+                    </template>
+                  </el-row>                   
                 </el-tab-pane>
               </el-tabs>                              
             </el-form>
@@ -258,10 +280,12 @@
    </div> 
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
 import bus from "@/utils/bus";
 import service from "@/api";
 import { contentProperty, contentTemplate } from "@/mixins";
+import { disabledDate } from "@/utils/tools";
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   name: "editUpload",
   mixins: [contentProperty, contentTemplate],
@@ -277,7 +301,7 @@ export default {
       dialogViewVideo: false,
       dialogShowType: false,
       dialogTemplate: false,
-      formLabelWidth: "80px",
+      formLabelWidth: "100px",
       status: "0",
       screenIndex: 0,
       posterIndex: -1,
@@ -286,11 +310,16 @@ export default {
       posterUrl: "",
       previewImg: "",
       imageList: [], //多图片查看
-      form: {},
+      form: {
+        rollTime: []
+      },
+      pickerOptions: {
+        disabledDate
+      },
       channelList: [],
       posterList: [],
       schoolPlayTime: [],
-      imageFileList: [],
+      //imageFileList: [],
       videoFileList: []
     };
   },
@@ -312,11 +341,13 @@ export default {
         }
       });
     },
-    handleRemoveImg(file) {
-      //图片删除
-      return (this.imageList = this.imageList.filter(
-        elem => elem.name !== file.name
-      ));
+    handleRemoveImg(file, fileList) {
+      let { url } = file;
+      this.deletePicture(url).then(res => {
+        if (res) {
+          this.imageList = fileList;
+        }
+      });
     },
     handlePreviewImg(file) {
       this.dialogViewImg = true;
@@ -330,9 +361,35 @@ export default {
     //上传图片成功
     handleImageSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        let { name, url } = response.data;
-        this.imageList.push({ name, url });
+        this.imageList.push({ ...response.data });
       }
+    },
+    //图片上传大小限制为2M
+    beforeImageUpload(file) {
+      let isJPG = file.type === "image/jpeg";
+      let isGIF = file.type === "image/gif";
+      let isPNG = file.type === "image/png";
+      let isMBP = file.type === "image/bmp";
+      let isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG && !isGIF && !isPNG && !isMBP) {
+        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("图片大小不能超过2MB!");
+      }
+      return (isJPG || isGIF || isPNG || isMBP) && isLt2M;
+    },
+    beforeVideoUpload(flie) {
+      let isMP4 = file.type === "video/mp4";
+      let isFLV = file.type === "video/flv";
+      let isMOV = file.type === "video/mov";
+
+      if (!isMP4 && !isFLV && !isMOV) {
+        this.$message.error("视频必须是MP4/FLV/MOV/格式!");
+      }
+
+      return isMP4 || isFLV || isMOV;
     },
     //上传视频成功
     handleVideoSuccess(response, file, fileList) {
@@ -364,26 +421,48 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let images = [];
-          let {
-            schoolId,
-            showType,
-            contentDetail,
-            posterUrl,
-            templateTitle,
-            templateId,
-            duration,
-            ...args
-          } = this.form;
-          if (this.imageList.length) {
-            images = this.imageList.map(elem => {
-              return { name: elem.name, url: elem.url };
-            });
+          let { rollTime, ...args } = this.form;
+          let playTime = "";
+          let endTime = "";
+          if (rollTime.length) {
+            playTime = rollTime[0];
+            endTime = rollTime[1];
           }
-          let obj = Object.assign({}, args, { images });
-          //console.log(obj);
+          if (this.form.images.length) {
+            images = [...this.imageList];
+          }
+          let obj = Object.assign({}, args, { images, playTime, endTime });
+          console.log(obj);
           this.updateContent(obj);
+          // let images = [];
+          // let {
+          //   schoolId,
+          //   showType,
+          //   contentDetail,
+          //   posterUrl,
+          //   templateTitle,
+          //   templateId,
+          //   duration,
+          //   ...args
+          // } = this.form;
+          // images = [...this.imageList];
+          // // if (this.imageList.length) {
+          // //   images = this.imageList.map(elem => {
+          // //     return { name: elem.name, url: elem.url };
+          // //   });
+          // // }
+          // let obj = Object.assign({}, args, { images });
+          // console.log(obj);
+          // //this.updateContent(obj);
         }
       });
+    },
+    //删除图片
+    async deletePicture(url) {
+      let res = await service.deletePicture({ url });
+      if (res.errorCode === 0) {
+        return true;
+      }
     },
     //查询栏目名称
     async queryChannelAll() {
@@ -415,21 +494,41 @@ export default {
       let res = await service.queryContentByContentId({ contentId });
       if (res.errorCode === 0) {
         this.loading = false;
-        this.form = res.data;
+        let {
+          contentDetail,
+          duration,
+          posterUrl,
+          schoolId,
+          templateId,
+          templateTitle,
+          playTime,
+          endTime,
+          ...args
+        } = res.data;
+        if (playTime && endTime) {
+          this.form.rollTime[0] = playTime;
+          this.form.rollTime[1] = endTime;
+        }
+        this.form = Object.assign(this.form, args);
         this.imageList = this.form.images;
         this.screenIndex = this.form.showType; //回选展示形式
         this.status = this.form.contentType.toString();
-        if (this.type === 1) {
+
+        if (this.type === 1 && this.form.contentType === 0) {
           this.querySchoolPlayListTime(this.form.contentType);
-        } else {
+        }
+
+        if (this.type !== 1 && this.form.contentType === 0) {
           this.queryChannelAll();
         }
-        if (this.form.videoUrl) {
-          this.videoFileList.push({
-            name: "点击查看",
-            url: this.form.videoUrl
-          });
-        }
+        console.log(this.form);
+
+        // if (this.form.videoUrl) {
+        //   this.videoFileList.push({
+        //     name: "点击查看",
+        //     url: this.form.videoUrl
+        //   });
+        // }
         if (
           this.screenIndex == 1 ||
           this.screenIndex == 2 ||
@@ -453,8 +552,6 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        //this.resetForm("form");
-        //this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.$alert("内容编辑成功", "提示", {
           confirmButtonText: "确定",
           showClose: false,
@@ -479,9 +576,7 @@ export default {
       return msg ? (this.collapse = false) : (this.collapse = true);
     });
     this.queryContentByContentId(this.$route.params.id);
-  },
-  mounted() {},
-  updated() {}
+  }
 };
 </script>
 <style lang="less" scoped>

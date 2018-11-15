@@ -8,7 +8,7 @@
       </div>          
       <el-row :gutter="20">
         <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="18">
-          <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+          <el-form :rules="rules" ref="form" :model="form" status-icon :label-width="formLabelWidth">
             <el-row :gutter="5">
               <el-col :span="8">
                 <el-form-item label="区域选择" prop="regionId">
@@ -353,11 +353,19 @@ export default {
     },
     //图片上传大小限制为2M
     beforeImageUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      let isJPG = file.type === "image/jpeg";
+      let isGIF = file.type === "image/gif";
+      let isPNG = file.type === "image/png";
+      let isMBP = file.type === "image/bmp";
+      let isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG && !isGIF && !isPNG && !isMBP) {
+        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP格式!");
+      }
       if (!isLt2M) {
         this.$message.error("图片大小不能超过2MB!");
       }
-      return isLt2M;
+      return (isJPG || isGIF || isPNG || isMBP) && isLt2M;
     },
     lastInnerChange(value) {
       this.form.regionId = value;

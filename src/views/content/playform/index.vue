@@ -218,7 +218,7 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="栏目有效期" prop="validType">
-                  <el-select v-model="channelForm.validType" style="width:100%;">
+                  <el-select v-model="channelForm.validType" style="width:100%;" @change="handleValidType">
                     <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
                   </el-select> 
                 </el-form-item>  
@@ -251,7 +251,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="时间段选择" prop="validTime">
+                <el-form-item label="时间段选择" prop="validTime" :rules="channelForm.validType === 1 ? validTimeRules : []">
                   <el-date-picker
                     value-format="yyyy-MM-dd"
                     format="yyyy-MM-dd"
@@ -331,7 +331,7 @@ export default {
       channelForm: {
         schoolId: null,
         scrollType: 0,
-        validType: 1,
+        validType: 0,
         validTime: [],
         contents: []
       },
@@ -355,10 +355,20 @@ export default {
       tableData: []
     };
   },
+  computed: {
+    validTimeRules() {
+      return [{ required: true, message: "请选择播放时段", trigger: "blur" }];
+    }
+  },
   methods: {
     handleSearch() {
       if (this.query.schoolName && this.schoolId) {
         this.querySchoolPlayChannel(this.schoolId);
+      }
+    },
+    handleValidType(value) {
+      if (value === 0) {
+        this.$refs.channelForm.clearValidate(["validTime"]);
       }
     },
     async querySearch(queryString, cb) {
@@ -523,11 +533,14 @@ export default {
     },
     //取消操作
     handleCancel(row) {
+      //hack
       this.disabled = 0;
-      this.tableData.forEach((elem, value) => {
-        this.$set(elem, "show", false);
-        this.$set(elem, "state", 1);
-      });
+      this.querySchoolPlayChannel(this.schoolId);
+      // this.disabled = 0;
+      // this.tableData.forEach((elem, value) => {
+      //   this.$set(elem, "show", false);
+      //   this.$set(elem, "state", 1);
+      // });
     },
     handleSave(row) {
       let countCheckbox = this.countCheckbox; //选中的数据
@@ -675,7 +688,7 @@ export default {
       let res = await service.updatePlayList({ schoolId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-      }else if (res.errorCode === -1) {
+      } else if (res.errorCode === -1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
@@ -720,9 +733,10 @@ export default {
       }
     }
   },
-  mounted() {
+  activated() {
     this.queryChannelAll();
-  }
+  },
+  mounted() {}
 };
 </script>
 <style lang="less" scoped>

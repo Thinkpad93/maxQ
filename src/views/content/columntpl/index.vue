@@ -157,7 +157,7 @@
                 </el-col>     
                 <el-col :span="12">
                   <el-form-item label="栏目有效期" prop="validType">
-                    <el-select v-model="tplDetailform.validType" style="width:100%;">
+                    <el-select v-model="tplDetailform.validType" style="width:100%;" @change="handleValidType">
                       <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
                     </el-select>                
                   </el-form-item>               
@@ -172,7 +172,7 @@
         </el-form>
         <div class="plac"></div> 
         <el-alert title="已有模板详细项" type="info" :closable="false"></el-alert>
-        <el-table :data="tplAddData" style="width: 100%" :height="300" stripe size="mini">
+        <el-table :data="tplAddData" style="width: 100%" stripe size="mini">
           <el-table-column width="400" label="播放时段">
             <template slot-scope="scope">
               <template v-if="scope.row.show">
@@ -355,6 +355,11 @@ export default {
     },
     handleSearch() {
       this.queryChannelTemplate();
+    },
+    handleValidType(value) {
+      if (value === 0) {
+        this.$refs.tplDetailform.clearValidate(["validTime"]);
+      }
     },
     selectChannelName(value) {
       let obj = {};
