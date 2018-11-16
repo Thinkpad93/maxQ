@@ -54,7 +54,6 @@ export function findAll(params) {
     .then(res => res.data)
     .catch(e => {
       console.log(e);
-      console.log("林场场");
     });
 }
 //查询标签信息
@@ -84,6 +83,12 @@ export function querySchoolCategory(params) {
 //上传图片
 export function addImage(params) {
   return ax.post('/action/mod-xiaojiao/region/addImage.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//删除学校图片
+export function deleteSchoolPicture(params) {
+  return ax.post('/action/mod-xiaojiao/region/deleteSchoolPicture.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

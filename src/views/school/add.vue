@@ -3,7 +3,6 @@
     <div class="newSchool">
       <!-- 保存按钮 -->
       <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">                                                         
-        <!-- <el-button type="info" @click="handleResetForm">重置</el-button> -->
         <el-button type="primary" @click="formSubmit('form')">添加学校</el-button>
       </div>          
       <el-row :gutter="20">
@@ -167,43 +166,41 @@
               </el-radio-group>
             </el-form-item>
             <el-row :gutter="5">
-              <el-col :span="8">
-                <el-form-item label="学校荣誉图片">
-                  <el-upload
-                    ref="upload"
-                    class="upload-image"
-                    action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
-                    name="honorImage"
-                    :data="{type: '0'}"
-                    :multiple="false"
-                    accept="image/jpeg,image/gif,image/png,image/bmp" 
-                    :auto-upload="true"
-                    :show-file-list="false"
-                    :on-success="handleImageOneSuccess"
-                    :before-upload="beforeImageUpload">
-                    <div v-if="imgOneUrl" :style="{backgroundImage: imgOneUrl}" class="img"></div>
-                  </el-upload>                   
-                </el-form-item>  
+              <el-col :span="12" :offset="2">
+                <el-upload
+                  ref="upload"
+                  action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                  name="honorImage"
+                  :data="{type: '0'}"
+                  :multiple="false"
+                  accept="image/jpeg,image/gif,image/png,image/bmp" 
+                  :auto-upload="true"
+                  :show-file-list="false"
+                  :on-success="handleImageOneSuccess"
+                  :before-upload="beforeImageUpload">
+                  <el-button size="small" type="primary">学校荣誉图片上传</el-button>
+                </el-upload> 
+                <div class="upload-image" :style="{backgroundImage: imgOneUrl}"></div>
+                <span style="color:#F56C6C;cursor: pointer;" class="delete" v-if="imgOneUrl" @click="handleDeleteImg(0)">删除</span>
               </el-col>
-              <el-col :span="8">
-                <el-form-item label="学校全景图">
-                  <el-upload
-                    ref="upload"
-                    class="upload-image"
-                    action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
-                    name="honorImage"
-                    :data="{type: '1'}"
-                    :multiple="false"
-                    accept="image/jpeg,image/gif,image/png,image/bmp" 
-                    :auto-upload="true"
-                    :show-file-list="false"
-                    :on-success="handleImageOneSuccess"
-                    :before-upload="beforeImageUpload">  
-                    <div v-if="imgTwoUrl" :style="{backgroundImage: imgTwoUrl}" class="img"></div>
-                  </el-upload>   
-                </el-form-item> 
+              <el-col :span="10">
+                <el-upload
+                  ref="upload"
+                  action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+                  name="honorImage"
+                  :data="{type: '1'}"
+                  :multiple="false"
+                  accept="image/jpeg,image/gif,image/png,image/bmp" 
+                  :auto-upload="true"
+                  :show-file-list="false"
+                  :on-success="handleImageOneSuccess"
+                  :before-upload="beforeImageUpload">  
+                  <el-button size="small" type="primary">学校全景图上传</el-button>
+                </el-upload>  
+                <div class="upload-image" :style="{backgroundImage: imgTwoUrl}"></div>
+                <span style="color:#F56C6C;cursor: pointer;" class="delete" v-if="imgTwoUrl" @click="handleDeleteImg(1)">删除</span>
               </el-col>
-            </el-row>                      
+            </el-row>
           </el-form>  
         </el-col>
       </el-row>
@@ -219,13 +216,6 @@
         </el-dialog>        
       </template>
       <!-- 图片查看 -->
-      <!-- <template>
-        <el-dialog title="图片查看" center top="40px" :visible.sync="dialogViewImg">
-          <div class="views-image">
-            <img :src="imgUrl" width="500" height="300">
-          </div>
-        </el-dialog>
-      </template> -->
     </div>  
   </div>  
 </template>
@@ -254,6 +244,8 @@ export default {
       labelsList: [],
       templateidList: [],
       channelData: [],
+      imgOne: [],
+      imgTwo: [],
       form: {
         channelTemplateId: null,
         regionId: [],
@@ -271,7 +263,6 @@ export default {
         headEmail: "",
         headPhone: "",
         description: "",
-        schoolImage: [],
         linkMan: []
       },
       linkmanRules: {},
@@ -292,19 +283,6 @@ export default {
   },
   methods: {
     ...mapActions("tabs", ["removes"]),
-    handleBack() {
-      this.$alert("确定返回吗", "提示", {
-        confirmButtonText: "确定",
-        type: "success"
-      })
-        .then(() => {
-          this.removeAction(this.$route);
-          this.$refs.form.resetFields();
-        })
-        .catch(error => {
-          return false;
-        });
-    },
     removeAction(route) {
       this.removes(route).then(res => {
         if (route.path === this.$route.path) {
@@ -318,17 +296,22 @@ export default {
       linkMan.push({ linkMan: "", phone: "", email: "" });
     },
     //删除图片
-    handleRemoveImg(file, fileList) {
-      console.log(file);
-      return (this.form.schoolImage = this.form.schoolImage.filter(
-        elem => elem.imageUrl !== file.response.data.url
-      ));
-    },
-    //查看上传的图片
-    handlePreviewImg(file) {
-      console.log(file);
-      this.dialogViewImg = true;
-      this.imgUrl = file.response.data.url;
+    handleDeleteImg(n) {
+      let result = n === 0 ? this.imgOne[0] : this.imgTwo[0];
+      if (Object.keys(result).length) {
+        let { url, smallUrl } = result;
+        this.deleteSchoolPicture(url, smallUrl).then(res => {
+          if (res) {
+            if (n === 0) {
+              this.imgOneUrl = "";
+              this.imgOne = [];
+            } else {
+              this.imgTwoUrl = "";
+              this.imgTwo = [];
+            }
+          }
+        });
+      }
     },
     //图片上传成功
     handleImageOneSuccess(response, file, fileList) {
@@ -341,15 +324,14 @@ export default {
         };
         if (response.data.type == 0) {
           this.imgOneUrl = `url(${response.data.url})`;
-          schoolImage[0] = imgObj;
+          //this.imgOne.push(imgObj);
+          this.imgOne[0] = imgObj;
         } else {
           this.imgTwoUrl = `url(${response.data.url})`;
-          schoolImage[1] = imgObj;
+          //this.imgTwo.push(imgObj);
+          this.imgTwo[0] = imgObj;
         }
       }
-    },
-    handleImageTwoSuccess(response, file, fileList) {
-      this.imgTwoUrl = `url(${response.data.url})`;
     },
     //图片上传大小限制为2M
     beforeImageUpload(file) {
@@ -370,21 +352,26 @@ export default {
     lastInnerChange(value) {
       this.form.regionId = value;
     },
-    handleResetForm() {
-      //this.imgOneUrl = "";
-      //this.imgTwoUrl = "";
-      //this.form.schoolImage = [];
-      //this.$refs.form.resetFields();
-    },
     formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let schoolImage = this.imgOne.concat(this.imgTwo);
           let { regionId: regionIds, ...args } = this.form;
           let regionId = regionIds[regionIds.length - 1] || 0;
-          let obj = Object.assign({}, args, { regionId });
+          let obj = Object.assign({}, args, { regionId, schoolImage });
+          console.log(obj);
           this.addSchool(obj);
         }
       });
+    },
+    //删除图片
+    async deleteSchoolPicture(url, smallUrl) {
+      let res = await service.deleteSchoolPicture({ url, smallUrl });
+      if (res.errorCode === 0) {
+        return true;
+      } else {
+        return false;
+      }
     },
     //查询栏目模板
     async queryChannelTemplateAll() {
@@ -425,7 +412,6 @@ export default {
         })
           .then(() => {
             this.removeAction(this.$route);
-            //this.handleResetForm();
             setTimeout(() => {
               this.reload();
             }, 50);

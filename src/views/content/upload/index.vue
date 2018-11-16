@@ -8,6 +8,15 @@
                 <el-form-item label="内容标题">
                   <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="40"></el-input>
                 </el-form-item>
+                <el-form-item label="栏目名称">
+                  <el-select v-model="query.channelId" placeholder="请选择">
+                    <el-option v-for="item in channelList" 
+                      :key="item.channelId" 
+                      :value="item.channelId"
+                      :label="item.name">
+                    </el-option>
+                  </el-select>  
+                </el-form-item>
                 <el-form-item label="审核状态">
                   <el-select v-model="query.verifyStatus" clearable placeholder="请选择设备状态">
                     <el-option
@@ -179,6 +188,7 @@ export default {
       dialogNode: false,
       dialogView: false,
       query: {
+        channelId: 0,
         verifyStatus: 3,
         title: "",
         page: 1,
@@ -193,7 +203,8 @@ export default {
       ],
       tableData: [],
       totalCount: 0,
-      nodeData: []
+      nodeData: [],
+      channelList: []
     };
   },
   computed: {
@@ -240,6 +251,14 @@ export default {
     uoloadAction() {
       this.$router.push({ path: "/content/uploadContent" });
     },
+    //查询栏目名称
+    async queryChannelAll() {
+      let res = await service.queryChannelAll({});
+      if (res.errorCode === 0) {
+        this.channelList = res.data;
+        this.channelList.unshift({ channelId: 0, name: "全部" });
+      }
+    },
     //查询上传列表审核节点
     async queryCheckNode(contentId) {
       let res = await service.queryCheckNode({ contentId });
@@ -277,6 +296,7 @@ export default {
   },
   activated() {
     this.queryContentList();
+    this.queryChannelAll();
   }
 };
 </script>
