@@ -27,7 +27,7 @@
          <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
            <template slot-scope="scope">
-             <span style="color:#409EFF;cursor:pointer;">{{ scope.row.userName }}</span>
+             <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.userName }}</span>
            </template>
          </el-table-column>
          <el-table-column label="用户角色" prop="roleName" :show-overflow-tooltip="true"></el-table-column>
@@ -56,7 +56,7 @@
      <!-- 新增账号 -->
     <!-- 分页 -->
     <template>
-      <div class="qx-pagination">
+      <div class="qx-pagination" v-if="totalCount">
         <el-pagination
           background
           small
@@ -128,6 +128,28 @@
         </span>            
        </el-dialog>
      </template>
+     <!-- 查看用户信息 -->
+     <template>
+       <el-dialog center top="40px" title="查看用户信息" :visible.sync="dialogView">
+         <el-row :gutter="10" type="flex" class="row-bg">
+           <div class="one"></div>
+           <div class="two">
+             <div class="list">
+               <p>账号名称：<span>{{ info.userName }}</span></p>
+               <p>用户角色：<span>{{ info.roleName }}</span></p>
+               <p>负责人：<span>{{ info.masterName }}</span></p>
+               <p>负责人电话：<span>{{ info.masterPhone }}</span></p>
+               <p>所属学校：<span>{{ info.name }}</span></p>
+               <p>所属区域：<span>{{ info.provinceCityRegion }}</span></p>
+               <p>账号状态：
+                 <span v-if="info.status === 0">正常</span>
+                 <span v-else style="color:#F56C6C;">停用</span>
+               </p>
+             </div>
+           </div>
+         </el-row>
+       </el-dialog>
+     </template>
      <!-- 重置密码 -->
      <template>
        <el-dialog center top="40px" title="重置密码" :visible.sync="dialogReset">
@@ -185,8 +207,10 @@ export default {
     return {
       dialogAdd: false,
       dialogReset: false,
+      dialogView: false,
       formLabelWidth: "100px",
       disabled: 0,
+      info: {},
       query: {
         schoolName: "",
         userName: "",
@@ -244,18 +268,18 @@ export default {
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryAccount();
-      //this.queryAccount();
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryAccount();
-      //this.queryFuzzy();
     },
-    // search() {
-    //   this.queryFuzzy(this.query);
-    // },
     handleSearch() {
       this.queryAccount();
+    },
+    handleViewInfo(row) {
+      console.log(row);
+      this.info = Object.assign({}, row, { provinceCityRegion: "" });
+      this.queryAccountInfo(row.accountId);
     },
     handleRegionChange(queryId, queryType) {
       this.query.queryId = queryId;
@@ -385,6 +409,15 @@ export default {
         this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
       }
+    },
+    //查看用户信息
+    async queryAccountInfo(accountId) {
+      let res = await service.queryAccountInfo({ accountId });
+      if (res.errorCode === 0) {
+        console.log(res);
+        this.dialogView = true;
+        this.info.provinceCityRegion = res.data.provinceCityRegion;
+      }
     }
   },
   activated() {
@@ -397,4 +430,25 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.row-bg {
+  > div {
+    margin: 0 15px;
+  }
+  .two {
+    flex: 1;
+  }
+}
+.list {
+  font-size: 14px;
+  margin-bottom: 50px;
+  color: #333;
+  p {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
+  }
+  span {
+    color: #409eff;
+    line-height: 1.6;
+  }
+}
 </style>

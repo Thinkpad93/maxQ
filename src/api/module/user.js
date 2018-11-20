@@ -6,6 +6,12 @@ export function queryAccountList(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//查看用户信息
+export function queryAccountInfo(params) {
+  return ax.post('/action/mod-xiaojiao/account/queryAccountInfo.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //查询用户列表（模糊查询）
 export function queryFuzzy(params) {
   return ax.post('/action/mod-xiaojiao/account/queryFuzzy.do', params)

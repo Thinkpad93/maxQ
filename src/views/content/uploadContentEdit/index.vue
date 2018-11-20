@@ -154,54 +154,6 @@
                       </el-col>
                     </template>
                   </el-row>
-                  <!-- <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
-                      <el-col :span="24">
-                        <el-form-item label="播放时长" prop="durationTime" :rules="[
-                          { required: true, message: '请选择播放时长', trigger: 'blur' }
-                          ]">
-                          <el-time-picker 
-                            format="mm:ss"
-                            value-format="mm:ss"                            
-                            v-model="form.durationTime" 
-                            placeholder="选择分秒" 
-                            style="width: 100%;">
-                          </el-time-picker>
-                        </el-form-item>                    
-                      </el-col>   
-                    </template> 
-                    <template v-if="type !== 1">
-                      <el-col :span="24">
-                        <el-form-item label="所属栏目" prop="channelId" :rules="[
-                          { required: true, message: '请选择所属栏目', trigger: 'blur' }
-                          ]">
-                          <el-select v-model="form.channelId" placeholder="请选择" style="width: 100%;">
-                            <el-option v-for="item in channelList" 
-                              :key="item.channelId" 
-                              :value="item.channelId"
-                              :label="item.name">
-                            </el-option>
-                          </el-select>      
-                        </el-form-item>                         
-                      </el-col>
-                    </template>   
-                    <template v-if="type === 1">
-                      <el-col :span="24">
-                        <el-form-item label="播放时段" prop="channelId" :rules="[
-                          { required: true, message: '请选择播放时段', trigger: 'blur' }
-                          ]">
-                          <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="channelId">
-                            <el-option 
-                              v-for="item in schoolPlayTime" 
-                              :key="item.channelId" 
-                              :label="item.time" 
-                              :value="item.channelId">
-                            </el-option>
-                          </el-select>
-                        </el-form-item>                   
-                      </el-col>
-                    </template>                                                          
-                  </el-row>    -->
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 1">
                       <el-col :span="24">
@@ -434,26 +386,6 @@ export default {
           let obj = Object.assign({}, args, { images, playTime, endTime });
           console.log(obj);
           this.updateContent(obj);
-          // let images = [];
-          // let {
-          //   schoolId,
-          //   showType,
-          //   contentDetail,
-          //   posterUrl,
-          //   templateTitle,
-          //   templateId,
-          //   duration,
-          //   ...args
-          // } = this.form;
-          // images = [...this.imageList];
-          // // if (this.imageList.length) {
-          // //   images = this.imageList.map(elem => {
-          // //     return { name: elem.name, url: elem.url };
-          // //   });
-          // // }
-          // let obj = Object.assign({}, args, { images });
-          // console.log(obj);
-          // //this.updateContent(obj);
         }
       });
     },

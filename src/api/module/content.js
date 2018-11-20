@@ -96,9 +96,33 @@ export function deleteChannelTemplate(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-//查询学校播放频道
+//查询学校全屏播放内容
 export function querySchoolPlayChannel(params) {
   return ax.post('/action/mod-xiaojiao/content/schoolPlay/querySchoolPlayChannel.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//查询学校滚动播放内容
+export function querySchoolScroolContent(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/querySchoolScroolContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//编辑滚动内容
+export function updateScroolContent(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/updateScroolContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//删除滚动内容
+export function deleteScroolContent(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/deleteScroolContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//查询学校列表
+export function schoolList(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/schoolList.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

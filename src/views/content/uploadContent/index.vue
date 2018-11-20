@@ -162,54 +162,6 @@
                       </el-col>
                     </template>
                   </el-row>
-                  <!-- <el-row :gutter="10">
-                    <template v-if="form.contentType === 1">
-                      <el-col :span="24">
-                        <el-form-item label="播放时长" prop="durationTime" :rules="[
-                          { required: true, message: '请选择播放时长', trigger: 'blur' }
-                          ]">
-                          <el-time-picker 
-                            format="mm:ss"
-                            value-format="mm:ss"                            
-                            v-model="form.durationTime" 
-                            placeholder="选择分秒" 
-                            style="width: 100%;">
-                          </el-time-picker>
-                        </el-form-item>                    
-                      </el-col>   
-                    </template>  
-                    <template v-if="type !== 1">
-                      <el-col :span="24">
-                        <el-form-item label="所属栏目" prop="channelId" :rules="[
-                          { required: true, message: '请选择所属栏目', trigger: 'blur' }
-                          ]">
-                          <el-select v-model="form.channelId" placeholder="请选择" style="width: 100%;">
-                            <el-option v-for="item in channelList" 
-                              :key="item.channelId" 
-                              :value="item.channelId"
-                              :label="item.name">
-                            </el-option>
-                          </el-select>      
-                        </el-form-item>                         
-                      </el-col>
-                    </template>                     
-                    <template v-if="type === 1">
-                        <el-col :span="24">
-                          <el-form-item label="播放时段" prop="channelId" :rules="[
-                            { required: true, message: '请选择播放时段', trigger: 'blur' }
-                            ]">
-                            <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="channelId">
-                              <el-option 
-                                v-for="item in schoolPlayTime" 
-                                :key="item.channelId" 
-                                :label="item.time" 
-                                :value="item.channelId">
-                              </el-option>
-                            </el-select>
-                          </el-form-item>                   
-                        </el-col>
-                    </template>                                  
-                  </el-row>    -->
                   <el-row :gutter="10">
                     <template v-if="form.contentType === 1">
                       <el-col :span="24">
@@ -497,9 +449,6 @@ export default {
       this.$refs.uploadVideo.clearFiles();
       this.$refs.form.resetFields();
     },
-    // resetForm(formName) {
-    //   this.$refs[formName].resetFields();
-    // },
     handleUpload(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
@@ -567,86 +516,6 @@ export default {
           });
           console.log(obj);
           this.uploadContentAction(obj);
-          //let channelId = [];
-          // let images = [];
-          // let { belongTo, showType, ...args } = this.form;
-          // if (
-          //   this.form.templateId === 0 &&
-          //   (this.screenIndex == 0 ||
-          //     this.screenIndex == 1 ||
-          //     this.screenIndex == 2)
-          // ) {
-          //   if (this.form.contentType != 1) {
-          //     this.$message({
-          //       message: `你选择的展示形式是${
-          //         this.contentTemplateList[this.screenIndex].label
-          //       },必须要选择海报模板`,
-          //       type: "warning"
-          //     });
-          //     return false;
-          //   }
-          // }
-          // //图片判断
-          // if (
-          //   !this.imageList.length &&
-          //   (showType == 3 || showType == 4 || showType == 5)
-          // ) {
-          //   if (this.form.contentType === 0) {
-          //     this.$message({
-          //       message: `你选择的展示形式是${
-          //         this.contentTemplateList[this.screenIndex].label
-          //       },必须要上传图片`,
-          //       type: "warning"
-          //     });
-          //     return false;
-          //   }
-          // }
-          // //视频判断
-          // if (
-          //   this.form.videoUrl === "" &&
-          //   (this.screenIndex == 1 ||
-          //     this.screenIndex == 2 ||
-          //     this.screenIndex == 4 ||
-          //     this.screenIndex == 5)
-          // ) {
-          //   if (this.form.contentType === 0) {
-          //     this.$message({
-          //       message: `你选择的展示形式是${
-          //         this.contentTemplateList[this.screenIndex].label
-          //       },必须要上传视频`,
-          //       type: "warning"
-          //     });
-          //     return false;
-          //   }
-          // }
-          // //如果是学校账号
-          // // if (this.type === 1) {
-          // //   belongTo = this.type;
-          // //   this.schoolPlayTime.forEach(oldItem => {
-          // //     if (playTime.find(newItem => oldItem.itemId == newItem)) {
-          // //       channelId.push(oldItem.channelId);
-          // //     }
-          // //   });
-          // // } else {
-          // //   if (this.form.contentType === 0) {
-          // //     channelId.push(1);
-          // //   } else {
-          // //     channelId.push(args.channelId);
-          // //   }
-          // // }
-          // //上传的图片数据
-          // if (showType == 3 || showType == 4 || showType == 5) {
-          //   //images = [].concat(this.imageList);
-          //   images = [...this.imageList];
-          // }
-          // let obj = Object.assign({}, args, {
-          //   //channelId,
-          //   belongTo,
-          //   showType,
-          //   images
-          // });
-          // console.log(obj);
-          // //this.uploadContentAction(obj);
         }
       });
     },

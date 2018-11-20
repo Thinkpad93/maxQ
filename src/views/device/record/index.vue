@@ -44,7 +44,7 @@
     </template> 
     <!-- 分页 -->
     <template>
-      <div class="qx-pagination">
+      <div class="qx-pagination" v-if="totalCount">
         <el-pagination
           background
           small

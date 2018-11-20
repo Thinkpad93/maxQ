@@ -45,7 +45,7 @@
     </template>  
     <!-- 分页 -->
     <template>
-      <div class="qx-pagination">
+      <div class="qx-pagination" v-if="totalCount">
         <el-pagination
           background
           small
@@ -61,7 +61,7 @@
     <!-- 新增栏目模板 -->
     <template>
       <el-dialog center top="40px" title="新增栏目模板" :visible.sync="dialogAdd">
-        <el-form ref="tplform" :model="tplform" size="mini" :label-width="formLabelWidth" label-position="left">
+        <el-form ref="tplform" :model="tplform" size="small" :label-width="formLabelWidth" label-position="left">
           <el-form-item label="模板名称" prop="name" :rules="[
             { required: true, message: '请输入栏目模板名称', trigger: 'blur' }
           ]">
@@ -81,10 +81,10 @@
     </template> 
     <!-- 新增栏目模板详细项 -->
     <template>
-      <el-dialog width="80%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
+      <el-dialog width="75%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
         <el-form ref="tplDetailform" :model="tplDetailform" size="small" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="10">
-            <el-col :span="18" :offset="3">
+            <el-col :span="24">
               <el-row :gutter="20">
                 <el-col :span="12">
                   <el-form-item label="播放时段" prop="playTime">
@@ -149,13 +149,6 @@
                   </el-form-item>               
                 </el-col>    
                 <el-col :span="12">
-                  <el-form-item label="栏目属性" prop="scrollType">
-                    <el-select v-model="tplDetailform.scrollType" style="width:100%;">
-                      <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
-                    </el-select>
-                  </el-form-item>   
-                </el-col>     
-                <el-col :span="12">
                   <el-form-item label="栏目有效期" prop="validType">
                     <el-select v-model="tplDetailform.validType" style="width:100%;" @change="handleValidType">
                       <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
@@ -165,9 +158,9 @@
               </el-row>
             </el-col>
           </el-row>                              
-          <el-row style="text-align:center">
+          <el-row style="text-align:center;">
             <el-button size="small" @click="resetForm('tplDetailform')">重置</el-button>
-            <el-button :disabled="disabled === 1" size="small" type="primary" @click="addTablerow('tplDetailform')">新增模板详细项</el-button>
+            <el-button size="small" :disabled="disabled === 1" type="primary" @click="addTablerow('tplDetailform')">新增模板详细项</el-button>
           </el-row>                            
         </el-form>
         <div class="plac"></div> 
@@ -210,19 +203,6 @@
               </template>
             </template>
           </el-table-column>  
-          <el-table-column property="scrollType" label="栏目属性">
-            <template slot-scope="scope">
-              <template v-if="scope.row.show">
-                <el-select v-model="scope.row.scrollType" placeholder="请选择" size="mini">
-                  <el-option v-for="item in scrollTypeList" :key="item.value" :value="item.value" :label="item.name"></el-option>
-                </el-select>                  
-              </template>
-              <template v-else>
-                <p v-if="scope.row.scrollType === 0">非滚动</p>
-                <p v-else>滚动</p>                    
-              </template>                 
-            </template>
-          </el-table-column>
           <el-table-column property="priority" label="播放优先级">
             <template slot-scope="scope">
               <template v-if="scope.row.show">
@@ -326,7 +306,7 @@ export default {
         templateId: null,
         validType: 0,
         scrollType: 0,
-        playTime: ["07:00:00", "08:00:00"],
+        playTime: ["00:00:00", "23:59:59"],
         validTime: []
       },
       channelList: [], //栏目
@@ -385,12 +365,14 @@ export default {
           return false;
         });
     },
+    //取消操作
     handleCancel() {
       this.disabled = 0;
-      this.tplAddData.forEach((elem, value) => {
-        this.$set(elem, "show", false);
-        this.$set(elem, "state", 1);
-      });
+      this.queryChannelTemplateDetail(this.tplDetailform.templateId);
+      // this.tplAddData.forEach((elem, value) => {
+      //   this.$set(elem, "show", false);
+      //   this.$set(elem, "state", 1);
+      // });
     },
     handleInnerSave(index, row) {
       let { show, state, channelName, postTime, ...z } = row;

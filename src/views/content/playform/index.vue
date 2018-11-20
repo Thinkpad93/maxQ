@@ -17,9 +17,7 @@
                 </el-autocomplete>
               </el-form-item>                  
               <el-form-item>
-                <el-button :disabled="disabled === 1" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <el-button :disabled="disabled === 1" icon="el-icon-plus" type="primary" @click="handleaddChannel">新增</el-button>
-                <el-button :disabled="disabled === 1" type="primary" @click="handleUpdate">更新表单到终端</el-button>
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -29,6 +27,16 @@
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" stripe size="mini">
+        <el-table-column label="学校ID" prop="schoolId"></el-table-column>
+        <el-table-column label="学校名称" prop="schoolName"></el-table-column>
+        <el-table-column label="区域" prop="region"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleShowPlayList(scope.row)">查看播放列表</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- <el-table :data="tableData" style="width: 100%" stripe size="mini">
         <el-table-column width="400" label="播放时段">
           <template slot-scope="scope">
             <template v-if="scope.row.show">
@@ -142,7 +150,6 @@
               <p class="simInput" @click="handleViewPlayData(scope.row)">查看播放内容</p>
             </template>
             <template v-else>
-              <!-- <a href="javascript:;" style="color:#409EFF" @click="viewChannelContent(scope.row)">查看</a> -->
               <el-popover placement="left" trigger="hover">
                 <el-table :data="scope.row.contents" border stripe size="mini">
                   <el-table-column width="260" property="title" label="播放内容" :show-overflow-tooltip="true">
@@ -164,10 +171,10 @@
             <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
     </template>   
     <!-- 播放内容 -->
-    <template>
+    <!-- <template>
       <el-dialog :close-on-click-modal="false" center title="播放内容" :visible.sync="dialogContent" @open="show" @close="close">
         <el-table ref="playCon" 
           @selection-change="selectCheckbox" 
@@ -188,9 +195,9 @@
           <el-button size="small" type="primary" @click="toggleSelection">确定</el-button>
         </div>
       </el-dialog>      
-    </template>
+    </template> -->
     <!-- 新增学校播放频道 -->
-    <template>
+    <!-- <template>
       <el-dialog center top="40px" title="新增学校播放频道" :visible.sync="dialogChannel">
         <el-form 
         :rules="rules" 
@@ -283,82 +290,86 @@
           <el-button size="small" type="primary" @click="addChannelForm('channelForm')">保存</el-button>
         </span>        
       </el-dialog>
-    </template>       
+    </template>        -->
    </div> 
 </template>
 <script>
 import service from "@/api";
-import region from "@/components/region";
+//import region from "@/components/region";
 import regiont from "@/components/qxregion";
-import { scrollType, priority, validType } from "@/mixins";
-import { disabledDate, hours } from "@/utils/tools";
+//import { scrollType, priority, validType } from "@/mixins";
+//import { disabledDate, hours } from "@/utils/tools";
 export default {
   name: "playform",
-  mixins: [scrollType, priority, validType],
+  //mixins: [scrollType, priority, validType],
   components: {
-    region,
-    "qx-region": region,
+    //region,
+    //"qx-region": region,
     "qx-region-t": regiont
   },
   data() {
     return {
-      disabled: 0,
-      dialogValidity: false,
-      dialogContent: false,
-      btnloading: false,
+      //disabled: 0,
+      //dialogValidity: false,
+      //dialogContent: false,
+      //btnloading: false,
       //saveloading: false,
-      dialogChannel: false,
-      formLabelWidth: "100px",
-      countCheckbox: [], //记录选择的行数checkbox
-      schoolId: null,
-      radio: 0,
-      schoolList: [],
-      value4: hours(),
-      isChangeTime: false, //用户是否修改了播放时段
-      validityData: [],
-      pickerOptions: {
-        disabledDate
-      },
-      contentsList: [],
-      playContendata: [],
-      currPlayConten: [],
-      channelList: [],
+      //dialogChannel: false,
+      //formLabelWidth: "100px",
+      //countCheckbox: [], //记录选择的行数checkbox
+      //schoolId: null,
+      //radio: 0,
+      //schoolList: [],
+      //value4: hours(),
+      //isChangeTime: false, //用户是否修改了播放时段
+      //validityData: [],
+      // pickerOptions: {
+      //   disabledDate
+      // },
+      // contentsList: [],
+      // playContendata: [],
+      // currPlayConten: [],
+      // channelList: [],
       query: {
-        schoolName: "",
-        scopeType: "",
-        scopeId: ""
+        page: 1,
+        pageSize: 20
       },
-      channelForm: {
-        schoolId: null,
-        scrollType: 0,
-        validType: 0,
-        validTime: [],
-        contents: []
-      },
-      rules: {
-        contents: [
-          { required: true, message: "请选择播放内容", trigger: "blur" }
-        ],
-        playTime: [
-          { required: true, message: "请选择播放时段", trigger: "blur" }
-        ],
-        validTime: [
-          { required: true, message: "请选择时间段", trigger: "blur" }
-        ],
-        channelId: [
-          { required: true, message: "请选择栏目名称", trigger: "blur" }
-        ],
-        priority: [
-          { required: true, message: "请选择播放优先级", trigger: "blur" }
-        ]
-      },
+      // query: {
+      //   schoolName: "",
+      //   scopeType: "",
+      //   scopeId: ""
+      // },
+      // channelForm: {
+      //   schoolId: null,
+      //   scrollType: 0,
+      //   validType: 0,
+      //   validTime: [],
+      //   contents: []
+      // },
+      // rules: {
+      //   contents: [
+      //     { required: true, message: "请选择播放内容", trigger: "blur" }
+      //   ],
+      //   playTime: [
+      //     { required: true, message: "请选择播放时段", trigger: "blur" }
+      //   ],
+      //   validTime: [
+      //     { required: true, message: "请选择时间段", trigger: "blur" }
+      //   ],
+      //   channelId: [
+      //     { required: true, message: "请选择栏目名称", trigger: "blur" }
+      //   ],
+      //   priority: [
+      //     { required: true, message: "请选择播放优先级", trigger: "blur" }
+      //   ]
+      // },
       tableData: []
     };
   },
   computed: {
-    validTimeRules() {
-      return [{ required: true, message: "请选择播放时段", trigger: "blur" }];
-    }
+    // validTimeRules() {
+    //   return [{ required: true, message: "请选择播放时段", trigger: "blur" }];
+    // }
   },
   methods: {
     handleSearch() {
@@ -366,11 +377,14 @@ export default {
         this.querySchoolPlayChannel(this.schoolId);
       }
     },
-    handleValidType(value) {
-      if (value === 0) {
-        this.$refs.channelForm.clearValidate(["validTime"]);
-      }
+    handleShowPlayList(row) {
+      this.$router.push({ path: `/content/playshow/${row.schoolId}` });
     },
+    // handleValidType(value) {
+    //   if (value === 0) {
+    //     this.$refs.channelForm.clearValidate(["validTime"]);
+    //   }
+    // },
     async querySearch(queryString, cb) {
       let { scopeId, scopeType } = this.query;
       if (queryString) {
@@ -393,348 +407,355 @@ export default {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
-    //查看播放的内容
-    handleViewPlayData(row) {
-      this.dialogContent = true;
-      let { contents } = row;
-      let playContendata = this.playContendata;
-      let rows = [];
-      for (let i = 0; i < contents.length; i++) {
-        for (let j = 0; j < playContendata.length; j++) {
-          if (contents[i].contentId === playContendata[j].contentId) {
-            rows.push(playContendata[j]);
-          }
-        }
-      }
-      this.currPlayConten = rows;
-      console.log(contents);
-      console.log(playContendata);
-      console.log(rows);
-      //let rows = [];
-      // contents.forEach((elem, index) => {
-      //   playContendata.forEach((c, cindex) => {
-      //     if (elem.contentId === c.contentId) {
-      //       this.currPlayConten.push(c);
-      //     }
-      //   });
-      // });
-      //console.log(this.currPlayConten);
-    },
-    show() {
-      this.$nextTick(() => {
-        this.$refs.playCon.clearSelection();
-        this.currPlayConten.forEach(col => {
-          this.$refs.playCon.toggleRowSelection(col);
-        });
-      });
-      // this.$nextTick(() => {
-      //   let countCheckbox = this.countCheckbox;
-      //   let playContendata = this.playContendata;
-      //   if (!countCheckbox.length) {
-      //     playContendata.forEach(row => {
-      //       if (!row.status) {
-      //         this.$refs.playCon.toggleRowSelection(row);
-      //       }
-      //     });
-      //   }
-      // });
-    },
-    close() {
-      this.$nextTick(() => {
-        //this.$refs.playCon.clearSelection();
-      });
-    },
-    toggleSelection() {
-      this.dialogContent = false;
-      console.log(this.countCheckbox);
-    },
-    selectCheckbox(selection) {
-      this.countCheckbox = [].concat(selection);
-    },
-    setEditState(row, params) {
-      for (let o in params) {
-        this.$set(row, o, params[o]);
-      }
-    },
-    setEditStateAll(tableData, params) {
-      if (Array.isArray(tableData)) {
-        tableData.forEach((e, v) => {
-          if (!e.show) {
-            for (let o in params) {
-              this.$set(e, o, params[o]);
-            }
-          }
-        });
-      }
-    },
-    delEditState(tableData) {
-      if (Array.isArray(tableData)) {
-        tableData.forEach((e, v) => {
-          this.$delete(e, "show");
-          this.$delete(e, "state");
-        });
-      }
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    //更新表单播放列表
-    handleUpdate() {
-      if (this.schoolId || this.tableData.length) {
-        this.updatePlayList(this.schoolId);
-      }
-    },
-    //新增学校播放表单
-    handleaddChannel() {
-      if (this.schoolId || this.tableData.length) {
-        this.dialogChannel = true;
-        this.channelForm.schoolId = this.schoolId || this.tableData[0].schoolId;
-      } else {
-        return false;
-      }
-    },
-    handleChangeTime(value) {
-      this.isChangeTime = true;
-    },
-    handleQueryContent(value) {
-      let schoolId = this.channelForm.schoolId;
-      let scrollType = this.channelForm.scrollType;
-      this.queryPlayContent({ schoolId, channelId: value, scrollType });
-      //this.queryPlayContentList({ schoolId, channelId: value });
-    },
-    handleQueryContents(value) {
-      let schoolId = this.channelForm.schoolId;
-      let channelId = this.channelForm.channelId;
-      this.queryPlayContent({ schoolId, channelId, scrollType: value });
-    },
-    handleEdit(index, row) {
-      let { channelId, schoolId, scrollType } = row;
-      let tableData = this.tableData;
-      this.setEditState(row, { show: true, state: 1 });
-      this.setEditStateAll(tableData, { show: false, state: 0 });
-      this.value4[0] = row.playStartTime;
-      this.value4[1] = row.playEndTime;
-      this.disabled = 1;
-      this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
-    },
-    handleDelete(index, row) {
-      let { itemId, schoolId } = row;
-      this.$confirm(`确定要删除吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.deleteSchoolPlayChannel({ itemId, schoolId });
-        })
-        .catch(error => {
-          return false;
-        });
-    },
+    // //查看播放的内容
+    // handleViewPlayData(row) {
+    //   this.dialogContent = true;
+    //   let { contents } = row;
+    //   let playContendata = this.playContendata;
+    //   let rows = [];
+    //   for (let i = 0; i < contents.length; i++) {
+    //     for (let j = 0; j < playContendata.length; j++) {
+    //       if (contents[i].contentId === playContendata[j].contentId) {
+    //         rows.push(playContendata[j]);
+    //       }
+    //     }
+    //   }
+    //   this.currPlayConten = rows;
+    //   console.log(contents);
+    //   console.log(playContendata);
+    //   console.log(rows);
+    //   //let rows = [];
+    //   // contents.forEach((elem, index) => {
+    //   //   playContendata.forEach((c, cindex) => {
+    //   //     if (elem.contentId === c.contentId) {
+    //   //       this.currPlayConten.push(c);
+    //   //     }
+    //   //   });
+    //   // });
+    //   //console.log(this.currPlayConten);
+    // },
+    // show() {
+    //   this.$nextTick(() => {
+    //     this.$refs.playCon.clearSelection();
+    //     this.currPlayConten.forEach(col => {
+    //       this.$refs.playCon.toggleRowSelection(col);
+    //     });
+    //   });
+    //   // this.$nextTick(() => {
+    //   //   let countCheckbox = this.countCheckbox;
+    //   //   let playContendata = this.playContendata;
+    //   //   if (!countCheckbox.length) {
+    //   //     playContendata.forEach(row => {
+    //   //       if (!row.status) {
+    //   //         this.$refs.playCon.toggleRowSelection(row);
+    //   //       }
+    //   //     });
+    //   //   }
+    //   // });
+    // },
+    // close() {
+    //   this.$nextTick(() => {
+    //     //this.$refs.playCon.clearSelection();
+    //   });
+    // },
+    // toggleSelection() {
+    //   this.dialogContent = false;
+    //   console.log(this.countCheckbox);
+    // },
+    // selectCheckbox(selection) {
+    //   this.countCheckbox = [].concat(selection);
+    // },
+    // setEditState(row, params) {
+    //   for (let o in params) {
+    //     this.$set(row, o, params[o]);
+    //   }
+    // },
+    // setEditStateAll(tableData, params) {
+    //   if (Array.isArray(tableData)) {
+    //     tableData.forEach((e, v) => {
+    //       if (!e.show) {
+    //         for (let o in params) {
+    //           this.$set(e, o, params[o]);
+    //         }
+    //       }
+    //     });
+    //   }
+    // },
+    // delEditState(tableData) {
+    //   if (Array.isArray(tableData)) {
+    //     tableData.forEach((e, v) => {
+    //       this.$delete(e, "show");
+    //       this.$delete(e, "state");
+    //     });
+    //   }
+    // },
+    // resetForm(formName) {
+    //   this.$refs[formName].resetFields();
+    // },
+    // //更新表单播放列表
+    // handleUpdate() {
+    //   if (this.schoolId || this.tableData.length) {
+    //     this.updatePlayList(this.schoolId);
+    //   }
+    // },
+    // //新增学校播放表单
+    // handleaddChannel() {
+    //   if (this.schoolId || this.tableData.length) {
+    //     this.dialogChannel = true;
+    //     this.channelForm.schoolId = this.schoolId || this.tableData[0].schoolId;
+    //   } else {
+    //     return false;
+    //   }
+    // },
+    // handleChangeTime(value) {
+    //   this.isChangeTime = true;
+    // },
+    // handleQueryContent(value) {
+    //   let schoolId = this.channelForm.schoolId;
+    //   let scrollType = this.channelForm.scrollType;
+    //   this.queryPlayContent({ schoolId, channelId: value, scrollType });
+    //   //this.queryPlayContentList({ schoolId, channelId: value });
+    // },
+    // handleQueryContents(value) {
+    //   let schoolId = this.channelForm.schoolId;
+    //   let channelId = this.channelForm.channelId;
+    //   this.queryPlayContent({ schoolId, channelId, scrollType: value });
+    // },
+    // handleEdit(index, row) {
+    //   let { channelId, schoolId, scrollType } = row;
+    //   let tableData = this.tableData;
+    //   this.setEditState(row, { show: true, state: 1 });
+    //   this.setEditStateAll(tableData, { show: false, state: 0 });
+    //   this.value4[0] = row.playStartTime;
+    //   this.value4[1] = row.playEndTime;
+    //   this.disabled = 1;
+    //   this.queryPlayContent({ channelId, schoolId, scrollType }, "edit");
+    // },
+    // handleDelete(index, row) {
+    //   let { itemId, schoolId } = row;
+    //   this.$confirm(`确定要删除吗?`, "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       this.deleteSchoolPlayChannel({ itemId, schoolId });
+    //     })
+    //     .catch(error => {
+    //       return false;
+    //     });
+    // },
     //取消操作
-    handleCancel(row) {
-      //hack
-      this.disabled = 0;
-      this.querySchoolPlayChannel(this.schoolId);
-      // this.disabled = 0;
-      // this.tableData.forEach((elem, value) => {
-      //   this.$set(elem, "show", false);
-      //   this.$set(elem, "state", 1);
-      // });
-    },
-    handleSave(row) {
-      let countCheckbox = this.countCheckbox; //选中的数据
-      let playContendata = this.playContendata.slice();
-      let { show, state, channelName, postTime, ...args } = row;
-      let content = [];
-      let obj = {};
-      if (countCheckbox.length) {
-        content = countCheckbox.map(item => {
-          return { contentId: item.contentId };
-        });
-      }
-      if (this.isChangeTime) {
-        args.playStartTime = this.value4[0];
-        args.playEndTime = this.value4[1];
-      }
-      obj = Object.assign({}, args, {
-        contents: content
-      });
-      console.log(obj);
-      this.updateSchoolPlayChannel(obj);
-      // var one = [];
-      // var obj = {};
-      // if (countCheckbox.length) {
-      //   content = countCheckbox.map(item => {
-      //     return { contentId: item.contentId, status: 0 };
-      //   });
-      //   playContendata.forEach(oldItem => {
-      //     if (
-      //       !content.find(newItem => {
-      //         return oldItem.contentId == newItem.contentId;
-      //       })
-      //     ) {
-      //       one.push({ contentId: oldItem.contentId, status: 1 });
-      //     }
-      //   });
-      // } else {
-      //   content = playContendata.map(item => {
-      //     return { contentId: item.contentId, status: item.status };
-      //   });
-      // }
-      // if (this.isChangeTime) {
-      //   args.playStartTime = this.value4[0];
-      //   args.playEndTime = this.value4[1];
-      // }
-      // obj = Object.assign({}, args, {
-      //   contents: content.concat(one)
-      // });
-      // console.log(obj);
-      //this.saveloading = true;
-      //this.updateSchoolPlayChannel(obj);
-    },
+    // handleCancel(row) {
+    //   //hack
+    //   this.disabled = 0;
+    //   this.querySchoolPlayChannel(this.schoolId);
+    //   // this.disabled = 0;
+    //   // this.tableData.forEach((elem, value) => {
+    //   //   this.$set(elem, "show", false);
+    //   //   this.$set(elem, "state", 1);
+    //   // });
+    // },
+    // handleSave(row) {
+    //   let countCheckbox = this.countCheckbox; //选中的数据
+    //   let playContendata = this.playContendata.slice();
+    //   let { show, state, channelName, postTime, ...args } = row;
+    //   let content = [];
+    //   let obj = {};
+    //   if (countCheckbox.length) {
+    //     content = countCheckbox.map(item => {
+    //       return { contentId: item.contentId };
+    //     });
+    //   }
+    //   if (this.isChangeTime) {
+    //     args.playStartTime = this.value4[0];
+    //     args.playEndTime = this.value4[1];
+    //   }
+    //   obj = Object.assign({}, args, {
+    //     contents: content
+    //   });
+    //   console.log(obj);
+    //   this.updateSchoolPlayChannel(obj);
+    //   // var one = [];
+    //   // var obj = {};
+    //   // if (countCheckbox.length) {
+    //   //   content = countCheckbox.map(item => {
+    //   //     return { contentId: item.contentId, status: 0 };
+    //   //   });
+    //   //   playContendata.forEach(oldItem => {
+    //   //     if (
+    //   //       !content.find(newItem => {
+    //   //         return oldItem.contentId == newItem.contentId;
+    //   //       })
+    //   //     ) {
+    //   //       one.push({ contentId: oldItem.contentId, status: 1 });
+    //   //     }
+    //   //   });
+    //   // } else {
+    //   //   content = playContendata.map(item => {
+    //   //     return { contentId: item.contentId, status: item.status };
+    //   //   });
+    //   // }
+    //   // if (this.isChangeTime) {
+    //   //   args.playStartTime = this.value4[0];
+    //   //   args.playEndTime = this.value4[1];
+    //   // }
+    //   // obj = Object.assign({}, args, {
+    //   //   contents: content.concat(one)
+    //   // });
+    //   // console.log(obj);
+    //   //this.saveloading = true;
+    //   //this.updateSchoolPlayChannel(obj);
+    // },
     //赋值自定义有效期时间
-    validityShow(row) {},
-    validityHide() {
-      let that = this;
-      setTimeout(() => {
-        that.validityData = [];
-      });
-    },
+    // validityShow(row) {},
+    // validityHide() {
+    //   let that = this;
+    //   setTimeout(() => {
+    //     that.validityData = [];
+    //   });
+    // },
     //保存有效期选择
-    validitySave(row) {
-      let radio = this.radio;
-      if (radio) {
-        row.validStartTime = this.validityData[0];
-        row.validEndTime = this.validityData[1];
-        row.validType = 1;
-      } else {
-        row.validType = 0;
-        row.validStartTime = "";
-        row.validEndTime = "";
-      }
-      this.dialogValidity = false;
-    },
-    validitySelect(row) {
-      this.dialogValidity = true;
-      if (row.validType) {
-        this.validityData.push(row.validStartTime);
-        this.validityData.push(row.validEndTime);
-      }
-      return row.validType === 0 ? (this.radio = 0) : (this.radio = 1);
-    },
-    addChannelForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let { playTime, validTime, contents, ...args } = this.channelForm;
-          let obj = {};
-          let validObj = {};
-          let one = [];
-          if (args.validType === 1) {
-            validObj = {
-              validStartTime: validTime[0],
-              validEndTime: validTime[1]
-            };
-          } else {
-            validObj = { validStartTime: "", validEndTime: "" };
-          }
-          this.contentsList.forEach(oldItem => {
-            if (
-              contents.find(newItem => {
-                return oldItem.contentId == newItem;
-              })
-            ) {
-              one.push({
-                contentId: oldItem.contentId,
-                status: oldItem.status
-              });
-            }
-          });
-          obj = Object.assign({}, args, {
-            contents: one,
-            playStartTime: playTime[0],
-            playEndTime: playTime[1],
-            ...validObj
-          });
-          console.log(obj);
-          this.addSchoolPlayChannel(obj);
-        }
-      });
-    },
+    // validitySave(row) {
+    //   let radio = this.radio;
+    //   if (radio) {
+    //     row.validStartTime = this.validityData[0];
+    //     row.validEndTime = this.validityData[1];
+    //     row.validType = 1;
+    //   } else {
+    //     row.validType = 0;
+    //     row.validStartTime = "";
+    //     row.validEndTime = "";
+    //   }
+    //   this.dialogValidity = false;
+    // },
+    // validitySelect(row) {
+    //   this.dialogValidity = true;
+    //   if (row.validType) {
+    //     this.validityData.push(row.validStartTime);
+    //     this.validityData.push(row.validEndTime);
+    //   }
+    //   return row.validType === 0 ? (this.radio = 0) : (this.radio = 1);
+    // },
+    // addChannelForm(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       let { playTime, validTime, contents, ...args } = this.channelForm;
+    //       let obj = {};
+    //       let validObj = {};
+    //       let one = [];
+    //       if (args.validType === 1) {
+    //         validObj = {
+    //           validStartTime: validTime[0],
+    //           validEndTime: validTime[1]
+    //         };
+    //       } else {
+    //         validObj = { validStartTime: "", validEndTime: "" };
+    //       }
+    //       this.contentsList.forEach(oldItem => {
+    //         if (
+    //           contents.find(newItem => {
+    //             return oldItem.contentId == newItem;
+    //           })
+    //         ) {
+    //           one.push({
+    //             contentId: oldItem.contentId,
+    //             status: oldItem.status
+    //           });
+    //         }
+    //       });
+    //       obj = Object.assign({}, args, {
+    //         contents: one,
+    //         playStartTime: playTime[0],
+    //         playEndTime: playTime[1],
+    //         ...validObj
+    //       });
+    //       console.log(obj);
+    //       this.addSchoolPlayChannel(obj);
+    //     }
+    //   });
+    // },
     // viewChannelContent(row) {
     //   let { channelId, schoolId } = row;
     // },
     //查询栏目名称
-    async queryChannelAll() {
-      let res = await service.queryChannelAll({});
+    // async queryChannelAll() {
+    //   let res = await service.queryChannelAll({});
+    //   if (res.errorCode === 0) {
+    //     this.channelList = res.data;
+    //   }
+    // },
+    // //查询频道对应内容 查看
+    // async queryPlayContent(params = {}, str = "add") {
+    //   let res = await service.queryPlayContent(params);
+    //   if (res.errorCode === 0) {
+    //     if (str === "add") {
+    //       this.channelForm.contents = [];
+    //       this.contentsList = res.data;
+    //     } else {
+    //       this.playContendata = res.data;
+    //     }
+    //   }
+    // },
+    // //更新表单播放列表
+    // async updatePlayList(schoolId) {
+    //   let res = await service.updatePlayList({ schoolId });
+    //   if (res.errorCode === 0) {
+    //     this.$message({ message: `${res.errorMsg}`, type: "success" });
+    //   } else if (res.errorCode === -1) {
+    //     this.$message({ message: `${res.errorMsg}`, type: "warning" });
+    //   }
+    // },
+    // //新增学校播放频道
+    // async addSchoolPlayChannel(params = {}) {
+    //   let res = await service.addSchoolPlayChannel(params, {
+    //     headers: { "Content-Type": "application/json" }
+    //   });
+    //   if (res.errorCode === 0) {
+    //     this.dialogChannel = false;
+    //     this.resetForm("channelForm");
+    //     this.$message({ message: `${res.errorMsg}`, type: "success" });
+    //     this.querySchoolPlayChannel(this.schoolId);
+    //   }
+    // },
+    // //显示学校播放表单列表
+    // async querySchoolPlayChannel(schoolId) {
+    //   let res = await service.querySchoolPlayChannel({ schoolId });
+    //   if (res.errorCode === 0) {
+    //     if (res.data.length) {
+    //       this.tableData = res.data;
+    //     }
+    //   }
+    // },
+    // //编辑学校播放频道
+    // async updateSchoolPlayChannel(params = {}) {
+    //   let res = await service.updateSchoolPlayChannel(params, {
+    //     headers: { "Content-Type": "application/json" }
+    //   });
+    //   if (res.errorCode === 0) {
+    //     this.disabled = 0;
+    //     this.$message({ message: `${res.errorMsg}`, type: "success" });
+    //     this.querySchoolPlayChannel(this.schoolId);
+    //   }
+    // },
+    // //删除学校播放频道
+    // async deleteSchoolPlayChannel(params = {}) {
+    //   let res = await service.deleteSchoolPlayChannel(params);
+    //   if (res.errorCode === 0) {
+    //     this.$message({ message: `${res.errorMsg}`, type: "success" });
+    //     this.querySchoolPlayChannel(this.schoolId);
+    //   }
+    // },
+    async schoolList() {
+      let res = await service.schoolList(this.query);
       if (res.errorCode === 0) {
-        this.channelList = res.data;
-      }
-    },
-    //查询频道对应内容 查看
-    async queryPlayContent(params = {}, str = "add") {
-      let res = await service.queryPlayContent(params);
-      if (res.errorCode === 0) {
-        if (str === "add") {
-          this.channelForm.contents = [];
-          this.contentsList = res.data;
-        } else {
-          this.playContendata = res.data;
-        }
-      }
-    },
-    //更新表单播放列表
-    async updatePlayList(schoolId) {
-      let res = await service.updatePlayList({ schoolId });
-      if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-      } else if (res.errorCode === -1) {
-        this.$message({ message: `${res.errorMsg}`, type: "warning" });
-      }
-    },
-    //新增学校播放频道
-    async addSchoolPlayChannel(params = {}) {
-      let res = await service.addSchoolPlayChannel(params, {
-        headers: { "Content-Type": "application/json" }
-      });
-      if (res.errorCode === 0) {
-        this.dialogChannel = false;
-        this.resetForm("channelForm");
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.querySchoolPlayChannel(this.schoolId);
-      }
-    },
-    //显示学校播放表单列表
-    async querySchoolPlayChannel(schoolId) {
-      let res = await service.querySchoolPlayChannel({ schoolId });
-      if (res.errorCode === 0) {
-        if (res.data.length) {
-          this.tableData = res.data;
-        }
-      }
-    },
-    //编辑学校播放频道
-    async updateSchoolPlayChannel(params = {}) {
-      let res = await service.updateSchoolPlayChannel(params, {
-        headers: { "Content-Type": "application/json" }
-      });
-      if (res.errorCode === 0) {
-        this.disabled = 0;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.querySchoolPlayChannel(this.schoolId);
-      }
-    },
-    //删除学校播放频道
-    async deleteSchoolPlayChannel(params = {}) {
-      let res = await service.deleteSchoolPlayChannel(params);
-      if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.querySchoolPlayChannel(this.schoolId);
+        this.tableData = res.data.data;
       }
     }
   },
   activated() {
-    this.queryChannelAll();
+    this.schoolList();
+    //this.queryChannelAll();
   },
   mounted() {}
 };
