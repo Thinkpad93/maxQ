@@ -20,7 +20,7 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column label="栏目模板ID" prop="templateId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目模板" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -84,9 +84,34 @@
       <el-dialog width="75%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
         <el-form ref="tplDetailform" :model="tplDetailform" size="small" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="10">
-            <el-col :span="24">
+            <el-col :span="12" :offset="6">
               <el-row :gutter="20">
-                <el-col :span="12">
+                <el-col :span="24">
+                  <el-form-item label="栏目名称" prop="channelId" :rules="[
+                { required: true, message: '请选择栏目名称', trigger: 'blur' }
+              ]">
+                    <el-select v-model="tplDetailform.channelId" placeholder="请选择" @change="selectChannelName" style="width:100%;">
+                      <el-option v-for="item in channelList" 
+                        :key="item.channelId" 
+                        :value="item.channelId"
+                        :label="item.name">
+                      </el-option>
+                    </el-select>                             
+                  </el-form-item>              
+                </el-col>     
+                <el-col :span="24">
+                  <el-form-item label="播放优先级" prop="priority">
+                    <el-select v-model="tplDetailform.priority" placeholder="请选择" style="width:100%;">
+                      <el-option 
+                        v-for="item in priorityList" 
+                        :key="item.value" 
+                        :value="item.value"
+                        :label="item.label">
+                      </el-option>
+                    </el-select> 
+                  </el-form-item>               
+                </el-col>                                
+                <el-col :span="24">
                   <el-form-item label="播放时段" prop="playTime">
                     <el-time-picker
                       style="width:100%;"
@@ -106,8 +131,15 @@
                     </el-time-picker>                           
                   </el-form-item>  
                 </el-col>
-                <el-col :span="12">
-                  <el-form-item label="时间段选择" prop="validTime" :rules="tplDetailform.validType === 1 ? validTimeRules : []">
+                <el-col :span="24">
+                  <el-form-item label="栏目有效期" prop="validType">
+                    <el-select v-model="tplDetailform.validType" style="width:100%;" @change="handleValidType">
+                      <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
+                    </el-select>                
+                  </el-form-item>               
+                </el-col>                   
+                <el-col :span="24">
+                  <el-form-item label="日期选择" prop="validTime" :rules="tplDetailform.validType === 1 ? validTimeRules : []">
                     <el-date-picker
                       style="width:100%;"
                       value-format="yyyy-MM-dd"
@@ -120,41 +152,7 @@
                       :picker-options="pickerOptions">
                     </el-date-picker>                          
                   </el-form-item>                 
-                </el-col>    
-                <el-col :span="12">
-                  <el-form-item label="栏目名称" prop="channelId" :rules="[
-                { required: true, message: '请选择栏目名称', trigger: 'blur' }
-              ]">
-                    <el-select v-model="tplDetailform.channelId" placeholder="请选择" @change="selectChannelName" style="width:100%;">
-                      <el-option v-for="item in channelList" 
-                        :key="item.channelId" 
-                        :value="item.channelId"
-                        :label="item.name">
-                      </el-option>
-                    </el-select>                             
-                  </el-form-item>              
-                </el-col>  
-                <el-col :span="12">
-                  <el-form-item label="播放优先级" prop="priority" :rules="[
-                { required: true, message: '请选择播放优先级', trigger: 'blur' }
-              ]">
-                    <el-select v-model="tplDetailform.priority" placeholder="请选择" style="width:100%;">
-                      <el-option 
-                        v-for="item in priorityList" 
-                        :key="item.value" 
-                        :value="item.value"
-                        :label="item.label">
-                      </el-option>
-                    </el-select> 
-                  </el-form-item>               
-                </el-col>    
-                <el-col :span="12">
-                  <el-form-item label="栏目有效期" prop="validType">
-                    <el-select v-model="tplDetailform.validType" style="width:100%;" @change="handleValidType">
-                      <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
-                    </el-select>                
-                  </el-form-item>               
-                </el-col>                                                                 
+                </el-col>                                                                   
               </el-row>
             </el-col>
           </el-row>                              
@@ -165,7 +163,7 @@
         </el-form>
         <div class="plac"></div> 
         <el-alert title="已有模板详细项" type="info" :closable="false"></el-alert>
-        <el-table :data="tplAddData" style="width: 100%" stripe size="mini">
+        <el-table :data="tplAddData" style="width: 100%" stripe size="small">
           <el-table-column width="400" label="播放时段">
             <template slot-scope="scope">
               <template v-if="scope.row.show">
@@ -305,7 +303,7 @@ export default {
       tplDetailform: {
         templateId: null,
         validType: 0,
-        scrollType: 0,
+        priority: 1,
         playTime: ["00:00:00", "23:59:59"],
         validTime: []
       },
@@ -369,10 +367,6 @@ export default {
     handleCancel() {
       this.disabled = 0;
       this.queryChannelTemplateDetail(this.tplDetailform.templateId);
-      // this.tplAddData.forEach((elem, value) => {
-      //   this.$set(elem, "show", false);
-      //   this.$set(elem, "state", 1);
-      // });
     },
     handleInnerSave(index, row) {
       let { show, state, channelName, postTime, ...z } = row;
@@ -457,6 +451,7 @@ export default {
             validStartTime,
             validEndTime
           });
+          console.log(obj);
           this.addChannelTemplateDetail(obj);
         }
       });

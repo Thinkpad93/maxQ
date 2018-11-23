@@ -28,7 +28,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -234,11 +234,11 @@ export default {
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
-      this.querycheckContentList();
+      this.queryCheckContentList();
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
-      this.querycheckContentList();
+      this.queryCheckContentList();
     },
     search() {
       this.queryCheckContentList();
@@ -292,7 +292,6 @@ export default {
       }
     }
   },
-  mounted() {},
   activated() {
     this.queryCheckContentList();
   }

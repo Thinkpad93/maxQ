@@ -4,41 +4,62 @@
       <template>
         <el-row :gutter="10">
           <el-col :span="24">
-            <el-tabs class="qx-page-tabs" v-model="query.status" @tab-click="handleClick">
-              <el-tab-pane label="待发布" name="0"></el-tab-pane>
-              <el-tab-pane label="已发布" name="1"></el-tab-pane>
+            <el-tabs class="qx-page-tabs" type="border-card" v-model="query.status" @tab-click="handleClick">
+              <el-tab-pane label="待发布" name="0">
+                <!-- 表格数据 -->
+                <template>
+                  <el-table :data="tableData" style="width: 100%" stripe size="small">
+                    <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+                      </template>             
+                    </el-table-column>
+                    <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="申请时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="发布区域" prop="regionName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <span style="color:#409EFF;cursor:pointer;" @click="handleViewSchool(scope.row)">查看</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="操作">
+                      <template slot-scope="scope">
+                        <el-button v-if="query.status == 0" size="mini" type="primary" @click="handleRelease(scope.row)">发布</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+              </el-tab-pane>
+              <el-tab-pane label="已发布" name="1">
+                <!-- 表格数据 -->
+                <el-table :data="tableData2" style="width: 100%" stripe size="small">
+                  <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+                    </template>             
+                  </el-table-column>
+                  <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="申请时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="发布区域" prop="regionName" :show-overflow-tooltip="true"></el-table-column>  
+                  <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span style="color:#409EFF;cursor:pointer;" @click="handleViewSchool(scope.row)">查看</span>
+                    </template>
+                  </el-table-column>                      
+                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>            
+                </el-table>
+              </el-tab-pane>
             </el-tabs>          
           </el-col>
         </el-row>
       </template>
-      <!-- 表格数据 -->
-      <template>
-        <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
-          <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
-            </template>             
-          </el-table-column>
-          <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="申请时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="发布区域" prop="regionName" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span style="color:#409EFF;cursor:pointer;" @click="handleViewSchool(scope.row)">查看</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button v-if="query.status == 0" size="mini" type="primary" @click="handleRelease(scope.row)">发布</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
       <!-- 分页 -->
-      <template>
+      <!-- <template>
         <div class="qx-pagination">
           <el-pagination
             background
@@ -51,7 +72,7 @@
             :total="totalCount">
           </el-pagination>
         </div>
-      </template>  
+      </template>   -->
     <!-- 查看上传详情信息 --> 
     <template>
       <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogViewContent">
@@ -80,8 +101,7 @@
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
-            </template>            
-            <!-- <div class="iframe-box"></div> -->                 
+            </template>                       
           </div>
           <div class="two">
            <div class="list">
@@ -154,12 +174,18 @@ export default {
       dialogViewPublish: false,
       dialogViewContent: false,
       query: {
-        status: "0",
+        status: 0,
         page: 1,
-        pageSize: 10
+        pageSize: 20
+      },
+      querys: {
+        status: 1,
+        page: 1,
+        pageSize: 20
       },
       info: {},
       tableData: [],
+      tableData2: [],
       totalCount: 0,
       schoolData: [],
       schoolDataPublish: []
@@ -191,10 +217,11 @@ export default {
       }
     },
     handleClick(tab) {
-      //tab 实例
-      this.query.status = tab.name;
-      let obj = Object.assign({}, this.query, { status: parseInt(tab.name) });
-      this.queryPublishContentList(obj);
+      if (tab.name == 1) {
+        this.queryPublishContentList(this.querys, 1);
+      } else {
+        this.queryPublishContentList(this.query, 0);
+      }
     },
     handleRelease(row) {
       this.$confirm(`您确定要发布内容?`, "提示", {
@@ -210,11 +237,17 @@ export default {
         });
     },
     //查询待发布内容列表
-    async queryPublishContentList(params = {}) {
+    async queryPublishContentList(params = {}, status) {
       let res = await service.queryPublishContentList(params);
       if (res.errorCode === 0) {
-        this.tableData = res.data.data;
-        this.totalCount = res.data.totalCount;
+        if (status === 0) {
+          this.tableData = res.data.data;
+          this.totalCount = res.data.totalCount;
+          console.log("林场");
+        } else {
+          this.tableData2 = res.data.data;
+          console.log("林场10");
+        }
       }
     },
     //进行内容正式发布
@@ -222,7 +255,7 @@ export default {
       let res = await service.publishContent({ contentId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.queryPublishContentList(this.query);
+        this.queryPublishContentList(this.query, 0);
       }
     },
     //内容发布（待发布）学校信息
@@ -250,15 +283,17 @@ export default {
       }
     }
   },
-  activated() {
-    this.queryPublishContentList(this.query);
+  mounted() {
+    this.queryPublishContentList(this.query, 0);
+    this.queryPublishContentList(this.querys, 1);
   }
 };
 </script>
 <style lang="less">
 .release {
-  padding: 10px 20px 0 20px;
-  background-color: #fff;
+  position: relative;
+  // padding: 10px 20px 0 20px;
+  // background-color: #fff;
 }
 .row-bg {
   > div {

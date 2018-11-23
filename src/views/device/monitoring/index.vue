@@ -5,7 +5,9 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="区域选择">
+                <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
               </el-form-item>                 

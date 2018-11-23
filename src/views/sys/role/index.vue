@@ -20,7 +20,7 @@
      </template> 
      <!-- 表格数据 -->
      <template>
-       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
           <el-table-column label="角色ID" prop="roleId"></el-table-column>  
           <el-table-column label="角色名称" prop="roleName"></el-table-column>  
           <el-table-column label="角色等级" prop="roleLevel"></el-table-column>  

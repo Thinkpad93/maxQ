@@ -7,7 +7,7 @@ Vue.use(Router);
 export const constantRouterMap = [{
     path: '/login',
     component: () =>
-      import ('@/views/login'),
+      import('@/views/login'),
   },
   {
     path: '/',
@@ -17,7 +17,7 @@ export const constantRouterMap = [{
       path: '/home',
       name: 'home',
       component: () =>
-        import ('@/views/home'),
+        import('@/views/home'),
       meta: {
         title: "首页"
       }

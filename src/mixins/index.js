@@ -48,7 +48,7 @@ export const validType = {
           value: 0
         },
         {
-          name: "按时段有效",
+          name: "自定义",
           value: 1
         }
       ]

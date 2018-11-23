@@ -16,6 +16,18 @@
         </el-col>
       </el-row>
     </template>
+    <!-- <div class="release">
+      <template>
+        <el-row :gutter="10">
+          <el-col :span="24">
+            <el-tabs class="qx-page-tabs" type="border-card">
+              <el-tab-pane label="待预发布" name="0"></el-tab-pane>
+              <el-tab-pane label="已预发布" name="1"></el-tab-pane>
+            </el-tabs>
+          </el-col>
+        </el-row>
+      </template>
+    </div> -->
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">

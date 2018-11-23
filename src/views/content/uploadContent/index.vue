@@ -8,7 +8,7 @@
         </div>      
         <el-row :gutter="30">
           <el-col :xs="24" :sm="24" :md="20" :lg="16" :xl="14" :offset="4">              
-            <el-form ref="form" :model="form" status-icon label-position="center" :label-width="formLabelWidth">             
+            <el-form ref="form" :model="form" status-icon label-position="left" :label-width="formLabelWidth">             
               <el-tabs type="card" class="qx-page-tabs" v-model="status" @tab-click="handleTabClick">
                 <el-tab-pane label="内容播放" name="0">
                   <el-row :gutter="10">
@@ -111,42 +111,47 @@
                   </el-row>                  
                   <el-row :gutter="10">
                     <el-col :span="12">
-                      <template>
-                        <el-upload
-                          :disabled="disabledImg === 0"
-                          name="files"
-                          ref="uploadImage"
-                          action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
-                          accept="image/jpeg,image/gif,image/png,image/bmp"
-                          :file-list="imageList"
-                          :on-remove="handleRemoveImg" 
-                          :on-preview="handlePreviewImg"
-                          :on-success="handleImageSuccess"
-                          :before-upload="beforeImageUpload">
-                          <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="primary" style="width: 100%;">
-                          <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
-                          <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div>
-                        </el-upload>   
-                      </template>                   
+                      <el-upload
+                        drag
+                        :disabled="disabledImg === 0"
+                        name="files"
+                        ref="uploadImage"
+                        action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
+                        accept="image/jpeg,image/gif,image/png,image/bmp"
+                        :file-list="imageList"
+                        :on-remove="handleRemoveImg" 
+                        :on-preview="handlePreviewImg"
+                        :on-success="handleImageSuccess"
+                        :before-upload="beforeImageUpload">
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">点击上传图片</div>
+                        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
+                        <!-- <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="primary" style="width: 100%;">
+                        <i class="el-icon-upload el-icon--right"></i> 选取图片</el-button>
+                        <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div> -->
+                      </el-upload>                  
                     </el-col>
                     <el-col :span="12">
-                      <template>
-                        <el-upload
-                          :disabled="disabledVideo === 0"
-                          name="file"
-                          ref="uploadVideo"
-                          :limit="1"
-                          action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
-                          accept="video/mp4,video/flv,video/mov"
-                          :on-remove="handleRemoveVideo" 
-                          :on-preview="handlePreviewVideo"
-                          :on-success="handleVideoSuccess"
-                          :before-upload="beforeVideoUpload">
-                          <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="primary" style="width: 100%;">
-                          <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
-                          <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div>
-                        </el-upload>  
-                      </template>                      
+                      <el-upload
+                        drag
+                        class="upload-demo"
+                        :disabled="disabledVideo === 0"
+                        name="file"
+                        ref="uploadVideo"
+                        :limit="1"
+                        action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
+                        accept="video/mp4,video/flv,video/mov"
+                        :on-remove="handleRemoveVideo" 
+                        :on-preview="handlePreviewVideo"
+                        :on-success="handleVideoSuccess"
+                        :before-upload="beforeVideoUpload">
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">点击上传视频</div>
+                        <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div>
+                        <!-- <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="primary" style="width: 100%;">
+                        <i class="el-icon-upload el-icon--right"></i> 选取视频</el-button>
+                        <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div> -->
+                      </el-upload>                      
                     </el-col>
                   </el-row>       
                 </el-tab-pane>
@@ -354,7 +359,13 @@ export default {
       }
     },
     handleRemoveVideo(file) {
-      console.log(file);
+      let { url } = file.response.data;
+      console.log(url);
+      this.deletePicture(url).then(res => {
+        if (res) {
+          this.form.videoUrl = "";
+        }
+      });
     },
     handlePreviewVideo() {
       this.dialogViewVideo = true;

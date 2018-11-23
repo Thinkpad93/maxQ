@@ -7,7 +7,7 @@
       </div>
       <el-row :gutter="20">
         <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="18">
-          <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+          <el-form :rules="rules" ref="form" :model="form" status-icon :label-width="formLabelWidth">
             <el-row :gutter="5">
               <el-col :span="8">
                 <el-form-item label="区域选择" prop="regionName">

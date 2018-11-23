@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-cascader
+      size="medium"
       style="width: 100%"
       :clearable="true"
       :disabled="disabled"

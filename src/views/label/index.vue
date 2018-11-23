@@ -30,7 +30,7 @@
      </template>
      <!-- 表格数据 -->
      <template>
-         <el-table :data="tableData" style="width: 100%" stripe size="mini" empty-text="没有标签哦">
+         <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有标签哦">
             <el-table-column label="标签ID" prop="labelId"></el-table-column>
             <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
               <template slot-scope="scope">

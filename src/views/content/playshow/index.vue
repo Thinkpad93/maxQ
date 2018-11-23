@@ -44,7 +44,7 @@
                   <el-table-column label="栏目名称" prop="channelId">
                     <template slot-scope="scope">
                       <template v-if="scope.row.show">
-                        <el-select v-model="scope.row.channelId" placeholder="请选择" size="mini" @change="handleChannelChange">
+                        <el-select v-model="scope.row.channelId" placeholder="请选择" size="mini" @change="select => handleChannelChange(select, scope.row)">
                           <el-option v-for="item in channelList" :key="item.channelId" :value="item.channelId" :label="item.name"></el-option>
                         </el-select>
                       </template>
@@ -272,11 +272,6 @@
               </el-option>
             </el-select>                  
           </el-form-item>  
-          <el-form-item label="栏目有效期" prop="validType">
-            <el-select v-model="form.validType" style="width:100%;" @change="handleValidType">
-              <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
-            </el-select> 
-          </el-form-item>                      
           <el-form-item label="播放优先级" prop="priority">
             <el-select v-model="form.priority" style="width:100%;" placeholder="请选择">
               <el-option 
@@ -286,7 +281,7 @@
                 :label="item.label">
               </el-option>              
             </el-select>
-          </el-form-item>
+          </el-form-item>   
           <el-form-item label="播放时段" prop="playTime">
             <el-time-picker
               is-range
@@ -299,8 +294,13 @@
               end-placeholder="结束时间"
               placeholder="选择时间范围">
             </el-time-picker>                
-          </el-form-item>    
-          <el-form-item label="有效期" prop="validTime" :rules="form.validType === 1 ? validTimeRules : []">
+          </el-form-item>                    
+          <el-form-item label="栏目有效期" prop="validType">
+            <el-select v-model="form.validType" style="width:100%;" @change="handleValidType">
+              <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
+            </el-select> 
+          </el-form-item>                       
+          <el-form-item label="日期选择" prop="validTime" :rules="form.validType === 1 ? validTimeRules : []">
             <el-date-picker
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -354,14 +354,11 @@ export default {
       schoolId: this.$route.params.id,
       info: {},
       rules: {
-        contents: [
-          { required: true, message: "请选择播放内容", trigger: "blur" }
-        ],
+        // contents: [
+        //   { required: true, message: "请选择播放内容", trigger: "blur" }
+        // ],
         channelId: [
           { required: true, message: "请选择栏目名称", trigger: "blur" }
-        ],
-        priority: [
-          { required: true, message: "请选择播放优先级", trigger: "blur" }
         ]
       },
       form: {
@@ -451,7 +448,6 @@ export default {
       this.isChangeTime = true;
     },
     handleSave(row) {
-      console.log(row);
       let content = [];
       let countCheckbox = this.countCheckbox; //选中的数据
       let { show, state, channelName, postTime, contents, ...args } = row;
@@ -471,7 +467,6 @@ export default {
         args.playEndTime = this.value4[1];
       }
       let obj = Object.assign({}, args, { contents: content });
-      console.log(obj);
       this.updateSchoolPlayChannel(obj);
     },
     handleCancel(row) {
@@ -479,11 +474,20 @@ export default {
       this.querySchoolPlayChannel(this.schoolId);
     },
     //栏目选择改变
-    handleChannelChange(value) {
-      this.queryPlayContent(
-        { schoolId: this.schoolId, channelId: value },
+    async handleChannelChange(select, row) {
+      let res = await this.queryPlayContent(
+        { schoolId: this.schoolId, channelId: select },
         "edit"
       );
+      if (res.length) {
+        let result = res.map(item => {
+          return { title: item.title, contentId: item.contentId };
+        });
+        row.contents = result;
+      } else {
+        //如何栏目下没有内容，则为空
+        row.contents = [];
+      }
     },
     //编辑
     handleEdit(row) {
@@ -634,12 +638,14 @@ export default {
     //查询 栏目对应播放内容列表
     async queryPlayContent(params = {}, str = "add") {
       let res = await service.queryPlayContent(params);
+      let contents;
       if (res.errorCode === 0) {
         if (str === "add") {
           this.form.contents = [];
           this.contentsList = res.data;
         } else {
           this.playContendata = res.data;
+          return (contents = res.data);
         }
       }
     },
@@ -709,6 +715,7 @@ export default {
     async updateScroolContent(params = {}) {
       let res = await service.updateScroolContent(params);
       if (res.errorCode === 0) {
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.querySchoolScroolContent(this.schoolId);
       }
     },
@@ -734,6 +741,11 @@ export default {
   padding: 5px 5px 5px 0;
   text-align: left;
   background-color: transparent;
+}
+.image-box {
+  text-align: center;
+  width: 400px;
+  margin: 0 auto;
 }
 .row-bg {
   > div {

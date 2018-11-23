@@ -1,5 +1,5 @@
 <template>
-  <el-form-item label="区域选择" prop="regionId" ref="region">   
+  <div>   
     <el-select clearable :disabled="pdisabled === 1" v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
       <el-option v-for="item in provinceList" :key="item.pId" :label="item.pName" :value="item.pId"></el-option>
     </el-select>  
@@ -8,8 +8,8 @@
     </el-select>      
     <el-select clearable :disabled="adisabled === 1" v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
       <el-option v-for="item in areaList" :key="item.aId" :label="item.aName" :value="item.aId"></el-option>
-    </el-select>                                     
-  </el-form-item>        
+    </el-select>                                         
+  </div>     
 </template>
 <script>
 import service from "@/api";

@@ -37,13 +37,15 @@
          <el-table-column label="添加时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
          <el-table-column label="账号状态" prop="status" :show-overflow-tooltip="true">
            <template slot-scope="scope">
-             <el-switch 
+             <span @click="handleSwitch(scope.row)" v-if="scope.row.status === 1"  style="color:#ff4949;cursor: pointer;">停用</span>
+             <span @click="handleSwitch(scope.row)" v-else style="color:#13ce66;cursor: pointer;">启用</span>
+             <!-- <el-switch 
               v-model="scope.row.status" 
               :active-value="0"
               :inactive-value="1"
               active-color="#13ce66" 
               inactive-color="#ff4949" 
-              @change="handleSwitch(scope.row)"></el-switch>
+              @change="handleSwitch(scope.row)"></el-switch> -->
            </template>
          </el-table-column>
          <el-table-column label="操作" prop="" :show-overflow-tooltip="true">
@@ -303,7 +305,8 @@ export default {
     },
     handleSwitch(row) {
       let { status, accountId } = row;
-      this.changeStatus({ accountId, status: status ? 1 : 0 });
+      status === 0 ? (status = 1) : (status = 0);
+      this.changeStatus({ accountId, status });
     },
     handleReset(row) {
       let { userName, name, accountId } = row;

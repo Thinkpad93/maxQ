@@ -110,6 +110,7 @@
                   <el-row :gutter="10">
                     <el-col :span="12">
                       <el-upload
+                        drag
                         :disabled="disabledImg === 0"
                         name="files"
                         :file-list="imageList"
@@ -119,13 +120,17 @@
                         :on-preview="handlePreviewImg"
                         :on-success="handleImageSuccess"
                         :before-upload="beforeImageUpload">
-                        <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
-                        <i class="el-icon-upload el-icon--right"></i> 点击选取图片</el-button>
-                        <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">点击上传图片</div>
+                        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
+                        <!-- <el-button :disabled="disabledImg === 0" slot="trigger" size="small" type="info" style="width: 100%;">
+                        <i class="el-icon-upload el-icon--right"></i> 选取图片</el-button>
+                        <div class="el-upload__tip" slot="tip">上传1080*1590的图片，不超过2MB</div> -->
                       </el-upload>
                     </el-col>
                     <el-col :span="12">
                       <el-upload
+                        drag
                         :disabled="disabledVideo === 0"
                         name="file"
                         :file-list="videoFileList"
@@ -135,9 +140,12 @@
                         :on-preview="handlePreviewVideo"
                         :on-success="handleVideoSuccess"
                         :before-upload="beforeVideoUpload">
-                        <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
-                        <i class="el-icon-upload el-icon--right"></i> 点击选取视频</el-button>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">点击上传视频</div>
                         <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div>
+                        <!-- <el-button :disabled="disabledVideo === 0" slot="trigger" size="small" type="info" style="width: 100%;">
+                        <i class="el-icon-upload el-icon--right"></i> 选取视频</el-button>
+                        <div class="el-upload__tip" slot="tip">视频大小不超过100MB</div> -->
                       </el-upload>
                     </el-col>
                   </el-row>                       
@@ -455,12 +463,12 @@ export default {
         }
         console.log(this.form);
 
-        // if (this.form.videoUrl) {
-        //   this.videoFileList.push({
-        //     name: "点击查看",
-        //     url: this.form.videoUrl
-        //   });
-        // }
+        if (this.form.videoUrl) {
+          this.videoFileList.push({
+            name: "点击查看",
+            url: this.form.videoUrl
+          });
+        }
         if (
           this.screenIndex == 1 ||
           this.screenIndex == 2 ||

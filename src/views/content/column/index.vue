@@ -16,7 +16,7 @@
     </template> 
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column width="300" label="栏目ID" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>

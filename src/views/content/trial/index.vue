@@ -28,7 +28,7 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -123,7 +123,7 @@
     </template>        
     <!-- 预览审核 -->
     <template>
-      <el-dialog width="60%" :title="info.title" center top="0px" :visible.sync="dialogView">
+      <el-dialog width="60%" :title="info.title" center top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">

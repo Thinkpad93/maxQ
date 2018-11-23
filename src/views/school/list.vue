@@ -6,7 +6,9 @@
         <el-col :span="24">
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              <el-form-item label="区域选择">
+                <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+              </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
               </el-form-item>                     
@@ -21,13 +23,11 @@
     </template>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="mini">
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.name }}</span>
-            <!-- <router-link style="color:#409EFF" 
-              :to="{path: `/school/views/${scope.row.schoolId}`}">{{ scope.row.name }}</router-link> -->
           </template>                    
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
@@ -223,10 +223,8 @@ export default {
       this.showSchoolList(this.query);
     },
     handleViewInfo(row) {
-      console.log(row);
       this.dialogView = true;
       this.info = { ...row };
-      //this.schoolInfo(row.schoolId);
     },
     //新增学校
     handleAddSchool() {
@@ -249,13 +247,6 @@ export default {
           return false;
         });
     },
-    // async schoolInfo(schoolId) {
-    //   let res = await service.querySchoolInfo({ schoolId });
-    //   if (res.errorCode === 0) {
-    //     this.dialogView = true;
-    //     this.info = Object.assign({}, res.data);
-    //   }
-    // },
     //根据区域ID查省市
     async findRegion(regionId) {
       let res = await service.findRegion({ regionId });
@@ -338,7 +329,6 @@ export default {
   line-height: 22px;
   padding-bottom: 16px;
   color: #409eff;
-  //color: rgba(0, 0, 0, 0.65);
   span {
     color: #fff;
     padding: 1px 10px;
