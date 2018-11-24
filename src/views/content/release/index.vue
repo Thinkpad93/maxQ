@@ -4,7 +4,7 @@
       <template>
         <el-row :gutter="10">
           <el-col :span="24">
-            <el-tabs class="qx-page-tabs" type="border-card" v-model="query.status" @tab-click="handleClick">
+            <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleClick">
               <el-tab-pane label="待发布" name="0">
                 <!-- 表格数据 -->
                 <template>
@@ -59,20 +59,6 @@
         </el-row>
       </template>
       <!-- 分页 -->
-      <!-- <template>
-        <div class="qx-pagination">
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination>
-        </div>
-      </template>   -->
     <!-- 查看上传详情信息 --> 
     <template>
       <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogViewContent">
@@ -133,7 +119,7 @@
       <!-- 待发布学校 -->
       <template>
         <el-dialog center top="40px" title="待发布学校查看" :visible.sync="dialogView">
-          <el-table :data="schoolData" style="width: 100%" border stripe size="mini">
+          <el-table :data="schoolData" style="width: 100%" border stripe size="small">
             <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
             <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
               <template slot-scope="scope">
@@ -176,12 +162,7 @@ export default {
       query: {
         status: 0,
         page: 1,
-        pageSize: 20
-      },
-      querys: {
-        status: 1,
-        page: 1,
-        pageSize: 20
+        pageSize: 100
       },
       info: {},
       tableData: [],
@@ -211,17 +192,14 @@ export default {
     },
     handleViewSchool(row) {
       if (this.query.status == 1) {
-        this.queryPublishSchoolInfo(row.prePublishId);
+        this.queryPublishSchoolInfo(row.contentId);
       } else {
-        this.queryPrePublishSchoolInfo(row.prePublishId);
+        this.queryPrePublishSchoolInfo(row.contentId);
       }
     },
     handleClick(tab) {
-      if (tab.name == 1) {
-        this.queryPublishContentList(this.querys, 1);
-      } else {
-        this.queryPublishContentList(this.query, 0);
-      }
+      this.query.status = parseInt(tab.name);
+      this.queryPublishContentList(this.query);
     },
     handleRelease(row) {
       this.$confirm(`您确定要发布内容?`, "提示", {
@@ -237,16 +215,13 @@ export default {
         });
     },
     //查询待发布内容列表
-    async queryPublishContentList(params = {}, status) {
+    async queryPublishContentList(params = {}) {
       let res = await service.queryPublishContentList(params);
       if (res.errorCode === 0) {
-        if (status === 0) {
+        if (params.status === 0) {
           this.tableData = res.data.data;
-          this.totalCount = res.data.totalCount;
-          console.log("林场");
         } else {
           this.tableData2 = res.data.data;
-          console.log("林场10");
         }
       }
     },
@@ -255,20 +230,20 @@ export default {
       let res = await service.publishContent({ contentId });
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.queryPublishContentList(this.query, 0);
+        this.queryPublishContentList(this.query);
       }
     },
     //内容发布（待发布）学校信息
-    async queryPrePublishSchoolInfo(prePublishId) {
-      let res = await service.queryPrePublishSchoolInfo({ prePublishId });
+    async queryPrePublishSchoolInfo(contentId) {
+      let res = await service.queryPrePublishSchoolInfo({ contentId });
       if (res.errorCode === 0) {
         this.dialogView = true;
         this.schoolData = res.data;
       }
     },
     //内容发布（已发布）学校信息
-    async queryPublishSchoolInfo(prePublishId) {
-      let res = await service.queryPublishSchoolInfo({ prePublishId });
+    async queryPublishSchoolInfo(contentId) {
+      let res = await service.queryPublishSchoolInfo({ contentId });
       if (res.errorCode === 0) {
         this.dialogViewPublish = true;
         this.schoolDataPublish = res.data;
@@ -284,8 +259,7 @@ export default {
     }
   },
   mounted() {
-    this.queryPublishContentList(this.query, 0);
-    this.queryPublishContentList(this.querys, 1);
+    this.queryPublishContentList(this.query);
   }
 };
 </script>

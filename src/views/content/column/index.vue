@@ -133,7 +133,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { postTime, ...args } = this.form;
-          if (postTime && args.channelId) {
+          if (args.channelId) {
             this.updateChannel(args);
           } else {
             this.addChannel(this.form);

@@ -9,60 +9,75 @@
                 <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
               </el-form-item>              
             </el-form>
           </div>
         </el-col>
       </el-row>
     </template>
-    <!-- <div class="release">
+    <div class="release">
       <template>
         <el-row :gutter="10">
           <el-col :span="24">
-            <el-tabs class="qx-page-tabs" type="border-card">
-              <el-tab-pane label="待预发布" name="0"></el-tab-pane>
-              <el-tab-pane label="已预发布" name="1"></el-tab-pane>
+            <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
+              <el-tab-pane label="待预发布" name="0">
+                <el-table :data="tableData" style="width: 100%" stripe size="small">
+                  <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="操作" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <el-button size="mini" type="primary" @click="handleRelease(scope.row)">预发布</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane label="已预发布" name="1">
+                <el-table :data="tableData2" style="width: 100%" stripe size="small">
+                  <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>                  
+                  <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span style="color:#409EFF;cursor:pointer;" @click="handleViewSchool(scope.row)">查看</span>
+                    </template>
+                  </el-table-column>    
+                  <el-table-column label="操作" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <el-button size="mini" type="primary" @click="handleRelease(scope.row)">再次预发布</el-button>
+                    </template>
+                  </el-table-column>                                
+                </el-table>
+              </el-tab-pane>
             </el-tabs>
           </el-col>
         </el-row>
       </template>
-    </div> -->
+    </div>
     <!-- 表格数据 -->
+    <!-- 发布学校查看 -->
     <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
-          </template>             
-        </el-table-column>
-        <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleRelease(scope.row)">预发布</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-dialog center top="40px" title="预发布学校" :visible.sync="dialogView">
+        <el-table :data="schoolData" style="width: 100%" border stripe size="small">
+          <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
+        </el-table>
+      </el-dialog>
     </template>
-    <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
-      </div>
-    </template> 
     <!-- 查看上传详情信息 --> 
     <template>
       <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogViewContent">
@@ -91,8 +106,7 @@
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
-            </template>            
-            <!-- <div class="iframe-box"></div> -->                 
+            </template>                     
           </div>
           <div class="two">
            <div class="list">
@@ -132,7 +146,9 @@
             <el-input v-model="form.resources" disabled></el-input>
           </el-form-item>  
           <template v-if="type !== 1">
-            <qx-region-t @regionChange="handleRegionChange"></qx-region-t>      
+            <el-form-item label="区域选择">
+              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>   
+            </el-form-item>   
             <el-form-item label="学校性质" prop="propertyId">
               <el-select v-model="form.propertyId" clearable placeholder="请选择学校性质">
                 <el-option
@@ -194,12 +210,14 @@ export default {
     return {
       formLabelWidth: "100px",
       dialogViewContent: false,
+      dialogView: false,
       dialogAdd: false,
       info: {},
       query: {
         title: "",
+        status: 0,
         page: 1,
-        pageSize: 20
+        pageSize: 100
       },
       form: {
         scopeType: this.$store.getters.scopeType,
@@ -209,49 +227,29 @@ export default {
         labelIds: [],
         sponsorIds: []
       },
-      rules: {
-        propertyId: [
-          { required: true, message: "请选择学校性质", trigger: "blur" }
-        ],
-        propertyId: [
-          { required: true, message: "请选择学校性质", trigger: "blur" }
-        ],
-        typeId: [
-          { required: true, message: "请选择学校类型", trigger: "blur" }
-        ],
-        labelIds: [
-          { required: true, message: "请选择学校标签", trigger: "blur" }
-        ]
-      },
-      //propertyidList: [],
-      //typeidList: [],
+      schoolData: [],
       schoolLabel: [],
       labelsList: [],
       tableData: [],
-      totalCount: 0
+      tableData2: []
+      //totalCount: 0
     };
   },
   computed: {
     //type 账号类型 0-促进会 1-学校 2-教育局 3-培训机构
-    ...mapGetters(["type"]),
+    ...mapGetters(["type"])
     //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
   },
   methods: {
-    handleCurrentChange(curr) {
-      this.query.page = curr;
+    handleSearch() {
       this.queryPrepublishContentList(this.query);
     },
-    handleSizeChange(size) {
-      this.query.pageSize = size;
+    handleTabClick(tab) {
+      this.query.status = parseInt(tab.name);
       this.queryPrepublishContentList(this.query);
     },
-    search() {
-      if (this.query.title != "") {
-        this.queryPrepublishContentList(this.query);
-      }
+    handleViewSchool(row) {
+      this.queryPublishSchoolInfo(row.contentId);
     },
     handleViewContent(row) {
       this.queryContentByContentId(row.contentId);
@@ -269,20 +267,9 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { title, resources, ...args } = this.form;
-          // let { regionId, scopeId, resources, title, ...args } = this.form;
-          // if (regionId.length) {
-          //   scopeId = regionId[regionId.length - 1];
-          // } else {
-          //   scopeId = null;
-          // }
-          //let obj = Object.assign({}, args, { scopeId });
-          console.log(args);
           this.prepublishContent(args);
         }
       });
-    },
-    async lastChange(value) {
-      this.form.regionId = value;
     },
     //进行内容预发布
     async prepublishContent(params = {}) {
@@ -324,8 +311,11 @@ export default {
     async queryPrepublishContentList(params = {}) {
       let res = await service.queryPrepublishContentList(params);
       if (res.errorCode === 0) {
-        this.tableData = res.data.data;
-        this.totalCount = res.data.totalCount;
+        if (params.status === 0) {
+          this.tableData = res.data.data;
+        } else {
+          this.tableData2 = res.data.data;
+        }
       }
     },
     //查询内容
@@ -335,12 +325,19 @@ export default {
         this.dialogViewContent = true;
         this.info = Object.assign({}, res.data);
       }
+    },
+    //预发布学校查看
+    async queryPublishSchoolInfo(contentId) {
+      let res = await service.queryPublishSchoolInfo({ contentId });
+      console.log(res);
+      if (res.errorCode === 0) {
+        this.dialogView = true;
+        this.schoolData = res.data;
+      }
     }
   },
   mounted() {
     this.queryLabel(1);
-    //this.querySchoolCategory({ queryType: 0 });
-    //this.querySchoolCategory({ queryType: 1 });
   },
   activated() {
     this.queryPrepublishContentList(this.query);

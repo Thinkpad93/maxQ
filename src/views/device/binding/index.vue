@@ -299,8 +299,6 @@ export default {
       this.showDeviceList();
     },
     handleRegionChange(queryId, queryType) {
-      console.log(queryId);
-      console.log(queryType);
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },

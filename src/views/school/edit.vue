@@ -214,7 +214,7 @@
           <el-table :data="channelData" style="width: 100%" stripe size="mini">
             <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column :resizable="false" label="栏目播放时间" prop="playTime" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column :resizable="false" label="滚动类型" prop="scrollType" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column :resizable="false" label="播放优先级" prop="priority" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column :resizable="false" label="有效期" prop="validTime" :show-overflow-tooltip="true"></el-table-column>
           </el-table>
         </el-dialog>        

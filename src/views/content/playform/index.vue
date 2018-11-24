@@ -10,13 +10,14 @@
                 <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
-                <el-autocomplete 
+                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+                <!-- <el-autocomplete 
                   v-model="query.schoolName" 
                   placeholder="请输入学校名称" 
                   :trigger-on-focus="false"
                   :fetch-suggestions="querySearch"
                   @select="handleSelectSchool">
-                </el-autocomplete>
+                </el-autocomplete> -->
               </el-form-item>                  
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
@@ -52,6 +53,9 @@ export default {
   data() {
     return {
       query: {
+        schoolName: "",
+        scopeType: this.$store.getters.scopeType,
+        scopeId: this.$store.getters.scopeId,
         page: 1,
         pageSize: 20
       },
@@ -61,26 +65,27 @@ export default {
   computed: {},
   methods: {
     handleSearch() {
-      if (this.query.schoolName && this.schoolId) {
-        this.querySchoolPlayChannel(this.schoolId);
-      }
+      this.schoolList();
+      // if (this.query.schoolName && this.schoolId) {
+      //   this.querySchoolPlayChannel(this.schoolId);
+      // }
     },
     handleShowPlayList(row) {
       this.$router.push({ path: `/content/playshow/${row.schoolId}` });
     },
-    async querySearch(queryString, cb) {
-      let { scopeId, scopeType } = this.query;
-      if (queryString) {
-        let res = await service.selectSchoolNameLike({
-          scopeId,
-          scopeType,
-          schoolName: queryString
-        });
-        if (res.errorCode === 0) {
-          cb(res.data);
-        }
-      }
-    },
+    // async querySearch(queryString, cb) {
+    //   let { scopeId, scopeType } = this.query;
+    //   if (queryString) {
+    //     let res = await service.selectSchoolNameLike({
+    //       scopeId,
+    //       scopeType,
+    //       schoolName: queryString
+    //     });
+    //     if (res.errorCode === 0) {
+    //       cb(res.data);
+    //     }
+    //   }
+    // },
     //根据关键字查询学校名称
     handleSelectSchool(value) {
       this.schoolId = value.schoolId;
