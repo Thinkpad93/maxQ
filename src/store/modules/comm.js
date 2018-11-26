@@ -4,11 +4,14 @@ export default {
   namespaced: true,
   state: {
     distpickerData: [],
-    schoolInfo: {}
+    schoolName: "",
   },
   mutations: {
     GET_DISTPICKER: (state, data) => {
       state.distpickerData = data;
+    },
+    GET_SCHOOLNAME: (state, name) => {
+      state.schoolName = name;
     }
   },
   actions: {

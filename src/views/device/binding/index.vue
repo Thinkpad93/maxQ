@@ -14,7 +14,7 @@
               </el-form-item>                
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增绑定</el-button>
+                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -62,7 +62,7 @@
     <!-- 新增 -->
     <template>
        <el-dialog center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
-          <el-form :rules="rules" ref="addForm" :model="addForm" status-icon :label-width="formLabelWidth">
+          <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="regionId">
               <qx-region @last="queryRegion" v-model="addForm.regionId"></qx-region>
             </el-form-item>
@@ -114,7 +114,7 @@
      <!-- 编辑 -->
      <template>
        <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
-         <el-form :rules="rules" ref="editForm" :model="edit" :label-width="formLabelWidth">
+         <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
            <el-form-item label="区域">
              <el-input v-model="selected" disabled></el-input>
            </el-form-item>           

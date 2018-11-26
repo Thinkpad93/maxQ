@@ -39,13 +39,6 @@
            <template slot-scope="scope">
              <span @click="handleSwitch(scope.row)" v-if="scope.row.status === 1"  style="color:#ff4949;cursor: pointer;">停用</span>
              <span @click="handleSwitch(scope.row)" v-else style="color:#13ce66;cursor: pointer;">启用</span>
-             <!-- <el-switch 
-              v-model="scope.row.status" 
-              :active-value="0"
-              :inactive-value="1"
-              active-color="#13ce66" 
-              inactive-color="#ff4949" 
-              @change="handleSwitch(scope.row)"></el-switch> -->
            </template>
          </el-table-column>
          <el-table-column label="操作" prop="" :show-overflow-tooltip="true">
@@ -109,7 +102,9 @@
               </el-form-item>
            </template>
            <template v-else>
-             <qx-region-t :clear="false" @regionChange="handleRegionChanges"></qx-region-t>         
+             <el-form-item label="区域选择" prop="regionId">
+                <qx-region-t :clear="false" @regionChange="handleRegionChanges"></qx-region-t>   
+             </el-form-item>      
            </template>
            <template v-if="form.type === 1">
             <el-form-item label="对应学校" prop="schoolId">
@@ -223,6 +218,7 @@ export default {
         queryType: null,
         queryId: null,
         password: "",
+        type: 0,
         regionId: null
       },
       reset: {
@@ -417,7 +413,6 @@ export default {
     async queryAccountInfo(accountId) {
       let res = await service.queryAccountInfo({ accountId });
       if (res.errorCode === 0) {
-        console.log(res);
         this.dialogView = true;
         this.info.provinceCityRegion = res.data.provinceCityRegion;
       }

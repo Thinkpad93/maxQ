@@ -15,3 +15,11 @@ export const isPhone = (rule, value, callback) => {
   }
   callback();
 }
+
+// export const isAZnumber = (rule, value, callback) => {
+//   let reg = new RegExp(/^[A-Za-z0-9]+$/);
+//   if (!reg.test(value)) {
+//     return callback(new Error('账号名称统一按英文或英文+数字，不使用中文，谢谢'));
+//   }
+//   callback();
+// }

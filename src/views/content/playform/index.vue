@@ -11,13 +11,6 @@
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
-                <!-- <el-autocomplete 
-                  v-model="query.schoolName" 
-                  placeholder="请输入学校名称" 
-                  :trigger-on-focus="false"
-                  :fetch-suggestions="querySearch"
-                  @select="handleSelectSchool">
-                </el-autocomplete> -->
               </el-form-item>                  
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
@@ -66,26 +59,12 @@ export default {
   methods: {
     handleSearch() {
       this.schoolList();
-      // if (this.query.schoolName && this.schoolId) {
-      //   this.querySchoolPlayChannel(this.schoolId);
-      // }
     },
     handleShowPlayList(row) {
+      let { schoolName } = row;
+      //this.$store.commit("comm/GET_SCHOOLNAME", schoolName);
       this.$router.push({ path: `/content/playshow/${row.schoolId}` });
     },
-    // async querySearch(queryString, cb) {
-    //   let { scopeId, scopeType } = this.query;
-    //   if (queryString) {
-    //     let res = await service.selectSchoolNameLike({
-    //       scopeId,
-    //       scopeType,
-    //       schoolName: queryString
-    //     });
-    //     if (res.errorCode === 0) {
-    //       cb(res.data);
-    //     }
-    //   }
-    // },
     //根据关键字查询学校名称
     handleSelectSchool(value) {
       this.schoolId = value.schoolId;
@@ -104,7 +83,6 @@ export default {
   },
   activated() {
     this.schoolList();
-    //this.queryChannelAll();
   },
   mounted() {}
 };

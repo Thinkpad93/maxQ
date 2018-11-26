@@ -5,8 +5,11 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-button :disabled="disabled === 1" size="small" icon="el-icon-plus" type="primary" @click="dialogChannel = true">新增</el-button>
-            <el-button :disabled="disabled === 1" size="small" type="primary" @click="handleUpdateTerminal">更新表单到终端</el-button>
+            <h2>{{ schoolName }}</h2>
+            <div>
+              <el-button :disabled="disabled === 1" size="small" icon="el-icon-plus" type="primary" @click="dialogChannel = true">新增</el-button>
+              <el-button :disabled="disabled === 1" size="small" type="primary" @click="handleUpdateTerminal">更新表单到终端</el-button>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -352,11 +355,9 @@ export default {
       validityData: [],
       validityScrollData: [],
       schoolId: this.$route.params.id,
+      schoolName: "",
       info: {},
       rules: {
-        // contents: [
-        //   { required: true, message: "请选择播放内容", trigger: "blur" }
-        // ],
         channelId: [
           { required: true, message: "请选择栏目名称", trigger: "blur" }
         ]
@@ -725,11 +726,18 @@ export default {
       if (res.errorCode === 0) {
         this.querySchoolScroolContent(this.schoolId);
       }
+    },
+    async querySchoolInfo(schoolId) {
+      let res = await service.querySchoolInfo({ schoolId });
+      if (res.errorCode === 0) {
+        this.schoolName = res.data.name;
+      }
     }
   },
   activated() {
     this.querySchoolPlayChannel(this.schoolId);
     this.querySchoolScroolContent(this.schoolId);
+    this.querySchoolInfo(this.schoolId);
   },
   mounted() {
     this.queryChannelAll();
@@ -738,9 +746,12 @@ export default {
 </script>
 <style lang="less" scoped>
 .page-form {
-  padding: 5px 5px 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
   text-align: left;
-  background-color: transparent;
+  background-color: #fff;
 }
 .image-box {
   text-align: center;
