@@ -113,7 +113,7 @@
                 </p>                             
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} - {{ info.endTime }}</span></p>
+                <p>播放有效期：<span>{{ info.playTime }} 至 {{ info.endTime }}</span></p>
                 <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
               </template>
             </div>   
@@ -171,7 +171,7 @@
                 </p>                             
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} - {{ info.endTime }}</span></p>
+                <p>播放有效期：<span>{{ info.playTime }} 至 {{ info.endTime }}</span></p>
                 <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
               </template>
             </div>  

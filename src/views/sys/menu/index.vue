@@ -39,7 +39,7 @@
     </template>   
     <!-- 新增 -->
     <template>
-      <el-dialog center top="40px" title="新增菜单名称" :visible.sync="dialogAdd">
+      <el-dialog top="40px" title="新增菜单名称" :visible.sync="dialogAdd">
         <el-form ref="addForm" :model="addForm" status-icon size="mini" :label-width="formLabelWidth">
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="addForm.status">
@@ -62,17 +62,17 @@
               { required: true, message: '请输入菜单路径', trigger: 'blur' }
             ]">
             <el-input v-model="addForm.url" placeholder="访问路径"></el-input>
-          </el-form-item>
-          <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogAdd = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="addFormSubmit('addForm')">确定</el-button>
-          </el-row>            
+          </el-form-item>         
         </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogAdd = false">取消</el-button>
+          <el-button size="small" type="primary" @click="addFormSubmit('addForm')">确定</el-button>
+        </span>           
       </el-dialog>
     </template>
     <!-- 编辑 -->
     <template>
-      <el-dialog center top="40px" title="编辑菜单名称" :visible.sync="dialogEdit">
+      <el-dialog top="40px" title="编辑菜单名称" :visible.sync="dialogEdit">
         <el-form ref="editForm" :model="editForm" status-icon size="mini" :label-width="formLabelWidth">
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="editForm.status">
@@ -96,10 +96,10 @@
             <el-input v-model="editForm.url" placeholder="权限链接"></el-input>
           </el-form-item>
         </el-form>
-        <el-row style="text-align:center">
-          <el-button size="mini" @click="dialogEdit = false">取消</el-button>
-          <el-button size="mini" type="primary" @click="editFormSubmit('editForm')">确定</el-button>
-        </el-row>        
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogEdit = false">取消</el-button>
+          <el-button size="small" type="primary" @click="editFormSubmit('editForm')">确定</el-button>
+        </span>              
       </el-dialog>
     </template> 
   </div>  

@@ -80,7 +80,7 @@
      </template>  
      <!-- 新增 or 编辑 -->
      <template>
-       <el-dialog center top="40px" title="" :visible.sync="dialogFormVisible">
+       <el-dialog top="40px" title="" :visible.sync="dialogFormVisible">
          <span slot="title" class="dialog-title">{{ isShow ? '新增标签': '编辑标签' }}</span>
          <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="标签名称" prop="name" :rules="[
@@ -195,12 +195,6 @@ export default {
     async addLabel(params = {}) {
       let res = await service.addLabel(params);
       if (res.errorCode === 0) {
-        // this.$notify({
-        //   title: "提示",
-        //   message: `${res.errorMsg}`,
-        //   type: "success"
-        // });
-        //this.reload();
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         //this.resetForm("form");
@@ -211,12 +205,6 @@ export default {
     async deleteLabel(labelId) {
       let res = await service.deleteLabel({ labelId });
       if (res.errorCode === 0) {
-        // this.$notify({
-        //   title: "提示",
-        //   message: `${res.errorMsg}`,
-        //   type: "success"
-        // });
-        // this.reload();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryLabel(this.query);
       }

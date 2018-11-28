@@ -15,7 +15,6 @@ const service = axios.create({
 
 //请求拦截器
 service.interceptors.request.use(config => {
-  //console.log("请求拦截器");
   console.log(config);
   if (store.getters.token) {
     config.headers['Authorization'] = getToken();
@@ -37,7 +36,6 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(config => {
   //console.log("响应拦截器");
   console.log(config);
-  //console.log("上司上司上司");
   return config;
 }, error => {
   //console.log("我上司我上司我上司");

@@ -60,7 +60,7 @@
     </template>        
     <!-- 新增栏目模板 -->
     <template>
-      <el-dialog center top="40px" title="新增栏目模板" :visible.sync="dialogAdd">
+      <el-dialog top="40px" title="新增栏目模板" :visible.sync="dialogAdd">
         <el-form ref="tplform" :model="tplform" size="small" :label-width="formLabelWidth" label-position="left">
           <el-form-item label="模板名称" prop="name" :rules="[
             { required: true, message: '请输入栏目模板名称', trigger: 'blur' }

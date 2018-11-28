@@ -73,7 +73,6 @@ export default {
             }
             resolve(res);
           } else if (res.errorCode === -1) {
-            //console.log("获取用户权限菜单，登陆后的操作")
             commit('SET_TOKEN', '')
             removeToken();
             location.reload();
@@ -85,23 +84,23 @@ export default {
     },
 
     // 获取用户信息
-    qxGetUserInfo({
-      commit,
-      state
-    }) {
-      return new Promise((resolve, reject) => {
-        service.QXLogin2({}).then(res => {
-          const data = res.data;
-          if (data.router && data.router.length) {
-            commit('SET_MENU', data.router);
-          }
-          commit('SET_NAME', data.name);
-          resolve(data);
-        }).catch(error => {
-          reject(error);
-        })
-      })
-    },
+    // qxGetUserInfo({
+    //   commit,
+    //   state
+    // }) {
+    //   return new Promise((resolve, reject) => {
+    //     service.QXLogin2({}).then(res => {
+    //       const data = res.data;
+    //       if (data.router && data.router.length) {
+    //         commit('SET_MENU', data.router);
+    //       }
+    //       commit('SET_NAME', data.name);
+    //       resolve(data);
+    //     }).catch(error => {
+    //       reject(error);
+    //     })
+    //   })
+    // },
 
     // 登出
     qxLogout({

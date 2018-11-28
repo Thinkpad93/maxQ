@@ -313,7 +313,13 @@ export default {
       this.dialogViewImg = true;
     },
     handleRemoveVideo(file) {
-      console.log(file);
+      //console.log(file);
+      let { url } = file;
+      this.deletePicture(url).then(res => {
+        if (res) {
+          this.form.videoUrl = "";
+        }
+      });
     },
     handlePreviewVideo() {
       this.dialogViewVideo = true;
@@ -340,7 +346,7 @@ export default {
       }
       return (isJPG || isGIF || isPNG || isMBP) && isLt2M;
     },
-    beforeVideoUpload(flie) {
+    beforeVideoUpload(file) {
       let isMP4 = file.type === "video/mp4";
       let isFLV = file.type === "video/flv";
       let isMOV = file.type === "video/mov";
@@ -354,7 +360,9 @@ export default {
     //上传视频成功
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.videoUrl = response.data.url;
+        let { url, duration } = response.data;
+        this.form.videoUrl = url;
+        this.form.duration = duration;
       }
     },
     handleTabClick(tab) {
@@ -436,7 +444,6 @@ export default {
         this.loading = false;
         let {
           contentDetail,
-          duration,
           posterUrl,
           schoolId,
           templateId,
@@ -461,8 +468,6 @@ export default {
         if (this.type !== 1 && this.form.contentType === 0) {
           this.queryChannelAll();
         }
-        console.log(this.form);
-
         if (this.form.videoUrl) {
           this.videoFileList.push({
             name: "点击查看",

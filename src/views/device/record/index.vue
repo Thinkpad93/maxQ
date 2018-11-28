@@ -6,7 +6,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+                <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
@@ -61,7 +61,7 @@
     </template>    
     <!-- 新增 or 编辑检修记录 -->
     <template>
-      <el-dialog center top="40px" :visible.sync="dialogFormVisible" @close="close">
+      <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="close">
         <span slot="title" class="dialog-title">{{ isShow ? '新增检修记录': '编辑检修记录' }}</span>
         <el-form ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <template v-if="isShow">
@@ -133,6 +133,7 @@
 import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
+import { mapGetters } from "vuex";
 export default {
   name: "record",
   components: {
@@ -167,7 +168,8 @@ export default {
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
-    }
+    },
+    ...mapGetters(["scopeType"])
   },
   watch: {
     dialogFormVisible(val) {}

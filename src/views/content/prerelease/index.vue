@@ -127,7 +127,7 @@
                 </p>                             
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} - {{ info.endTime }}</span></p>
+                <p>播放有效期：<span>{{ info.playTime }} 至 {{ info.endTime }}</span></p>
                 <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
               </template>
             </div>  
@@ -137,7 +137,7 @@
     </template>          
     <!-- 预发布 -->
     <template>
-      <el-dialog title="预发布" center top="40px" :visible.sync="dialogAdd">
+      <el-dialog title="预发布" top="40px" :visible.sync="dialogAdd" @open="handleOpen" @close="handleClose">
         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="内容标题" prop="title">
             <el-input v-model="form.title" disabled></el-input>
@@ -147,7 +147,16 @@
           </el-form-item>  
           <template v-if="type !== 1">
             <el-form-item label="区域选择">
-              <qx-region-t @regionChange="handleRegionChange"></qx-region-t>   
+              <!-- <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>    -->
+              <el-select v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
+                <el-option v-for="item in provinceList" :key="item.pId" :label="item.pName" :value="item.pId"></el-option>
+              </el-select>
+              <el-select clearable v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
+                <el-option v-for="item in cityList" :key="item.cId" :label="item.cName" :value="item.cId"></el-option>
+              </el-select>
+              <el-select clearable v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
+                <el-option v-for="item in areaList" :key="item.aId" :label="item.aName" :value="item.aId"></el-option>
+              </el-select>
             </el-form-item>   
             <el-form-item label="学校性质" prop="propertyId">
               <el-select v-model="form.propertyId" clearable placeholder="请选择学校性质">
@@ -212,6 +221,18 @@ export default {
       dialogViewContent: false,
       dialogView: false,
       dialogAdd: false,
+      contentId: null,
+      scopeType: null,
+      scopeId: null,
+      pdisabled: 0,
+      cdisabled: 0,
+      adisabled: 0,
+      province: null,
+      city: null,
+      area: null,
+      provinceList: [],
+      cityList: [],
+      areaList: [],
       info: {},
       query: {
         title: "",
@@ -237,7 +258,7 @@ export default {
   },
   computed: {
     //type 账号类型 0-促进会 1-学校 2-教育局 3-培训机构
-    ...mapGetters(["type"])
+    ...mapGetters(["type", "distpickerData"])
     //设置表格高度
   },
   methods: {
@@ -258,18 +279,117 @@ export default {
       this.form.scopeId = queryId;
       this.form.scopeType = queryType;
     },
+    handleClose() {
+      this.$nextTick(() => {
+        this.province = null;
+        this.city = null;
+        this.area = null;
+        this.provinceList = [];
+        this.cityList = [];
+        this.areaList = [];
+      });
+    },
+    handleOpen() {
+      this.$nextTick(() => {
+        this.handleInit();
+      });
+    },
+    handleProvince(value) {},
+    handleCity(value) {
+      if (typeof value === "number") {
+        this.queryRegion(value, 2); //查市级下的区
+        //this.handleEmit(value, 1); //查市级
+        this.form.scopeId = value;
+        this.form.scopeType = 1;
+      } else if (typeof value === "string") {
+        this.areaList.length = 0;
+        //this.handleEmit(this.province, 0);
+        this.form.scopeId = this.province;
+        this.form.scopeType = 0;
+      }
+      this.area = null;
+    },
+    handleArea(value) {
+      if (typeof value === "number") {
+        //this.handleEmit(value, 2); //查区级
+        this.form.scopeId = value;
+        this.form.scopeType = 2;
+      } else if (typeof value === "string") {
+        //this.handleEmit(this.city, 1);
+        this.form.scopeId = this.city;
+        this.form.scopeType = 1;
+      }
+    },
     handleRelease(row) {
+      setTimeout(() => {
+        this.dialogAdd = true;
+      }, 100);
       let { contentId, resources, title } = row;
-      this.dialogAdd = true;
       this.form = Object.assign({}, this.form, { contentId, resources, title });
+      this.findPublishScope(contentId);
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { title, resources, ...args } = this.form;
           this.prepublishContent(args);
+          console.log(args);
         }
       });
+    },
+    handleInit() {
+      console.log(this.scopeType);
+      console.log(this.scopeId);
+      let _provinceList = [];
+      let _cityList = [];
+      let _areaList = [];
+      for (let p = 0; p < this.distpickerData.length; p++) {
+        let pName = this.distpickerData[p].name;
+        let pId = this.distpickerData[p].id;
+        let pChild = this.distpickerData[p].children;
+        _provinceList.push({ pName, pId });
+        for (let c = 0; c < pChild.length; c++) {
+          let cName = pChild[c].name;
+          let cId = pChild[c].id;
+          let cChild = pChild[c].children;
+          _cityList.push({ cName, cId });
+          for (let a = 0; a < cChild.length; a++) {
+            let aName = cChild[a].name;
+            let aId = cChild[a].id;
+            _areaList.push({ aName, aId });
+          }
+        }
+      }
+      switch (this.scopeType) {
+        case 0:
+          this.provinceList = _provinceList;
+          this.province = this.provinceList[0].pId;
+          this.form.scopeId = this.province;
+          this.form.scopeType = this.scopeType;
+          this.queryRegion(this.provinceList[0].pId, 1);
+          break;
+        case 1:
+          this.provinceList = _provinceList;
+          this.cityList = _cityList;
+          this.province = this.provinceList[0].pId;
+          this.city = this.scopeId;
+          this.form.scopeId = this.scopeId;
+          this.form.scopeType = this.scopeType;
+          this.queryRegion(this.cityList[0].cId, 2);
+          break;
+        case 2:
+          this.provinceList = _provinceList;
+          this.cityList = _cityList;
+          this.areaList = _areaList;
+          this.province = this.provinceList[0].pId;
+          this.city = this.cityList[0].cId;
+          this.area = this.scopeId;
+          this.form.scopeId = this.scopeId;
+          this.form.scopeType = this.scopeType;
+          break;
+        default:
+          this.provinceList = _provinceList;
+      }
     },
     //进行内容预发布
     async prepublishContent(params = {}) {
@@ -329,15 +449,46 @@ export default {
     //预发布学校查看
     async queryPublishSchoolInfo(contentId) {
       let res = await service.queryPublishSchoolInfo({ contentId });
-      console.log(res);
       if (res.errorCode === 0) {
         this.dialogView = true;
         this.schoolData = res.data;
+      }
+    },
+    //获取上传人的区域
+    async findPublishScope(contentId) {
+      let res = await service.findPublishScope({ contentId });
+      if (res.errorCode === 0) {
+        this.scopeType = res.data[0].scopeType;
+        this.scopeId = res.data[0].scopeId;
+      }
+    },
+    async queryRegion(queryId, queryType) {
+      let res = await service.queryRegion({ queryId, queryType });
+      if (res.errorCode === 0) {
+        let data = res.data;
+        if (queryType === 0) {
+        } else if (queryType === 1) {
+          this.cityList = data.map((elem, index) => {
+            return {
+              cName: elem.name,
+              cId: elem.id
+            };
+          });
+        } else if (queryType === 2) {
+          this.areaList = data.map((elem, index) => {
+            return {
+              aName: elem.name,
+              aId: elem.id
+            };
+          });
+        }
       }
     }
   },
   mounted() {
     this.queryLabel(1);
+    //this.handleInit();
+    //this.handleDisabled();
   },
   activated() {
     this.queryPrepublishContentList(this.query);

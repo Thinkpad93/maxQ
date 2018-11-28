@@ -16,7 +16,11 @@ import service from "@/api";
 import { mapGetters } from "vuex";
 export default {
   name: "qxRegion",
-  props: {},
+  props: {
+    scopeType: {
+      type: Number
+    }
+  },
   data() {
     return {
       province: null,
@@ -31,54 +35,47 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["scopeType", "distpickerData"])
+    ...mapGetters(["distpickerData"])
   },
   methods: {
     handleProvinceCityArea() {
-      if (this.scopeType === 0 || this.scopeType === null) {
-        for (let p = 0; p < this.distpickerData.length; p++) {
-          let pName = this.distpickerData[p].name;
-          let pId = this.distpickerData[p].id;
-          let pChild = this.distpickerData[p].children;
-          this.provinceList.push({ pName, pId });
+      let _provinceList = [];
+      let _cityList = [];
+      let _areaList = [];
+      for (let p = 0; p < this.distpickerData.length; p++) {
+        let pName = this.distpickerData[p].name;
+        let pId = this.distpickerData[p].id;
+        let pChild = this.distpickerData[p].children;
+        _provinceList.push({ pName, pId });
+        for (let c = 0; c < pChild.length; c++) {
+          let cName = pChild[c].name;
+          let cId = pChild[c].id;
+          let cChild = pChild[c].children;
+          _cityList.push({ cName, cId });
+          for (let a = 0; a < cChild.length; a++) {
+            let aName = cChild[a].name;
+            let aId = cChild[a].id;
+            _areaList.push({ aName, aId });
+          }
         }
-        if (this.scopeType === 0) {
+      }
+      switch (this.scopeType) {
+        case 0:
+          this.provinceList = _provinceList;
           this.queryRegion(this.provinceList[0].pId, 1);
-        }
-      }
-      if (this.scopeType === 1) {
-        for (let p = 0; p < this.distpickerData.length; p++) {
-          let pName = this.distpickerData[p].name;
-          let pId = this.distpickerData[p].id;
-          let pChild = this.distpickerData[p].children;
-          this.provinceList.push({ pName, pId });
-          for (let c = 0; c < pChild.length; c++) {
-            let cName = pChild[c].name;
-            let cId = pChild[c].id;
-            let cChild = pChild[c].children;
-            this.cityList.push({ cName, cId });
-          }
-        }
-        this.queryRegion(this.cityList[0].cId, 2);
-      }
-      if (this.scopeType === 2) {
-        for (let p = 0; p < this.distpickerData.length; p++) {
-          let pName = this.distpickerData[p].name;
-          let pId = this.distpickerData[p].id;
-          let pChild = this.distpickerData[p].children;
-          this.provinceList.push({ pName, pId });
-          for (let c = 0; c < pChild.length; c++) {
-            let cName = pChild[c].name;
-            let cId = pChild[c].id;
-            let cChild = pChild[c].children;
-            this.cityList.push({ cName, cId });
-            for (let a = 0; a < cChild.length; a++) {
-              let aName = cChild[a].name;
-              let aId = cChild[a].id;
-              this.areaList.push({ aName, aId });
-            }
-          }
-        }
+          break;
+        case 1:
+          this.provinceList = _provinceList;
+          this.cityList = _cityList;
+          this.queryRegion(this.cityList[0].cId, 2);
+          break;
+        case 2:
+          this.provinceList = _provinceList;
+          this.cityList = _cityList;
+          this.areaList = _areaList;
+          break;
+        default:
+          this.provinceList = _provinceList;
       }
       this.computedProvince();
       this.computedCity();

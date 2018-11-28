@@ -105,7 +105,13 @@
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
-              <el-carousel height="589px" :autoplay="false">
+              <!-- <el-row>
+                <el-button size="small" type="primary">上一页</el-button>
+                <el-button size="small" type="primary">下一页</el-button>
+              </el-row> 
+              indicator-position="none" arrow="never"
+              -->
+              <el-carousel ref="carousel" height="589px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in info.images" :key="index">
                   <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
                 </el-carousel-item>
@@ -117,7 +123,11 @@
               </div>
             </template>
             <div class="image-box" v-if="info.showType == 4 || info.showType == 5">
-              <el-carousel height="359px" :autoplay="false">
+              <!-- <el-row>
+                <el-button size="small" type="primary">上一页</el-button>
+                <el-button size="small" type="primary">下一页</el-button>
+              </el-row>               -->
+              <el-carousel ref="carousel" height="359px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in info.images" :key="index">
                   <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
                 </el-carousel-item>
@@ -148,7 +158,7 @@
                 </p>                             
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} - {{ info.endTime }}</span></p>
+                <p>播放有效期：<span>{{ info.playTime }} 至 {{ info.endTime }}</span></p>
                 <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
               </template>
             </div>  

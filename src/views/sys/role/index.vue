@@ -50,7 +50,7 @@
     </template>        
      <!-- 新增 or 编辑 -->
      <template>
-       <el-dialog center top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
+       <el-dialog top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
          <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
            <el-form-item label="角色名称" prop="roleName" :rules="[
               { required: true, message: '请输入角色名称', trigger: 'blur' }
@@ -195,6 +195,7 @@ export default {
         this.dialogAdd = false;
         this.$refs.form.resetFields();
         this.queryRoleList(this.query);
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
       } else if (res.errorCode === -1) {
         //角色名称已存在
         this.$message({ message: `${res.errorMsg}`, type: "error" });

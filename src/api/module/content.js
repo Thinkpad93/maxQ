@@ -300,3 +300,11 @@ export function schoolCheckContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+
+//2018-11-27
+//获取上传人的区域
+export function findPublishScope(params) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/findPublishScope.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}

@@ -65,7 +65,7 @@
       </div>
     </template>       
      <template>
-       <el-dialog center top="40px" title="新增账号" :visible.sync="dialogAdd">
+       <el-dialog top="40px" title="新增账号" :visible.sync="dialogAdd">
          <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth" label-position="left">
            <el-form-item label="账号" prop="userName">
              <el-input v-model="form.userName" placeholder="请输入账号名称"></el-input>
@@ -127,7 +127,7 @@
      </template>
      <!-- 查看用户信息 -->
      <template>
-       <el-dialog center top="40px" title="查看用户信息" :visible.sync="dialogView">
+       <el-dialog top="40px" title="查看用户信息" :visible.sync="dialogView">
          <el-row :gutter="10" type="flex" class="row-bg">
            <div class="one"></div>
            <div class="two">
@@ -149,7 +149,7 @@
      </template>
      <!-- 重置密码 -->
      <template>
-       <el-dialog center top="40px" title="重置密码" :visible.sync="dialogReset">
+       <el-dialog top="40px" title="重置密码" :visible.sync="dialogReset">
          <el-form :rules="rules2" ref="reset" :model="reset" status-icon size="small" :label-width="formLabelWidth" label-position="left">
            <el-form-item label="学校名称" prop="name">
              <el-input v-model="reset.name" disabled></el-input>
@@ -162,12 +162,12 @@
            </el-form-item>
            <el-form-item label="确认新密码" prop="checkPass">
              <el-input type="password" v-model="reset.checkPass" placeholder="确认新密码"></el-input>
-           </el-form-item>
-           <el-row style="text-align:center">
-            <el-button size="mini" @click="dialogReset = false">取消</el-button>
-            <el-button size="mini" type="primary" @click="resetForm('reset')">保存</el-button>             
-           </el-row>           
+           </el-form-item>        
          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button size="small" @click="dialogReset = false">取消</el-button>
+            <el-button size="small" type="primary" @click="resetForm('reset')">确定</el-button>
+          </span>            
        </el-dialog>
      </template>
    </div> 

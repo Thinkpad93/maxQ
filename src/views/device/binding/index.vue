@@ -7,14 +7,14 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+                <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
               </el-form-item>                
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增</el-button>
+                <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
               </el-form-item>              
             </el-form>
           </div>
@@ -59,9 +59,75 @@
         </el-pagination>
       </div>
     </template>     
-    <!-- 新增 -->
+    <!-- 新增 or 编辑 -->
     <template>
-       <el-dialog center top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
+      <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="handleDialogClose">
+        <span slot="title" class="dialog-title">{{ isShow ? '新增设备': '编辑设备' }}</span>
+        <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+          <template v-if="isShow">
+            <el-form-item label="区域选择" prop="regionId">
+              <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
+            </el-form-item>
+          </template>
+          <template v-else>
+            <el-form-item label="区域选择">
+              <el-input v-model="selected" disabled></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="isShow">
+            <el-form-item label="学校名称" prop="schoolId">
+              <el-select v-model="form.schoolId" clearable placeholder="选择学校">
+                <el-option
+                  v-for="item in schoolList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>               
+              </el-select>
+            </el-form-item>
+          </template>
+          <template v-else>
+            <el-form-item label="学校名称">
+              <el-input v-model="form.schoolName" disabled></el-input>
+            </el-form-item>
+          </template>
+          <el-form-item label="安装位置" prop="address">
+            <el-input v-model="form.address" placeholder="请输入安装位置" maxlength="40"></el-input>
+          </el-form-item>
+          <el-form-item label="设备批次" prop="batch">
+            <el-input v-model="form.batch" placeholder="请输入设备批次" maxlength="30"></el-input>
+          </el-form-item>
+          <el-form-item label="设备序号" prop="serial">
+            <el-input v-model="form.serial" placeholder="请选择设备序号" maxlength="30"></el-input>
+          </el-form-item>  
+          <el-form-item label="冠名企业" prop="labelIds">
+            <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
+              <el-option
+                v-for="item in labelsList"
+                :key="item.labelId"
+                :label="item.name"
+                :value="item.labelId">
+              </el-option>
+            </el-select>              
+          </el-form-item>
+          <el-form-item label="MAC地址" prop="mac">
+            <el-input v-model="form.mac" placeholder="请输入MAC地址"></el-input>
+          </el-form-item>  
+          <el-form-item label="设备管理员" prop="manager">
+            <el-input v-model="form.manager" placeholder="请输入设备管理员" maxlength="4"></el-input>
+          </el-form-item>
+          <el-form-item label="联系电话" prop="phone">
+            <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
+          </el-form-item>                          
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
+          <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
+        </span>          
+      </el-dialog>
+    </template>
+    <!-- <template>
+       <el-dialog top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
           <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
             <el-form-item label="区域选择" prop="regionId">
               <qx-region @last="queryRegion" v-model="addForm.regionId"></qx-region>
@@ -110,10 +176,10 @@
           <el-button size="small" type="primary" @click="addsForm('addForm')">确定</el-button>
         </span>             
        </el-dialog>      
-    </template> 
+    </template>  -->
      <!-- 编辑 -->
-     <template>
-       <el-dialog center top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
+     <!-- <template>
+       <el-dialog top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
          <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
            <el-form-item label="区域">
              <el-input v-model="selected" disabled></el-input>
@@ -130,7 +196,6 @@
             <el-form-item label="设备序号" prop="serial">
               <el-input v-model="edit.serial" placeholder="请选择设备序号"></el-input>
             </el-form-item>  
-            <!-- 如果存在冠名企业 -->  
             <template>
               <el-form-item label="冠名企业" prop="labelIds">
                 <el-select v-model="edit.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
@@ -158,7 +223,7 @@
           <el-button size="small" type="primary" @click="editorForm('editForm')">确定</el-button>
         </span>          
        </el-dialog>
-     </template> 
+     </template>  -->
   </div>  
 </template>
 <script>
@@ -166,6 +231,7 @@ import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import { isMac, isPhone } from "@/utils/validator";
+import { mapGetters } from "vuex";
 
 export default {
   name: "binding",
@@ -178,8 +244,14 @@ export default {
       dialogAdd: false,
       dialogView: false,
       dialogEdit: false,
+      dialogFormVisible: false,
+      isShow: true,
       formLabelWidth: "100px",
       selected: "",
+      form: {
+        regionId: [],
+        labelIds: []
+      },
       rules: {
         regionId: [
           {
@@ -283,7 +355,8 @@ export default {
     //设置表格高度
     tableHeight() {
       return window.innerHeight - 255;
-    }
+    },
+    ...mapGetters(["scopeType"])
   },
   methods: {
     handleCurrentChange(curr) {
@@ -302,9 +375,26 @@ export default {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
+    handleDialogClose() {
+      this.$nextTick(() => {
+        this.$refs.form.resetFields();
+      });
+    },
+    handleAdd() {
+      this.isShow = true;
+      this.dialogFormVisible = true;
+      this.form = {
+        regionId: [],
+        labelIds: []
+      };
+    },
     handleEdit(row) {
-      this.dialogEdit = true;
-      this.edit = { ...row };
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+      console.log(this.form);
+      //this.dialogEdit = true;
+      //this.edit = { ...row };
       this.queryProvinceCityRegionBySchoolId(row.schoolId);
     },
     handleDel(row) {
@@ -321,29 +411,45 @@ export default {
           return false;
         });
     },
-    addsForm(formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { regionId, ...args } = this.addForm;
-          this.addDeviceBind(args);
-        } else {
-          return false;
+          if (this.isShow) {
+            let { regionId, ...args } = this.form;
+            console.log(args);
+            this.addDeviceBind(args);
+          } else {
+            let { postTime, schoolName, ...args } = this.form;
+            this.updateDeviceBind(args);
+            console.log(args);
+          }
         }
       });
     },
-    editorForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let { postTime, schoolName, totalCount, ...args } = this.edit;
-          this.updateDeviceBind(args);
-        } else {
-          return false;
-        }
-      });
-    },
+    // addsForm(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       let { regionId, ...args } = this.addForm;
+    //       this.addDeviceBind(args);
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
+    // editorForm(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       let { postTime, schoolName, totalCount, ...args } = this.edit;
+    //       this.updateDeviceBind(args);
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
     //加载学校数据
     async queryRegion(value) {
-      this.addForm.regionId = value;
+      //this.addForm.regionId = value;
+      this.form.regionId = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
       if (res.errorCode === 0) {
@@ -382,8 +488,10 @@ export default {
       let res = await service.addDeviceBind(params);
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.dialogAdd = false;
-        this.$refs.addForm.resetFields();
+        //this.dialogAdd = false;
+        //this.$refs.addForm.resetFields();
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
         this.showDeviceList();
       } else if (res.errorCode === -1) {
         //MAC码已存在
@@ -395,7 +503,8 @@ export default {
     async updateDeviceBind(params = {}) {
       let res = await service.updateDeviceBind(params);
       if (res.errorCode === 0) {
-        this.dialogEdit = false;
+        //this.dialogEdit = false;
+        this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showDeviceList();
       }
@@ -416,4 +525,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.dialog-title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #303133;
+}
 </style>

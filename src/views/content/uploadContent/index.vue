@@ -64,20 +64,22 @@
                     </template>
                   </el-row>       
                   <el-row :gutter="10">
-                    <template v-if="form.contentType === 0">
-                      <el-col :span="24">
-                        <el-form-item label="播放时长" prop="durationTime" :rules="[
-                          { required: true, message: '请选择播放时长', trigger: 'blur' }
-                          ]">
-                          <el-time-picker 
-                            format="mm:ss"
-                            value-format="mm:ss"                       
-                            v-model="form.durationTime" 
-                            placeholder="选择播放时长" 
-                            style="width: 100%;">
-                          </el-time-picker>
-                        </el-form-item>                    
-                      </el-col>
+                    <template v-if="type !== 1">
+                      <template v-if="form.contentType === 0">
+                        <el-col :span="24">
+                          <el-form-item label="播放时长" prop="durationTime" :rules="[
+                            { required: true, message: '请选择播放时长', trigger: 'blur' }
+                            ]">
+                            <el-time-picker 
+                              format="mm:ss"
+                              value-format="mm:ss"                       
+                              v-model="form.durationTime" 
+                              placeholder="选择播放时长" 
+                              style="width: 100%;">
+                            </el-time-picker>
+                          </el-form-item>                    
+                        </el-col>
+                      </template>
                     </template>
                     <template v-if="type === 1">
                       <template v-if="form.contentType === 0">
@@ -105,7 +107,6 @@
                         :class="[ index === screenIndex ? 'selected' : '']" 
                         @click="handleScreenSelect(index, item.value)">
                         <span>{{ item.label }}</span>
-                        <!-- <img src="https://fakeimg.pl/100x150/f4f4f5/fff" class="image"> -->
                       </div>               
                     </el-col>
                   </el-row>                  
@@ -203,27 +204,6 @@
             </el-form>
           </el-col>
         </el-row>     
-        <!-- <el-row :gutter="30">
-          <el-col :span="24">
-            <div class="tip-box">
-              <el-button type="info">上一页</el-button>
-              <el-button type="info">下一页</el-button>
-              <el-button type="info" @click="handlePosterSaveData">保存编辑</el-button>
-            </div> 
-          </el-col>
-        </el-row>       -->
-        <!-- 如果有多页海报模板 -->
-        <!-- 保存修改 -->
-        <!-- 保存修改 -->
-        <!-- <el-row :gutter="30">
-          <el-col :span="24">
-            <div class="element-box">
-              <div class="poster-page"></div>
-              <div class="poster-save"></div> 
-              <iframe id="posterFrame" ref="iframe" :src="url"></iframe>
-            </div>
-          </el-col>
-        </el-row> -->
      </div>
      <!-- 内容模板选择 -->
      <template>
@@ -294,7 +274,6 @@ export default {
       collapse: true,
       url: "./static/20180908/index.html",
       posterUrl: "",
-      //previewImg: "",
       imageList: [], //多图片查看
       form: {
         title: "",
@@ -303,6 +282,7 @@ export default {
         contentProperty: 0,
         author: "",
         durationTime: "",
+        //duration: 0, //视频时长
         templateId: 0,
         videoUrl: "",
         belongTo: 0, // 0-不专属 1-专属对应学校
@@ -337,9 +317,33 @@ export default {
         }
       });
     },
-    //iframe操作
-    handlePosterSaveData() {
-      this.iframeWin.postMessage({ cmd: "save", params: {} }, "*");
+    //计算内容需要播放的时长
+    async handleDurationTime() {
+      //学校账号类型不用计算
+      let imgLen = this.imageList.length;
+      let { duration } = this.form;
+      if (this.type !== 1) {
+        if (imgLen) {
+          let imgDuration = imgLen * 30; //每张图片 * 30s
+          return duration >= imgDuration ? duration : imgDuration;
+        } else {
+          return duration;
+        }
+      }
+    },
+    //添加补0操作
+    handleFill(i) {
+      if (i <= 0 || i <= 9) {
+        i = "0" + i;
+      }
+      return i;
+    },
+    //秒转换成时分秒
+    handleSecondToDate(result) {
+      let h = this.handleFill(Math.floor(result / 3600));
+      let m = this.handleFill(Math.floor((result / 60) % 60));
+      let s = this.handleFill(Math.floor(result % 60));
+      return `${h}:${m}:${s}`;
     },
     //图片删除
     handleRemoveImg(file, fileList) {
@@ -360,7 +364,6 @@ export default {
     },
     handleRemoveVideo(file) {
       let { url } = file.response.data;
-      console.log(url);
       this.deletePicture(url).then(res => {
         if (res) {
           this.form.videoUrl = "";
@@ -371,9 +374,12 @@ export default {
       this.dialogViewVideo = true;
     },
     //上传图片成功
-    handleImageSuccess(response, file, fileList) {
+    async handleImageSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         this.imageList.push({ ...response.data });
+        //let d = await this.handleDurationTime();
+        //let hms = this.handleSecondToDate(d);
+        //console.log(hms);
       }
     },
     //图片上传大小限制为2M
@@ -397,17 +403,27 @@ export default {
       let isMP4 = file.type === "video/mp4";
       let isFLV = file.type === "video/flv";
       let isMOV = file.type === "video/mov";
+      let isLt200M = file.size / 1024 / 1024 < 200;
 
       if (!isMP4 && !isFLV && !isMOV) {
         this.$message.error("视频必须是MP4/FLV/MOV/格式!");
       }
 
-      return isMP4 || isFLV || isMOV;
+      if (!isLt200M) {
+        this.$message.error("视频大小不能超过200MB!");
+      }
+
+      return (isMP4 || isFLV || isMOV) && isLt200M;
     },
     //上传视频成功
-    handleVideoSuccess(response, file, fileList) {
+    async handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.videoUrl = response.data.url;
+        let { url, duration } = response.data;
+        this.form.videoUrl = url;
+        this.form.duration = duration;
+        //let d = await this.handleDurationTime();
+        //let hms = this.handleSecondToDate(d);
+        //console.log(hms);
       }
     },
     handleTabClick(tab) {
@@ -417,7 +433,6 @@ export default {
     },
     handleScreenSelect(index, value) {
       this.screenIndex = index;
-      //this.form.showType = index;
       if (index == 1 || index == 2 || index == 4 || index == 5) {
         this.disabledVideo = 1;
       } else {
@@ -591,8 +606,6 @@ export default {
       this.queryChannelAll();
     }
     this.queryContentTemplate(0);
-
-    //this.iframeWin = this.$refs.iframe.contentWindow;
   }
 };
 </script>

@@ -46,8 +46,9 @@
     <!-- 新增 or 编辑 -->
     <template>
       <el-dialog 
-        center top="40px" 
+        top="40px" 
         title="" :visible.sync="dialogFormVisible">
+        <span slot="title" class="dialog-title">{{ isDialogTitle ? '新增栏目': '编辑栏目' }}</span>
         <el-form ref="form" :model="form" status-icon size="mini" :label-width="formLabelWidth">
           <el-form-item label="栏目名称" prop="name" :rules="[
               { required: true, message: '请输入栏目名称', trigger: 'blur' }
@@ -77,6 +78,7 @@ export default {
     return {
       dialogFormVisible: false,
       formLabelWidth: "100px",
+      isDialogTitle: true,
       query: {
         channelName: "",
         page: 1,
@@ -110,9 +112,11 @@ export default {
     },
     handleAdd() {
       this.form = {};
+      this.isDialogTitle = true;
       this.dialogFormVisible = true;
     },
     handleEdit(row) {
+      this.isDialogTitle = false;
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
     },
@@ -186,4 +190,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.dialog-title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #303133;
+}
 </style>

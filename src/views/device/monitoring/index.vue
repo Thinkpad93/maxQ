@@ -6,7 +6,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+                <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
@@ -144,6 +144,7 @@
 import service from "@/api";
 import regiont from "@/components/qxregion";
 import { device } from "@/mixins";
+import { mapGetters } from "vuex";
 export default {
   name: "monitoring",
   components: {
@@ -176,7 +177,8 @@ export default {
   computed: {
     tableHeight() {
       return window.innerHeight - 255;
-    }
+    },
+    ...mapGetters(["scopeType"])
   },
   methods: {
     handleCurrentChange(curr) {
