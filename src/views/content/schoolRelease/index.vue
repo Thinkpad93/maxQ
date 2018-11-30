@@ -9,7 +9,12 @@
               <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.title }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span v-if="scope.row.channelName === null">无</span>
+              <span v-else>{{ scope.row.channelName }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="审核状态" prop="status" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span v-if="scope.row.status === 0" style="color:#409EFF">待审核</span>

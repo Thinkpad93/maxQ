@@ -1,5 +1,15 @@
 <template>
    <div class="page">
+      <!-- <template>
+        <el-row :gutter="10">
+          <el-col :span="24">
+            <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
+              <el-tab-pane label="内容播放"></el-tab-pane>
+              <el-tab-pane label="滚动通知"></el-tab-pane>
+            </el-tabs>
+          </el-col>
+        </el-row>
+      </template> -->
       <template>
         <el-row :gutter="10">
           <el-col :span="24">
@@ -30,6 +40,7 @@
                 <el-form-item>
                   <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
                   <el-button icon="el-icon-plus" type="primary" @click="uoloadAction">上传内容</el-button>
+                  <el-button icon="el-icon-plus" type="primary" @click="dialogText = true">上传滚动通知</el-button>
                 </el-form-item>                           
               </el-form>
             </div>
@@ -38,51 +49,51 @@
       </template> 
       <!-- 上传列表 -->
       <template>
-          <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
-              <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
-                  <template slot-scope="scope">
-                    <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.title }}</span>
-                  </template>
-              </el-table-column>
-              <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
-                  <template slot-scope="scope">
-                    <p v-if="scope.row.channelName == null">无</p>
-                    <p v-else>{{ scope.row.channelName }}</p>
-                  </template>
-              </el-table-column>
-              <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
-                  <template slot-scope="scope">
-                    <p v-if="scope.row.contentType === 0">全屏播放</p>
-                    <p v-else>滚动播放</p>
-                  </template>
-              </el-table-column>
-              <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
-                  <template slot-scope="scope">
-                    <p v-if="scope.row.contentProperty === 0">原创</p>
-                    <p v-else>摘要</p>
-                  </template>
-              </el-table-column>
-              <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
-                  <template slot-scope="scope">
-                    <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
-                    <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
-                    <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
-                    <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
-                    <span v-else style="color:#F56C6C;cursor: pointer;" 
-                    @click="handleCheckNode(scope.row)">审核不通过</span>
-                  </template>
-              </el-table-column>
-              <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-              <el-table-column label="操作">
-                  <template slot-scope="scope">
-                    <router-link style="color:#409EFF" 
-              :to="{path: `/content/uploadContentEdit/${scope.row.contentId}`}" v-if="scope.row.verifyStatus === 2">编辑</router-link>
-                      <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
-                  </template>
-              </el-table-column>
-          </el-table>
+        <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
+          <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.title }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <p v-if="scope.row.channelName == null">无</p>
+              <p v-else>{{ scope.row.channelName }}</p>
+            </template>
+          </el-table-column>
+          <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <p v-if="scope.row.contentType === 0">全屏播放</p>
+              <p v-else>滚动播放</p>
+            </template>
+          </el-table-column>
+          <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <p v-if="scope.row.contentProperty === 0">原创</p>
+              <p v-else>摘要</p>
+            </template>
+          </el-table-column>
+          <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
+              <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
+              <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
+              <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
+              <span v-else style="color:#F56C6C;cursor: pointer;" 
+              @click="handleCheckNode(scope.row)">审核不通过</span>
+            </template>
+          </el-table-column>
+          <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="操作">
+              <template slot-scope="scope">
+                <router-link style="color:#409EFF" 
+          :to="{path: `/content/uploadContentEdit/${scope.row.contentId}`}" v-if="scope.row.verifyStatus === 2">编辑</router-link>
+                  <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+              </template>
+          </el-table-column>
+        </el-table>
       </template>
     <!-- 分页 -->
     <template>
@@ -99,18 +110,45 @@
         </el-pagination>
       </div>
     </template> 
+    <!-- 滚动文字上传 -->
+    <el-dialog top="40px" title="滚动文字上传" :visible.sync="dialogText">
+      <el-form ref="form" :model="form" size="small" :label-width="formLabelWidth" label-position="left">
+        <el-form-item label="内容标题" prop="title" :rules="[
+          { required: true, message: '请输入内容标题', trigger:'blur' }
+        ]">
+          <el-input v-model="form.title" placeholder="请输入内容标题" maxlength="30"></el-input>
+        </el-form-item>
+        <el-form-item label="播放有效期" prop="rollTime" :rules="[
+          { required: true, message: '请选择播放有效期', trigger: 'blur' }
+        ]">
+          <el-date-picker 
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            v-model="form.rollTime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions">
+          </el-date-picker>          
+        </el-form-item>        
+        <el-form-item label="文字内容" prop="rollContent" :rules="[
+          { required: true, message: '请输入文字内容', trigger: 'blur' }
+        ]">
+          <el-input type="textarea" v-model="form.rollContent" :rows="8" placeholder="请输入文字内容"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogText = false">取消</el-button>
+        <el-button size="small" type="primary" @click="formSubmit('form')">确定</el-button>
+      </span>        
+    </el-dialog>
     <!-- 查看上传详情信息 -->
     <template>
       <el-dialog width="60%" title=" 查看上传详情信息" top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
-              <!-- <el-row>
-                <el-button size="small" type="primary">上一页</el-button>
-                <el-button size="small" type="primary">下一页</el-button>
-              </el-row> 
-              indicator-position="none" arrow="never"
-              -->
               <el-carousel ref="carousel" height="589px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in info.images" :key="index">
                   <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
@@ -123,10 +161,6 @@
               </div>
             </template>
             <div class="image-box" v-if="info.showType == 4 || info.showType == 5">
-              <!-- <el-row>
-                <el-button size="small" type="primary">上一页</el-button>
-                <el-button size="small" type="primary">下一页</el-button>
-              </el-row>               -->
               <el-carousel ref="carousel" height="359px" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in info.images" :key="index">
                   <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
@@ -195,12 +229,33 @@
 </template>
 <script>
 import service from "@/api";
+import { disabledDate } from "@/utils/tools";
 export default {
   name: "upload",
   data() {
     return {
       dialogNode: false,
       dialogView: false,
+      dialogText: false,
+      formLabelWidth: "100px",
+      form: {
+        title: "",
+        channelId: null,
+        contentType: 1,
+        contentProperty: 0,
+        author: "",
+        durationTime: "",
+        templateId: 0,
+        videoUrl: "",
+        belongTo: 0, // 0-不专属 1-专属对应学校
+        images: [],
+        rollTime: [],
+        rollContent: "",
+        showType: -1
+      },
+      pickerOptions: {
+        disabledDate
+      },
       query: {
         channelId: 0,
         verifyStatus: 3,
@@ -238,6 +293,7 @@ export default {
     search() {
       this.queryContentList();
     },
+    handleTabClick(tab) {},
     handleViewInfo(row) {
       this.queryContentByContentId(row.contentId);
     },
@@ -264,6 +320,22 @@ export default {
     },
     uoloadAction() {
       this.$router.push({ path: "/content/uploadContent" });
+    },
+    formSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let { rollTime, ...args } = this.form;
+          let playTime = "";
+          let endTime = "";
+          if (rollTime.length) {
+            playTime = rollTime[0];
+            endTime = rollTime[1];
+          }
+          let obj = Object.assign({}, args, { playTime, endTime });
+          console.log(obj);
+          this.uploadContent(obj);
+        }
+      });
     },
     //查询栏目名称
     async queryChannelAll() {
@@ -305,6 +377,16 @@ export default {
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
         this.dialogView = true;
+      }
+    },
+    async uploadContent(params = {}) {
+      let res = await service.uploadContent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogText = false;
+        this.queryContentList();
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     }
   },

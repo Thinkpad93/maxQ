@@ -124,18 +124,19 @@ export const contentProperty = {
 export const contentTemplate = {
   data() {
     return {
-      contentTemplateList: [{
-          value: 0,
-          label: "纯海报方式"
-        },
-        {
-          value: 1,
-          label: "上视频下海报方式"
-        },
-        {
-          value: 2,
-          label: "上海报下视频方式"
-        },
+      contentTemplateList: [
+        // {
+        //   value: 0,
+        //   label: "纯海报方式"
+        // },
+        // {
+        //   value: 1,
+        //   label: "上视频下海报方式"
+        // },
+        // {
+        //   value: 2,
+        //   label: "上海报下视频方式"
+        // },
         {
           value: 3,
           label: "纯图片"

@@ -31,6 +31,7 @@
                   </el-table-column>
                   <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="操作" :show-overflow-tooltip="true">
@@ -157,6 +158,9 @@
           <el-form-item label="内容标题" prop="title">
             <el-input v-model="form.title" disabled></el-input>
           </el-form-item>
+          <el-form-item label="栏目名称" prop="channelName" v-if="form.channelName !== null">
+            <el-input v-model="form.channelName" disabled></el-input>
+          </el-form-item>          
           <el-form-item label="发布来源" prop="resources">
             <el-input v-model="form.resources" disabled></el-input>
           </el-form-item> 
@@ -209,12 +213,21 @@
                 <el-checkbox :label="2">广州市科普知识促进会</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
+            <el-form-item label="发布学校">
+              <el-button size="small" type="primary" @click="handleViewPreSchool">查看学校</el-button>
+            </el-form-item>
           </template>    
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
           <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
-        </span>         
+        </span>      
+        <el-dialog width="30%" append-to-body title="发布学校查看" :visible.sync="innerVisible">
+          <el-table :data="showSchoolData" style="width: 100%" stripe size="small">
+            <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
+          </el-table>
+        </el-dialog>   
       </el-dialog>
     </template>
   </div>
@@ -233,6 +246,7 @@ export default {
   data() {
     return {
       formLabelWidth: "100px",
+      innerVisible: false,
       dialogViewContent: false,
       dialogView: false,
       dialogAdd: false,
@@ -263,6 +277,7 @@ export default {
         labelIds: [],
         sponsorIds: []
       },
+      showSchoolData: [],
       schoolData: [],
       schoolLabel: [],
       labelsList: [],
@@ -296,6 +311,17 @@ export default {
     },
     handleViewSchool(row) {
       this.queryPublishSchoolInfo(row.contentId);
+    },
+    handleViewPreSchool() {
+      let {
+        channelName,
+        contentId,
+        resources,
+        title,
+        schoolId,
+        ...args
+      } = this.form;
+      this.preshowSchoolList(args);
     },
     handleViewContent(row) {
       this.queryContentByContentId(row.contentId);
@@ -342,24 +368,18 @@ export default {
       }
     },
     handleRelease(row) {
+      let { checkTime, publishTime, type, userName, ...args } = row;
+      this.form = Object.assign({}, this.form, args);
+      this.findPublishScope(args.contentId);
       setTimeout(() => {
         this.dialogAdd = true;
       }, 100);
-      let { contentId, resources, title, schoolId } = row;
-      this.form = Object.assign({}, this.form, {
-        contentId,
-        resources,
-        title,
-        schoolId
-      });
-      this.findPublishScope(contentId);
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { title, resources, schoolId, ...args } = this.form;
+          let { title, resources, schoolId, channelName, ...args } = this.form;
           this.prepublishContent(args);
-          console.log(args);
         }
       });
     },
@@ -487,6 +507,17 @@ export default {
       if (res.errorCode === 0) {
         this.scopeType = res.data[0].scopeType;
         this.scopeId = res.data[0].scopeId;
+      }
+    },
+    //预发布学校展示
+    async preshowSchoolList(params = {}) {
+      let res = await service.preshowSchoolList(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        console.log(res);
+        this.innerVisible = true;
+        this.showSchoolData = res.data;
       }
     },
     async queryRegion(queryId, queryType) {

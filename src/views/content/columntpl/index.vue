@@ -77,7 +77,7 @@
     </template> 
     <!-- 新增栏目模板详细项 -->
     <template>
-      <el-dialog width="75%" center top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
+      <el-dialog width="75%" top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
         <el-form ref="tplDetailform" :model="tplDetailform" size="small" :label-width="formLabelWidth" label-position="left">
           <el-row :gutter="10">
             <el-col :span="12" :offset="6">

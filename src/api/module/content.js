@@ -308,3 +308,9 @@ export function findPublishScope(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//预发布学校展示
+export function preshowSchoolList(params, config) {
+  return ax.post('/action/mod-xiaojiao/content/prePublish/showSchoolList.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
