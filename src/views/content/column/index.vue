@@ -49,7 +49,7 @@
         top="40px" 
         title="" :visible.sync="dialogFormVisible">
         <span slot="title" class="dialog-title">{{ isDialogTitle ? '新增栏目': '编辑栏目' }}</span>
-        <el-form ref="form" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+        <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="栏目名称" prop="name" :rules="[
               { required: true, message: '请输入栏目名称', trigger: 'blur' }
             ]">

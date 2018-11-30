@@ -83,7 +83,7 @@
     </template>         
     <!-- 设备详情 -->
     <template>
-      <el-dialog width="60%" center top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
+      <el-dialog width="60%" top="40px" title="设备详情查看" :visible.sync="dialogView" :modal-append-to-body="false">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <img :src="viewDevice.snapshotUrl" class="image" width="500" height="736">
@@ -110,8 +110,8 @@
     </template>
     <!-- 设备运行日志 -->
     <template>
-      <el-dialog width="80%" center top="40px" title="设备运行日志" :visible.sync="dialogRunlog">
-        <el-table :data="runlogData"  style="width: 100%" stripe size="mini">
+      <el-dialog width="80%" top="40px" title="设备运行日志" :visible.sync="dialogRunlog">
+        <el-table :data="runlogData"  style="width: 100%" stripe size="small">
           <el-table-column :resizable="false" label="日志id" prop="logId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="设备id" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>

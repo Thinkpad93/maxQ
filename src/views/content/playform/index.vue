@@ -7,7 +7,7 @@
           <div class="page-form">
             <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
               <el-form-item label="区域选择">
-                <qx-region-t @regionChange="handleRegionChange"></qx-region-t>
+                <qx-region-t @regionChange="handleRegionChange" :scopeType="scopeType"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
@@ -32,12 +32,29 @@
           </template>
         </el-table-column>
       </el-table>
-    </template>   
+    </template>  
+    <!-- 分页 -->
+    <template>
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
+    </template>      
    </div> 
 </template>
 <script>
 import service from "@/api";
 import regiont from "@/components/qxregion";
+import { mapGetters } from "vuex";
+
 export default {
   name: "playform",
   components: {
@@ -52,17 +69,27 @@ export default {
         page: 1,
         pageSize: 20
       },
-      tableData: []
+      tableData: [],
+      totalCount: 0
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["scopeType"])
+  },
   methods: {
     handleSearch() {
       this.schoolList();
     },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.schoolList();
+    },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.schoolList();
+    },
     handleShowPlayList(row) {
       let { schoolName } = row;
-      //this.$store.commit("comm/GET_SCHOOLNAME", schoolName);
       this.$router.push({ path: `/content/playshow/${row.schoolId}` });
     },
     //根据关键字查询学校名称
@@ -74,10 +101,12 @@ export default {
       this.query.scopeId = queryId;
       this.query.scopeType = queryType;
     },
+    //查询学校列表
     async schoolList() {
       let res = await service.schoolList(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     }
   },

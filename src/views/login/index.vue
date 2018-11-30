@@ -4,7 +4,7 @@
         <h3 style="text-align:center;margin-bottom:25px;color: rgba(0,0,0,.43);">欢迎登录Q校网</h3>
         <el-form :rules="rules" ref="form" :model="form" style="width: 360px;" @submit.native.prevent>
           <el-form-item prop="userName">
-            <el-input type="text" name="userName" v-model="form.userName" placeholder="请输入用户名">
+            <el-input type="text" name="userName" v-model="form.userName" placeholder="请输入用户名" :autofocus="true">
               <i slot="prefix" class="el-input__icon el-icon-setting"></i>
             </el-input>
           </el-form-item>           

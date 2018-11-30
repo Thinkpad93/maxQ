@@ -13,7 +13,7 @@
   </div>  
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "region",
   props: {
@@ -38,7 +38,8 @@ export default {
     };
   },
   computed: {
-    ...mapState("comm", ["distpickerData"])
+    //...mapState("comm", ["distpickerData"]),
+    ...mapGetters(["distpickerData"])
   },
   watch: {},
   methods: {

@@ -313,7 +313,6 @@ export default {
       this.dialogViewImg = true;
     },
     handleRemoveVideo(file) {
-      //console.log(file);
       let { url } = file;
       this.deletePicture(url).then(res => {
         if (res) {

@@ -241,9 +241,9 @@ export default {
   },
   data() {
     return {
-      dialogAdd: false,
-      dialogView: false,
-      dialogEdit: false,
+      //dialogAdd: false,
+      //dialogView: false,
+      //dialogEdit: false,
       dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",
@@ -326,13 +326,13 @@ export default {
           }
         ]
       },
-      addForm: {
-        regionId: [],
-        labelIds: []
-      },
-      edit: {
-        labelIds: []
-      },
+      // addForm: {
+      //   regionId: [],
+      //   labelIds: []
+      // },
+      // edit: {
+      //   labelIds: []
+      // },
       //默认参数
       query: {
         schoolName: "",

@@ -35,13 +35,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["distpickerData"])
+    ...mapGetters(["distpickerData"]) //省市区数据
   },
   methods: {
     handleProvinceCityArea() {
-      let _provinceList = [];
-      let _cityList = [];
-      let _areaList = [];
+      let _provinceList = []; //省
+      let _cityList = []; //市
+      let _areaList = []; //区
       for (let p = 0; p < this.distpickerData.length; p++) {
         let pName = this.distpickerData[p].name;
         let pId = this.distpickerData[p].id;
@@ -61,15 +61,21 @@ export default {
       }
       switch (this.scopeType) {
         case 0:
+          this.pdisabled = 1;
           this.provinceList = _provinceList;
           this.queryRegion(this.provinceList[0].pId, 1);
           break;
         case 1:
+          this.pdisabled = 1;
+          this.cdisabled = 1;
           this.provinceList = _provinceList;
           this.cityList = _cityList;
           this.queryRegion(this.cityList[0].cId, 2);
           break;
         case 2:
+          this.pdisabled = 1;
+          this.cdisabled = 1;
+          this.adisabled = 1;
           this.provinceList = _provinceList;
           this.cityList = _cityList;
           this.areaList = _areaList;
@@ -77,44 +83,56 @@ export default {
         default:
           this.provinceList = _provinceList;
       }
-      this.computedProvince();
-      this.computedCity();
-      this.computedArea();
+      this.handleInit();
+      //this.computedProvince();
+      //this.computedCity();
+      //this.computedArea();
     },
-    computedProvince() {
-      //如果是省控制 则禁用选择省
-      if (this.scopeType === 0) {
-        this.pdisabled = 1;
-      }
+    handleInit() {
       if (this.provinceList.length && this.scopeType != null) {
-        return (this.province = this.provinceList[0].pId);
-      }
-    },
-    computedCity() {
-      //如果是市级控制 则禁用选择省和市
-      if (this.scopeType === 1) {
-        this.pdisabled = 1;
-        this.cdisabled = 1;
+        this.province = this.provinceList[0].pId;
       }
       if (this.cityList.length === 1) {
         this.city = this.cityList[0].cId;
-      } else {
-        this.city = null;
-      }
-    },
-    computedArea() {
-      //如果是区级控制 则禁用选择省和市和区
-      if (this.scopeType === 2) {
-        this.pdisabled = 1;
-        this.cdisabled = 1;
-        this.adisabled = 1;
       }
       if (this.areaList.length === 1) {
         this.area = this.areaList[0].aId;
-      } else {
-        this.area = null;
       }
     },
+    // computedProvince() {
+    //   //如果是省控制 则禁用选择省
+    //   if (this.scopeType === 0) {
+    //     this.pdisabled = 1;
+    //   }
+    //   if (this.provinceList.length && this.scopeType != null) {
+    //     return (this.province = this.provinceList[0].pId);
+    //   }
+    // },
+    // computedCity() {
+    //   //如果是市级控制 则禁用选择省和市
+    //   if (this.scopeType === 1) {
+    //     this.pdisabled = 1;
+    //     this.cdisabled = 1;
+    //   }
+    //   if (this.cityList.length === 1) {
+    //     this.city = this.cityList[0].cId;
+    //   } else {
+    //     this.city = null;
+    //   }
+    // },
+    // computedArea() {
+    //   //如果是区级控制 则禁用选择省和市和区
+    //   if (this.scopeType === 2) {
+    //     this.pdisabled = 1;
+    //     this.cdisabled = 1;
+    //     this.adisabled = 1;
+    //   }
+    //   if (this.areaList.length === 1) {
+    //     this.area = this.areaList[0].aId;
+    //   } else {
+    //     this.area = null;
+    //   }
+    // },
     handleProvince(value) {
       //不触发点击清空时的调用
       if (typeof value === "number") {

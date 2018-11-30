@@ -5,7 +5,7 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <h2>{{ schoolName }}</h2>
+            <h3 style="color:#409EFF">{{ schoolName }}</h3>
             <div>
               <el-button :disabled="disabled === 1" size="small" icon="el-icon-plus" type="primary" @click="dialogChannel = true">新增</el-button>
               <el-button :disabled="disabled === 1" size="small" type="primary" @click="handleUpdateTerminal">更新表单到终端</el-button>
@@ -192,7 +192,7 @@
     </template>
     <!-- 查看上传详情信息 -->
     <template>
-      <el-dialog width="60%" title="查看上传详情信息" center top="40px" :visible.sync="dialogView">
+      <el-dialog width="60%" title="查看上传详情信息" top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -249,7 +249,7 @@
     </template>
     <!-- 播放内容 -->
     <template>
-      <el-dialog :close-on-click-modal="false" center title="播放内容" :visible.sync="dialogContent" @open="showPlayContent">
+      <el-dialog :close-on-click-modal="false" title="播放内容" :visible.sync="dialogContent" @open="showPlayContent">
         <el-table @selection-change="handleSelectCheckbox"  ref="playCon" :data="playContendata" style="width: 100%" border stripe size="mini">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column property="title" label="播放内容"></el-table-column>
@@ -264,7 +264,7 @@
     </template>
     <!-- 新增学校播放频道 -->
     <template>
-      <el-dialog center top="40px" title="新增学校播放频道" :visible.sync="dialogChannel">
+      <el-dialog top="40px" title="新增学校播放频道" :visible.sync="dialogChannel">
         <el-form ref="form" :rules="rules" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="栏目名称" prop="channelId">
             <el-select v-model="form.channelId" placeholder="请选择" style="width:100%;" @change="handleQueryContents">

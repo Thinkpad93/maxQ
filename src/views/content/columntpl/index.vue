@@ -22,11 +22,7 @@
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column label="栏目模板ID" prop="templateId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="栏目模板" prop="name" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span style="color:#409EFF">{{ scope.row.name }}</span>
-          </template>                    
-        </el-table-column>
+        <el-table-column label="栏目模板" prop="name" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="栏目模板描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">

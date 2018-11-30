@@ -101,7 +101,7 @@
     </template> 
     <!-- 查看上传详情信息 -->
     <template>
-      <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogView">
+      <el-dialog width="60%" title=" 查看上传详情信息" top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -168,7 +168,7 @@
     </template> 
     <!-- 查看审核节点 -->
     <template>
-      <el-dialog width="60%" center top="40px" title="审核节点" :visible.sync="dialogNode">
+      <el-dialog width="60%" top="40px" title="审核节点" :visible.sync="dialogNode">
         <el-table :data="nodeData"  style="width: 100%" border stripe size="mini">
           <el-table-column width="150" type="index" label="申请编号" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column width="150" property="checkStage" label="审核环节" :show-overflow-tooltip="true">

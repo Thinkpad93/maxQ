@@ -58,10 +58,23 @@
           </el-col>
         </el-row>
       </template>
-      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination>
+        </div>
+      </template>  
     <!-- 查看上传详情信息 --> 
     <template>
-      <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogViewContent">
+      <el-dialog width="60%" title="查看上传详情信息" top="40px" :visible.sync="dialogViewContent">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -118,7 +131,7 @@
     </template>                
       <!-- 待发布学校 -->
       <template>
-        <el-dialog center top="40px" title="待发布学校查看" :visible.sync="dialogView">
+        <el-dialog top="40px" title="待发布学校查看" :visible.sync="dialogView">
           <el-table :data="schoolData" style="width: 100%" border stripe size="small">
             <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
             <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
@@ -132,7 +145,7 @@
       </template>
       <!-- 已发布学校 -->
       <template>
-        <el-dialog center top="40px" title="已发布学校查看" :visible.sync="dialogViewPublish">
+        <el-dialog top="40px" title="已发布学校查看" :visible.sync="dialogViewPublish">
           <el-table :data="schoolDataPublish" style="width: 100%" border stripe size="mini">
             <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
             <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
@@ -199,6 +212,8 @@ export default {
     },
     handleClick(tab) {
       this.query.status = parseInt(tab.name);
+      this.query.page = 1;
+      this.query.pageSize = 10;
       this.queryPublishContentList(this.query);
     },
     handleRelease(row) {
@@ -223,6 +238,7 @@ export default {
         } else {
           this.tableData2 = res.data.data;
         }
+        this.totalCount = res.data.totalCount;
       }
     },
     //进行内容正式发布
@@ -265,7 +281,7 @@ export default {
 </script>
 <style lang="less">
 .release {
-  position: relative;
+  //position: relative;
   // padding: 10px 20px 0 20px;
   // background-color: #fff;
 }

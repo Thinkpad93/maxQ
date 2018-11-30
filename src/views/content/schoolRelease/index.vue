@@ -42,7 +42,7 @@
       </template>      
       <!-- 查看上传详情信息 --> 
     <template>
-      <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogView">
+      <el-dialog width="60%" title=" 查看上传详情信息" top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">

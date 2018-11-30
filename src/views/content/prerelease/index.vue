@@ -68,11 +68,26 @@
           </el-col>
         </el-row>
       </template>
+      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount">
+          </el-pagination>
+        </div>
+      </template>           
     </div>
     <!-- 表格数据 -->
     <!-- 发布学校查看 -->
     <template>
-      <el-dialog center top="40px" title="预发布学校" :visible.sync="dialogView">
+      <el-dialog top="40px" title="预发布学校" :visible.sync="dialogView">
         <el-table :data="schoolData" style="width: 100%" border stripe size="small">
           <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
         </el-table>
@@ -80,7 +95,7 @@
     </template>
     <!-- 查看上传详情信息 --> 
     <template>
-      <el-dialog width="60%" title=" 查看上传详情信息" center top="0px" :visible.sync="dialogViewContent">
+      <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogViewContent">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -144,10 +159,10 @@
           </el-form-item>
           <el-form-item label="发布来源" prop="resources">
             <el-input v-model="form.resources" disabled></el-input>
-          </el-form-item>  
-          <template v-if="type !== 1">
+          </el-form-item> 
+          <!-- 如果这条内容的上传者是学校的话 --> 
+          <template v-if="form.schoolId <= 0">
             <el-form-item label="区域选择">
-              <!-- <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>    -->
               <el-select v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
                 <el-option v-for="item in provinceList" :key="item.pId" :label="item.pName" :value="item.pId"></el-option>
               </el-select>
@@ -238,7 +253,7 @@ export default {
         title: "",
         status: 0,
         page: 1,
-        pageSize: 100
+        pageSize: 10
       },
       form: {
         scopeType: this.$store.getters.scopeType,
@@ -252,8 +267,8 @@ export default {
       schoolLabel: [],
       labelsList: [],
       tableData: [],
-      tableData2: []
-      //totalCount: 0
+      tableData2: [],
+      totalCount: 0
     };
   },
   computed: {
@@ -265,8 +280,18 @@ export default {
     handleSearch() {
       this.queryPrepublishContentList(this.query);
     },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.queryPrepublishContentList(this.query);
+    },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.queryPrepublishContentList(this.query);
+    },
     handleTabClick(tab) {
       this.query.status = parseInt(tab.name);
+      this.query.page = 1;
+      this.query.pageSize = 10;
       this.queryPrepublishContentList(this.query);
     },
     handleViewSchool(row) {
@@ -298,12 +323,10 @@ export default {
     handleCity(value) {
       if (typeof value === "number") {
         this.queryRegion(value, 2); //查市级下的区
-        //this.handleEmit(value, 1); //查市级
         this.form.scopeId = value;
         this.form.scopeType = 1;
       } else if (typeof value === "string") {
         this.areaList.length = 0;
-        //this.handleEmit(this.province, 0);
         this.form.scopeId = this.province;
         this.form.scopeType = 0;
       }
@@ -311,11 +334,9 @@ export default {
     },
     handleArea(value) {
       if (typeof value === "number") {
-        //this.handleEmit(value, 2); //查区级
         this.form.scopeId = value;
         this.form.scopeType = 2;
       } else if (typeof value === "string") {
-        //this.handleEmit(this.city, 1);
         this.form.scopeId = this.city;
         this.form.scopeType = 1;
       }
@@ -324,14 +345,19 @@ export default {
       setTimeout(() => {
         this.dialogAdd = true;
       }, 100);
-      let { contentId, resources, title } = row;
-      this.form = Object.assign({}, this.form, { contentId, resources, title });
+      let { contentId, resources, title, schoolId } = row;
+      this.form = Object.assign({}, this.form, {
+        contentId,
+        resources,
+        title,
+        schoolId
+      });
       this.findPublishScope(contentId);
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { title, resources, ...args } = this.form;
+          let { title, resources, schoolId, ...args } = this.form;
           this.prepublishContent(args);
           console.log(args);
         }
@@ -436,6 +462,7 @@ export default {
         } else {
           this.tableData2 = res.data.data;
         }
+        this.totalCount = res.data.totalCount;
       }
     },
     //查询内容
@@ -487,8 +514,6 @@ export default {
   },
   mounted() {
     this.queryLabel(1);
-    //this.handleInit();
-    //this.handleDisabled();
   },
   activated() {
     this.queryPrepublishContentList(this.query);

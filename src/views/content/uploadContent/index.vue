@@ -3,7 +3,7 @@
      <div class="newUpload">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
-          <!-- <el-button :disabled="disabledScreen === 0" type="info" @click="dialogTemplate = true">选择海报模板</el-button>                                                              -->
+          <el-button @click="handleCancel">取消</el-button>
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
         <el-row :gutter="30">
@@ -206,7 +206,7 @@
         </el-row>     
      </div>
      <!-- 内容模板选择 -->
-     <template>
+     <!-- <template>
        <el-dialog :close-on-click-modal="false" width="60%" center title="海报模板选择" top="40px" :visible.sync="dialogTemplate">
          <el-row :gutter="10">
            <el-col :span="4" v-for="(item, index) in posterList" :key="index">
@@ -222,7 +222,7 @@
             <el-button size="small" type="primary" @click="handlePosterSave">确定</el-button>           
          </div>         
        </el-dialog>
-     </template>
+     </template> -->
      <!-- 图片查看 -->
      <template>
        <el-dialog custom-class="qx-dialog" width="700px" title="图片查看" center top="40px" :visible.sync="dialogViewImg">
@@ -316,6 +316,12 @@ export default {
           this.$router.push({ path: "/content/upload" });
         }
       });
+    },
+    handleCancel() {
+      this.removeAction(this.$route);
+      setTimeout(() => {
+        this.reload();
+      }, 50);
     },
     //计算内容需要播放的时长
     async handleDurationTime() {

@@ -65,7 +65,7 @@
     </template>   
     <!-- 查看上传详情信息 --> 
     <template>
-      <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogViewContent">
+      <el-dialog width="60%" title=" 查看上传详情信息" top="40px" :visible.sync="dialogViewContent">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -123,7 +123,7 @@
     </template>           
     <!-- 预览审核 -->
     <template>
-      <el-dialog width="60%" :title="info.title" center top="40px" :visible.sync="dialogView">
+      <el-dialog width="60%" :title="info.title" top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one">
             <div class="image-box" v-if="info.showType == 3">
@@ -185,13 +185,17 @@
               <el-form-item label="审核意见" prop="verifyDescrition">
                 <el-input type="textarea" v-model="form.verifyDescrition" :rows="5" placeholder="审核意见"></el-input>
               </el-form-item>
+              <el-form-item>
+                <el-button size="small" @click="dialogView = false">取消</el-button>
+                <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
+              </el-form-item>
             </el-form>
           </div>
         </el-row>
-        <span slot="footer" class="dialog-footer">
+        <!-- <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogView = false">取消</el-button>
           <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
-        </span>        
+        </span>         -->
       </el-dialog>
     </template>         
   </div>    
