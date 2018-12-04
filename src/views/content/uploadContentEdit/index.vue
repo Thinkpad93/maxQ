@@ -3,8 +3,8 @@
      <div class="newUpload" v-loading="loading">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
-          <el-button @click="handleCancel">取消</el-button>
-          <el-button @click="handleViewContent">预览内容</el-button>
+          <!-- <el-button @click="handleCancel">取消</el-button>
+          <el-button @click="handleViewContent">预览内容</el-button> -->
           <el-button type="primary" @click="handleUpload('form')">保存编辑</el-button>
         </div>      
         <el-row :gutter="30">
@@ -83,9 +83,7 @@
                   </el-col>
                 </el-row>
               </el-form-item>   
-              <el-form-item label="上传图片" prop="images" :rules="[
-                { required: true, message: '请上传图片' }
-              ]" ref="upImg">
+              <el-form-item label="上传图片" prop="images">
                 <el-upload
                   list-type="picture-card"
                   class="upImg"
@@ -96,7 +94,7 @@
                   :with-credentials="true"
                   action="#"
                   accept="image/jpeg,image/gif,image/png,image/bmp"
-                  :file-list="form.images"
+                  :file-list="imgFileList"
                   :http-request='submitUpload'
                   :on-change='handleChangeUpload'
                   :on-remove="handleRemoveImg" 
@@ -105,9 +103,7 @@
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
                 </el-upload>  
               </el-form-item>
-              <el-form-item v-if="form.showType == 4 || form.showType == 5" label="上传视频" prop="videoUrl" :rules="[
-                { required: true, message: '请上传视频' }
-              ]" ref="upVideo">
+              <el-form-item v-if="form.showType == 4 || form.showType == 5" label="上传视频" prop="videoUrl">
                 <el-upload
                   class="avatar-uploader"
                   name="file"
@@ -128,10 +124,9 @@
               </el-form-item>      
               <template v-if="type !== 1">
                 <el-col :span="24">
-                  <el-form-item label="播放时长" prop="durationTime" :rules="[
-                    { required: true, message: '请选择播放时长', trigger: 'blur' }
-                    ]">
+                  <el-form-item label="播放时长" prop="durationTime">
                     <el-time-picker 
+                      :clearable="false"
                       format="mm:ss"
                       value-format="mm:ss"                            
                       v-model="form.durationTime" 
@@ -198,7 +193,8 @@ export default {
       uploadForm: "",
       form: {},
       channelList: [],
-      schoolPlayTime: []
+      schoolPlayTime: [],
+      imgFileList: []
     };
   },
   computed: {
@@ -231,22 +227,60 @@ export default {
         this.dialogView = true;
       }
     },
-    handleChangeUpload(file, fileList) {
-      if (fileList.length) {
-        this.$refs.upImg.clearValidate();
+    //计算内容需要播放的时长
+    handleDurationTime() {
+      //不计算学校的
+      if (this.type !== 1) {
+        //选择的图片长度
+        let imgLen = this.$refs.uploadImage.uploadFiles.length;
+        let { duration } = this.form; //视频时长
+        let imgDuration = imgLen * 30; //每张图片 * 30s
+        let str = "";
+        if (this.form.showType === 3) {
+          str = this.handleSecondToDate(imgDuration);
+        } else {
+          if (imgDuration >= duration) {
+            str = this.handleSecondToDate(imgDuration);
+          } else {
+            str = this.handleSecondToDate(duration);
+          }
+        }
+        this.form.durationTime = str;
       }
-      this.form.images = fileList;
-      console.log(this.$refs.uploadImage.uploadFiles);
+    },
+    //添加补0操作
+    handleFill(i) {
+      if (i <= 0 || i <= 9) {
+        i = "0" + i;
+      }
+      return i;
+    },
+    //秒转换成时分秒
+    handleSecondToDate(result) {
+      let m = this.handleFill(Math.floor((result / 60) % 60));
+      let s = this.handleFill(Math.floor(result % 60));
+      return `${m}:${s}`;
+    },
+    handleChangeUpload(file, fileList) {
+      this.handleDurationTime();
     },
     //删除图片
     handleRemoveImg(file, fileList) {
-      let { url } = file;
-      this.deletePicture(url).then(res => {
-        if (res) {
-          this.form.images = fileList;
-        }
-      });
-      console.log(this.form.images);
+      console.log(file);
+      let { status, url } = file;
+      if (status === "ready") {
+        this.handleDurationTime();
+        return;
+      } else {
+        this.deletePicture(url).then(res => {
+          if (res) {
+            this.handleDurationTime();
+            this.form.images = this.form.images.filter(
+              elem => elem.url !== url
+            );
+          }
+        });
+      }
     },
     //删除视频
     handleRemoveVideo(file) {
@@ -256,15 +290,10 @@ export default {
         this.deletePicture(url).then(res => {
           if (res) {
             this.form.videoUrl = "";
+            this.form.duration = 0;
+            this.handleDurationTime();
           }
         });
-      }
-    },
-    //上传图片成功
-    handleImageSuccess(response, file, fileList) {
-      if (response.errorCode === 0) {
-        this.$refs.upImg.clearValidate();
-        this.form.images.push({ ...response.data });
       }
     },
     //图片上传大小限制为2M
@@ -307,6 +336,7 @@ export default {
         this.videoUploadPercent = 0;
         this.form.videoUrl = url;
         this.form.duration = duration;
+        this.handleDurationTime();
       }
     },
     async submitAssess() {
@@ -319,12 +349,8 @@ export default {
       };
       let res = await service.filesUpload(this.uploadForm, config);
       if (res.errorCode === 0) {
-        if (this.form.images.length) {
-          this.form.images = this.form.images.concat(res.data);
-          console.log(this.form.images);
-          console.log("很安静");
-          return true;
-        }
+        this.form.images = this.form.images.concat(res.data);
+        return true;
       }
     },
     //图片上传
@@ -334,9 +360,27 @@ export default {
     handleUpload(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          //图片判断
+          if (!this.$refs.uploadImage.uploadFiles.length) {
+            this.$message({
+              message: `请上传图片`,
+              type: "warning"
+            });
+            return false;
+          }
+          //视频判断
+          if (
+            !this.form.videoUrl &&
+            (this.screenIndex === 1 || this.screenIndex === 2)
+          ) {
+            this.$message({
+              message: `请上传视频`,
+              type: "warning"
+            });
+            return false;
+          }
           let res = await this.submitAssess();
           if (res) {
-            console.log(res);
             let schoolPlayTime = this.schoolPlayTime;
             let {
               contentDetail,
@@ -345,7 +389,6 @@ export default {
               channelId,
               templateId,
               templateTitle,
-              duration,
               ...args
             } = this.form;
             //如果是学校上传
@@ -356,7 +399,6 @@ export default {
               }
             }
             let obj = Object.assign({}, args, { channelId });
-            console.log(obj);
             this.updateContent(obj);
           }
         }
@@ -395,6 +437,7 @@ export default {
       if (res.errorCode === 0) {
         this.loading = false;
         this.form = Object.assign({}, res.data);
+        this.imgFileList = this.form.images;
         switch (this.form.showType) {
           case 3:
             this.screenIndex = 0;

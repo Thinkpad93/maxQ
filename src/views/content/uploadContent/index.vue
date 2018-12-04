@@ -5,7 +5,7 @@
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
           <!-- <el-button @click="submitAssess">测试上传图片</el-button> -->
           <!-- <el-button @click="handleCancel">取消</el-button> -->
-          <el-button @click="handleViewContent">预览内容</el-button>
+          <!-- <el-button @click="handleViewContent">预览内容</el-button> -->
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
         <el-row :gutter="30">
@@ -85,9 +85,7 @@
                   </el-col>
                 </el-row>
               </el-form-item>  
-              <el-form-item label="上传图片" prop="images" :rules="[
-                { required: true, message: '请上传图片' }
-              ]" ref="upImg">
+              <el-form-item label="上传图片" prop="images">
                 <el-upload
                   list-type="picture-card"
                   class="upImg"
@@ -107,9 +105,7 @@
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
                 </el-upload>  
               </el-form-item>   
-              <el-form-item v-if="form.showType == 4 || form.showType == 5" label="上传视频" prop="videoUrl" :rules="[
-                { required: true, message: '请上传视频' }
-              ]" ref="upVideo">
+              <el-form-item v-if="form.showType == 4 || form.showType == 5" label="上传视频" prop="videoUrl">
                 <el-upload
                   class="avatar-uploader"
                   name="file"
@@ -129,17 +125,15 @@
                 <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>    
               </el-form-item> 
               <template v-if="type !== 1">
-                <el-form-item label="播放时长" prop="durationTime" :rules="[
-                  { required: true, message: '请选择播放时长', trigger: 'blur' }
-                  ]">
+                <el-form-item label="播放时长" prop="durationTime">
                   <el-time-picker 
+                    :clearable="false"
                     format="mm:ss"
                     value-format="mm:ss"                       
                     v-model="form.durationTime" 
                     placeholder="选择播放时长"
                     style="width:100%">
                   </el-time-picker>
-                  <!-- <span>播放时长根据图片张数而生成，你可以自行修改，但请慎重修改</span> -->
                 </el-form-item>                    
               </template>                                          
             </el-form>
@@ -204,14 +198,13 @@ export default {
         contentProperty: 0,
         author: "",
         durationTime: "",
-        //duration: 0, //视频时长
+        duration: 0, //视频时长
         templateId: 0,
         videoUrl: "",
         belongTo: 0, // 0-不专属 1-专属对应学校
         images: [],
         playTime: "",
         endTime: "",
-        //rollTime: [],
         rollContent: "",
         showType: 3
       },
@@ -250,16 +243,48 @@ export default {
         this.dialogView = true;
       }
     },
-    handleChangeUpload(file, fileList) {
-      // if (fileList.length) {
-      //   this.$refs.upImg.clearValidate();
-      // }
-      //this.form.images = fileList;
-      console.log(this.$refs.uploadImage.uploadFiles);
+    //计算内容需要播放的时长
+    handleDurationTime() {
+      //不计算学校的
+      if (this.type !== 1) {
+        //选择的图片长度
+        let imgLen = this.$refs.uploadImage.uploadFiles.length;
+        let { duration } = this.form; //视频时长
+        let imgDuration = imgLen * 30; //每张图片 * 30s
+        let str = "";
+        if (imgDuration >= duration) {
+          str = this.handleSecondToDate(imgDuration);
+        } else if (imgDuration <= duration) {
+          str = this.handleSecondToDate(duration);
+        }
+        this.form.durationTime = str;
+        // if (imgDuration > duration) {
+        //   let durationN = this.handleSecondToDate(imgDuration);
+        //   this.form.durationTime = durationN;
+        // } else {
+        //   let durationM = this.handleSecondToDate(duration);
+        //   this.form.durationTime = durationM;
+        // }
+      }
     },
-    //图片删除
-    handleRemoveImg(file, fileList) {
-      this.form.images = fileList;
+    //添加补0操作
+    handleFill(i) {
+      if (i <= 0 || i <= 9) {
+        i = "0" + i;
+      }
+      return i;
+    },
+    //秒转换成时分秒
+    handleSecondToDate(result) {
+      let m = this.handleFill(Math.floor((result / 60) % 60));
+      let s = this.handleFill(Math.floor(result % 60));
+      return `${m}:${s}`;
+    },
+    handleChangeUpload(file, fileList) {
+      this.handleDurationTime();
+    },
+    handleRemoveImg() {
+      this.handleDurationTime();
     },
     handleRemoveVideo(file) {
       let { videoUrl } = this.form;
@@ -268,17 +293,12 @@ export default {
         this.deletePicture(url).then(res => {
           if (res) {
             this.form.videoUrl = "";
+            this.form.duration = 0;
+            this.handleDurationTime();
           }
         });
       }
     },
-    //上传图片成功
-    // async handleImageSuccess(response, file, fileList) {
-    //   if (response.errorCode === 0) {
-    //     this.$refs.upImg.clearValidate();
-    //     this.form.images.push({ ...response.data });
-    //   }
-    // },
     //图片上传大小限制为2M
     beforeImageUpload(file) {
       let isJPG = file.type === "image/jpeg";
@@ -325,7 +345,7 @@ export default {
         this.videoUploadPercent = 0;
         this.form.videoUrl = url;
         this.form.duration = duration;
-        this.$refs.upVideo.clearValidate();
+        this.handleDurationTime();
       }
     },
     handleScreenSelect(index, value) {
@@ -353,6 +373,25 @@ export default {
     handleUpload(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          //图片判断
+          if (!this.$refs.uploadImage.uploadFiles.length) {
+            this.$message({
+              message: `请上传图片`,
+              type: "warning"
+            });
+            return false;
+          }
+          //视频判断
+          if (
+            !this.form.videoUrl &&
+            (this.screenIndex === 1 || this.screenIndex === 2)
+          ) {
+            this.$message({
+              message: `请上传视频`,
+              type: "warning"
+            });
+            return false;
+          }
           let res = await this.submitAssess();
           if (res) {
             let schoolPlayTime = this.schoolPlayTime;
@@ -367,7 +406,6 @@ export default {
               }
             }
             let obj = Object.assign({}, args, { belongTo, channelId });
-            console.log(obj);
             this.uploadContentAction(obj);
           }
         }

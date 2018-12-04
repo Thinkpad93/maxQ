@@ -48,12 +48,6 @@
                       <p v-else>{{ scope.row.channelName }}</p>
                     </template>
                   </el-table-column>
-                  <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                      <p v-if="scope.row.contentType === 0">全屏播放</p>
-                      <p v-else>滚动播放</p>
-                    </template>
-                  </el-table-column>
                   <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                       <p v-if="scope.row.contentProperty === 0">原创</p>
