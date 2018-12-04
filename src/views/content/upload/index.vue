@@ -1,100 +1,140 @@
 <template>
    <div class="page">
-      <!-- <template>
+      <template>
         <el-row :gutter="10">
           <el-col :span="24">
-            <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
-              <el-tab-pane label="内容播放"></el-tab-pane>
-              <el-tab-pane label="滚动通知"></el-tab-pane>
+            <el-tabs ref="tabs" class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
+              <el-tab-pane label="内容播放" name="0">
+                <div class="page-form">
+                  <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+                    <el-form-item label="内容标题">
+                      <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="40"></el-input>
+                    </el-form-item>     
+                    <el-form-item label="栏目名称">
+                      <el-select v-model="query.channelId" placeholder="请选择">
+                        <el-option v-for="item in channelList" 
+                          :key="item.channelId" 
+                          :value="item.channelId"
+                          :label="item.name">
+                        </el-option>
+                      </el-select>  
+                    </el-form-item>
+                    <el-form-item label="审核状态">
+                      <el-select v-model="query.verifyStatus" clearable placeholder="请选择设备状态">
+                        <el-option
+                          v-for="item in verifyStatusList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>                  
+                      </el-select>                              
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+                      <el-button icon="el-icon-plus" type="primary" @click="uoloadAction">上传内容</el-button>
+                    </el-form-item>                                       
+                  </el-form>
+                </div>
+                <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
+                  <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.title }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.channelName == null">无</p>
+                      <p v-else>{{ scope.row.channelName }}</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.contentType === 0">全屏播放</p>
+                      <p v-else>滚动播放</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.contentProperty === 0">原创</p>
+                      <p v-else>摘要</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
+                      <span v-else style="color:#F56C6C;cursor: pointer;" 
+                      @click="handleCheckNode(scope.row)">审核不通过</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column label="操作">
+                      <template slot-scope="scope">
+                        <router-link style="color:#409EFF" 
+                  :to="{path: `/content/uploadContentEdit/${scope.row.contentId}`}" v-if="scope.row.verifyStatus === 2">编辑</router-link>
+                          <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
+                      </template>
+                  </el-table-column>
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane label="滚动通知" name="1">
+                <div class="page-form">
+                  <el-form :inline="true" :model="querys" size="small" label-width="70px" label-position="left">
+                    <el-form-item label="内容标题">
+                      <el-input v-model="querys.title" placeholder="请输入内容标题" maxlength="40"></el-input>
+                    </el-form-item>   
+                    <el-form-item label="审核状态">
+                      <el-select v-model="querys.verifyStatus" clearable placeholder="请选择设备状态">
+                        <el-option
+                          v-for="item in verifyStatusList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>                  
+                      </el-select>                              
+                    </el-form-item>   
+                    <el-form-item>
+                      <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+                      <el-button icon="el-icon-plus" type="primary" @click="handleAdd">上传滚动通知</el-button>
+                    </el-form-item>                                                            
+                  </el-form>
+                </div>
+                <el-table :data="tableData2" style="width: 100%" stripe :height="tableHeight" size="small">
+                  <el-table-column :resizable="false" label="标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column :resizable="false" label="通知内容" prop="rollContent" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column :resizable="false" label="播放有效期" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <p>{{ scope.row.playTime }} 至 {{ scope.row.endTime }}</p>   
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
+                      <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
+                      <span v-else style="color:#F56C6C;cursor: pointer;" 
+                      @click="handleCheckNode(scope.row)">审核不通过</span>                      
+                    </template>
+                  </el-table-column>
+                  <el-table-column :resizable="false" label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column width="200" label="操作">
+                    <template slot-scope="scope">
+                      <el-button size="mini" type="text" @click="handleEdit(scope.row)" v-if="scope.row.verifyStatus === 2">编辑</el-button>
+                      <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>                      
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-tab-pane>
             </el-tabs>
           </el-col>
         </el-row>
-      </template> -->
-      <template>
-        <el-row :gutter="10">
-          <el-col :span="24">
-            <div class="page-form">
-              <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-                <el-form-item label="内容标题">
-                  <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="40"></el-input>
-                </el-form-item>
-                <el-form-item label="栏目名称">
-                  <el-select v-model="query.channelId" placeholder="请选择">
-                    <el-option v-for="item in channelList" 
-                      :key="item.channelId" 
-                      :value="item.channelId"
-                      :label="item.name">
-                    </el-option>
-                  </el-select>  
-                </el-form-item>
-                <el-form-item label="审核状态">
-                  <el-select v-model="query.verifyStatus" clearable placeholder="请选择设备状态">
-                    <el-option
-                      v-for="item in verifyStatusList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>                  
-                  </el-select>                              
-                </el-form-item>
-                <el-form-item>
-                  <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                  <el-button icon="el-icon-plus" type="primary" @click="uoloadAction">上传内容</el-button>
-                  <el-button icon="el-icon-plus" type="primary" @click="dialogText = true">上传滚动通知</el-button>
-                </el-form-item>                           
-              </el-form>
-            </div>
-          </el-col>
-        </el-row>
-      </template> 
-      <!-- 上传列表 -->
-      <template>
-        <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
-          <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.title }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :resizable="false" label="栏目名称" prop="channelName" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <p v-if="scope.row.channelName == null">无</p>
-              <p v-else>{{ scope.row.channelName }}</p>
-            </template>
-          </el-table-column>
-          <el-table-column :resizable="false" label="内容类型" prop="contentType" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <p v-if="scope.row.contentType === 0">全屏播放</p>
-              <p v-else>滚动播放</p>
-            </template>
-          </el-table-column>
-          <el-table-column :resizable="false" label="内容属性" prop="contentProperty" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <p v-if="scope.row.contentProperty === 0">原创</p>
-              <p v-else>摘要</p>
-            </template>
-          </el-table-column>
-          <el-table-column :resizable="false" label="作者" prop="author" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="审核节点" prop="verifyStatus" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span v-if="scope.row.verifyStatus === 0 && scope.row.checkStage === 1" style="color:#409EFF">初审中</span>
-              <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 1" style="color:#409EFF">复审中</span>
-              <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 2" style="color:#409EFF">终审中</span>
-              <span v-else-if="scope.row.verifyStatus === 1 && scope.row.checkStage === 3" style="color:#67C23A;">审核通过</span>
-              <span v-else style="color:#F56C6C;cursor: pointer;" 
-              @click="handleCheckNode(scope.row)">审核不通过</span>
-            </template>
-          </el-table-column>
-          <el-table-column :resizable="false" label="时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column label="操作">
-              <template slot-scope="scope">
-                <router-link style="color:#409EFF" 
-          :to="{path: `/content/uploadContentEdit/${scope.row.contentId}`}" v-if="scope.row.verifyStatus === 2">编辑</router-link>
-                  <el-button size="mini" type="text" @click="handleDel(scope.row)">删除</el-button>
-              </template>
-          </el-table-column>
-        </el-table>
       </template>
+      <!-- 上传列表 -->
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -240,24 +280,21 @@ export default {
       formLabelWidth: "100px",
       form: {
         title: "",
-        channelId: null,
         contentType: 1,
-        contentProperty: 0,
-        author: "",
-        durationTime: "",
-        templateId: 0,
-        videoUrl: "",
-        belongTo: 0, // 0-不专属 1-专属对应学校
-        images: [],
         rollTime: [],
-        rollContent: "",
-        showType: -1
+        rollContent: ""
       },
       pickerOptions: {
         disabledDate
       },
       query: {
         channelId: 0,
+        verifyStatus: 3,
+        title: "",
+        page: 1,
+        pageSize: 20
+      },
+      querys: {
         verifyStatus: 3,
         title: "",
         page: 1,
@@ -271,6 +308,7 @@ export default {
         { value: 3, label: "全部" }
       ],
       tableData: [],
+      tableData2: [],
       totalCount: 0,
       nodeData: [],
       channelList: []
@@ -290,10 +328,41 @@ export default {
       this.query.pageSize = size;
       this.queryContentList();
     },
-    search() {
-      this.queryContentList();
+    handleSearch() {
+      let currentName = this.$refs.tabs.currentName;
+      if (currentName == 0) {
+        this.queryContentList();
+      } else {
+        this.queryRollContent();
+      }
     },
-    handleTabClick(tab) {},
+    handleAdd() {
+      this.dialogText = true;
+      this.form = {
+        contentType: 1
+      };
+    },
+    handleEdit(row) {
+      console.log(row);
+      let rollTime = [];
+      let {
+        postTime,
+        verifyStatus,
+        checkStage,
+        playTime,
+        endTime,
+        ...args
+      } = row;
+      this.dialogText = true;
+      this.form = Object.assign({}, args, { rollTime: [playTime, endTime] });
+    },
+    handleTabClick(tab) {
+      if (tab.name == 0) {
+        this.queryContentList();
+      } else {
+        this.queryRollContent();
+      }
+    },
     handleViewInfo(row) {
       this.queryContentByContentId(row.contentId);
     },
@@ -324,16 +393,23 @@ export default {
     formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { rollTime, ...args } = this.form;
+          console.log(this.form);
+          let { contentId, rollTime, ...args } = this.form;
           let playTime = "";
           let endTime = "";
           if (rollTime.length) {
             playTime = rollTime[0];
             endTime = rollTime[1];
           }
-          let obj = Object.assign({}, args, { playTime, endTime });
-          console.log(obj);
-          this.uploadContent(obj);
+          if (contentId) {
+            let obj = Object.assign({}, args, { playTime, endTime, contentId });
+            console.log(obj);
+            this.updateRollContent(obj);
+          } else {
+            let objs = Object.assign({}, args, { playTime, endTime });
+            console.log(objs);
+            this.uploadContent(objs);
+          }
         }
       });
     },
@@ -357,15 +433,27 @@ export default {
       let res = await service.queryContentList(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
-        this.totalCount = res.data.totalCount;
+        //this.totalCount = res.data.totalCount;
+      }
+    },
+    //查询滚动通知列表
+    async queryRollContent() {
+      let res = await service.queryRollContent(this.querys);
+      if (res.errorCode === 0) {
+        this.tableData2 = res.data.data;
       }
     },
     //删除上传内容
     async deleteContent(contentId) {
       let res = await service.deleteContent({ contentId });
       if (res.errorCode === 0) {
+        let currentName = this.$refs.tabs.currentName;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        this.queryContentList();
+        if (currentName == 0) {
+          this.queryContentList();
+        } else {
+          this.queryRollContent();
+        }
       } else if (res.errorCode === -1) {
         this.$message({ message: `${res.errorMsg}`, type: "error" });
       }
@@ -379,13 +467,26 @@ export default {
         this.dialogView = true;
       }
     },
+    //上传内容
     async uploadContent(params = {}) {
       let res = await service.uploadContent(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
         this.dialogText = false;
-        this.queryContentList();
+        this.$refs.form.resetFields();
+        this.queryRollContent();
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
+      }
+    },
+    async updateRollContent(params = {}) {
+      let res = await service.updateRollContent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogText = false;
+        this.queryRollContent();
+        this.$refs.form.resetFields();
         this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     }
@@ -416,12 +517,6 @@ export default {
   text-align: center;
   width: 400px;
   margin: 0 auto;
-}
-.iframe-box {
-  margin: 0 auto;
-  width: 400px;
-  min-height: 589px;
-  box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
 }
 .list {
   font-size: 14px;

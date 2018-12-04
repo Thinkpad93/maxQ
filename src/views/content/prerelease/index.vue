@@ -515,7 +515,6 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        console.log(res);
         this.innerVisible = true;
         this.showSchoolData = res.data;
       }

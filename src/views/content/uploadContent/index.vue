@@ -3,12 +3,13 @@
      <div class="newUpload">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
-          <el-button @click="handleCancel">取消</el-button>
+          <!-- <el-button @click="submitAssess">测试上传图片</el-button> -->
+          <!-- <el-button @click="handleCancel">取消</el-button> -->
           <el-button @click="handleViewContent">预览内容</el-button>
           <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
         </div>      
         <el-row :gutter="30">
-          <el-col :xs="24" :sm="24" :md="20" :lg="16" :xl="14" :offset="1">              
+          <el-col :span="12">              
             <el-form ref="form" :model="form" status-icon label-position="left" :label-width="formLabelWidth">             
               <el-row :gutter="10">
                 <el-col :span="24">
@@ -57,21 +58,6 @@
                 </template>
               </el-row>       
               <el-row :gutter="10">
-                <template v-if="type !== 1">
-                  <el-col :span="24">
-                    <el-form-item label="播放时长" prop="durationTime" :rules="[
-                      { required: true, message: '请选择播放时长', trigger: 'blur' }
-                      ]">
-                      <el-time-picker 
-                        format="mm:ss"
-                        value-format="mm:ss"                       
-                        v-model="form.durationTime" 
-                        placeholder="选择播放时长" 
-                        style="width: 100%;">
-                      </el-time-picker>
-                    </el-form-item>                    
-                  </el-col>
-                </template>
                 <template v-if="type === 1">
                   <el-col :span="24">
                     <el-form-item label="播放时段" prop="channelId" :rules="[
@@ -91,7 +77,7 @@
               </el-row>   
               <el-form-item label="展示类型">
                 <el-row :gutter="10">
-                  <el-col :span="4" v-for="(item, index) in contentTemplateList" :key="index">
+                  <el-col :span="5" v-for="(item, index) in contentTemplateList" :key="index">
                     <div class="showType-item" :class="[ index === screenIndex ? 'selected' : '']"
                       @click="handleScreenSelect(index, item.value)">
                       <span>{{ item.label }}</span>
@@ -107,11 +93,15 @@
                   class="upImg"
                   name="files"
                   ref="uploadImage"
-                  action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
+                  :auto-upload="false"
+                  :multiple="true"
+                  :with-credentials="true"
+                  action="#"
                   accept="image/jpeg,image/gif,image/png,image/bmp"
-                  :file-list="form.images"
+                  :file-list="imgFileList"
+                  :http-request='submitUpload'
+                  :on-change='handleChangeUpload'
                   :on-remove="handleRemoveImg" 
-                  :on-success="handleImageSuccess"
                   :before-upload="beforeImageUpload">
                   <i class="el-icon-plus"></i>
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
@@ -121,20 +111,37 @@
                 { required: true, message: '请上传视频' }
               ]" ref="upVideo">
                 <el-upload
-                  :show-file-list="false"
+                  class="avatar-uploader"
                   name="file"
-                  :limit="1"
+                  :show-file-list="false"
                   ref="uploadVideo"
+                  :with-credentials="true"
                   action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                   accept="video/mp4,video/flv,video/mov"
-                  :on-remove="handleRemoveVideo" 
                   :on-success="handleVideoSuccess"
-                  :before-upload="beforeVideoUpload">
-                  <i class="el-icon-upload"></i>
-                  <!-- <video v-if="form.videoUrl" :src="form.videoUrl" controls="controls">您的浏览器不支持视频播放</video> -->
-                </el-upload>    
-                <span>只能上传MP4/mov/flv视频，且大小不超过100MB</span>                       
-              </el-form-item>                             
+                  :before-upload="beforeVideoUpload"
+                  :on-progress="handleVideoProcess">
+                  <video v-if="form.videoUrl" :src="form.videoUrl" class="avatar" controls="controls">您的浏览器不支持视频播放</video>
+                  <i v-else-if="form.videoUrl === '' && videoFlag === false" class="el-icon-plus avatar-uploader-icon"></i>
+                  <el-progress v-if="videoFlag" type="circle" :percentage="videoUploadPercent" style="margin-top:12px;"></el-progress>
+                  <div slot="tip" class="el-upload__tip">只能上传MP4/mov/flv视频，且大小不超过100MB</div>
+                </el-upload>      
+                <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>    
+              </el-form-item> 
+              <template v-if="type !== 1">
+                <el-form-item label="播放时长" prop="durationTime" :rules="[
+                  { required: true, message: '请选择播放时长', trigger: 'blur' }
+                  ]">
+                  <el-time-picker 
+                    format="mm:ss"
+                    value-format="mm:ss"                       
+                    v-model="form.durationTime" 
+                    placeholder="选择播放时长"
+                    style="width:100%">
+                  </el-time-picker>
+                  <!-- <span>播放时长根据图片张数而生成，你可以自行修改，但请慎重修改</span> -->
+                </el-form-item>                    
+              </template>                                          
             </el-form>
           </el-col>
         </el-row>     
@@ -175,6 +182,7 @@ import bus from "@/utils/bus";
 import service from "@/api";
 import { contentProperty, contentTemplate } from "@/mixins";
 import { mapGetters, mapActions } from "vuex";
+import axios from "axios";
 
 export default {
   name: "newUpload",
@@ -184,14 +192,11 @@ export default {
     return {
       dialogView: false,
       formLabelWidth: "100px",
-      status: "0",
       screenIndex: 0,
-      posterIndex: -1,
-      carouselIndex: 0,
       collapse: true,
-      url: "./static/20180908/index.html",
-      posterUrl: "",
-      imageList: [], //多图片查看
+      videoFlag: false,
+      videoUploadPercent: 0,
+      uploadForm: "",
       form: {
         title: "",
         channelId: null,
@@ -210,10 +215,9 @@ export default {
         rollContent: "",
         showType: 3
       },
-      iframeWin: {},
       channelList: [],
-      posterList: [],
-      schoolPlayTime: []
+      schoolPlayTime: [],
+      imgFileList: []
     };
   },
   computed: {
@@ -242,64 +246,39 @@ export default {
     },
     //预览内容
     handleViewContent() {
-      this.dialogView = true;
-    },
-    //计算内容需要播放的时长
-    async handleDurationTime() {
-      //学校账号类型不用计算
-      let imgLen = this.imageList.length;
-      let { duration } = this.form;
-      if (this.type !== 1) {
-        if (imgLen) {
-          let imgDuration = imgLen * 30; //每张图片 * 30s
-          return duration >= imgDuration ? duration : imgDuration;
-        } else {
-          return duration;
-        }
+      if (this.form.images.length) {
+        this.dialogView = true;
       }
     },
-    //添加补0操作
-    handleFill(i) {
-      if (i <= 0 || i <= 9) {
-        i = "0" + i;
-      }
-      return i;
-    },
-    //秒转换成时分秒
-    handleSecondToDate(result) {
-      let h = this.handleFill(Math.floor(result / 3600));
-      let m = this.handleFill(Math.floor((result / 60) % 60));
-      let s = this.handleFill(Math.floor(result % 60));
-      return `${h}:${m}:${s}`;
+    handleChangeUpload(file, fileList) {
+      // if (fileList.length) {
+      //   this.$refs.upImg.clearValidate();
+      // }
+      //this.form.images = fileList;
+      console.log(this.$refs.uploadImage.uploadFiles);
     },
     //图片删除
     handleRemoveImg(file, fileList) {
-      let { url } = file;
-      this.deletePicture(url).then(res => {
-        if (res) {
-          this.form.images = fileList;
-        }
-      });
+      this.form.images = fileList;
     },
     handleRemoveVideo(file) {
-      let { url } = file.response.data;
-      this.deletePicture(url).then(res => {
-        if (res) {
-          this.form.videoUrl = "";
-        }
-      });
-    },
-    //上传图片成功
-    async handleImageSuccess(response, file, fileList) {
-      if (response.errorCode === 0) {
-        //this.imageList.push({ ...response.data });
-        this.$refs.upImg.clearValidate();
-        this.form.images.push({ ...response.data });
-        //let d = await this.handleDurationTime();
-        //let hms = this.handleSecondToDate(d);
-        //console.log(hms);
+      let { videoUrl } = this.form;
+      if (videoUrl) {
+        let url = videoUrl;
+        this.deletePicture(url).then(res => {
+          if (res) {
+            this.form.videoUrl = "";
+          }
+        });
       }
     },
+    //上传图片成功
+    // async handleImageSuccess(response, file, fileList) {
+    //   if (response.errorCode === 0) {
+    //     this.$refs.upImg.clearValidate();
+    //     this.form.images.push({ ...response.data });
+    //   }
+    // },
     //图片上传大小限制为2M
     beforeImageUpload(file) {
       let isJPG = file.type === "image/jpeg";
@@ -333,36 +312,64 @@ export default {
 
       return (isMP4 || isFLV || isMOV) && isLt200M;
     },
+    //上传进度
+    handleVideoProcess(event, file, fileList) {
+      this.videoFlag = true;
+      this.videoUploadPercent = Math.floor(file.percentage);
+    },
     //上传视频成功
     async handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         let { url, duration } = response.data;
+        this.videoFlag = false;
+        this.videoUploadPercent = 0;
         this.form.videoUrl = url;
         this.form.duration = duration;
-        //let d = await this.handleDurationTime();
-        //let hms = this.handleSecondToDate(d);
-        //console.log(hms);
+        this.$refs.upVideo.clearValidate();
       }
     },
     handleScreenSelect(index, value) {
       this.screenIndex = index;
       this.form.showType = value;
     },
+    async submitAssess() {
+      this.uploadForm = new FormData();
+      this.$refs.uploadImage.submit();
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      let res = await service.filesUpload(this.uploadForm, config);
+      if (res.errorCode === 0) {
+        this.form.images = res.data;
+        return true;
+      }
+    },
+    //图片上传
+    submitUpload(file) {
+      this.uploadForm.append("files", file.file);
+    },
     handleUpload(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let schoolPlayTime = this.schoolPlayTime;
-          let { belongTo, channelId, ...args } = this.form;
-          //如果是学校上传
-          if (this.type === 1) {
-            belongTo = this.type;
-            let index = schoolPlayTime.find(elem => elem.itemId === channelId);
-            if (index) {
-              channelId = index.channelId;
+          let res = await this.submitAssess();
+          if (res) {
+            let schoolPlayTime = this.schoolPlayTime;
+            let { belongTo, channelId, ...args } = this.form;
+            if (this.type === 1) {
+              belongTo = this.type;
+              let index = schoolPlayTime.find(
+                elem => elem.itemId === channelId
+              );
+              if (index) {
+                channelId = index.channelId;
+              }
             }
+            let obj = Object.assign({}, args, { belongTo, channelId });
+            console.log(obj);
+            this.uploadContentAction(obj);
           }
-          let obj = Object.assign({}, args, { belongTo, channelId });
-          this.uploadContentAction(obj);
         }
       });
     },
@@ -464,8 +471,5 @@ export default {
   .image {
     width: 100%;
   }
-}
-.views-image {
-  text-align: center;
 }
 </style>

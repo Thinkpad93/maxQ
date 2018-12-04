@@ -84,9 +84,6 @@ export default {
           this.provinceList = _provinceList;
       }
       this.handleInit();
-      //this.computedProvince();
-      //this.computedCity();
-      //this.computedArea();
     },
     handleInit() {
       if (this.provinceList.length && this.scopeType != null) {
@@ -99,40 +96,6 @@ export default {
         this.area = this.areaList[0].aId;
       }
     },
-    // computedProvince() {
-    //   //如果是省控制 则禁用选择省
-    //   if (this.scopeType === 0) {
-    //     this.pdisabled = 1;
-    //   }
-    //   if (this.provinceList.length && this.scopeType != null) {
-    //     return (this.province = this.provinceList[0].pId);
-    //   }
-    // },
-    // computedCity() {
-    //   //如果是市级控制 则禁用选择省和市
-    //   if (this.scopeType === 1) {
-    //     this.pdisabled = 1;
-    //     this.cdisabled = 1;
-    //   }
-    //   if (this.cityList.length === 1) {
-    //     this.city = this.cityList[0].cId;
-    //   } else {
-    //     this.city = null;
-    //   }
-    // },
-    // computedArea() {
-    //   //如果是区级控制 则禁用选择省和市和区
-    //   if (this.scopeType === 2) {
-    //     this.pdisabled = 1;
-    //     this.cdisabled = 1;
-    //     this.adisabled = 1;
-    //   }
-    //   if (this.areaList.length === 1) {
-    //     this.area = this.areaList[0].aId;
-    //   } else {
-    //     this.area = null;
-    //   }
-    // },
     handleProvince(value) {
       //不触发点击清空时的调用
       if (typeof value === "number") {

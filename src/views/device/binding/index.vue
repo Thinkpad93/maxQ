@@ -126,104 +126,6 @@
         </span>          
       </el-dialog>
     </template>
-    <!-- <template>
-       <el-dialog top="40px" title="新增设备绑定" :visible.sync="dialogAdd">
-          <el-form :rules="rules" ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
-            <el-form-item label="区域选择" prop="regionId">
-              <qx-region @last="queryRegion" v-model="addForm.regionId"></qx-region>
-            </el-form-item>
-            <el-form-item label="学校名称" prop="schoolId">
-               <el-select v-model="addForm.schoolId" clearable filterable placeholder="选择学校">
-                  <el-option
-                    v-for="item in schoolList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option> 
-                </el-select>              
-            </el-form-item>
-            <el-form-item label="安装位置" prop="address">
-              <el-input v-model="addForm.address" placeholder="请输入安装位置" maxlength="40"></el-input>
-            </el-form-item>
-            <el-form-item label="设备批次" prop="batch">
-              <el-input v-model="addForm.batch" placeholder="请输入设备批次" maxlength="30"></el-input>
-            </el-form-item>
-            <el-form-item label="设备序号" prop="serial">
-              <el-input v-model="addForm.serial" placeholder="请选择设备序号" maxlength="30"></el-input>
-            </el-form-item>
-            <el-form-item label="冠名企业" prop="labelIds">
-              <el-select v-model="addForm.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
-                <el-option
-                  v-for="item in labelsList"
-                  :key="item.labelId"
-                  :label="item.name"
-                  :value="item.labelId">
-                </el-option>
-              </el-select>              
-            </el-form-item>
-            <el-form-item label="MAC地址" prop="mac">
-              <el-input v-model="addForm.mac" placeholder="请输入MAC地址"></el-input>
-            </el-form-item>
-            <el-form-item label="设备管理员" prop="manager">
-              <el-input v-model="addForm.manager" placeholder="请输入设备管理员" maxlength="4"></el-input>
-            </el-form-item>
-            <el-form-item label="联系电话" prop="phone">
-              <el-input v-model="addForm.phone" placeholder="请输入联系电话"></el-input>
-            </el-form-item>
-          </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="dialogAdd = false">取消</el-button>
-          <el-button size="small" type="primary" @click="addsForm('addForm')">确定</el-button>
-        </span>             
-       </el-dialog>      
-    </template>  -->
-     <!-- 编辑 -->
-     <!-- <template>
-       <el-dialog top="40px" title="正在编辑" :visible.sync="dialogEdit" :modal-append-to-body="false">
-         <el-form :rules="rules" ref="editForm" :model="edit" size="small" :label-width="formLabelWidth">
-           <el-form-item label="区域">
-             <el-input v-model="selected" disabled></el-input>
-           </el-form-item>           
-           <el-form-item label="学校名称">
-             <el-input v-model="edit.schoolName" disabled></el-input>
-           </el-form-item>
-           <el-form-item label="安装位置" prop="address">
-             <el-input v-model="edit.address"></el-input>
-           </el-form-item>
-            <el-form-item label="设备批次" prop="batch">
-              <el-input v-model="edit.batch" placeholder="请输入设备批次"></el-input>
-            </el-form-item>    
-            <el-form-item label="设备序号" prop="serial">
-              <el-input v-model="edit.serial" placeholder="请选择设备序号"></el-input>
-            </el-form-item>  
-            <template>
-              <el-form-item label="冠名企业" prop="labelIds">
-                <el-select v-model="edit.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
-                  <el-option
-                    v-for="item in labelsList"
-                    :key="item.labelId"
-                    :label="item.name"
-                    :value="item.labelId">
-                  </el-option>
-                </el-select>               
-              </el-form-item>
-            </template>
-           <el-form-item label="MAC地址" prop="mac">
-             <el-input v-model="edit.mac"></el-input>
-           </el-form-item>
-           <el-form-item label="设备管理员" prop="manager">
-             <el-input v-model="edit.manager" maxlength="4"></el-input>
-           </el-form-item>
-           <el-form-item label="联系电话" prop="phone">
-             <el-input v-model="edit.phone"></el-input>
-           </el-form-item>
-         </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="dialogEdit = false">取消</el-button>
-          <el-button size="small" type="primary" @click="editorForm('editForm')">确定</el-button>
-        </span>          
-       </el-dialog>
-     </template>  -->
   </div>  
 </template>
 <script>
@@ -241,9 +143,6 @@ export default {
   },
   data() {
     return {
-      //dialogAdd: false,
-      //dialogView: false,
-      //dialogEdit: false,
       dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",
@@ -326,13 +225,6 @@ export default {
           }
         ]
       },
-      // addForm: {
-      //   regionId: [],
-      //   labelIds: []
-      // },
-      // edit: {
-      //   labelIds: []
-      // },
       //默认参数
       query: {
         schoolName: "",
@@ -392,9 +284,6 @@ export default {
       this.isShow = false;
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
-      console.log(this.form);
-      //this.dialogEdit = true;
-      //this.edit = { ...row };
       this.queryProvinceCityRegionBySchoolId(row.schoolId);
     },
     handleDel(row) {
@@ -426,29 +315,8 @@ export default {
         }
       });
     },
-    // addsForm(formName) {
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       let { regionId, ...args } = this.addForm;
-    //       this.addDeviceBind(args);
-    //     } else {
-    //       return false;
-    //     }
-    //   });
-    // },
-    // editorForm(formName) {
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       let { postTime, schoolName, totalCount, ...args } = this.edit;
-    //       this.updateDeviceBind(args);
-    //     } else {
-    //       return false;
-    //     }
-    //   });
-    // },
     //加载学校数据
     async queryRegion(value) {
-      //this.addForm.regionId = value;
       this.form.regionId = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
@@ -488,8 +356,6 @@ export default {
       let res = await service.addDeviceBind(params);
       if (res.errorCode === 0) {
         this.$message({ message: `${res.errorMsg}`, type: "success" });
-        //this.dialogAdd = false;
-        //this.$refs.addForm.resetFields();
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.showDeviceList();
@@ -503,7 +369,6 @@ export default {
     async updateDeviceBind(params = {}) {
       let res = await service.updateDeviceBind(params);
       if (res.errorCode === 0) {
-        //this.dialogEdit = false;
         this.dialogFormVisible = false;
         this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showDeviceList();

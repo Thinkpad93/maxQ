@@ -186,6 +186,23 @@ export function queryContentList(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//查询滚动通知列表
+export function queryRollContent(params) {
+  return ax.post('/action/mod-xiaojiao/channel/content/queryRollContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+export function updateRollContent(params, config) {
+  return ax.post('/action/mod-xiaojiao/channel/content/updateRollContent.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//上传图片
+export function filesUpload(params, config) {
+  return ax.post('/action/mod-xiaojiao/image/filesUpload.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //删除我的上传内容
 export function deleteContent(params) {
   return ax.post('/action/mod-xiaojiao/channel/content/deleteContent.do', params)

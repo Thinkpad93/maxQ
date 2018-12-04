@@ -3,10 +3,12 @@
      <div class="newUpload" v-loading="loading">
         <!-- 保存按钮 -->
         <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
+          <el-button @click="handleCancel">取消</el-button>
+          <el-button @click="handleViewContent">预览内容</el-button>
           <el-button type="primary" @click="handleUpload('form')">保存编辑</el-button>
         </div>      
         <el-row :gutter="30">
-          <el-col :span="14" :offset="1">              
+          <el-col :span="12">              
             <el-form ref="form" :model="form" status-icon label-position="center" :label-width="formLabelWidth">             
               <el-row :gutter="10">
                 <el-col :span="24">
@@ -55,21 +57,6 @@
                 </template>
               </el-row>       
               <el-row :gutter="10">
-                <template v-if="type !== 1">
-                  <el-col :span="24">
-                    <el-form-item label="播放时长" prop="durationTime" :rules="[
-                      { required: true, message: '请选择播放时长', trigger: 'blur' }
-                      ]">
-                      <el-time-picker 
-                        format="mm:ss"
-                        value-format="mm:ss"                            
-                        v-model="form.durationTime" 
-                        placeholder="选择分秒" 
-                        style="width: 100%;">
-                      </el-time-picker>
-                    </el-form-item>                    
-                  </el-col>
-                </template>
                 <template v-if="type === 1">
                   <el-col :span="24">
                     <el-form-item label="播放时段" prop="channelId" :rules="[
@@ -89,7 +76,7 @@
               </el-row>     
               <el-form-item label="展示类型">
                 <el-row :gutter="10">
-                  <el-col :span="4" v-for="(item, index) in contentTemplateList" :key="index">
+                  <el-col :span="5" v-for="(item, index) in contentTemplateList" :key="index">
                     <div class="showType-item" :class="[ index === screenIndex ? 'selected' : '']">
                       <span>{{ item.label }}</span>
                     </div>
@@ -104,11 +91,15 @@
                   class="upImg"
                   name="files"
                   ref="uploadImage"
-                  action="/qxiao-cms/action/mod-xiaojiao/image/filesUpload.do"
+                  :auto-upload="false"
+                  :multiple="true"
+                  :with-credentials="true"
+                  action="#"
                   accept="image/jpeg,image/gif,image/png,image/bmp"
                   :file-list="form.images"
+                  :http-request='submitUpload'
+                  :on-change='handleChangeUpload'
                   :on-remove="handleRemoveImg" 
-                  :on-success="handleImageSuccess"
                   :before-upload="beforeImageUpload">
                   <i class="el-icon-plus"></i>
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
@@ -118,23 +109,71 @@
                 { required: true, message: '请上传视频' }
               ]" ref="upVideo">
                 <el-upload
-                  :show-file-list="false"
+                  class="avatar-uploader"
                   name="file"
-                  :limit="1"
+                  :show-file-list="false"
                   ref="uploadVideo"
+                  :with-credentials="true"
                   action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
                   accept="video/mp4,video/flv,video/mov"
-                  :on-remove="handleRemoveVideo" 
                   :on-success="handleVideoSuccess"
-                  :before-upload="beforeVideoUpload">
-                  <i class="el-icon-upload"></i>
-                </el-upload>    
-                <span>只能上传MP4/mov/flv视频，且大小不超过100MB</span>                       
-              </el-form-item>                                          
+                  :before-upload="beforeVideoUpload"
+                  :on-progress="handleVideoProcess">
+                  <video v-if="form.videoUrl" :src="form.videoUrl" class="avatar" controls="controls">您的浏览器不支持视频播放</video>
+                  <i v-else-if="form.videoUrl === '' && videoFlag === false" class="el-icon-plus avatar-uploader-icon"></i>
+                  <el-progress v-if="videoFlag" type="circle" :percentage="videoUploadPercent" style="margin-top:12px;"></el-progress>
+                  <div slot="tip" class="el-upload__tip">只能上传MP4/mov/flv视频，且大小不超过100MB</div>
+                </el-upload> 
+                <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>      
+              </el-form-item>      
+              <template v-if="type !== 1">
+                <el-col :span="24">
+                  <el-form-item label="播放时长" prop="durationTime" :rules="[
+                    { required: true, message: '请选择播放时长', trigger: 'blur' }
+                    ]">
+                    <el-time-picker 
+                      format="mm:ss"
+                      value-format="mm:ss"                            
+                      v-model="form.durationTime" 
+                      placeholder="选择分秒"
+                      style="width:100%">
+                    </el-time-picker>
+                  </el-form-item>                    
+                </el-col>
+              </template>                                                  
             </el-form>
           </el-col>
         </el-row>     
      </div>
+     <!-- 预览 -->
+     <template>
+       <el-dialog custom-class="qx-dialog" width="400px" title="预览" top="40px" :visible.sync="dialogView">
+          <div class="image-box" v-if="form.showType == 3">
+            <el-carousel ref="carousel" height="589px" :autoplay="false">
+              <el-carousel-item v-for="(item, index) in form.images" :key="index">
+                <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
+              </el-carousel-item>
+            </el-carousel>
+          </div>         
+          <template v-if="form.showType === 4">
+            <div class="video-box">
+              <video :src="form.videoUrl" controls width="400" height="230"></video>
+            </div>
+          </template>
+          <div class="image-box" v-if="form.showType == 4 || form.showType == 5">
+            <el-carousel ref="carousel" height="359px" :autoplay="false">
+              <el-carousel-item v-for="(item, index) in form.images" :key="index">
+                <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+          <template v-if="form.showType === 5">
+            <div class="video-box">
+              <video :src="form.videoUrl" controls width="400" height="230"></video>
+            </div>
+          </template>    
+       </el-dialog>
+     </template>     
    </div> 
 </template>
 <script>
@@ -150,13 +189,16 @@ export default {
   data() {
     return {
       loading: true,
+      dialogView: false,
       formLabelWidth: "100px",
+      videoFlag: false,
+      videoUploadPercent: 0,
       screenIndex: 0,
       collapse: true,
+      uploadForm: "",
       form: {},
       channelList: [],
-      schoolPlayTime: [],
-      videoFileList: []
+      schoolPlayTime: []
     };
   },
   computed: {
@@ -177,6 +219,26 @@ export default {
         }
       });
     },
+    handleCancel() {
+      this.removeAction(this.$route);
+      setTimeout(() => {
+        this.reload();
+      }, 50);
+    },
+    //预览内容
+    handleViewContent() {
+      if (this.form.images.length) {
+        this.dialogView = true;
+      }
+    },
+    handleChangeUpload(file, fileList) {
+      if (fileList.length) {
+        this.$refs.upImg.clearValidate();
+      }
+      this.form.images = fileList;
+      console.log(this.$refs.uploadImage.uploadFiles);
+    },
+    //删除图片
     handleRemoveImg(file, fileList) {
       let { url } = file;
       this.deletePicture(url).then(res => {
@@ -184,21 +246,25 @@ export default {
           this.form.images = fileList;
         }
       });
+      console.log(this.form.images);
     },
+    //删除视频
     handleRemoveVideo(file) {
-      let { url } = file;
-      this.deletePicture(url).then(res => {
-        if (res) {
-          this.form.videoUrl = "";
-        }
-      });
+      let { videoUrl } = this.form;
+      if (videoUrl) {
+        let url = videoUrl;
+        this.deletePicture(url).then(res => {
+          if (res) {
+            this.form.videoUrl = "";
+          }
+        });
+      }
     },
     //上传图片成功
     handleImageSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         this.$refs.upImg.clearValidate();
         this.form.images.push({ ...response.data });
-        //this.imageList.push({ ...response.data });
       }
     },
     //图片上传大小限制为2M
@@ -228,37 +294,71 @@ export default {
 
       return isMP4 || isFLV || isMOV;
     },
+    //上传进度
+    handleVideoProcess(event, file, fileList) {
+      this.videoFlag = true;
+      this.videoUploadPercent = Math.floor(file.percentage);
+    },
     //上传视频成功
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
         let { url, duration } = response.data;
+        this.videoFlag = false;
+        this.videoUploadPercent = 0;
         this.form.videoUrl = url;
+        this.form.duration = duration;
       }
     },
+    async submitAssess() {
+      this.uploadForm = new FormData();
+      this.$refs.uploadImage.submit();
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      let res = await service.filesUpload(this.uploadForm, config);
+      if (res.errorCode === 0) {
+        if (this.form.images.length) {
+          this.form.images = this.form.images.concat(res.data);
+          console.log(this.form.images);
+          console.log("很安静");
+          return true;
+        }
+      }
+    },
+    //图片上传
+    submitUpload(file) {
+      this.uploadForm.append("files", file.file);
+    },
     handleUpload(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          let schoolPlayTime = this.schoolPlayTime;
-          let {
-            contentDetail,
-            posterUrl,
-            schoolId,
-            channelId,
-            templateId,
-            templateTitle,
-            duration,
-            ...args
-          } = this.form;
-          //如果是学校上传
-          if (this.type === 1) {
-            let item = schoolPlayTime.find(elem => elem.itemId === channelId);
-            if (item) {
-              channelId = item.channelId;
+          let res = await this.submitAssess();
+          if (res) {
+            console.log(res);
+            let schoolPlayTime = this.schoolPlayTime;
+            let {
+              contentDetail,
+              posterUrl,
+              schoolId,
+              channelId,
+              templateId,
+              templateTitle,
+              duration,
+              ...args
+            } = this.form;
+            //如果是学校上传
+            if (this.type === 1) {
+              let item = schoolPlayTime.find(elem => elem.itemId === channelId);
+              if (item) {
+                channelId = item.channelId;
+              }
             }
+            let obj = Object.assign({}, args, { channelId });
+            console.log(obj);
+            this.updateContent(obj);
           }
-          let obj = Object.assign({}, args, { channelId });
-          console.log(obj);
-          this.updateContent(obj);
         }
       });
     },

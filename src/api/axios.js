@@ -21,6 +21,8 @@ service.interceptors.request.use(config => {
   }
   if (config.headers['Content-Type'] === "application/json") {
     //...
+  } else if (config.headers['Content-Type'] === "multipart/form-data") {
+    //...
   } else {
     config.data = qs.stringify(config.data, {
       indices: false
