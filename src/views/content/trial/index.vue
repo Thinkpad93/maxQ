@@ -192,10 +192,6 @@
             </el-form>
           </div>
         </el-row>
-        <!-- <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="dialogView = false">取消</el-button>
-          <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
-        </span> -->
       </el-dialog>
     </template>      
   </div>    

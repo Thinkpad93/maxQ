@@ -175,8 +175,8 @@
 import bus from "@/utils/bus";
 import service from "@/api";
 import { contentProperty, contentTemplate } from "@/mixins";
+import { imageUploadValidator } from "@/utils/tools";
 import { mapGetters, mapActions } from "vuex";
-import axios from "axios";
 
 export default {
   name: "newUpload",
@@ -258,13 +258,6 @@ export default {
           str = this.handleSecondToDate(duration);
         }
         this.form.durationTime = str;
-        // if (imgDuration > duration) {
-        //   let durationN = this.handleSecondToDate(imgDuration);
-        //   this.form.durationTime = durationN;
-        // } else {
-        //   let durationM = this.handleSecondToDate(duration);
-        //   this.form.durationTime = durationM;
-        // }
       }
     },
     //添加补0操作
@@ -315,7 +308,6 @@ export default {
       }
       return (isJPG || isGIF || isPNG || isMBP) && isLt2M;
     },
-    //
     beforeVideoUpload(file) {
       let isMP4 = file.type === "video/mp4";
       let isFLV = file.type === "video/flv";

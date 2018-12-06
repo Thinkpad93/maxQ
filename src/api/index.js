@@ -4,11 +4,13 @@ import * as school from './module/school';
 import * as user from './module/user';
 import * as sys from './module/sys';
 import * as terminal from './module/terminal';
+import * as portal from './module/portal';
 export default {
   ...device,
   ...content,
   ...school,
   ...user,
   ...sys,
-  ...terminal
+  ...terminal,
+  ...portal
 }

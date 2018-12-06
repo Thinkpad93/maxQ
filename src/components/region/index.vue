@@ -38,16 +38,13 @@ export default {
     };
   },
   computed: {
-    //...mapState("comm", ["distpickerData"]),
     ...mapGetters(["distpickerData"])
   },
   watch: {},
   methods: {
     input() {},
     handleRegionChange(value) {
-      if (Array.isArray(value)) {
-        this.$emit("last", value);
-      }
+      this.$emit("last", value);
     }
   }
 };

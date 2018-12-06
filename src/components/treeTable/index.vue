@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" stripe size="mini">
+  <el-table :data="formatData" :row-style="showRow" stripe size="small">
     <el-table-column v-if="columns.length === 0" width="100">
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
@@ -25,7 +25,7 @@
   </el-table>  
 </template>
 <script>
-import treeToArray from './eval';
+import treeToArray from "./eval";
 export default {
   name: "TreeTable",
   props: {
@@ -72,45 +72,45 @@ export default {
     },
     // 切换下级是否展开
     toggleExpanded: function(trIndex) {
-      const record = this.formatData[trIndex]
-      record._expanded = !record._expanded
-    },   
+      const record = this.formatData[trIndex];
+      record._expanded = !record._expanded;
+    },
     // 图标显示
     iconShow(index, record) {
-      return (index === 0 && record.children && record.children.length > 0)
-    }     
+      return index === 0 && record.children && record.children.length > 0;
+    }
   }
 };
 </script>
 <style lang="less" scoped>
-  @color-blue: #2196F3;
-  @space-width: 18px;
-  .ms-tree-space {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1;
-    width: @space-width;
-    height: 14px;
-    &::before {
-      content: ""
-    }
+@color-blue: #2196f3;
+@space-width: 18px;
+.ms-tree-space {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  width: @space-width;
+  height: 14px;
+  &::before {
+    content: "";
   }
-  .processContainer{
-    width: 100%;
-    height: 100%;
-  }
-  table td {
-    line-height: 26px;
-  }
-  .tree-ctrl{
-    position: relative;
-    cursor: pointer;
-    color: @color-blue;
-    margin-left: -@space-width;
-  }
+}
+.processContainer {
+  width: 100%;
+  height: 100%;
+}
+table td {
+  line-height: 26px;
+}
+.tree-ctrl {
+  position: relative;
+  cursor: pointer;
+  color: @color-blue;
+  margin-left: -@space-width;
+}
 
 @keyframes treeTableShow {
   0% {
@@ -119,5 +119,5 @@ export default {
   100% {
     opacity: 1;
   }
-}  
+}
 </style>

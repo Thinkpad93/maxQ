@@ -4,7 +4,7 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form" style="padding-bottom: 18px;">
-            <el-button icon="el-icon-plus" type="primary" size="mini" @click="dialogAdd = true">新增一级菜单</el-button>
+            <el-button icon="el-icon-plus" type="primary" size="small" @click="dialogAdd = true">新增一级菜单</el-button>
           </div>
         </el-col>
       </el-row>
@@ -40,7 +40,7 @@
     <!-- 新增 -->
     <template>
       <el-dialog top="40px" title="新增菜单名称" :visible.sync="dialogAdd">
-        <el-form ref="addForm" :model="addForm" status-icon size="mini" :label-width="formLabelWidth">
+        <el-form ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="addForm.status">
               <el-radio :label="0">开启</el-radio>
@@ -73,7 +73,7 @@
     <!-- 编辑 -->
     <template>
       <el-dialog top="40px" title="编辑菜单名称" :visible.sync="dialogEdit">
-        <el-form ref="editForm" :model="editForm" status-icon size="mini" :label-width="formLabelWidth">
+        <el-form ref="editForm" :model="editForm" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="editForm.status">
               <el-radio :label="0">开启</el-radio>

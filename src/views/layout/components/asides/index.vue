@@ -18,6 +18,16 @@
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>        
       </el-menu-item>  
+      <!-- <el-submenu index="1">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>导航一</span>
+        </template>
+        <el-submenu index="1-4">
+          <template slot="title">选项4</template>
+          <el-menu-item index="1-4-1">选项1</el-menu-item>
+        </el-submenu>        
+      </el-submenu> -->
       <template v-for="item in menu">
         <template v-if="item.children.length >= 1">
           <el-submenu :index="item.path" :key="item.path">
@@ -46,7 +56,7 @@
   </el-aside>  
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import bus from "@/utils/bus";
 export default {
   name: "asides",
@@ -58,7 +68,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("qxuser", ["menu"])
+    ...mapGetters(["menu"])
   },
   methods: {
     handleOpen() {},

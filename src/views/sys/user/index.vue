@@ -275,7 +275,6 @@ export default {
       this.queryAccount();
     },
     handleViewInfo(row) {
-      console.log(row);
       this.info = Object.assign({}, row, { provinceCityRegion: "" });
       this.queryAccountInfo(row.accountId);
     },

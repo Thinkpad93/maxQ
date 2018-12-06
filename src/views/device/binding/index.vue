@@ -305,12 +305,10 @@ export default {
         if (valid) {
           if (this.isShow) {
             let { regionId, ...args } = this.form;
-            console.log(args);
             this.addDeviceBind(args);
           } else {
             let { postTime, schoolName, ...args } = this.form;
             this.updateDeviceBind(args);
-            console.log(args);
           }
         }
       });

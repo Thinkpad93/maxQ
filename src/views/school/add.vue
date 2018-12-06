@@ -324,11 +324,9 @@ export default {
         };
         if (response.data.type == 0) {
           this.imgOneUrl = `url(${response.data.url})`;
-          //this.imgOne.push(imgObj);
           this.imgOne[0] = imgObj;
         } else {
           this.imgTwoUrl = `url(${response.data.url})`;
-          //this.imgTwo.push(imgObj);
           this.imgTwo[0] = imgObj;
         }
       }

@@ -30,53 +30,53 @@
      </template>
      <!-- 表格数据 -->
      <template>
-         <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有标签哦">
-            <el-table-column label="标签ID" prop="labelId"></el-table-column>
-            <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
-              <template slot-scope="scope">
-                <template v-if="scope.row.show">
-                  <el-select v-model="scope.row.type" size="mini">
-                    <el-option
-                      v-for="item in labelsList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>            
-                  </el-select>   
-                </template>
-                <template v-else>
-                  <span size="mini" v-if="scope.row.type === 0" style="color:#409EFF">全部</span>
-                  <span size="mini" v-else-if="scope.row.type === 1" style="color:#409EFF">特色</span>
-                  <span size="mini" v-else-if="scope.row.type === 2" style="color:#409EFF">商圈</span>
-                  <span size="mini" v-else style="color:#409EFF">冠名企业</span>
-                </template>
-              </template>
-            </el-table-column>            
-            <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
-              <template slot-scope="scope">
-                <template v-if="scope.row.show">
-                  <el-input v-model="scope.row.name" size="mini"></el-input>
-                </template>
-                <template v-else>
-                  <span>{{ scope.row.name }}</span>
-                </template>
-              </template>
-            </el-table-column>
-            <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
-              <template slot-scope="scope">
-                <template v-if="scope.row.show">
-                  <el-input v-model="scope.row.description" size="mini"></el-input>
-                </template>
-                <template v-else>{{ scope.row.description }}</template>                        
-              </template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-         </el-table>
+      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有标签哦">
+        <el-table-column label="标签ID" prop="labelId"></el-table-column>
+        <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <template v-if="scope.row.show">
+              <el-select v-model="scope.row.type" size="mini">
+                <el-option
+                  v-for="item in labelsList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>            
+              </el-select>   
+            </template>
+            <template v-else>
+              <span size="mini" v-if="scope.row.type === 0" style="color:#409EFF">全部</span>
+              <span size="mini" v-else-if="scope.row.type === 1" style="color:#409EFF">特色</span>
+              <span size="mini" v-else-if="scope.row.type === 2" style="color:#409EFF">商圈</span>
+              <span size="mini" v-else style="color:#409EFF">冠名企业</span>
+            </template>
+          </template>
+        </el-table-column>            
+        <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <template v-if="scope.row.show">
+              <el-input v-model="scope.row.name" size="mini"></el-input>
+            </template>
+            <template v-else>
+              <span>{{ scope.row.name }}</span>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <template v-if="scope.row.show">
+              <el-input v-model="scope.row.description" size="mini"></el-input>
+            </template>
+            <template v-else>{{ scope.row.description }}</template>                        
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
      </template>  
      <!-- 新增 or 编辑 -->
      <template>

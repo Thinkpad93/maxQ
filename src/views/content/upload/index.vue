@@ -387,7 +387,6 @@ export default {
     formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.form);
           let { contentId, rollTime, ...args } = this.form;
           let playTime = "";
           let endTime = "";
@@ -397,11 +396,9 @@ export default {
           }
           if (contentId) {
             let obj = Object.assign({}, args, { playTime, endTime, contentId });
-            console.log(obj);
             this.updateRollContent(obj);
           } else {
             let objs = Object.assign({}, args, { playTime, endTime });
-            console.log(objs);
             this.uploadContent(objs);
           }
         }
@@ -455,7 +452,6 @@ export default {
     //查询编辑内容
     async queryContentByContentId(contentId) {
       let res = await service.queryContentByContentId({ contentId });
-      console.log(res);
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
         this.dialogView = true;

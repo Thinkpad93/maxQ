@@ -93,7 +93,6 @@
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
             </template>            
-            <!-- <div class="iframe-box"></div> -->                 
           </div>
           <div class="two">
            <div class="list">
@@ -151,7 +150,6 @@
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
             </template>            
-            <!-- <div class="iframe-box"></div> -->                 
           </div>
           <div class="two">
            <div class="list">
@@ -193,10 +191,6 @@
             </el-form>
           </div>
         </el-row>
-        <!-- <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="dialogView = false">取消</el-button>
-          <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
-        </span>           -->
       </el-dialog>
     </template>             
   </div>    
