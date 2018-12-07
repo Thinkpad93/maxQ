@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     handleEdit(row) {
-      this.$router.push({ path: `/portalweb/menu/${row.id}` });
+      this.$router.push({ path: `/portalweb/menu/1` });
     },
     async queryPortalWeb() {
       let res = await service.queryPortalWeb({});

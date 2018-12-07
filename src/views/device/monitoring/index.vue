@@ -40,8 +40,6 @@
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)">
               <a href="javascript:;" @click="showDeviceDetail(item.deviceId)" :style="{backgroundImage: `url(${item.snapshotUrl})`}">
-                <!-- <img :src="item.snapshotUrl" class="image"> -->
-                <!-- <img src="https://fakeimg.pl/446x300/4CD964/fff" class="image"> -->
               </a>
               <div class="layer">
                 <h4>

@@ -148,6 +148,10 @@ export const contentTemplate = {
         {
           value: 5,
           label: "上图片下视频"
+        },
+        {
+          value: 6,
+          label: "门户网站"
         }
       ],
     }

@@ -232,12 +232,6 @@ export default {
       let res = await service.querySystemMenu(params);
       if (res.errorCode === 0) {
         this.data = res.data;
-        // this.parentIds = this.data.map(elem => {
-        //   let obj = {};
-        //   obj["permitName"] = elem.permitName;
-        //   obj["permitId"] = elem.permitId;
-        //   return obj;
-        // });
       }
     }
   },

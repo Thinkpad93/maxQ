@@ -129,36 +129,36 @@
         </el-row>
       </el-dialog>
     </template>                
-      <!-- 待发布学校 -->
-      <template>
-        <el-dialog top="40px" title="待发布学校查看" :visible.sync="dialogView">
-          <el-table :data="schoolData" style="width: 100%" border stripe size="small">
-            <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
-            <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
-              <template slot-scope="scope">
-                <span v-if="scope.row.status === 0" style="color:#409EFF">待发布</span>
-                <span v-else style="color:#67C23A">已发布</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-dialog>
-      </template>
-      <!-- 已发布学校 -->
-      <template>
-        <el-dialog top="40px" title="已发布学校查看" :visible.sync="dialogViewPublish">
-          <el-table :data="schoolDataPublish" style="width: 100%" border stripe size="mini">
-            <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
-            <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
-              <template slot-scope="scope">
-                <span v-if="scope.row.status === 0" style="color:#909399">初始</span>
-                <span v-else-if="scope.row.status === 1" style="color:#409EFF">已更新到栏目</span>
-                <span v-else-if="scope.row.status === 2" style="color:#67C23A">已更新到终端</span>
-                <span v-else style="color:#F56C6C">更新到终端失败</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-dialog>        
-      </template>
+    <!-- 待发布学校 -->
+    <template>
+      <el-dialog top="40px" title="待发布学校查看" :visible.sync="dialogView">
+        <el-table :data="schoolData" style="width: 100%" border stripe size="small">
+          <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
+          <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === 0" style="color:#409EFF">待发布</span>
+              <span v-else style="color:#67C23A">已发布</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+    </template>
+    <!-- 已发布学校 -->
+    <template>
+      <el-dialog top="40px" title="已发布学校查看" :visible.sync="dialogViewPublish">
+        <el-table :data="schoolDataPublish" style="width: 100%" border stripe size="mini">
+          <el-table-column label="学校名称" :show-overflow-tooltip="true" property="schoolName"></el-table-column>
+          <el-table-column label="发布状态" :show-overflow-tooltip="true" property="status">
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === 0" style="color:#909399">初始</span>
+              <span v-else-if="scope.row.status === 1" style="color:#409EFF">已更新到栏目</span>
+              <span v-else-if="scope.row.status === 2" style="color:#67C23A">已更新到终端</span>
+              <span v-else style="color:#F56C6C">更新到终端失败</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>        
+    </template>
     </div>
   </div>
 </template>

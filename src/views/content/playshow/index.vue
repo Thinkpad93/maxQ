@@ -18,7 +18,7 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
-            <el-tab-pane label="内容播放">
+            <el-tab-pane label="内容播放" name="0">
               <!-- 表格数据 -->
               <template>
                 <el-table :data="tableData" style="width: 100%" stripe size="mini">
@@ -147,7 +147,7 @@
                 </el-table>
               </template>                 
             </el-tab-pane>
-            <el-tab-pane label="滚动通知">
+            <el-tab-pane label="滚动通知" name="1">
               <!-- 表格数据 -->
               <el-table :data="scrollData" style="width: 100%" stripe size="mini">
                 <el-table-column label="内容标题" prop="title"></el-table-column>
@@ -439,7 +439,13 @@ export default {
         }
       });
     },
-    handleTabClick(tab) {},
+    handleTabClick(tab) {
+      if (tab.name == 0) {
+        this.querySchoolPlayChannel(this.schoolId);
+      } else {
+        this.querySchoolScroolContent(this.schoolId);
+      }
+    },
     handleValidType(value) {
       if (value === 0) {
         this.$refs.form.clearValidate(["validTime"]);
@@ -734,12 +740,10 @@ export default {
       }
     }
   },
-  activated() {
-    this.querySchoolPlayChannel(this.schoolId);
-    this.querySchoolScroolContent(this.schoolId);
-    this.querySchoolInfo(this.schoolId);
-  },
+  activated() {},
   mounted() {
+    this.querySchoolInfo(this.schoolId);
+    this.querySchoolPlayChannel(this.schoolId);
     this.queryChannelAll();
   }
 };

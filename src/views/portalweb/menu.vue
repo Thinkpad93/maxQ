@@ -58,8 +58,8 @@ export default {
         });
     },
     //查询学校门户网站菜单内容
-    async queryPortalWebMenu(portalId) {
-      let res = await service.queryPortalWebMenu({ portalId });
+    async queryPortalWebMenu() {
+      let res = await service.queryPortalWebMenu({});
       if (res.errorCode === 0) {
         this.tableData = res.data;
       }
@@ -73,7 +73,7 @@ export default {
     }
   },
   activated() {
-    this.queryPortalWebMenu(this.portalId);
+    this.queryPortalWebMenu();
   }
 };
 </script>

@@ -13,8 +13,8 @@
                 </el-form-item>
               </el-form>
               <el-row>
-                <el-button type="danger" size="small" @click="handlePageDel">删除一页</el-button>
-                <el-button type="primary" size="small" @click="handlePageAdd">新增一页</el-button>
+                <!-- <el-button type="danger" size="small" @click="handlePageDel">删除一页</el-button>
+                <el-button type="primary" size="small" @click="handlePageAdd">新增一页</el-button> -->
                 <el-button type="primary" size="small" @click="formSubmit('form')">保存</el-button>
               </el-row>
             </div>
@@ -22,16 +22,17 @@
         </el-row>
       </template>
       <template>
-        <div class="quill-page">
-          <el-pagination
-            background
-            layout="pager"
-            @current-change="handleCurrentChange"
-            :current-page="page"
-            :page-size="1"
-            :total="totalCount">
-          </el-pagination>          
-        </div>
+        <!-- <div class="quill-page">
+          <ul class="quill-page-ul">
+            <li 
+              v-for="(item, index) in list" 
+              :key="index" 
+              :class="[index === active ? 'curr':'']"
+              @click="handleLiClick(index)">
+              {{ index + 1 }}
+            </li>
+          </ul>
+        </div> -->
       </template>
       <template>
         <el-row v-loading="loadding">
@@ -74,17 +75,18 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import { toolbarOptions } from "@/utils/tools";
+import { mapActions } from "vuex";
 
 export default {
   name: "portalAdd",
+  inject: ["reload"], //注入依赖
   components: {
     quillEditor
   },
   data() {
     return {
-      active: 1,
-      page: 1,
-      totalCount: 1,
+      list: [0],
+      active: 0,
       query: {
         menuName: "",
         contentText: []
@@ -93,7 +95,6 @@ export default {
       content: "",
       editorOption: {
         placeholder: "请输入内容",
-        //theme: "snow",
         modules: {
           toolbar: {
             container: toolbarOptions,
@@ -118,7 +119,7 @@ export default {
     }
   },
   watch: {
-    page(newVal, oldVal) {
+    active(newVal, oldVal) {
       console.log(newVal);
       console.log(oldVal);
     }
@@ -127,55 +128,49 @@ export default {
     onEditorBlur() {},
     onEditorFocus() {},
     onEditorChange() {},
-    handleCurrentChange(curr) {
-      this.page = curr;
-      //this.handleGetSingleContent(curr);
-    },
-    handlePageDel() {
-      // let contentText = this.query.contentText;
-      // if (this.page === 1) {
-      //   return;
-      // }
-      // this.page -= 1;
-      // this.totalCount -= 1;
-      // if (contentText.find((elem, index) => elem.page === this.active)) {
-      //   this.query.contentText.splice(index, 1);
-      // }
-    },
-    handlePageAdd() {
-      //只能新增3页
-      // if (this.page === 3) {
-      //   return;
-      // }
-      //如果用户没有填写内容，则不新增页数
-      if (!this.content.trim().length) {
-        this.$message({ message: "请先填写菜单内容~", type: "warning" });
-        return;
-      }
-      this.page += 1;
-      this.totalCount += 1;
-      //this.handleSaveSingleContent();
-    },
+    // handleLiClick(index) {
+    //   this.active = index;
+    // },
+    // handlePageDel() {
+    //   let index = this.list.findIndex(elem => elem == this.active);
+    //   this.list.splice(index, 1);
+    // },
+    // handlePageAdd() {
+    //   if (this.list.length >= 3) {
+    //     return;
+    //   }
+    //   this.list.push(this.active);
+    // },
     //取出单条内容
-    handleGetSingleContent(curr) {
-      let obj = this.query.contentText.find(elem => elem.page === curr);
-      if (Object.keys(obj).length) {
-        this.content = obj.content;
-      }
-    },
+    // handleGetSingleContent(curr) {
+    //   let obj = this.query.contentText.find(elem => elem.page === curr);
+    //   if (Object.keys(obj).length) {
+    //     this.content = obj.content;
+    //   }
+    // },
     //保存单条内容
-    handleSaveSingleContent() {
-      let obj = { page: this.active, content: this.content };
-      let contentText = this.query.contentText;
-      contentText.push(obj);
-      this.content = "";
-      this.active += 1;
+    // handleSaveSingleContent() {
+    //   let obj = { page: this.active, content: this.content };
+    //   let contentText = this.query.contentText;
+    //   contentText.push(obj);
+    //   this.content = "";
+    //   this.active += 1;
+    // },
+    ...mapActions("tabs", ["removes"]),
+    removeAction(route) {
+      this.removes(route).then(res => {
+        if (route.path === this.$route.path) {
+          this.$router.push({ path: "/portalweb/menu/1" });
+        }
+      });
     },
     //保存菜单内容
     formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.query);
+          let obj = { page: 1, content: this.content };
+          this.query.contentText.push(obj);
+          this.savePortalWebInfo(this.query);
         }
       });
     },
@@ -205,7 +200,22 @@ export default {
       let res = await service.savePortalWebInfo(params, {
         headers: { "Content-Type": "application/json" }
       });
-      console.log(res);
+      if (res.errorCode === 0) {
+        this.$alert("菜单保存成功", "提示", {
+          confirmButtonText: "确定",
+          showClose: false,
+          type: "success"
+        })
+          .then(() => {
+            this.removeAction(this.$route);
+            setTimeout(() => {
+              this.reload();
+            }, 50);
+          })
+          .catch(error => {
+            return false;
+          });
+      }
     }
   },
   mounted() {
@@ -217,6 +227,30 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.quill-page-ul {
+  display: flex;
+  li {
+    cursor: pointer;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    color: #333;
+    margin-right: 5px;
+    border-radius: 2px;
+    background: #909399;
+  }
+  .curr {
+    color: #fff;
+    background: -webkit-gradient(
+      linear,
+      0% 0%,
+      0% 100%,
+      from(#3c8ce7),
+      to(#0396ff)
+    );
+  }
+}
 .page-form {
   padding-right: 10px;
   display: flex;

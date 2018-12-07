@@ -1,48 +1,55 @@
 <template>
   <div class="page">
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="100px" label-position="left">
-              <el-form-item label="网站菜单名称">
-                <el-input placeholder="请输入菜单名称" v-model="query.menuName"></el-input>
-              </el-form-item>
-            </el-form>
+    <div class="portalweb">
+      <template>
+        <el-row :gutter="10">
+          <el-col :span="24">
+            <div class="page-form">
+              <el-form :inline="true" ref="form" :model="query" size="small" label-width="120px" label-position="left">
+                <el-form-item label="网站菜单名称" prop="menuName" :rules="[
+                    { required: true, message: '请输入菜单名称', trigger: 'blur' }
+                  ]">
+                  <el-input placeholder="请输入菜单名称" v-model="query.menuName"></el-input>
+                </el-form-item>
+              </el-form>
+              <el-row>
+                <el-button type="primary" size="small" @click="formSubmit('form')">保存</el-button>
+              </el-row>
+            </div>
+          </el-col>
+        </el-row>      
+      </template>
+      <template>
+        <el-row v-loading="loadding">
+          <div class="edit-container">
+            <quill-editor 
+              v-model="content" 
+              ref="myQuillEditor"
+              :options="editorOption"
+              @blur="onEditorBlur($event)"
+              @focus="onEditorFocus($event)"
+              @change="onEditorChange($event)">
+            </quill-editor>          
           </div>
-        </el-col>
-      </el-row>      
-    </template>
-    <template>
-      <el-row v-loading="loadding">
-        <div class="edit-container">
-          <quill-editor 
-            v-model="content" 
-            ref="myQuillEditor"
-            :options="editorOption"
-            @blur="onEditorBlur($event)"
-            @focus="onEditorFocus($event)"
-            @change="onEditorChange($event)">
-          </quill-editor>          
-        </div>
-      </el-row>
-      <!-- 图片上传组件辅助-->
-      <el-upload
-        :with-credentials="true"
-        list-type="picture-card"
-        class="avatar-uploader"
-        name="honorImage"
-        ref="upload" 
-        accept="image/jpeg,image/gif,image/png,image/bmp"
-        action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
-        :multiple="false"
-        :show-file-list="false"
-        :auto-upload="true"
-        :on-success="handleImageOneSuccess"
-        :before-upload="beforeImageUpload">
-        <i class="el-icon-plus"></i>
-      </el-upload>         
-    </template>
+        </el-row>
+        <!-- 图片上传组件辅助-->
+        <el-upload
+          :with-credentials="true"
+          list-type="picture-card"
+          class="avatar-uploader"
+          name="honorImage"
+          ref="upload" 
+          accept="image/jpeg,image/gif,image/png,image/bmp"
+          action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+          :multiple="false"
+          :show-file-list="false"
+          :auto-upload="true"
+          :on-success="handleImageOneSuccess"
+          :before-upload="beforeImageUpload">
+          <i class="el-icon-plus"></i>
+        </el-upload>         
+      </template>
+    </div>  
   </div>   
 </template>
 <script>
@@ -53,24 +60,22 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import { toolbarOptions } from "@/utils/tools";
+import { mapActions } from "vuex";
 
 export default {
   name: "portalEdit",
+  inject: ["reload"], //注入依赖
   components: {
     quillEditor
   },
   data() {
     return {
       menuId: this.$route.params.id,
-      query: {
-        menuName: ""
-      },
-      collapse: true,
+      query: {},
       loadding: false,
       content: "",
       editorOption: {
         placeholder: "请输入内容",
-        theme: "snow",
         modules: {
           toolbar: {
             container: toolbarOptions,
@@ -98,22 +103,88 @@ export default {
     onEditorBlur() {},
     onEditorFocus() {},
     onEditorChange() {},
-    handleImageOneSuccess(res, file, fileList) {},
-    beforeImageUpload(file) {},
-    async savePortalWebInfo(params = {}) {
-      let res = await service.savePortalWebInfo(params, {
-        headers: { "Content-Type": "application/json" }
+    ...mapActions("tabs", ["removes"]),
+    removeAction(route) {
+      this.removes(route).then(res => {
+        if (route.path === this.$route.path) {
+          this.$router.push({ path: "/portalweb/menu/1" });
+        }
       });
     },
-    async queryPortalWebinfo(menuId) {
-      let res = await service.queryPortalWebinfo({ menuId });
-      console.log(res);
+    formSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.query.contentText = [];
+          let obj = { page: 1, content: this.content };
+          this.query.contentText.push(obj);
+          console.log(this.query);
+          this.updatePortalWeb(this.query);
+        }
+      });
+    },
+    handleImageOneSuccess(res, file, fileList) {},
+    beforeImageUpload(file) {},
+    //修改学校门户网站菜单内容
+    async updatePortalWeb(params = {}) {
+      let res = await service.updatePortalWeb(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.$alert("菜单编辑成功", "提示", {
+          confirmButtonText: "确定",
+          showClose: false,
+          type: "success"
+        })
+          .then(() => {
+            this.removeAction(this.$route);
+            setTimeout(() => {
+              this.reload();
+            }, 50);
+          })
+          .catch(error => {
+            return false;
+          });
+      }
+    },
+    //查询学校门户网站菜单内容
+    async queryPortalWebInfo(menuId) {
+      let res = await service.queryPortalWebInfo({ menuId });
+      if (res.errorCode === 0) {
+        let { menuName, id, text } = res.data[0];
+        this.query = Object.assign(
+          {},
+          { menuName, menuId: id, contentText: [] }
+        );
+        this.content = text;
+      }
     }
   },
   activated() {
-    this.queryPortalWebinfo(this.menuId);
+    this.queryPortalWebInfo(this.menuId);
   }
 };
 </script>
 <style lang="less" scoped>
+.page-form {
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.quill-page {
+  margin-bottom: 10px;
+}
+.portalweb {
+  width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 100px;
+}
+.edit-container {
+  width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+}
+.avatar-uploader {
+  opacity: 0;
+  display: none;
+}
 </style>

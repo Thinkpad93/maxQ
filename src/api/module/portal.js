@@ -13,8 +13,8 @@ export function queryPortalWebMenu(params) {
     .catch(e => console.log(e))
 }
 //查询学校门户网站菜单内容
-export function queryPortalWebinfo(params) {
-  return ax.post('/action/mod-xiaojiao/portal/queryPortalWebinfo.do', params)
+export function queryPortalWebInfo(params) {
+  return ax.post('/action/mod-xiaojiao/portal/queryPortalWebInfo.do', params)
     .then(res => res.data)
     .catch(e => console.log(e))
 }
@@ -27,6 +27,30 @@ export function savePortalWebInfo(params, config) {
 //删除学校门户网站菜单
 export function deletePortalWeb(params) {
   return ax.post('/action/mod-xiaojiao/portal/deletePortalWeb.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e))
+}
+//修改学校门户网站菜单内容
+export function updatePortalWeb(params, config) {
+  return ax.post('/action/mod-xiaojiao/portal/updatePortalWeb.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e))
+}
+//审核-所有学校的门户
+export function queryCheckPortalWeb(params) {
+  return ax.post('/action/mod-xiaojiao/portal/queryCheckPortalWeb.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e))
+}
+//审核-学校的门户内容
+export function queryCheckPortalWebInfo(params) {
+  return ax.post('/action/mod-xiaojiao/portal/queryCheckPortalWebInfo.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e))
+}
+//审核-学校门户
+export function checkPortalWeb(params) {
+  return ax.post('/action/mod-xiaojiao/portal/checkPortalWeb.do', params)
     .then(res => res.data)
     .catch(e => console.log(e))
 }

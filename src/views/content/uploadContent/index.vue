@@ -85,7 +85,7 @@
                   </el-col>
                 </el-row>
               </el-form-item>  
-              <el-form-item label="上传图片" prop="images">
+              <el-form-item label="上传图片" prop="images" v-if="form.showType == 3">
                 <el-upload
                   list-type="picture-card"
                   class="upImg"
@@ -124,6 +124,11 @@
                 </el-upload>      
                 <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>    
               </el-form-item> 
+              <el-form-item label="URL地址" prop="webUrl" v-if="form.showType == 6" :rules="[
+                { required: true, message: '请输入URL地址', trigger: 'blur' }
+                ]">
+                <el-input v-model="form.webUrl" placeholder="请输入URL地址" maxlength="100" disabled></el-input>
+              </el-form-item>
               <template v-if="type !== 1">
                 <el-form-item label="播放时长" prop="durationTime">
                   <el-time-picker 
@@ -206,7 +211,8 @@ export default {
         playTime: "",
         endTime: "",
         rollContent: "",
-        showType: 3
+        showType: 3,
+        webUrl: ""
       },
       channelList: [],
       schoolPlayTime: [],
