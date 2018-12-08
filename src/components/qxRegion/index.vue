@@ -37,6 +37,10 @@ export default {
   computed: {
     ...mapGetters(["distpickerData"]) //省市区数据
   },
+  watch: {
+    province(newValue, oldValue) {},
+    city(newValue, oldValue) {}
+  },
   methods: {
     handleProvinceCityArea() {
       let _provinceList = []; //省

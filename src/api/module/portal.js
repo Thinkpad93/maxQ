@@ -54,3 +54,9 @@ export function checkPortalWeb(params) {
     .then(res => res.data)
     .catch(e => console.log(e))
 }
+//审核-学校门户
+export function queryPortalWebAllInfo(params) {
+  return ax.post('/action/mod-xiaojiao/portal/queryPortalWebAllInfo.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e))
+}

@@ -67,7 +67,7 @@
      <template>
        <el-dialog top="40px" title="新增账号" :visible.sync="dialogAdd">
          <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth" label-position="left">
-           <el-form-item label="账号" prop="userName">
+           <el-form-item label="账号" prop="userName" ref="userName">
              <el-input v-model="form.userName" placeholder="请输入账号名称"></el-input>
            </el-form-item>
            <el-form-item label="密码" prop="password">
@@ -97,13 +97,13 @@
              </el-select>
            </el-form-item>  
            <template v-if="form.type === 1">
-              <el-form-item label="区域选择" prop="regionId">
+              <el-form-item label="区域选择" prop="regionId" ref="region">
                 <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
               </el-form-item>
            </template>
            <template v-else>
-             <el-form-item label="区域选择" prop="regionId">
-                <qx-region-t :clear="false" @regionChange="handleRegionChanges"></qx-region-t>   
+             <el-form-item label="区域选择" prop="regionId" ref="region">
+                <qx-region-t @regionChange="handleRegionChanges"></qx-region-t>   
              </el-form-item>      
            </template>
            <template v-if="form.type === 1">
@@ -121,6 +121,7 @@
          </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
+          <el-button size="small" @click="handleResetRegion">重置</el-button>
           <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
         </span>            
        </el-dialog>
@@ -177,8 +178,10 @@ import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import { accountType } from "@/mixins";
+
 export default {
   name: "account",
+  inject: ["reload"], //注入依赖
   mixins: [accountType],
   components: {
     "qx-region": region,
@@ -263,6 +266,10 @@ export default {
     }
   },
   methods: {
+    handleResetRegion() {
+      this.$refs.userName.resetField();
+      this.$refs.region.resetField();
+    },
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryAccount();
