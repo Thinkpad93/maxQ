@@ -35,7 +35,7 @@
                     </el-form-item>                                       
                   </el-form>
                 </div>
-                <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
+                <el-table :data="tableData" style="width: 100%" stripe size="small">
                   <el-table-column :resizable="false" label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column :resizable="false" label="内容标题" prop="title" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
@@ -97,7 +97,7 @@
                     </el-form-item>                                                            
                   </el-form>
                 </div>
-                <el-table :data="tableData2" style="width: 100%" stripe :height="tableHeight" size="small">
+                <el-table :data="tableData2" style="width: 100%" stripe size="small">
                   <el-table-column :resizable="false" label="标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column :resizable="false" label="通知内容" prop="rollContent" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column :resizable="false" label="播放有效期" :show-overflow-tooltip="true">
@@ -152,10 +152,17 @@
         ]">
           <el-input v-model="form.title" placeholder="请输入内容标题" maxlength="30"></el-input>
         </el-form-item>
-        <el-form-item label="播放有效期" prop="rollTime" :rules="[
-          { required: true, message: '请选择播放有效期', trigger: 'blur' }
+        <el-form-item label="开始日期" prop="playTime" :rules="[
+          { required: true, message: '请选择开始日期', trigger: 'blur' }
         ]">
-          <el-date-picker 
+          <el-date-picker
+            value-format="yyyy-MM-dd"
+            v-model="form.playTime"
+            type="date"
+            :picker-options="pickerOptions"
+            placeholder="播放开始日期">
+          </el-date-picker>
+          <!-- <el-date-picker 
             value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
             v-model="form.rollTime"
@@ -164,8 +171,19 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions">
-          </el-date-picker>          
-        </el-form-item>        
+          </el-date-picker>           -->
+        </el-form-item>    
+        <el-form-item label="结束日期" prop="endTime" :rules="[
+          { required: true, message: '请选择结束日期', trigger: 'blur' }
+        ]">
+          <el-date-picker
+            value-format="yyyy-MM-dd"
+            v-model="form.endTime"
+            type="date"
+            :picker-options="pickerOptions"
+            placeholder="播放开始日期">
+          </el-date-picker>
+        </el-form-item>    
         <el-form-item label="文字内容" prop="rollContent" :rules="[
           { required: true, message: '请输入文字内容', trigger: 'blur' }
         ]">
@@ -275,7 +293,9 @@ export default {
       form: {
         title: "",
         contentType: 1,
-        rollTime: [],
+        playTime: "",
+        endTime: "",
+        //rollTime: [],
         rollContent: ""
       },
       pickerOptions: {
@@ -337,18 +357,9 @@ export default {
       };
     },
     handleEdit(row) {
-      console.log(row);
-      let rollTime = [];
-      let {
-        postTime,
-        verifyStatus,
-        checkStage,
-        playTime,
-        endTime,
-        ...args
-      } = row;
+      let { checkStage, postTime, verifyStatus, ...args } = row;
       this.dialogText = true;
-      this.form = Object.assign({}, args, { rollTime: [playTime, endTime] });
+      this.form = Object.assign({}, args);
     },
     handleTabClick(tab) {
       if (tab.name == 0) {
@@ -387,18 +398,12 @@ export default {
     formSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let { contentId, rollTime, ...args } = this.form;
-          let playTime = "";
-          let endTime = "";
-          if (rollTime.length) {
-            playTime = rollTime[0];
-            endTime = rollTime[1];
-          }
+          let { contentId, ...args } = this.form;
           if (contentId) {
-            let obj = Object.assign({}, args, { playTime, endTime, contentId });
+            let obj = Object.assign({}, args, { contentId });
             this.updateRollContent(obj);
           } else {
-            let objs = Object.assign({}, args, { playTime, endTime });
+            let objs = Object.assign({}, args);
             this.uploadContent(objs);
           }
         }
@@ -477,7 +482,7 @@ export default {
         this.dialogText = false;
         this.queryRollContent();
         this.$refs.form.resetFields();
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
+        this.$message({ message: `滚动文字编辑成功`, type: "success" });
       }
     }
   },
@@ -488,37 +493,4 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.row-bg {
-  > div {
-    margin: 0 15px;
-  }
-  .two {
-    flex: 1;
-  }
-}
-.video-box {
-  margin: 0 auto;
-  text-align: center;
-  video {
-    vertical-align: top;
-  }
-}
-.image-box {
-  text-align: center;
-  width: 400px;
-  margin: 0 auto;
-}
-.list {
-  font-size: 14px;
-  margin-bottom: 50px;
-  color: #333;
-  p {
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
-  }
-  span {
-    color: #409eff;
-    line-height: 1.6;
-  }
-}
 </style>

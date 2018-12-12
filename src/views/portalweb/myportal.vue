@@ -6,8 +6,8 @@
         <el-table-column label="学校ID" prop="schoolId"></el-table-column>
         <el-table-column label="审核节点" prop="status">
           <template slot-scope="scope">
-            <span v-if="scope.row.verifyStatus === 0" style="color:#409EFF">待审核</span>
-            <span v-else-if="scope.row.verifyStatus === 1" style="color:#409EFF">审核通过</span>
+            <span v-if="scope.row.status === 0" style="color:#409EFF">待审核</span>
+            <span v-else-if="scope.row.status === 1" style="color:#409EFF">审核通过</span>
             <span v-else style="color:#F56C6C;">审核不通过</span>
           </template>
         </el-table-column>

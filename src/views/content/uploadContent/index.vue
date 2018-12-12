@@ -77,7 +77,7 @@
               </el-row>   
               <el-form-item label="展示类型">
                 <el-row :gutter="10">
-                  <el-col :span="5" v-for="(item, index) in contentTemplateList" :key="index">
+                  <el-col :span="5" v-for="(item, index) in filtered_list" :key="index">
                     <div class="showType-item" :class="[ index === screenIndex ? 'selected' : '']"
                       @click="handleScreenSelect(index, item.value)">
                       <span>{{ item.label }}</span>
@@ -85,7 +85,7 @@
                   </el-col>
                 </el-row>
               </el-form-item>  
-              <el-form-item label="上传图片" prop="images" v-if="form.showType == 3">
+              <el-form-item label="上传图片" prop="images" v-if="form.showType == 3 ||form.showType == 4 || form.showType == 5">
                 <el-upload
                   list-type="picture-card"
                   class="upImg"
@@ -124,11 +124,6 @@
                 </el-upload>      
                 <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>    
               </el-form-item> 
-              <el-form-item label="URL地址" prop="webUrl" v-if="form.showType == 6" :rules="[
-                { required: true, message: '请输入URL地址', trigger: 'blur' }
-                ]">
-                <el-input v-model="form.webUrl" placeholder="请输入URL地址" maxlength="100" disabled></el-input>
-              </el-form-item>
               <template v-if="type !== 1">
                 <el-form-item label="播放时长" prop="durationTime">
                   <el-time-picker 
@@ -140,7 +135,10 @@
                     style="width:100%">
                   </el-time-picker>
                 </el-form-item>                    
-              </template>                                          
+              </template>   
+              <el-form-item label="URL地址" prop="webUrl" v-if="form.showType == 6">
+                <el-input v-model="form.webUrl" placeholder="请输入URL地址" maxlength="100" disabled></el-input>
+              </el-form-item>                                                     
             </el-form>
           </el-col>
         </el-row>     
@@ -206,13 +204,14 @@ export default {
         duration: 0, //视频时长
         templateId: 0,
         videoUrl: "",
+        md5: "",
         belongTo: 0, // 0-不专属 1-专属对应学校
         images: [],
         playTime: "",
         endTime: "",
         rollContent: "",
         showType: 3,
-        webUrl: ""
+        webUrl: "/html/index.html"
       },
       channelList: [],
       schoolPlayTime: [],
@@ -221,7 +220,23 @@ export default {
   },
   computed: {
     //type 账号类型 0-促进会 1-学校 2-教育局 3-培训机构
-    ...mapGetters(["type"])
+    ...mapGetters(["type"]),
+    filtered_list() {
+      if (this.type === 1) {
+        return [
+          { value: 3, label: "纯图片" },
+          { value: 4, label: "上视频下图片" },
+          { value: 5, label: "上图片下视频" },
+          { value: 6, label: "门户网站" }
+        ];
+      } else {
+        return [
+          { value: 3, label: "纯图片" },
+          { value: 4, label: "上视频下图片" },
+          { value: 5, label: "上图片下视频" }
+        ];
+      }
+    }
   },
   watch: {
     "form.templateId"(value) {
@@ -252,7 +267,7 @@ export default {
     //计算内容需要播放的时长
     handleDurationTime() {
       //不计算学校的
-      if (this.type !== 1) {
+      if (this.type !== 1 && this.form.showType !== 6) {
         //选择的图片长度
         let imgLen = this.$refs.uploadImage.uploadFiles.length;
         let { duration } = this.form; //视频时长
@@ -338,11 +353,12 @@ export default {
     //上传视频成功
     async handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        let { url, duration } = response.data;
+        let { url, duration, md5 } = response.data;
         this.videoFlag = false;
         this.videoUploadPercent = 0;
         this.form.videoUrl = url;
         this.form.duration = duration;
+        this.form.md5 = md5;
         this.handleDurationTime();
       }
     },
@@ -372,12 +388,18 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           //图片判断
-          if (!this.$refs.uploadImage.uploadFiles.length) {
-            this.$message({
-              message: `请上传图片`,
-              type: "warning"
-            });
-            return false;
+          if (
+            this.screenIndex === 0 ||
+            this.screenIndex === 1 ||
+            this.screenIndex === 2
+          ) {
+            if (!this.$refs.uploadImage.uploadFiles.length) {
+              this.$message({
+                message: `请上传图片`,
+                type: "warning"
+              });
+              return false;
+            }
           }
           //视频判断
           if (
@@ -390,24 +412,29 @@ export default {
             });
             return false;
           }
-          let res = await this.submitAssess();
-          if (res) {
-            let schoolPlayTime = this.schoolPlayTime;
-            let { belongTo, channelId, ...args } = this.form;
-            if (this.type === 1) {
-              belongTo = this.type;
-              let index = schoolPlayTime.find(
-                elem => elem.itemId === channelId
-              );
-              if (index) {
-                channelId = index.channelId;
-              }
-            }
-            let obj = Object.assign({}, args, { belongTo, channelId });
-            this.uploadContentAction(obj);
+          if (this.form.showType !== 6) {
+            let res = await this.submitAssess();
           }
+          let schoolPlayTime = this.schoolPlayTime;
+          let { belongTo, channelId, ...args } = this.form;
+          if (this.type === 1) {
+            belongTo = this.type;
+            let index = schoolPlayTime.find(elem => elem.itemId === channelId);
+            if (index) {
+              channelId = index.channelId;
+            }
+          }
+          let obj = Object.assign({}, args, { belongTo, channelId });
+          this.uploadContentAction(obj);
         }
       });
+    },
+    //查询学校门户网站url
+    async queryPortalWebUrl() {
+      let res = await service.queryPortalWebUrl({});
+      if (res.errorCode === 0) {
+        this.form.webUrl = res.data;
+      }
     },
     //删除图片
     async deletePicture(url) {
@@ -450,6 +477,8 @@ export default {
           .catch(error => {
             return false;
           });
+      } else if (res.errorCode === -1) {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     }
   },
@@ -459,6 +488,7 @@ export default {
     });
     if (this.type == 1) {
       this.querySchoolPlayListTime(0);
+      this.queryPortalWebUrl();
     } else {
       this.queryChannelAll();
     }

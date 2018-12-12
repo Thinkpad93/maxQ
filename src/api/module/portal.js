@@ -60,3 +60,9 @@ export function queryPortalWebAllInfo(params) {
     .then(res => res.data)
     .catch(e => console.log(e))
 }
+//查询学校门户网站url
+export function queryPortalWebUrl(params) {
+  return ax.post('/action/mod-xiaojiao/portal/queryPortalWebUrl.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e))
+}

@@ -263,14 +263,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.row-bg {
-  > div {
-    margin: 0 15px;
-  }
-  .two {
-    flex: 1;
-  }
-}
 .container-block {
   padding: 20px 20px 0 20px;
   background-color: #fff;
@@ -305,16 +297,5 @@ export default {
 }
 .status {
   margin: 5px 0;
-}
-.list {
-  font-size: 15px;
-  color: #333;
-  p {
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
-  }
-  span {
-    color: #409eff;
-  }
 }
 </style>

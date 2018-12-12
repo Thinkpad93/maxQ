@@ -345,7 +345,11 @@ export default {
         this.handleInit();
       });
     },
-    handleProvince(value) {},
+    handleProvince(value) {
+      this.queryRegion(value, 1); //查省份下的市
+      this.city = null;
+      this.area = null;
+    },
     handleCity(value) {
       if (typeof value === "number") {
         this.queryRegion(value, 2); //查市级下的区
@@ -551,37 +555,4 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.row-bg {
-  > div {
-    margin: 0 15px;
-  }
-  .two {
-    flex: 1;
-  }
-}
-.video-box {
-  margin: 0 auto;
-  text-align: center;
-  video {
-    vertical-align: top;
-  }
-}
-.image-box {
-  text-align: center;
-  width: 400px;
-  margin: 0 auto;
-}
-.list {
-  font-size: 14px;
-  margin-bottom: 50px;
-  color: #333;
-  p {
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
-  }
-  span {
-    color: #409eff;
-    line-height: 1.6;
-  }
-}
 </style>

@@ -48,15 +48,10 @@
                   <el-table-column label="审核状态" prop="status" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                       <span v-if="scope.row.status === 0" style="color:#409EFF">待审核</span>
-                      <span v-else-if="scope.row.status === 1" style="color:#409EFF">审核通过</span>
+                      <span v-else-if="scope.row.status === 1" style="color:#67C23A">审核通过</span>
                       <span v-else style="color:#F56C6C;">审核不通过</span>
                     </template>                    
                   </el-table-column>
-                  <el-table-column label="操作">
-                    <template slot-scope="scope">
-                      <el-button size="mini" type="primary" @click="handleAudit(scope.row)">预览审核</el-button>
-                    </template>
-                  </el-table-column>                  
                 </el-table>                
               </el-tab-pane>
             </el-tabs>
@@ -76,9 +71,9 @@
             </div>
             <div class="two">
               <div class="list">
-                <p>学校名称：<span>{{ info.title }}</span></p>
-                <p>区域：<span>{{ info.title }}</span></p>
-                <p>上传时间：<span>{{ info.title }}</span></p>
+                <p>学校名称：<span>{{ info.name }}</span></p>
+                <p>区域：<span>{{ info.provinceName }}-{{info.cityName}}-{{info.regionName}}</span></p>
+                <p>上传时间：<span>{{ info.postTime }}</span></p>
               </div>
               <el-form ref="check" label-position="left" :model="form" status-icon size="mini" :label-width="formLabelWidth">
                 <el-form-item label="是否通过" prop="name">
@@ -139,6 +134,7 @@ export default {
       this.queryCheckPortalWeb();
     },
     handleAudit(row) {
+      this.info = { ...row };
       this.queryCheckPortalWebInfo(row.schoolId);
     },
     formSubmit(formName) {
@@ -175,6 +171,7 @@ export default {
       let res = await service.checkPortalWeb(params);
       if (res.errorCode === 0) {
         this.dialogView = false;
+        this.$message({ message: `审核成功`, type: "success" });
       }
     }
   },

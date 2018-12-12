@@ -447,7 +447,6 @@ export default {
             validStartTime,
             validEndTime
           });
-          console.log(obj);
           this.addChannelTemplateDetail(obj);
         }
       });

@@ -112,8 +112,7 @@ export default {
   },
   activated() {
     this.schoolList();
-  },
-  mounted() {}
+  }
 };
 </script>
 <style lang="less" scoped>

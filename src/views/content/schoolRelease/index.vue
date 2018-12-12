@@ -189,43 +189,4 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.row-bg {
-  > div {
-    margin: 0 15px;
-  }
-  .two {
-    flex: 1;
-  }
-}
-.video-box {
-  margin: 0 auto;
-  text-align: center;
-  video {
-    vertical-align: top;
-  }
-}
-.image-box {
-  text-align: center;
-  width: 400px;
-  margin: 0 auto;
-}
-.iframe-box {
-  margin: 0 auto;
-  width: 400px;
-  min-height: 589px;
-  box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
-}
-.list {
-  font-size: 14px;
-  margin-bottom: 50px;
-  color: #333;
-  p {
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(220, 223, 230, 0.5);
-  }
-  span {
-    color: #409eff;
-    line-height: 1.6;
-  }
-}
 </style>

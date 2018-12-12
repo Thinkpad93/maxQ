@@ -76,7 +76,7 @@
               </el-row>     
               <el-form-item label="展示类型">
                 <el-row :gutter="10">
-                  <el-col :span="5" v-for="(item, index) in contentTemplateList" :key="index">
+                  <el-col :span="5" v-for="(item, index) in filtered_list" :key="index">
                     <div class="showType-item" :class="[ index === screenIndex ? 'selected' : '']">
                       <span>{{ item.label }}</span>
                     </div>
@@ -199,7 +199,23 @@ export default {
   },
   computed: {
     //type 账号类型 0-促进会 1-学校 2-教育局 3-培训机构
-    ...mapGetters(["type"])
+    ...mapGetters(["type"]),
+    filtered_list() {
+      if (this.type === 1) {
+        return [
+          { value: 3, label: "纯图片" },
+          { value: 4, label: "上视频下图片" },
+          { value: 5, label: "上图片下视频" },
+          { value: 6, label: "门户网站" }
+        ];
+      } else {
+        return [
+          { value: 3, label: "纯图片" },
+          { value: 4, label: "上视频下图片" },
+          { value: 5, label: "上图片下视频" }
+        ];
+      }
+    }
   },
   watch: {
     "form.templateId"(value) {
@@ -360,13 +376,19 @@ export default {
     handleUpload(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          //图片判断
-          if (!this.$refs.uploadImage.uploadFiles.length) {
-            this.$message({
-              message: `请上传图片`,
-              type: "warning"
-            });
-            return false;
+          if (
+            this.screenIndex === 0 ||
+            this.screenIndex === 1 ||
+            this.screenIndex === 2
+          ) {
+            //图片判断
+            if (!this.$refs.uploadImage.uploadFiles.length) {
+              this.$message({
+                message: `请上传图片`,
+                type: "warning"
+              });
+              return false;
+            }
           }
           //视频判断
           if (
@@ -379,28 +401,28 @@ export default {
             });
             return false;
           }
-          let res = await this.submitAssess();
-          if (res) {
-            let schoolPlayTime = this.schoolPlayTime;
-            let {
-              contentDetail,
-              posterUrl,
-              schoolId,
-              channelId,
-              templateId,
-              templateTitle,
-              ...args
-            } = this.form;
-            //如果是学校上传
-            if (this.type === 1) {
-              let item = schoolPlayTime.find(elem => elem.itemId === channelId);
-              if (item) {
-                channelId = item.channelId;
-              }
-            }
-            let obj = Object.assign({}, args, { channelId });
-            this.updateContent(obj);
+          if (this.form.showType !== 6) {
+            let res = await this.submitAssess();
           }
+          let schoolPlayTime = this.schoolPlayTime;
+          let {
+            contentDetail,
+            posterUrl,
+            schoolId,
+            channelId,
+            templateId,
+            templateTitle,
+            ...args
+          } = this.form;
+          //如果是学校上传
+          if (this.type === 1) {
+            let item = schoolPlayTime.find(elem => elem.itemId === channelId);
+            if (item) {
+              channelId = item.channelId;
+            }
+          }
+          let obj = Object.assign({}, args, { channelId });
+          this.updateContent(obj);
         }
       });
     },
