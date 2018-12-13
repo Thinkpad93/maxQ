@@ -273,7 +273,7 @@ export default {
   border-radius: 2px;
   margin-bottom: 20px;
   overflow: hidden;
-  box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1);
+  box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.12), 0 0 16px 0 rgba(0, 0, 0, 0.04);
   > a {
     display: block;
     height: 260px;
