@@ -122,8 +122,21 @@ export default {
         }
       });
     },
-    handleImageOneSuccess(res, file, fileList) {},
-    beforeImageUpload(file) {},
+    handleImageOneSuccess(res, file, fileList) {
+      if (res.errorCode === 0) {
+        this.loadding = false;
+        let index = this.editor.getSelection().index;
+        this.editor.insertEmbed(index, "image", res.data.url);
+        this.editor.setSelection(length + 1);
+        //插入成功后清除input的内容
+        this.$refs.upload.clearFiles();
+      } else {
+        this.$message.error("图片插入失败");
+      }
+    },
+    beforeImageUpload(file) {
+      this.loadding = true;
+    },
     //修改学校门户网站菜单内容
     async updatePortalWeb(params = {}) {
       let res = await service.updatePortalWeb(params, {

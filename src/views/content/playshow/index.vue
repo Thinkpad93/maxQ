@@ -482,11 +482,15 @@ export default {
     },
     //栏目选择改变
     async handleChannelChange(select, row) {
-      let res = await this.queryPlayContent(
-        { schoolId: this.schoolId, channelId: select },
+      let res = await this.queryChannelContents(
+        {
+          schoolId: this.schoolId,
+          channelId: row.channelId
+        },
         "edit"
       );
       if (res.length) {
+        console.log("res");
         let result = res.map(item => {
           return { title: item.title, contentId: item.contentId };
         });
@@ -495,15 +499,29 @@ export default {
         //如何栏目下没有内容，则为空
         row.contents = [];
       }
+      // let res = await this.queryPlayContent(
+      //   { schoolId: this.schoolId, itemId: row.itemId },
+      //   "edit"
+      // );
+      // if (res.length) {
+      //   let result = res.map(item => {
+      //     return { title: item.title, contentId: item.contentId };
+      //   });
+      //   row.contents = result;
+      // } else {
+      //   //如何栏目下没有内容，则为空
+      //   row.contents = [];
+      // }
     },
     //编辑
     handleEdit(row) {
-      let { playStartTime, playEndTime, schoolId, channelId } = row;
+      console.log(row);
+      let { playStartTime, playEndTime, schoolId, itemId } = row;
       this.value4 = [playStartTime, playEndTime];
       this.disabled = 1;
       this.handleRowEditor(row, { show: true, state: 1 });
       this.handleRowAll({ show: false, state: 0 });
-      this.queryPlayContent({ schoolId, channelId }, "edit");
+      this.queryPlayContent({ schoolId, itemId });
     },
     //删除
     handleDelete(row) {
@@ -562,7 +580,7 @@ export default {
     },
     //查询栏目内容
     handleQueryContents(value) {
-      this.queryPlayContent({ schoolId: this.schoolId, channelId: value });
+      this.queryChannelContents({ schoolId: this.schoolId, channelId: value });
     },
     //选择栏目有效期
     handleValiditySelect(row) {
@@ -642,19 +660,34 @@ export default {
         this.channelList = res.data;
       }
     },
-    //查询 栏目对应播放内容列表
-    async queryPlayContent(params = {}, str = "add") {
-      let res = await service.queryPlayContent(params);
-      let contents;
+    async queryChannelContents(params = {}, str = "add") {
+      let res = await service.queryChannelContents(params);
       if (res.errorCode === 0) {
         if (str === "add") {
           this.form.contents = [];
           this.contentsList = res.data;
         } else {
           this.playContendata = res.data;
-          return (contents = res.data);
+          return res.data;
         }
       }
+    },
+    //查询栏目对应播放内容列表
+    async queryPlayContent(params = {}) {
+      let res = await service.queryPlayContent(params);
+      if (res.errorCode === 0) {
+        this.playContendata = res.data;
+      }
+      // let contents;
+      // if (res.errorCode === 0) {
+      //   if (str === "add") {
+      //     this.form.contents = [];
+      //     this.contentsList = res.data;
+      //   } else {
+      //     this.playContendata = res.data;
+      //     return (contents = res.data);
+      //   }
+      // }
     },
     //更新表单播放列表
     async updatePlayList(schoolId) {

@@ -174,6 +174,13 @@ export function queryChannelContent(params) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//查询新增栏目播放内容
+export function queryChannelContents(params) {
+  return ax.post('/action/mod-xiaojiao/content/schoolPlay/queryChannelContent.do', params)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+
 //查询上传列表审核节点
 export function queryCheckNode(params) {
   return ax.post('/action/mod-xiaojiao/content/check/queryCheckNode.do', params)

@@ -181,11 +181,11 @@ export default {
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
-      this.querycheckContentList();
+      this.queryCheckContentList();
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
-      this.querycheckContentList();
+      this.queryCheckContentList();
     },
     search() {
       this.queryCheckContentList();
