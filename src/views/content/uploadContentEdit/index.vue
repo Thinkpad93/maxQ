@@ -100,11 +100,12 @@
                   :on-remove="handleRemoveImg" 
                   :before-upload="beforeImageUpload">
                   <i class="el-icon-plus"></i>
-                  <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2M，尺寸大小为(宽：1080px，高：982px).</div>
+                  <div class="el-upload__tip" slot="tip" style="color:red;font-size:14px;">只能上传jpg/png文件，且不超过2M，尺寸大小为(宽：1080px，高：982px).</div>
                 </el-upload>  
               </el-form-item>
               <el-form-item label="PPT模板下载">
-                <a href="./static/ppt.zip" download="PPT规格文件" class="el-button el-button--primary">点击下载</a>
+                <el-button type="primary" @click="handleDownPPT(1)">点击下载半屏ppt规格</el-button>
+                <el-button type="primary" @click="handleDownPPT(2)">点击下载全屏ppt规格</el-button>                
               </el-form-item>              
               <el-form-item v-if="form.showType == 4 || form.showType == 5" label="上传视频" prop="videoUrl">
                 <el-upload
@@ -121,7 +122,7 @@
                   <video v-if="form.videoUrl" :src="form.videoUrl" class="avatar" controls="controls">您的浏览器不支持视频播放</video>
                   <i v-else-if="form.videoUrl === '' && videoFlag === false" class="el-icon-plus avatar-uploader-icon"></i>
                   <el-progress v-if="videoFlag" type="circle" :percentage="videoUploadPercent" style="margin-top:12px;"></el-progress>
-                  <div slot="tip" class="el-upload__tip">只能上传MP4/mov/flv视频，且大小不超过100MB.</div>
+                  <div slot="tip" class="el-upload__tip" style="color:red;font-size:14px;">只能上传MP4/mov/flv视频，且大小不超过100MB.</div>
                 </el-upload> 
                 <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>      
               </el-form-item>      
@@ -239,6 +240,12 @@ export default {
       setTimeout(() => {
         this.reload();
       }, 50);
+    },
+    //PPT
+    handleDownPPT(index) {
+      return index === 1
+        ? (window.location.href = "./static/半屏ppt规格.pptx")
+        : (window.location.href = "./static/全屏ppt规格.pptx");
     },
     //预览内容
     handleViewContent() {

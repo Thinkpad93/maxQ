@@ -181,11 +181,11 @@ export default {
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
-      this.queryChannel();
+      this.showDeviceStatus();
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
-      this.queryChannel();
+      this.showDeviceStatus();
     },
     handleSearch() {
       this.showDeviceStatus();
