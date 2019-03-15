@@ -1,182 +1,256 @@
 <template>
-   <div class="page">
-     <div class="newUpload">
-        <!-- 保存按钮 -->
-        <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
-          <!-- <el-button @click="submitAssess">测试上传图片</el-button> -->
-          <!-- <el-button @click="handleCancel">取消</el-button> -->
-          <!-- <el-button @click="handleViewContent">预览内容</el-button> -->
-          <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
-        </div>      
-        <el-row :gutter="30">
-          <el-col :span="12">              
-            <el-form ref="form" :model="form" status-icon label-position="left" :label-width="formLabelWidth">             
-              <el-row :gutter="10">
-                <el-col :span="24">
-                  <el-form-item label="内容标题" prop="title" :rules="[
+  <div class="page">
+    <div class="newUpload">
+      <!-- 保存按钮 -->
+      <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
+        <!-- <el-button @click="submitAssess">测试上传图片</el-button> -->
+        <!-- <el-button @click="handleCancel">取消</el-button> -->
+        <!-- <el-button @click="handleViewContent">预览内容</el-button> -->
+        <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
+      </div>
+      <el-row :gutter="30">
+        <el-col :span="12">
+          <el-form
+            ref="form"
+            :model="form"
+            status-icon
+            label-position="left"
+            :label-width="formLabelWidth"
+          >
+            <el-row :gutter="10">
+              <el-col :span="24">
+                <el-form-item
+                  label="内容标题"
+                  prop="title"
+                  :rules="[
                       { required: true, message: '请输入内容标题', trigger:'blur' }
-                    ]">
-                    <el-input v-model="form.title" placeholder="请输入内容标题" maxlength="30"></el-input>
+                    ]"
+                >
+                  <el-input v-model="form.title" placeholder="请输入内容标题" maxlength="30"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <el-col :span="24">
+                <el-form-item
+                  label="内容作者"
+                  prop="author"
+                  :rules="[
+                    { required: true, message: '请输入内容作者', trigger: 'blur' }
+                    ]"
+                >
+                  <el-input v-model="form.author" placeholder="请输入内容作者" maxlength="20"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="内容属性" prop="contentProperty">
+                  <el-select v-model="form.contentProperty" style="width: 100%;">
+                    <el-option
+                      v-for="item in contentPropertyList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10">
+              <template v-if="type !== 1">
+                <el-col :span="24">
+                  <el-form-item
+                    label="所属栏目"
+                    prop="channelId"
+                    :rules="[
+                        { required: true, message: '请选择所属栏目', trigger: 'blur' }
+                      ]"
+                  >
+                    <el-select v-model="form.channelId" placeholder="请选择" style="width: 100%;">
+                      <el-option
+                        v-for="item in channelList"
+                        :key="item.channelId"
+                        :value="item.channelId"
+                        :label="item.name"
+                      ></el-option>
+                    </el-select>
                   </el-form-item>
                 </el-col>
-              </el-row>                      
-              <el-row :gutter="10">
+              </template>
+            </el-row>
+            <el-row :gutter="10">
+              <template v-if="type === 1">
                 <el-col :span="24">
-                  <el-form-item label="内容作者" prop="author" :rules="[
-                    { required: true, message: '请输入内容作者', trigger: 'blur' }
-                    ]">
-                      <el-input v-model="form.author" placeholder="请输入内容作者" maxlength="20"></el-input>
-                  </el-form-item>                 
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="内容属性" prop="contentProperty">
-                    <el-select v-model="form.contentProperty" style="width: 100%;">
-                      <el-option v-for="item in contentPropertyList" 
-                        :key="item.value" 
-                        :label="item.label" 
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>                
-                </el-col>
-              </el-row>  
-              <el-row :gutter="10">
-                <template v-if="type !== 1">
-                  <el-col :span="24">
-                    <el-form-item label="所属栏目" prop="channelId" :rules="[
-                        { required: true, message: '请选择所属栏目', trigger: 'blur' }
-                      ]">
-                      <el-select v-model="form.channelId" placeholder="请选择" style="width: 100%;">
-                        <el-option v-for="item in channelList" 
-                          :key="item.channelId" 
-                          :value="item.channelId"
-                          :label="item.name">
-                        </el-option>
-                      </el-select>      
-                    </el-form-item>                 
-                  </el-col>
-                </template>
-              </el-row>       
-              <el-row :gutter="10">
-                <template v-if="type === 1">
-                  <el-col :span="24">
-                    <el-form-item label="播放时段" prop="channelId" :rules="[
+                  <el-form-item
+                    label="播放时段"
+                    prop="channelId"
+                    :rules="[
                       { required: true, message: '请选择播放时段', trigger: 'blur' }
-                      ]">
-                      <el-select style="width: 100%;" v-model="form.channelId" placeholder="请选择播放时段" value-key="itemId">
-                        <el-option 
-                          v-for="item in schoolPlayTime" 
-                          :key="item.itemId" 
-                          :label="item.time" 
-                          :value="item.itemId">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>                   
-                  </el-col>
-                </template>
-              </el-row>   
-              <el-form-item label="展示类型">
-                <el-row :gutter="10">
-                  <el-col :span="5" v-for="(item, index) in filtered_list" :key="index">
-                    <div class="showType-item" :class="[ index === screenIndex ? 'selected' : '']"
-                      @click="handleScreenSelect(index, item.value)">
-                      <span>{{ item.label }}</span>
-                    </div>
-                  </el-col>
-                </el-row>
-              </el-form-item>  
-              <el-form-item label="上传图片" prop="images" v-if="form.showType == 3 ||form.showType == 4 || form.showType == 5">
-                <el-upload
-                  list-type="picture-card"
-                  class="upImg"
-                  name="files"
-                  ref="uploadImage"
-                  :auto-upload="false"
-                  :multiple="true"
-                  :with-credentials="true"
-                  action="#"
-                  accept="image/jpeg,image/gif,image/png,image/bmp"
-                  :file-list="imgFileList"
-                  :http-request='submitUpload'
-                  :on-change='handleChangeUpload'
-                  :on-remove="handleRemoveImg" 
-                  :before-upload="beforeImageUpload">
-                  <i class="el-icon-plus"></i>
-                  <div class="el-upload__tip" slot="tip" style="color:red;font-size:14px;">只能上传jpg/png文件，且不超过2M，尺寸大小为(宽：1080px，高：982px).</div>
-                </el-upload>  
-              </el-form-item>   
-              <el-form-item label="PPT模板下载">
-                <el-button type="primary" @click="handleDownPPT(1)">点击下载半屏ppt规格</el-button>
-                <el-button type="primary" @click="handleDownPPT(2)">点击下载全屏ppt规格</el-button>
+                      ]"
+                  >
+                    <el-select
+                      style="width: 100%;"
+                      v-model="form.channelId"
+                      placeholder="请选择播放时段"
+                      value-key="itemId"
+                    >
+                      <el-option
+                        v-for="item in schoolPlayTime"
+                        :key="item.itemId"
+                        :label="item.time"
+                        :value="item.itemId"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </template>
+            </el-row>
+            <el-form-item label="展示类型">
+              <el-row :gutter="10">
+                <el-col :span="5" v-for="(item, index) in filtered_list" :key="index">
+                  <div
+                    class="showType-item"
+                    :class="[ index === screenIndex ? 'selected' : '']"
+                    @click="handleScreenSelect(index, item.value)"
+                  >
+                    <span>{{ item.label }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item
+              label="上传图片"
+              prop="images"
+              v-if="form.showType == 3 ||form.showType == 4 || form.showType == 5"
+            >
+              <el-upload
+                list-type="picture-card"
+                class="upImg"
+                name="files"
+                ref="uploadImage"
+                :auto-upload="false"
+                :multiple="true"
+                :with-credentials="true"
+                action="#"
+                accept="image/jpeg, image/gif, image/png, image/bmp"
+                :file-list="imgFileList"
+                :http-request="submitUpload"
+                :on-change="handleChangeUpload"
+                :on-remove="handleRemoveImg"
+                :before-upload="beforeImageUpload"
+              >
+                <i class="el-icon-plus"></i>
+                <div
+                  class="el-upload__tip"
+                  slot="tip"
+                  style="color:red;font-size:14px;"
+                >只能上传jpg/png文件，且不超过2M，尺寸大小为(宽：1080px，高：982px).</div>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="PPT模板下载">
+              <el-button type="primary" @click="handleDownPPT(1)">点击下载半屏ppt规格</el-button>
+              <el-button type="primary" @click="handleDownPPT(2)">点击下载全屏ppt规格</el-button>
+            </el-form-item>
+            <el-form-item
+              v-if="form.showType == 4 || form.showType == 5"
+              label="上传视频"
+              prop="videoUrl"
+            >
+              <el-upload
+                class="avatar-uploader"
+                name="file"
+                :show-file-list="false"
+                ref="uploadVideo"
+                :with-credentials="true"
+                action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
+                accept="video/mp4, video/flv, video/mov"
+                :on-success="handleVideoSuccess"
+                :before-upload="beforeVideoUpload"
+                :on-progress="handleVideoProcess"
+              >
+                <video
+                  v-if="form.videoUrl"
+                  :src="form.videoUrl"
+                  class="avatar"
+                  controls="controls"
+                >您的浏览器不支持视频播放</video>
+                <i
+                  v-else-if="form.videoUrl === '' && videoFlag === false"
+                  class="el-icon-plus avatar-uploader-icon"
+                ></i>
+                <el-progress
+                  v-if="videoFlag"
+                  type="circle"
+                  :percentage="videoUploadPercent"
+                  style="margin-top:12px;"
+                ></el-progress>
+                <div
+                  slot="tip"
+                  class="el-upload__tip"
+                  style="color:red;font-size:14px;"
+                >只能上传MP4/mov/flv视频，且大小不超过100MB.</div>
+              </el-upload>
+              <el-button
+                v-if="form.videoUrl"
+                size="small"
+                type="primary"
+                @click="handleRemoveVideo"
+              >删除视频</el-button>
+            </el-form-item>
+            <template v-if="type !== 1">
+              <el-form-item label="播放时长" prop="durationTime">
+                <el-time-picker
+                  :clearable="false"
+                  format="mm:ss"
+                  value-format="mm:ss"
+                  v-model="form.durationTime"
+                  placeholder="选择播放时长"
+                  style="width:100%"
+                ></el-time-picker>
               </el-form-item>
-              <el-form-item v-if="form.showType == 4 || form.showType == 5" label="上传视频" prop="videoUrl">
-                <el-upload
-                  class="avatar-uploader"
-                  name="file"
-                  :show-file-list="false"
-                  ref="uploadVideo"
-                  :with-credentials="true"
-                  action="/qxiao-cms/action/mod-xiaojiao/channel/content/uploadVideo.do"
-                  accept="video/mp4,video/flv,video/mov"
-                  :on-success="handleVideoSuccess"
-                  :before-upload="beforeVideoUpload"
-                  :on-progress="handleVideoProcess">
-                  <video v-if="form.videoUrl" :src="form.videoUrl" class="avatar" controls="controls">您的浏览器不支持视频播放</video>
-                  <i v-else-if="form.videoUrl === '' && videoFlag === false" class="el-icon-plus avatar-uploader-icon"></i>
-                  <el-progress v-if="videoFlag" type="circle" :percentage="videoUploadPercent" style="margin-top:12px;"></el-progress>
-                  <div slot="tip" class="el-upload__tip" style="color:red;font-size:14px;">只能上传MP4/mov/flv视频，且大小不超过100MB.</div>
-                </el-upload>      
-                <el-button v-if="form.videoUrl" size="small" type="primary" @click="handleRemoveVideo">删除视频</el-button>    
-              </el-form-item> 
-              <template v-if="type !== 1">
-                <el-form-item label="播放时长" prop="durationTime">
-                  <el-time-picker 
-                    :clearable="false"
-                    format="mm:ss"
-                    value-format="mm:ss"                       
-                    v-model="form.durationTime" 
-                    placeholder="选择播放时长"
-                    style="width:100%">
-                  </el-time-picker>
-                </el-form-item>                    
-              </template>   
-              <el-form-item label="URL地址" prop="webUrl" v-if="form.showType == 6">
-                <el-input v-model="form.webUrl" placeholder="请输入URL地址" maxlength="100" disabled></el-input>
-              </el-form-item>                                                     
-            </el-form>
-          </el-col>
-        </el-row>     
-     </div>
-     <!-- 预览 -->
-     <template>
-       <el-dialog custom-class="qx-dialog" width="400px" title="预览" top="40px" :visible.sync="dialogView">
-          <div class="image-box" v-if="form.showType == 3">
-            <el-carousel ref="carousel" height="589px" :autoplay="false">
-              <el-carousel-item v-for="(item, index) in form.images" :key="index">
-                <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
-              </el-carousel-item>
-            </el-carousel>
-          </div>         
-          <template v-if="form.showType === 4">
-            <div class="video-box">
-              <video :src="form.videoUrl" controls width="400" height="230"></video>
-            </div>
-          </template>
-          <div class="image-box" v-if="form.showType == 4 || form.showType == 5">
-            <el-carousel ref="carousel" height="359px" :autoplay="false">
-              <el-carousel-item v-for="(item, index) in form.images" :key="index">
-                <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
-              </el-carousel-item>
-            </el-carousel>
+            </template>
+            <el-form-item label="URL地址" prop="webUrl" v-if="form.showType == 6">
+              <el-input v-model="form.webUrl" placeholder="请输入URL地址" maxlength="100" disabled></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+    </div>
+    <!-- 预览 -->
+    <template>
+      <el-dialog
+        custom-class="qx-dialog"
+        width="400px"
+        title="预览"
+        top="40px"
+        :visible.sync="dialogView"
+      >
+        <div class="image-box" v-if="form.showType == 3">
+          <el-carousel ref="carousel" height="589px" :autoplay="false">
+            <el-carousel-item v-for="(item, index) in form.images" :key="index">
+              <img :src="item.url" class="image" width="400" height="589" :alt="item.name">
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+        <template v-if="form.showType === 4">
+          <div class="video-box">
+            <video :src="form.videoUrl" controls width="400" height="230"></video>
           </div>
-          <template v-if="form.showType === 5">
-            <div class="video-box">
-              <video :src="form.videoUrl" controls width="400" height="230"></video>
-            </div>
-          </template>    
-       </el-dialog>
-     </template>
-   </div> 
+        </template>
+        <div class="image-box" v-if="form.showType == 4 || form.showType == 5">
+          <el-carousel ref="carousel" height="359px" :autoplay="false">
+            <el-carousel-item v-for="(item, index) in form.images" :key="index">
+              <img :src="item.url" class="image" width="400" height="359" :alt="item.name">
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+        <template v-if="form.showType === 5">
+          <div class="video-box">
+            <video :src="form.videoUrl" controls width="400" height="230"></video>
+          </div>
+        </template>
+      </el-dialog>
+    </template>
+  </div>
 </template>
 <script>
 import bus from "@/utils/bus";

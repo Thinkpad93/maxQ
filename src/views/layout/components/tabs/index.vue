@@ -1,15 +1,12 @@
 <template>
   <div class="tabs-contaier">
-    <router-link 
-        v-for="tab in tabList" 
-        :key="tab.path" 
-        :to="tab.path">
-        {{ tab.meta.title }}
-        <template v-if="tab.path !== '/home'">
-          <i class='el-icon-close' @click.prevent.stop="removeAction(tab)"></i>
-        </template>
-    </router-link>   
-  </div>  
+    <router-link v-for="tab in tabList" :key="tab.path" :to="tab.path">
+      {{ tab.meta.title }}
+      <template v-if="tab.path !== '/home'">
+        <i class="el-icon-close" @click.prevent.stop="removeAction(tab)"></i>
+      </template>
+    </router-link>
+  </div>
 </template>
 <script>
 //在组件中分发 Action

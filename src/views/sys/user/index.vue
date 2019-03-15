@@ -1,54 +1,67 @@
 <template>
-   <div class="page">
-     <!-- 表单 -->
-     <template>
+  <div class="page">
+    <!-- 表单 -->
+    <template>
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+            <el-form
+              :inline="true"
+              :model="query"
+              size="small"
+              label-width="70px"
+              label-position="left"
+            >
               <el-form-item label="学校名称">
                 <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
-              </el-form-item>  
+              </el-form-item>
               <el-form-item label="账号名称">
                 <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
-              </el-form-item>                                       
+              </el-form-item>
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
-              </el-form-item>                          
+              </el-form-item>
             </el-form>
           </div>
         </el-col>
-      </el-row> 
-     </template> 
-     <!-- 表格数据 -->
-     <template>
-       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-         <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
-           <template slot-scope="scope">
-             <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.userName }}</span>
-           </template>
-         </el-table-column>
-         <el-table-column label="用户角色" prop="roleName" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="负责人" prop="masterName" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="负责人电话" prop="masterPhone" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="所属学校" prop="name" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="添加时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column label="账号状态" prop="status" :show-overflow-tooltip="true">
-           <template slot-scope="scope">
-             <span @click="handleSwitch(scope.row)" v-if="scope.row.status === 1"  style="color:#ff4949;cursor: pointer;">停用</span>
-             <span @click="handleSwitch(scope.row)" v-else style="color:#13ce66;cursor: pointer;">启用</span>
-           </template>
-         </el-table-column>
-         <el-table-column label="操作" prop="" :show-overflow-tooltip="true">
-           <template slot-scope="scope">
-             <el-button size="mini" type="primary" @click="handleReset(scope.row)">重置密码</el-button>
-           </template>
-         </el-table-column>
-       </el-table>
-     </template> 
-     <!-- 新增账号 -->
+      </el-row>
+    </template>
+    <!-- 表格数据 -->
+    <template>
+      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
+        <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span
+              style="color:#409EFF;cursor:pointer;"
+              @click="handleViewInfo(scope.row)"
+            >{{ scope.row.userName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="用户角色" prop="roleName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="负责人" prop="masterName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="负责人电话" prop="masterPhone" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="所属学校" prop="name" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="添加时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="账号状态" prop="status" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span
+              @click="handleSwitch(scope.row)"
+              v-if="scope.row.status === 1"
+              style="color:#ff4949;cursor: pointer;"
+            >停用</span>
+            <span @click="handleSwitch(scope.row)" v-else style="color:#13ce66;cursor: pointer;">启用</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" prop :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleReset(scope.row)">重置密码</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <!-- 新增账号 -->
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -60,118 +73,158 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>       
-     <template>
-       <el-dialog top="40px" title="新增账号" :visible.sync="dialogAdd">
-         <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth" label-position="left">
-           <el-form-item label="账号" prop="userName" ref="userName">
-             <el-input v-model="form.userName" placeholder="请输入账号名称"></el-input>
-           </el-form-item>
-           <el-form-item label="密码" prop="password">
-             <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
-           </el-form-item>
-           <el-form-item label="确认密码" prop="checkPass">
-             <el-input type="password" v-model="form.checkPass" placeholder="请确认密码"></el-input>
-           </el-form-item>
-           <el-form-item label="用户角色" prop="roleId">
-             <el-select v-model="form.roleId" placeholder="选择用户角色">
-                <el-option
-                  v-for="item in roleList"
-                  :key="item.roleId"
-                  :label="item.roleName"
-                  :value="item.roleId">
-                </el-option>                
-             </el-select>
-           </el-form-item>
-           <el-form-item label="账户类型" prop="type">
-             <el-select v-model="form.type" placeholder="选择账户类型" @change="handleType">
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>               
-             </el-select>
-           </el-form-item>  
-           <template v-if="form.type === 1">
-              <el-form-item label="区域选择" prop="regionId" ref="region">
-                <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
-              </el-form-item>
-           </template>
-           <template v-else>
-             <el-form-item label="区域选择" prop="regionId" ref="region">
-                <qx-region-t @regionChange="handleRegionChanges"></qx-region-t>   
-             </el-form-item>      
-           </template>
-           <template v-if="form.type === 1">
+    </template>
+    <template>
+      <el-dialog top="40px" title="新增账号" :visible.sync="dialogAdd">
+        <el-form
+          :rules="rules"
+          ref="form"
+          :model="form"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+          label-position="left"
+        >
+          <el-form-item label="账号" prop="userName" ref="userName">
+            <el-input v-model="form.userName" placeholder="请输入账号名称"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="checkPass">
+            <el-input type="password" v-model="form.checkPass" placeholder="请确认密码"></el-input>
+          </el-form-item>
+          <el-form-item label="用户角色" prop="roleId">
+            <el-select v-model="form.roleId" placeholder="选择用户角色">
+              <el-option
+                v-for="item in roleList"
+                :key="item.roleId"
+                :label="item.roleName"
+                :value="item.roleId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="账户类型" prop="type">
+            <el-select v-model="form.type" placeholder="选择账户类型" @change="handleType">
+              <el-option
+                v-for="item in typeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <template v-if="form.type === 1">
+            <el-form-item label="区域选择" prop="regionId" ref="region">
+              <qx-region @last="lastChange" v-model="form.regionId"></qx-region>
+            </el-form-item>
+          </template>
+          <template v-else>
+            <el-form-item label="区域选择" prop="regionId" ref="region">
+              <qx-region-t @regionChange="handleRegionChanges"></qx-region-t>
+            </el-form-item>
+          </template>
+          <template v-if="form.type === 1">
             <el-form-item label="对应学校" prop="schoolId">
-              <el-select v-model="form.schoolId" placeholder="选择学校" @change="handleSchool" :disabled="disabled === 1">
+              <el-select
+                v-model="form.schoolId"
+                placeholder="选择学校"
+                @change="handleSchool"
+                :disabled="disabled === 1"
+              >
                 <el-option
                   v-for="item in schoolList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id">
-                </el-option> 
+                  :value="item.id"
+                ></el-option>
               </el-select>
             </el-form-item>
-           </template>
-         </el-form>
+          </template>
+        </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
           <el-button size="small" @click="handleResetRegion">重置</el-button>
           <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
-        </span>            
-       </el-dialog>
-     </template>
-     <!-- 查看用户信息 -->
-     <template>
-       <el-dialog top="40px" title="查看用户信息" :visible.sync="dialogView">
-         <el-row :gutter="10" type="flex" class="row-bg">
-           <div class="one"></div>
-           <div class="two">
-             <div class="list">
-               <p>账号名称：<span>{{ info.userName }}</span></p>
-               <p>用户角色：<span>{{ info.roleName }}</span></p>
-               <p>负责人：<span>{{ info.masterName }}</span></p>
-               <p>负责人电话：<span>{{ info.masterPhone }}</span></p>
-               <p>所属学校：<span>{{ info.name }}</span></p>
-               <p>所属区域：<span>{{ info.provinceCityRegion }}</span></p>
-               <p>账号状态：
-                 <span v-if="info.status === 0">正常</span>
-                 <span v-else style="color:#F56C6C;">停用</span>
-               </p>
-             </div>
-           </div>
-         </el-row>
-       </el-dialog>
-     </template>
-     <!-- 重置密码 -->
-     <template>
-       <el-dialog top="40px" title="重置密码" :visible.sync="dialogReset">
-         <el-form :rules="rules2" ref="reset" :model="reset" status-icon size="small" :label-width="formLabelWidth" label-position="left">
-           <el-form-item label="学校名称" prop="name">
-             <el-input v-model="reset.name" disabled></el-input>
-           </el-form-item>
-           <el-form-item label="账号" prop="userName">
-             <el-input v-model="reset.userName" disabled></el-input>
-           </el-form-item>
-           <el-form-item label="输入新密码" prop="password">
-             <el-input type="password" v-model="reset.password" placeholder="输入新密码"></el-input>
-           </el-form-item>
-           <el-form-item label="确认新密码" prop="checkPass">
-             <el-input type="password" v-model="reset.checkPass" placeholder="确认新密码"></el-input>
-           </el-form-item>        
-         </el-form>
-          <span slot="footer" class="dialog-footer">
-            <el-button size="small" @click="dialogReset = false">取消</el-button>
-            <el-button size="small" type="primary" @click="resetForm('reset')">确定</el-button>
-          </span>            
-       </el-dialog>
-     </template>
-   </div> 
+        </span>
+      </el-dialog>
+    </template>
+    <!-- 查看用户信息 -->
+    <template>
+      <el-dialog top="40px" title="查看用户信息" :visible.sync="dialogView">
+        <el-row :gutter="10" type="flex" class="row-bg">
+          <div class="one"></div>
+          <div class="two">
+            <div class="list">
+              <p>
+                账号名称：
+                <span>{{ info.userName }}</span>
+              </p>
+              <p>
+                用户角色：
+                <span>{{ info.roleName }}</span>
+              </p>
+              <p>
+                负责人：
+                <span>{{ info.masterName }}</span>
+              </p>
+              <p>
+                负责人电话：
+                <span>{{ info.masterPhone }}</span>
+              </p>
+              <p>
+                所属学校：
+                <span>{{ info.name }}</span>
+              </p>
+              <p>
+                所属区域：
+                <span>{{ info.provinceCityRegion }}</span>
+              </p>
+              <p>
+                账号状态：
+                <span v-if="info.status === 0">正常</span>
+                <span v-else style="color:#F56C6C;">停用</span>
+              </p>
+            </div>
+          </div>
+        </el-row>
+      </el-dialog>
+    </template>
+    <!-- 重置密码 -->
+    <template>
+      <el-dialog top="40px" title="重置密码" :visible.sync="dialogReset">
+        <el-form
+          :rules="rules2"
+          ref="reset"
+          :model="reset"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+          label-position="left"
+        >
+          <el-form-item label="学校名称" prop="name">
+            <el-input v-model="reset.name" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="账号" prop="userName">
+            <el-input v-model="reset.userName" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="输入新密码" prop="password">
+            <el-input type="password" v-model="reset.password" placeholder="输入新密码"></el-input>
+          </el-form-item>
+          <el-form-item label="确认新密码" prop="checkPass">
+            <el-input type="password" v-model="reset.checkPass" placeholder="确认新密码"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogReset = false">取消</el-button>
+          <el-button size="small" type="primary" @click="resetForm('reset')">确定</el-button>
+        </span>
+      </el-dialog>
+    </template>
+  </div>
 </template>
 <script>
 import service from "@/api";

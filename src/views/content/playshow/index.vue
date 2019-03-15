@@ -7,8 +7,19 @@
           <div class="page-form">
             <h3 style="color:#409EFF">{{ schoolName }}</h3>
             <div>
-              <el-button :disabled="disabled === 1" size="small" icon="el-icon-plus" type="primary" @click="dialogChannel = true">新增</el-button>
-              <el-button :disabled="disabled === 1" size="small" type="primary" @click="handleUpdateTerminal">更新表单到终端</el-button>
+              <el-button
+                :disabled="disabled === 1"
+                size="small"
+                icon="el-icon-plus"
+                type="primary"
+                @click="dialogChannel = true"
+              >新增</el-button>
+              <el-button
+                :disabled="disabled === 1"
+                size="small"
+                type="primary"
+                @click="handleUpdateTerminal"
+              >更新表单到终端</el-button>
             </div>
           </div>
         </el-col>
@@ -29,15 +40,15 @@
                           @change="handleChangeTime"
                           is-range
                           format="HH:mm:ss"
-                          value-format="HH:mm:ss"                
+                          value-format="HH:mm:ss"
                           v-model="value4"
                           size="mini"
                           :clearable="false"
                           range-separator="至"
                           start-placeholder="开始时间"
                           end-placeholder="结束时间"
-                          placeholder="选择时间范围">
-                        </el-time-picker>    
+                          placeholder="选择时间范围"
+                        ></el-time-picker>
                       </template>
                       <template v-else>
                         <p>{{ scope.row.playStartTime }} - {{ scope.row.playEndTime }}</p>
@@ -47,8 +58,18 @@
                   <el-table-column label="栏目名称" prop="channelId">
                     <template slot-scope="scope">
                       <template v-if="scope.row.show">
-                        <el-select v-model="scope.row.channelId" placeholder="请选择" size="mini" @change="select => handleChannelChange(select, scope.row)">
-                          <el-option v-for="item in channelList" :key="item.channelId" :value="item.channelId" :label="item.name"></el-option>
+                        <el-select
+                          v-model="scope.row.channelId"
+                          placeholder="请选择"
+                          size="mini"
+                          @change="select => handleChannelChange(select, scope.row)"
+                        >
+                          <el-option
+                            v-for="item in channelList"
+                            :key="item.channelId"
+                            :value="item.channelId"
+                            :label="item.name"
+                          ></el-option>
                         </el-select>
                       </template>
                       <template v-else>
@@ -60,11 +81,12 @@
                     <template slot-scope="scope">
                       <template v-if="scope.row.show">
                         <el-select v-model="scope.row.priority" placeholder="请选择" size="mini">
-                          <el-option 
-                            v-for="item in priorityList" 
-                            :key="item.value" 
+                          <el-option
+                            v-for="item in priorityList"
+                            :key="item.value"
                             :value="item.value"
-                            :label="item.label"></el-option>
+                            :label="item.label"
+                          ></el-option>
                         </el-select>
                       </template>
                       <template v-else>
@@ -79,14 +101,21 @@
                           <span v-if="scope.row.validType === 0">长期有效</span>
                           <span v-else>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</span>
                         </p>
-                        <el-dialog width="40%" center title="选择栏目有效期" append-to-body :visible.sync="dialogValidity" @close="handleValidityHide(scope.row)">
+                        <el-dialog
+                          width="40%"
+                          center
+                          title="选择栏目有效期"
+                          append-to-body
+                          :visible.sync="dialogValidity"
+                          @close="handleValidityHide(scope.row)"
+                        >
                           <template>
                             <template>
                               <el-radio-group v-model="radio">
                                 <el-radio :label="0">长期</el-radio>
                                 <el-radio :label="1">按时段有效</el-radio>
-                              </el-radio-group>  
-                            </template> 
+                              </el-radio-group>
+                            </template>
                           </template>
                           <div style="margin:20px 0 0 20px"></div>
                           <template v-if="radio == 1">
@@ -101,13 +130,17 @@
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
-                                :picker-options="pickerOptions">
-                              </el-date-picker>
-                            </el-row>  
+                                :picker-options="pickerOptions"
+                              ></el-date-picker>
+                            </el-row>
                           </template>
                           <div slot="footer" class="dialog-footer">
                             <el-button size="small" @click="dialogValidity = false">取消</el-button>
-                            <el-button size="small" type="primary" @click="handleValiditySave(scope.row)">确定</el-button>
+                            <el-button
+                              size="small"
+                              type="primary"
+                              @click="handleValiditySave(scope.row)"
+                            >确定</el-button>
                           </div>
                         </el-dialog>
                       </template>
@@ -125,9 +158,18 @@
                       <template v-else>
                         <el-popover placement="left" trigger="hover">
                           <el-table :data="scope.row.contents" border stripe size="mini">
-                            <el-table-column width="260" property="title" label="播放内容" :show-overflow-tooltip="true">
+                            <el-table-column
+                              width="260"
+                              property="title"
+                              label="播放内容"
+                              :show-overflow-tooltip="true"
+                            >
                               <template slot-scope="scope">
-                                <a href="javascript:;" style="color:#409EFF" @click="handleViewInfo(scope.row)">{{ scope.row.title }}</a>
+                                <a
+                                  href="javascript:;"
+                                  style="color:#409EFF"
+                                  @click="handleViewInfo(scope.row)"
+                                >{{ scope.row.title }}</a>
                               </template>
                             </el-table-column>
                           </el-table>
@@ -138,14 +180,37 @@
                   </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
-                      <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSave(scope.row)" v-show="scope.row.show">保存</el-button>
-                      <el-button :disabled="scope.row.state === 0" size="mini" v-show="scope.row.show" @click="handleCancel(scope.row)">取消</el-button>
-                      <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEdit(scope.row)" v-show="!scope.row.show">编辑</el-button>
-                      <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDelete(scope.row)" v-show="!scope.row.show">删除</el-button>
+                      <el-button
+                        :disabled="scope.row.state === 0"
+                        size="mini"
+                        type="success"
+                        @click="handleSave(scope.row)"
+                        v-show="scope.row.show"
+                      >保存</el-button>
+                      <el-button
+                        :disabled="scope.row.state === 0"
+                        size="mini"
+                        v-show="scope.row.show"
+                        @click="handleCancel(scope.row)"
+                      >取消</el-button>
+                      <el-button
+                        :disabled="scope.row.state === 0"
+                        size="mini"
+                        type="primary"
+                        @click="handleEdit(scope.row)"
+                        v-show="!scope.row.show"
+                      >编辑</el-button>
+                      <el-button
+                        :disabled="scope.row.state === 0"
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.row)"
+                        v-show="!scope.row.show"
+                      >删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
-              </template>                 
+              </template>
             </el-tab-pane>
             <el-tab-pane label="滚动通知" name="1">
               <!-- 表格数据 -->
@@ -165,11 +230,11 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        :picker-options="pickerOptions">
-                      </el-date-picker>
+                        :picker-options="pickerOptions"
+                      ></el-date-picker>
                       <!-- <p class="simInput">
                         <span>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</span>
-                      </p> -->
+                      </p>-->
                     </template>
                     <template v-else>
                       <p>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</p>
@@ -177,14 +242,37 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="操作">
-                    <template slot-scope="scope">
-                      <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleSaveScroll(scope.row)" v-show="scope.row.show">保存</el-button>
-                      <el-button :disabled="scope.row.state === 0" size="mini" v-show="scope.row.show" @click="handleCancelScroll(scope.row)">取消</el-button>
-                      <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleEditScroll(scope.row)" v-show="!scope.row.show">编辑</el-button>
-                      <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleDeleteScroll(scope.row)" v-show="!scope.row.show">删除</el-button>
-                    </template>
+                  <template slot-scope="scope">
+                    <el-button
+                      :disabled="scope.row.state === 0"
+                      size="mini"
+                      type="success"
+                      @click="handleSaveScroll(scope.row)"
+                      v-show="scope.row.show"
+                    >保存</el-button>
+                    <el-button
+                      :disabled="scope.row.state === 0"
+                      size="mini"
+                      v-show="scope.row.show"
+                      @click="handleCancelScroll(scope.row)"
+                    >取消</el-button>
+                    <el-button
+                      :disabled="scope.row.state === 0"
+                      size="mini"
+                      type="primary"
+                      @click="handleEditScroll(scope.row)"
+                      v-show="!scope.row.show"
+                    >编辑</el-button>
+                    <el-button
+                      :disabled="scope.row.state === 0"
+                      size="mini"
+                      type="danger"
+                      @click="handleDeleteScroll(scope.row)"
+                      v-show="!scope.row.show"
+                    >删除</el-button>
+                  </template>
                 </el-table-column>
-              </el-table>             
+              </el-table>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -218,16 +306,29 @@
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
-            </template>                       
+            </template>
           </div>
           <div class="two">
-           <div class="list">
-              <p>标题：<span>{{ info.title }}</span></p>
-              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
+            <div class="list">
+              <p>标题：
+                <span>{{ info.title }}</span>
+              </p>
+              <p>内容类型：
+                <span v-if="info.contentType === 0">全屏播放</span>
+                <span v-else>滚动播放</span>
+              </p>
               <template v-if="info.contentType === 0">
-                <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
-                <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
-                <p>播放时长：<span>{{ info.durationTime }}</span></p>   
+                <p>内容属性：
+                  <span v-if="info.contentProperty === 0">原创</span>
+                  <span v-else>摘要</span>
+                </p>
+                <p>作者：
+                  <span v-if="info.author">{{ info.author }}</span>
+                  <span v-else>无</span>
+                </p>
+                <p>播放时长：
+                  <span>{{ info.durationTime }}</span>
+                </p>
                 <p>
                   展示类型：
                   <span v-if="info.showType === 0">纯海报方式</span>
@@ -236,55 +337,85 @@
                   <span v-else-if="info.showType === 3">纯图片</span>
                   <span v-else-if="info.showType === 4">上视频下图片</span>
                   <span v-else>上图片下视频</span>
-                </p>                             
+                </p>
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} - {{ info.endTime }}</span></p>
-                <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
+                <p>播放有效期：
+                  <span>{{ info.playTime }} - {{ info.endTime }}</span>
+                </p>
+                <p v-if="info.contentType === 1">滚动内容：
+                  <span>{{ info.rollContent }}</span>
+                </p>
               </template>
-            </div>  
+            </div>
           </div>
-        </el-row>        
+        </el-row>
       </el-dialog>
     </template>
     <!-- 播放内容 -->
     <template>
-      <el-dialog :close-on-click-modal="false" title="播放内容" :visible.sync="dialogContent" @open="showPlayContent">
-        <el-table @selection-change="handleSelectCheckbox"  ref="playCon" :data="playContendata" style="width: 100%" border stripe size="mini">
+      <el-dialog
+        :close-on-click-modal="false"
+        title="播放内容"
+        :visible.sync="dialogContent"
+        @open="showPlayContent"
+      >
+        <el-table
+          @selection-change="handleSelectCheckbox"
+          ref="playCon"
+          :data="playContendata"
+          style="width: 100%"
+          border
+          stripe
+          size="mini"
+        >
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column property="title" label="播放内容"></el-table-column>
           <el-table-column property="postTime" label="发布时间"></el-table-column>
-          <el-table-column property="duration" label="单次播放时长"></el-table-column>          
+          <el-table-column property="duration" label="单次播放时长"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogContent = false">取消</el-button>
           <el-button size="small" type="primary" @click="handleToggleSelection">确定</el-button>
-        </div>        
+        </div>
       </el-dialog>
     </template>
     <!-- 新增学校播放频道 -->
     <template>
       <el-dialog top="40px" title="新增学校播放频道" :visible.sync="dialogChannel">
-        <el-form ref="form" :rules="rules" :model="form" status-icon size="small" :label-width="formLabelWidth">
+        <el-form
+          ref="form"
+          :rules="rules"
+          :model="form"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+        >
           <el-form-item label="栏目名称" prop="channelId">
-            <el-select v-model="form.channelId" placeholder="请选择" style="width:100%;" @change="handleQueryContents">
-              <el-option v-for="item in channelList" 
-                :key="item.channelId" 
+            <el-select
+              v-model="form.channelId"
+              placeholder="请选择"
+              style="width:100%;"
+              @change="handleQueryContents"
+            >
+              <el-option
+                v-for="item in channelList"
+                :key="item.channelId"
                 :value="item.channelId"
-                :label="item.name">
-              </el-option>
-            </el-select>                  
-          </el-form-item>  
+                :label="item.name"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="播放优先级" prop="priority">
             <el-select v-model="form.priority" style="width:100%;" placeholder="请选择">
-              <el-option 
-                v-for="item in priorityList" 
-                :key="item.value" 
+              <el-option
+                v-for="item in priorityList"
+                :key="item.value"
                 :value="item.value"
-                :label="item.label">
-              </el-option>              
+                :label="item.label"
+              ></el-option>
             </el-select>
-          </el-form-item>   
+          </el-form-item>
           <el-form-item label="播放时段" prop="playTime">
             <el-time-picker
               is-range
@@ -295,15 +426,24 @@
               range-separator="至"
               start-placeholder="开始时间"
               end-placeholder="结束时间"
-              placeholder="选择时间范围">
-            </el-time-picker>                
-          </el-form-item>                    
+              placeholder="选择时间范围"
+            ></el-time-picker>
+          </el-form-item>
           <el-form-item label="栏目有效期" prop="validType">
             <el-select v-model="form.validType" style="width:100%;" @change="handleValidType">
-              <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
-            </el-select> 
-          </el-form-item>                       
-          <el-form-item label="日期选择" prop="validTime" :rules="form.validType === 1 ? validTimeRules : []">
+              <el-option
+                v-for="item in validTypelist"
+                :key="item.value"
+                :value="item.value"
+                :label="item.name"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="日期选择"
+            prop="validTime"
+            :rules="form.validType === 1 ? validTimeRules : []"
+          >
             <el-date-picker
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -312,27 +452,34 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              :picker-options="pickerOptions">
-            </el-date-picker>                
-          </el-form-item>      
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </el-form-item>
           <el-form-item label="播放内容" prop="contents">
-            <el-select v-model="form.contents" style="width:100%;" value-key="contentId" multiple collapse-tags placeholder="请选择播放内容">
+            <el-select
+              v-model="form.contents"
+              style="width:100%;"
+              value-key="contentId"
+              multiple
+              collapse-tags
+              placeholder="请选择播放内容"
+            >
               <el-option
                 v-for="item in contentsList"
                 :key="item.contentId"
                 :label="item.title"
-                :value="item.contentId">
-              </el-option>
-            </el-select>  
-          </el-form-item>                       
+                :value="item.contentId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogChannel = false">取消</el-button>
           <el-button size="small" type="primary" @click="formSubmit('form')">保存</el-button>
-        </span>           
+        </span>
       </el-dialog>
     </template>
-  </div>  
+  </div>
 </template>
 <script>
 import service from "@/api";

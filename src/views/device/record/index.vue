@@ -4,46 +4,98 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+            <el-form
+              :inline="true"
+              :model="query"
+              size="small"
+              label-width="70px"
+              label-position="left"
+            >
               <el-form-item label="区域选择">
                 <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
-              </el-form-item>                 
+              </el-form-item>
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
-              </el-form-item>              
+              </el-form-item>
             </el-form>
           </div>
         </el-col>
-      </el-row>      
-    </template>     
+      </el-row>
+    </template>
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-          <el-table-column :resizable="false" width="100" label="序号" prop="repairId" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
-              <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="安装位置" prop="address" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="故障时间" prop="faultTime" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="故障描述" prop="faultDescription" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="检修时间" prop="repairTime" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="检修结果" prop="repairResult" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="检修人员" prop="repairMan" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column :resizable="false" label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-            </template>            
-          </el-table-column>
-      </el-table>        
-    </template> 
+        <el-table-column
+          :resizable="false"
+          width="100"
+          label="序号"
+          prop="repairId"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="学校名称"
+          prop="schoolName"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="设备编号"
+          prop="deviceNo"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="安装位置"
+          prop="address"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="故障时间"
+          prop="faultTime"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="故障描述"
+          prop="faultDescription"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="检修时间"
+          prop="repairTime"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="检修结果"
+          prop="repairResult"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="检修人员"
+          prop="repairMan"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column :resizable="false" label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -55,79 +107,112 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>    
+    </template>
     <!-- 新增 or 编辑检修记录 -->
     <template>
       <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="close">
         <span slot="title" class="dialog-title">{{ isShow ? '新增检修记录': '编辑检修记录' }}</span>
         <el-form ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <template v-if="isShow">
-            <el-form-item label="区域选择" prop="regionId" :rules="[
+            <el-form-item
+              label="区域选择"
+              prop="regionId"
+              :rules="[
               { required: true, message: '请选择区域', trigger: 'blur' }
-            ]">
+            ]"
+            >
               <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
             </el-form-item>
-            <el-form-item label="学校名称" prop="schoolId" :rules="[
+            <el-form-item
+              label="学校名称"
+              prop="schoolId"
+              :rules="[
               { required: true, message: '请输入学校名称', trigger: 'blur' }
-            ]">
+            ]"
+            >
               <el-select v-model="form.schoolId" clearable filterable placeholder="选择学校">
                 <el-option
                   v-for="item in schoolListInner"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id">
-                </el-option> 
-              </el-select>              
-            </el-form-item>    
-          </template> 
-          <el-form-item label="故障时间" prop="faultTime" :rules="[
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+          <el-form-item
+            label="故障时间"
+            prop="faultTime"
+            :rules="[
             { required: true, message: '请选择故障时间', trigger: 'blur' }
-          ]">
+          ]"
+          >
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.faultTime"
               type="datetime"
-              placeholder="选择故障时间">
-            </el-date-picker>            
-          </el-form-item>       
-          <el-form-item label="检修时间" prop="repairTime" :rules="[
+              placeholder="选择故障时间"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item
+            label="检修时间"
+            prop="repairTime"
+            :rules="[
             { required: true, message: '请选择检修时间', trigger: 'blur' }
-          ]">
+          ]"
+          >
             <el-date-picker
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.repairTime"
               type="datetime"
-              placeholder="选择检修时间">
-            </el-date-picker>             
-          </el-form-item>  
-          <el-form-item label="故障描述" prop="faultDescription" :rules="[
-            { required: true, message: '请输入故障描述', trigger: 'blur' }
-          ]">
-            <el-input type="textarea" v-model="form.faultDescription" :rows="5" placeholder="请输入故障描述"></el-input>
+              placeholder="选择检修时间"
+            ></el-date-picker>
           </el-form-item>
-          <el-form-item label="检修结果" prop="repairResult" :rules="[
+          <el-form-item
+            label="故障描述"
+            prop="faultDescription"
+            :rules="[
+            { required: true, message: '请输入故障描述', trigger: 'blur' }
+          ]"
+          >
+            <el-input
+              type="textarea"
+              v-model="form.faultDescription"
+              :rows="5"
+              placeholder="请输入故障描述"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="检修结果"
+            prop="repairResult"
+            :rules="[
             { required: true, message: '请输入检修结果', trigger: 'blur' }
-          ]">
+          ]"
+          >
             <el-input type="textarea" v-model="form.repairResult" :rows="5" placeholder="请输入检修结果"></el-input>
           </el-form-item>
-          <el-form-item label="检修人员" prop="repairMan" :rules="[
+          <el-form-item
+            label="检修人员"
+            prop="repairMan"
+            :rules="[
             { required: true, message: '请输入检修人员', trigger: 'blur' }
-          ]">
+          ]"
+          >
             <el-input v-model="form.repairMan" placeholder="请输入检修人员" maxlength="4"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="handleCancle('formRef')">取消</el-button>
           <el-button size="small" type="primary" @click="formAction('formRef')">确定</el-button>
-        </span>           
+        </span>
       </el-dialog>
     </template>
-  </div>  
+  </div>
 </template>
 <script>
 import service from "@/api";

@@ -5,6 +5,8 @@ import * as user from './module/user';
 import * as sys from './module/sys';
 import * as terminal from './module/terminal';
 import * as portal from './module/portal';
+import * as wx from './module/wx';
+import * as works from './module/works';
 export default {
   ...device,
   ...content,
@@ -12,5 +14,7 @@ export default {
   ...user,
   ...sys,
   ...terminal,
-  ...portal
+  ...portal,
+  ...wx,
+  ...works
 }

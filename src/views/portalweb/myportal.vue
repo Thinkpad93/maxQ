@@ -17,8 +17,8 @@
           </template>
         </el-table-column>
       </el-table>
-    </template>  
-  </div>  
+    </template>
+  </div>
 </template>
 <script>
 import service from "@/api";

@@ -4,13 +4,19 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+            <el-form
+              :inline="true"
+              :model="query"
+              size="small"
+              label-width="70px"
+              label-position="left"
+            >
               <el-form-item label="内容标题">
                 <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              </el-form-item>              
+              </el-form-item>
             </el-form>
           </div>
         </el-col>
@@ -23,10 +29,18 @@
             <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
               <el-tab-pane label="待预发布" name="0">
                 <el-table :data="tableData" style="width: 100%" stripe size="small">
-                  <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column
+                    width="150"
+                    label="内容编号"
+                    type="index"
+                    :show-overflow-tooltip="true"
+                  ></el-table-column>
                   <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                      <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+                      <span
+                        style="color:#409EFF;cursor: pointer;"
+                        @click="handleViewContent(scope.row)"
+                      >{{ scope.row.title }}</span>
                     </template>
                   </el-table-column>
                   <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
@@ -43,26 +57,37 @@
               </el-tab-pane>
               <el-tab-pane label="已预发布" name="1">
                 <el-table :data="tableData2" style="width: 100%" stripe size="small">
-                  <el-table-column width="150" label="内容编号" type="index" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column
+                    width="150"
+                    label="内容编号"
+                    type="index"
+                    :show-overflow-tooltip="true"
+                  ></el-table-column>
                   <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                      <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
+                      <span
+                        style="color:#409EFF;cursor: pointer;"
+                        @click="handleViewContent(scope.row)"
+                      >{{ scope.row.title }}</span>
                     </template>
                   </el-table-column>
                   <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>                  
+                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
                   <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                      <span style="color:#409EFF;cursor:pointer;" @click="handleViewSchool(scope.row)">查看</span>
+                      <span
+                        style="color:#409EFF;cursor:pointer;"
+                        @click="handleViewSchool(scope.row)"
+                      >查看</span>
                     </template>
-                  </el-table-column>    
+                  </el-table-column>
                   <el-table-column label="操作" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                       <el-button size="mini" type="primary" @click="handleRelease(scope.row)">再次预发布</el-button>
                     </template>
-                  </el-table-column>                                
+                  </el-table-column>
                 </el-table>
               </el-tab-pane>
             </el-tabs>
@@ -80,10 +105,10 @@
             :current-page="query.page"
             :page-size="query.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount">
-          </el-pagination>
+            :total="totalCount"
+          ></el-pagination>
         </div>
-      </template>           
+      </template>
     </div>
     <!-- 表格数据 -->
     <!-- 发布学校查看 -->
@@ -94,7 +119,7 @@
         </el-table>
       </el-dialog>
     </template>
-    <!-- 查看上传详情信息 --> 
+    <!-- 查看上传详情信息 -->
     <template>
       <el-dialog width="60%" title=" 查看上传详情信息" center top="40px" :visible.sync="dialogViewContent">
         <el-row :gutter="10" type="flex" class="row-bg">
@@ -122,16 +147,34 @@
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
-            </template>                     
+            </template>
           </div>
           <div class="two">
-           <div class="list">
-              <p>标题：<span>{{ info.title }}</span></p>
-              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
+            <div class="list">
+              <p>
+                标题：
+                <span>{{ info.title }}</span>
+              </p>
+              <p>
+                内容类型：
+                <span v-if="info.contentType === 0">全屏播放</span>
+                <span v-else>滚动播放</span>
+              </p>
               <template v-if="info.contentType === 0">
-                <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
-                <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
-                <p>播放时长：<span>{{ info.durationTime }}</span></p>   
+                <p>
+                  内容属性：
+                  <span v-if="info.contentProperty === 0">原创</span>
+                  <span v-else>摘要</span>
+                </p>
+                <p>
+                  作者：
+                  <span v-if="info.author">{{ info.author }}</span>
+                  <span v-else>无</span>
+                </p>
+                <p>
+                  播放时长：
+                  <span>{{ info.durationTime }}</span>
+                </p>
                 <p>
                   展示类型：
                   <span v-if="info.showType === 0">纯海报方式</span>
@@ -140,71 +183,121 @@
                   <span v-else-if="info.showType === 3">纯图片</span>
                   <span v-else-if="info.showType === 4">上视频下图片</span>
                   <span v-else>上图片下视频</span>
-                </p>                             
+                </p>
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} 至 {{ info.endTime }}</span></p>
-                <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
+                <p>
+                  播放有效期：
+                  <span>{{ info.playTime }} 至 {{ info.endTime }}</span>
+                </p>
+                <p v-if="info.contentType === 1">
+                  滚动内容：
+                  <span>{{ info.rollContent }}</span>
+                </p>
               </template>
-            </div>  
+            </div>
           </div>
         </el-row>
       </el-dialog>
-    </template>          
+    </template>
     <!-- 预发布 -->
     <template>
-      <el-dialog title="预发布" top="40px" :visible.sync="dialogAdd" @open="handleOpen" @close="handleClose">
+      <el-dialog
+        title="预发布"
+        top="40px"
+        :visible.sync="dialogAdd"
+        @open="handleOpen"
+        @close="handleClose"
+      >
         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <el-form-item label="内容标题" prop="title">
             <el-input v-model="form.title" disabled></el-input>
           </el-form-item>
           <el-form-item label="栏目名称" prop="channelName" v-if="form.channelName !== null">
             <el-input v-model="form.channelName" disabled></el-input>
-          </el-form-item>          
+          </el-form-item>
           <el-form-item label="发布来源" prop="resources">
             <el-input v-model="form.resources" disabled></el-input>
-          </el-form-item> 
-          <!-- 如果这条内容的上传者是学校的话 --> 
+          </el-form-item>
+          <!-- 如果这条内容的上传者是学校的话 -->
           <template v-if="form.schoolId <= 0">
             <el-form-item label="区域选择">
-              <el-select v-model="province" @change="handleProvince" placeholder="选择省" style="width:150px;">
-                <el-option v-for="item in provinceList" :key="item.pId" :label="item.pName" :value="item.pId"></el-option>
+              <el-select
+                v-model="province"
+                @change="handleProvince"
+                placeholder="选择省"
+                style="width:150px;"
+              >
+                <el-option
+                  v-for="item in provinceList"
+                  :key="item.pId"
+                  :label="item.pName"
+                  :value="item.pId"
+                ></el-option>
               </el-select>
-              <el-select clearable v-model="city" @change="handleCity" placeholder="选择市" style="width:150px;">
-                <el-option v-for="item in cityList" :key="item.cId" :label="item.cName" :value="item.cId"></el-option>
+              <el-select
+                clearable
+                v-model="city"
+                @change="handleCity"
+                placeholder="选择市"
+                style="width:150px;"
+              >
+                <el-option
+                  v-for="item in cityList"
+                  :key="item.cId"
+                  :label="item.cName"
+                  :value="item.cId"
+                ></el-option>
               </el-select>
-              <el-select clearable v-model="area" @change="handleArea" placeholder="选择区" style="width:150px;">
-                <el-option v-for="item in areaList" :key="item.aId" :label="item.aName" :value="item.aId"></el-option>
+              <el-select
+                clearable
+                v-model="area"
+                @change="handleArea"
+                placeholder="选择区"
+                style="width:150px;"
+              >
+                <el-option
+                  v-for="item in areaList"
+                  :key="item.aId"
+                  :label="item.aName"
+                  :value="item.aId"
+                ></el-option>
               </el-select>
-            </el-form-item>   
+            </el-form-item>
             <el-form-item label="学校性质" prop="propertyId">
               <el-select v-model="form.propertyId" clearable placeholder="请选择学校性质">
                 <el-option
                   v-for="item in propertyidList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id">
-                </el-option>            
-              </el-select>                          
-            </el-form-item>  
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="学校类型" prop="typeId">
               <el-select v-model="form.typeId" clearable placeholder="请选择学校类型">
                 <el-option
                   v-for="item in typeidList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id">
-                </el-option>            
-              </el-select>                           
-            </el-form-item>                   
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="学校标签" prop="labelIds">
-              <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择学校标签">
+              <el-select
+                v-model="form.labelIds"
+                value-key="labelId"
+                multiple
+                collapse-tags
+                placeholder="请选择学校标签"
+              >
                 <el-option
                   v-for="item in schoolLabel"
                   :key="item.labelId"
                   :label="item.name"
-                  :value="item.labelId">
-                </el-option>              
+                  :value="item.labelId"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="冠名企业" prop="sponsorIds">
@@ -216,18 +309,18 @@
             <el-form-item label="发布学校">
               <el-button size="small" type="primary" @click="handleViewPreSchool">查看学校</el-button>
             </el-form-item>
-          </template>    
+          </template>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
           <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
-        </span>      
+        </span>
         <el-dialog width="30%" append-to-body title="发布学校查看" :visible.sync="innerVisible">
           <el-table :data="showSchoolData" style="width: 100%" stripe size="small">
             <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
           </el-table>
-        </el-dialog>   
+        </el-dialog>
       </el-dialog>
     </template>
   </div>

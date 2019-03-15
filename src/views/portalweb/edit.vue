@@ -5,10 +5,21 @@
         <el-row :gutter="10">
           <el-col :span="24">
             <div class="page-form">
-              <el-form :inline="true" ref="form" :model="query" size="small" label-width="120px" label-position="left">
-                <el-form-item label="网站菜单名称" prop="menuName" :rules="[
+              <el-form
+                :inline="true"
+                ref="form"
+                :model="query"
+                size="small"
+                label-width="120px"
+                label-position="left"
+              >
+                <el-form-item
+                  label="网站菜单名称"
+                  prop="menuName"
+                  :rules="[
                     { required: true, message: '请输入菜单名称', trigger: 'blur' }
-                  ]">
+                  ]"
+                >
                   <el-input placeholder="请输入菜单名称" v-model="query.menuName"></el-input>
                 </el-form-item>
               </el-form>
@@ -17,19 +28,19 @@
               </el-row>
             </div>
           </el-col>
-        </el-row>      
+        </el-row>
       </template>
       <template>
         <el-row v-loading="loadding">
           <div class="edit-container">
-            <quill-editor 
-              v-model="content" 
+            <quill-editor
+              v-model="content"
               ref="myQuillEditor"
               :options="editorOption"
               @blur="onEditorBlur($event)"
               @focus="onEditorFocus($event)"
-              @change="onEditorChange($event)">
-            </quill-editor>          
+              @change="onEditorChange($event)"
+            ></quill-editor>
           </div>
         </el-row>
         <!-- 图片上传组件辅助-->
@@ -38,19 +49,20 @@
           list-type="picture-card"
           class="avatar-uploader"
           name="honorImage"
-          ref="upload" 
-          accept="image/jpeg,image/gif,image/png,image/bmp"
+          ref="upload"
+          accept="image/jpeg, image/gif, image/png, image/bmp"
           action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
           :multiple="false"
           :show-file-list="false"
           :auto-upload="true"
           :on-success="handleImageOneSuccess"
-          :before-upload="beforeImageUpload">
+          :before-upload="beforeImageUpload"
+        >
           <i class="el-icon-plus"></i>
-        </el-upload>         
+        </el-upload>
       </template>
-    </div>  
-  </div>   
+    </div>
+  </div>
 </template>
 <script>
 import bus from "@/utils/bus";

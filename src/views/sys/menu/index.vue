@@ -4,7 +4,12 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form" style="padding-bottom: 18px;">
-            <el-button icon="el-icon-plus" type="primary" size="small" @click="dialogAdd = true">新增一级菜单</el-button>
+            <el-button
+              icon="el-icon-plus"
+              type="primary"
+              size="small"
+              @click="dialogAdd = true"
+            >新增一级菜单</el-button>
           </div>
         </el-col>
       </el-row>
@@ -16,7 +21,7 @@
             <span v-if="scope.row.status === 0" style="color:#67C23A;">正常</span>
             <span v-else style="color:#F56C6C;">关闭</span>
           </template>
-        </el-table-column>        
+        </el-table-column>
         <el-table-column label="平台类型" prop="flatFlag">
           <template slot-scope="scope">
             <span v-if="scope.row.flatFlag === 0">PC端</span>
@@ -24,7 +29,7 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <template slot-scope="scope">    
+          <template slot-scope="scope">
             <el-button size="mini" type="primary" plain @click="handleChild(scope.row)">新增子菜单</el-button>
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
             <template v-if="scope.row.children === null && !scope.row.children">
@@ -34,58 +39,78 @@
               <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
             </template>
           </template>
-        </el-table-column>        
-      </qx-treeTable> 
-    </template>   
+        </el-table-column>
+      </qx-treeTable>
+    </template>
     <!-- 新增 -->
     <template>
       <el-dialog top="40px" title="新增菜单名称" :visible.sync="dialogAdd">
-        <el-form ref="addForm" :model="addForm" status-icon size="small" :label-width="formLabelWidth">
+        <el-form
+          ref="addForm"
+          :model="addForm"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+        >
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="addForm.status">
               <el-radio :label="0">开启</el-radio>
               <el-radio :label="1">关闭</el-radio>
-            </el-radio-group>            
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="平台类型" prop="flatFlag">
             <el-radio-group v-model="addForm.flatFlag">
               <el-radio :label="0">PC端</el-radio>
               <el-radio :label="1">手机端</el-radio>
-            </el-radio-group>               
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="菜单名称" prop="permitName" :rules="[
+          <el-form-item
+            label="菜单名称"
+            prop="permitName"
+            :rules="[
               { required: true, message: '请输入菜单名称', trigger: 'blur' }
-            ]">
+            ]"
+          >
             <el-input v-model="addForm.permitName" placeholder="菜单名称"></el-input>
-          </el-form-item>          
-          <el-form-item label="菜单路径" prop="url" :rules="[
+          </el-form-item>
+          <el-form-item
+            label="菜单路径"
+            prop="url"
+            :rules="[
               { required: true, message: '请输入菜单路径', trigger: 'blur' }
-            ]">
+            ]"
+          >
             <el-input v-model="addForm.url" placeholder="访问路径"></el-input>
-          </el-form-item>         
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
           <el-button size="small" type="primary" @click="addFormSubmit('addForm')">确定</el-button>
-        </span>           
+        </span>
       </el-dialog>
     </template>
     <!-- 编辑 -->
     <template>
       <el-dialog top="40px" title="编辑菜单名称" :visible.sync="dialogEdit">
-        <el-form ref="editForm" :model="editForm" status-icon size="small" :label-width="formLabelWidth">
+        <el-form
+          ref="editForm"
+          :model="editForm"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+        >
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="editForm.status">
               <el-radio :label="0">开启</el-radio>
               <el-radio :label="1">关闭</el-radio>
-            </el-radio-group>            
-          </el-form-item>  
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="平台类型" prop="flatFlag">
             <el-radio-group v-model="editForm.flatFlag">
               <el-radio :label="0">PC端</el-radio>
               <el-radio :label="1">手机端</el-radio>
-            </el-radio-group>               
-          </el-form-item>                  
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="权限ID" prop="permitId">
             <el-input v-model="editForm.permitId" disabled></el-input>
           </el-form-item>
@@ -99,10 +124,10 @@
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogEdit = false">取消</el-button>
           <el-button size="small" type="primary" @click="editFormSubmit('editForm')">确定</el-button>
-        </span>              
+        </span>
       </el-dialog>
-    </template> 
-  </div>  
+    </template>
+  </div>
 </template>
 <script>
 import service from "@/api";

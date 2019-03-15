@@ -3,17 +3,23 @@
     <!-- 表单 -->
     <template>
       <div class="page-form">
-        <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
           <el-form-item label="栏目名称">
             <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
             <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增栏目</el-button>
-          </el-form-item>   
+          </el-form-item>
         </el-form>
       </div>
-    </template> 
+    </template>
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
@@ -26,7 +32,7 @@
             <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
-      </el-table>        
+      </el-table>
     </template>
     <!-- 分页 -->
     <template>
@@ -39,35 +45,41 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>      
+    </template>
     <!-- 新增 or 编辑 -->
     <template>
-      <el-dialog 
-        top="40px" 
-        title="" :visible.sync="dialogFormVisible">
+      <el-dialog top="40px" title :visible.sync="dialogFormVisible">
         <span slot="title" class="dialog-title">{{ isDialogTitle ? '新增栏目': '编辑栏目' }}</span>
         <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item label="栏目名称" prop="name" :rules="[
+          <el-form-item
+            label="栏目名称"
+            prop="name"
+            :rules="[
               { required: true, message: '请输入栏目名称', trigger: 'blur' }
-            ]">
+            ]"
+          >
             <el-input v-model="form.name" placeholder="请输入栏目名称"></el-input>
           </el-form-item>
-          <el-form-item label="栏目描述" prop="description" :rules="[
+          <el-form-item
+            label="栏目描述"
+            prop="description"
+            :rules="[
               { required: true, message: '请输入栏目描述', trigger: 'blur' }
-            ]">
+            ]"
+          >
             <el-input type="textarea" v-model="form.description" :rows="5" placeholder="请输入栏目描述"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
           <el-button size="small" type="primary" @click="formSubmit('form')">确定</el-button>
-        </span>          
+        </span>
       </el-dialog>
     </template>
-  </div>      
+  </div>
 </template>
 <script>
 import service from "@/api";

@@ -23,7 +23,7 @@
                       <span v-if="scope.row.status === 0" style="color:#409EFF">待审核</span>
                       <span v-else-if="scope.row.status === 1" style="color:#409EFF">审核通过</span>
                       <span v-else style="color:#F56C6C;">审核不通过</span>
-                    </template>                    
+                    </template>
                   </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -50,9 +50,9 @@
                       <span v-if="scope.row.status === 0" style="color:#409EFF">待审核</span>
                       <span v-else-if="scope.row.status === 1" style="color:#67C23A">审核通过</span>
                       <span v-else style="color:#F56C6C;">审核不通过</span>
-                    </template>                    
+                    </template>
                   </el-table-column>
-                </el-table>                
+                </el-table>
               </el-tab-pane>
             </el-tabs>
           </el-col>
@@ -71,16 +71,32 @@
             </div>
             <div class="two">
               <div class="list">
-                <p>学校名称：<span>{{ info.name }}</span></p>
-                <p>区域：<span>{{ info.provinceName }}-{{info.cityName}}-{{info.regionName}}</span></p>
-                <p>上传时间：<span>{{ info.postTime }}</span></p>
+                <p>
+                  学校名称：
+                  <span>{{ info.name }}</span>
+                </p>
+                <p>
+                  区域：
+                  <span>{{ info.provinceName }}-{{info.cityName}}-{{info.regionName}}</span>
+                </p>
+                <p>
+                  上传时间：
+                  <span>{{ info.postTime }}</span>
+                </p>
               </div>
-              <el-form ref="check" label-position="left" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+              <el-form
+                ref="check"
+                label-position="left"
+                :model="form"
+                status-icon
+                size="mini"
+                :label-width="formLabelWidth"
+              >
                 <el-form-item label="是否通过" prop="name">
                   <el-radio-group v-model="form.status">
                     <el-radio :label="1">通过</el-radio>
                     <el-radio :label="2">不通过</el-radio>
-                  </el-radio-group>                  
+                  </el-radio-group>
                 </el-form-item>
                 <el-form-item label="审核意见" prop="verifyDescrition">
                   <el-input type="textarea" v-model="form.description" :rows="5" placeholder="审核意见"></el-input>
@@ -88,14 +104,14 @@
                 <el-form-item>
                   <el-button size="small" @click="dialogView = false">取消</el-button>
                   <el-button size="small" type="primary" @click="formSubmit('check')">审核</el-button>
-                </el-form-item>                
+                </el-form-item>
               </el-form>
             </div>
           </el-row>
         </el-dialog>
       </template>
     </div>
-  </div>  
+  </div>
 </template>
 <script>
 import service from "@/api";

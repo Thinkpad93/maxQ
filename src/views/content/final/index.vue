@@ -4,23 +4,29 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+            <el-form
+              :inline="true"
+              :model="query"
+              size="small"
+              label-width="70px"
+              label-position="left"
+            >
               <el-form-item label="内容标题">
                 <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
-              </el-form-item>              
+              </el-form-item>
               <el-form-item label="审核状态">
                 <el-select v-model="query.verifyStatus" clearable placeholder="请选择审核状态">
                   <el-option
                     v-for="item in verifyStatusList"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
-                  </el-option>                  
+                    :value="item.value"
+                  ></el-option>
                 </el-select>
-              </el-form-item>   
+              </el-form-item>
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-              </el-form-item>                             
+              </el-form-item>
             </el-form>
           </div>
         </el-col>
@@ -32,8 +38,11 @@
         <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span style="color:#409EFF;cursor: pointer;" @click="handleViewContent(scope.row)">{{ scope.row.title }}</span>
-          </template>            
+            <span
+              style="color:#409EFF;cursor: pointer;"
+              @click="handleViewContent(scope.row)"
+            >{{ scope.row.title }}</span>
+          </template>
         </el-table-column>
         <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
@@ -59,13 +68,13 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>     
+    </template>
     <!-- 预览审核 -->
-    <!-- 查看上传详情信息 --> 
-    <!-- 预览审核 -->    
+    <!-- 查看上传详情信息 -->
+    <!-- 预览审核 -->
     <template>
       <el-dialog width="60%" :title="info.title" top="40px" :visible.sync="dialogView">
         <el-row :gutter="10" type="flex" class="row-bg">
@@ -93,16 +102,34 @@
               <div class="video-box">
                 <video :src="info.videoUrl" controls width="400" height="230"></video>
               </div>
-            </template>            
+            </template>
           </div>
           <div class="two">
-           <div class="list">
-              <p>标题：<span>{{ info.title }}</span></p>
-              <p>内容类型：<span v-if="info.contentType === 0">全屏播放</span><span v-else>滚动播放</span></p>
+            <div class="list">
+              <p>
+                标题：
+                <span>{{ info.title }}</span>
+              </p>
+              <p>
+                内容类型：
+                <span v-if="info.contentType === 0">全屏播放</span>
+                <span v-else>滚动播放</span>
+              </p>
               <template v-if="info.contentType === 0">
-                <p>内容属性：<span v-if="info.contentProperty === 0">原创</span><span v-else>摘要</span></p>
-                <p>作者：<span v-if="info.author">{{ info.author }}</span><span v-else>无</span></p>
-                <p>播放时长：<span>{{ info.durationTime }}</span></p>   
+                <p>
+                  内容属性：
+                  <span v-if="info.contentProperty === 0">原创</span>
+                  <span v-else>摘要</span>
+                </p>
+                <p>
+                  作者：
+                  <span v-if="info.author">{{ info.author }}</span>
+                  <span v-else>无</span>
+                </p>
+                <p>
+                  播放时长：
+                  <span>{{ info.durationTime }}</span>
+                </p>
                 <p>
                   展示类型：
                   <span v-if="info.showType === 0">纯海报方式</span>
@@ -111,15 +138,28 @@
                   <span v-else-if="info.showType === 3">纯图片</span>
                   <span v-else-if="info.showType === 4">上视频下图片</span>
                   <span v-else>上图片下视频</span>
-                </p>                             
+                </p>
               </template>
               <template v-else>
-                <p>播放有效期：<span>{{ info.playTime }} 至 {{ info.endTime }}</span></p>
-                <p v-if="info.contentType === 1">滚动内容：<span>{{ info.rollContent }}</span></p>
+                <p>
+                  播放有效期：
+                  <span>{{ info.playTime }} 至 {{ info.endTime }}</span>
+                </p>
+                <p v-if="info.contentType === 1">
+                  滚动内容：
+                  <span>{{ info.rollContent }}</span>
+                </p>
               </template>
-            </div>  
+            </div>
             <template v-if="isShowform">
-              <el-form ref="check" label-position="left" :model="form" status-icon size="mini" :label-width="formLabelWidth">
+              <el-form
+                ref="check"
+                label-position="left"
+                :model="form"
+                status-icon
+                size="mini"
+                :label-width="formLabelWidth"
+              >
                 <el-form-item label="是否通过" prop="name">
                   <el-radio-group v-model="form.verifyStatus">
                     <el-radio :label="1">通过</el-radio>
@@ -127,19 +167,24 @@
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="审核意见" prop="verifyDescrition">
-                  <el-input type="textarea" v-model="form.verifyDescrition" :rows="5" placeholder="审核意见"></el-input>
+                  <el-input
+                    type="textarea"
+                    v-model="form.verifyDescrition"
+                    :rows="5"
+                    placeholder="审核意见"
+                  ></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button size="small" @click="dialogView = false">取消</el-button>
-                  <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>                
+                  <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
                 </el-form-item>
               </el-form>
             </template>
           </div>
         </el-row>
       </el-dialog>
-    </template>             
-  </div>    
+    </template>
+  </div>
 </template>
 <script>
 import service from "@/api";

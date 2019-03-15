@@ -40,7 +40,6 @@ service.interceptors.response.use(config => {
   console.log(config);
   return config;
 }, error => {
-  //console.log("我上司我上司我上司");
   console.log('err' + error) // for debug
   return Promise.reject(error);
 });

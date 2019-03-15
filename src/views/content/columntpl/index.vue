@@ -1,23 +1,29 @@
 <template>
-   <div class="page">
+  <div class="page">
     <!-- 表单 -->
     <template>
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+            <el-form
+              :inline="true"
+              :model="query"
+              size="small"
+              label-width="70px"
+              label-position="left"
+            >
               <el-form-item label="栏目模板">
                 <el-input v-model="query.templateName" placeholder="请输入栏目模板" maxlength="40"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增栏目模板</el-button>
-              </el-form-item>   
+              </el-form-item>
             </el-form>
           </div>
         </el-col>
-      </el-row> 
-    </template> 
+      </el-row>
+    </template>
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
@@ -29,16 +35,21 @@
             <el-button size="mini" type="primary" @click="handleDetail(scope.row)">模板详细</el-button>
             <!-- 默认模板不能删除 -->
             <template v-if="scope.row.type">
-              <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>   
-            </template>   
+              <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>
+            </template>
             <template v-else>
               <el-button size="mini" type="primary" @click="handleChannelDefautl(scope.row)">设置默认模板</el-button>
             </template>
-            <el-button size="mini" type="danger" @click="handleDel(scope.$index,scope.row)" v-if="!scope.row.type">删除</el-button> 
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDel(scope.$index,scope.row)"
+              v-if="!scope.row.type"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-    </template>  
+    </template>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -50,63 +61,97 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>        
+    </template>
     <!-- 新增栏目模板 -->
     <template>
       <el-dialog top="40px" title="新增栏目模板" :visible.sync="dialogAdd">
-        <el-form ref="tplform" :model="tplform" size="small" :label-width="formLabelWidth" label-position="left">
-          <el-form-item label="模板名称" prop="name" :rules="[
+        <el-form
+          ref="tplform"
+          :model="tplform"
+          size="small"
+          :label-width="formLabelWidth"
+          label-position="left"
+        >
+          <el-form-item
+            label="模板名称"
+            prop="name"
+            :rules="[
             { required: true, message: '请输入栏目模板名称', trigger: 'blur' }
-          ]">
+          ]"
+          >
             <el-input v-model="tplform.name" placeholder="请输入模板名称"></el-input>
-          </el-form-item>  
-          <el-form-item label="模板描述" prop="description" :rules="[
+          </el-form-item>
+          <el-form-item
+            label="模板描述"
+            prop="description"
+            :rules="[
             { required: true, message: '请输入栏目模板描述', trigger: 'blur' }
-          ]">
+          ]"
+          >
             <el-input type="textarea" v-model="tplform.description" :rows="5" placeholder="请输入模板描述"></el-input>
-          </el-form-item>                                                           
-        </el-form> 
+          </el-form-item>
+        </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogAdd = false">取消</el-button>
           <el-button size="small" type="primary" @click="addTemplate('tplform')">确定</el-button>
-        </span>          
+        </span>
       </el-dialog>
-    </template> 
+    </template>
     <!-- 新增栏目模板详细项 -->
     <template>
       <el-dialog width="75%" top="40px" title="新增栏目模板详细项" :visible.sync="dialogDetail">
-        <el-form ref="tplDetailform" :model="tplDetailform" size="small" :label-width="formLabelWidth" label-position="left">
+        <el-form
+          ref="tplDetailform"
+          :model="tplDetailform"
+          size="small"
+          :label-width="formLabelWidth"
+          label-position="left"
+        >
           <el-row :gutter="10">
             <el-col :span="12" :offset="6">
               <el-row :gutter="20">
                 <el-col :span="24">
-                  <el-form-item label="栏目名称" prop="channelId" :rules="[
+                  <el-form-item
+                    label="栏目名称"
+                    prop="channelId"
+                    :rules="[
                 { required: true, message: '请选择栏目名称', trigger: 'blur' }
-              ]">
-                    <el-select v-model="tplDetailform.channelId" placeholder="请选择" @change="selectChannelName" style="width:100%;">
-                      <el-option v-for="item in channelList" 
-                        :key="item.channelId" 
+              ]"
+                  >
+                    <el-select
+                      v-model="tplDetailform.channelId"
+                      placeholder="请选择"
+                      @change="selectChannelName"
+                      style="width:100%;"
+                    >
+                      <el-option
+                        v-for="item in channelList"
+                        :key="item.channelId"
                         :value="item.channelId"
-                        :label="item.name">
-                      </el-option>
-                    </el-select>                             
-                  </el-form-item>              
-                </el-col>     
+                        :label="item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="24">
                   <el-form-item label="播放优先级" prop="priority">
-                    <el-select v-model="tplDetailform.priority" placeholder="请选择" style="width:100%;">
-                      <el-option 
-                        v-for="item in priorityList" 
-                        :key="item.value" 
+                    <el-select
+                      v-model="tplDetailform.priority"
+                      placeholder="请选择"
+                      style="width:100%;"
+                    >
+                      <el-option
+                        v-for="item in priorityList"
+                        :key="item.value"
                         :value="item.value"
-                        :label="item.label">
-                      </el-option>
-                    </el-select> 
-                  </el-form-item>               
-                </el-col>                                
+                        :label="item.label"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="24">
                   <el-form-item label="播放时段" prop="playTime">
                     <el-time-picker
@@ -123,19 +168,32 @@
                       range-separator="至"
                       start-placeholder="开始时间"
                       end-placeholder="结束时间"
-                      placeholder="选择时间范围">
-                    </el-time-picker>                           
-                  </el-form-item>  
+                      placeholder="选择时间范围"
+                    ></el-time-picker>
+                  </el-form-item>
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="栏目有效期" prop="validType">
-                    <el-select v-model="tplDetailform.validType" style="width:100%;" @change="handleValidType">
-                      <el-option v-for="item in validTypelist" :key="item.value" :value="item.value" :label="item.name"></el-option>
-                    </el-select>                
-                  </el-form-item>               
-                </el-col>                   
+                    <el-select
+                      v-model="tplDetailform.validType"
+                      style="width:100%;"
+                      @change="handleValidType"
+                    >
+                      <el-option
+                        v-for="item in validTypelist"
+                        :key="item.value"
+                        :value="item.value"
+                        :label="item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="24">
-                  <el-form-item label="日期选择" prop="validTime" :rules="tplDetailform.validType === 1 ? validTimeRules : []">
+                  <el-form-item
+                    label="日期选择"
+                    prop="validTime"
+                    :rules="tplDetailform.validType === 1 ? validTimeRules : []"
+                  >
                     <el-date-picker
                       style="width:100%;"
                       value-format="yyyy-MM-dd"
@@ -145,19 +203,24 @@
                       range-separator="至"
                       start-placeholder="开始日期"
                       end-placeholder="结束日期"
-                      :picker-options="pickerOptions">
-                    </el-date-picker>                          
-                  </el-form-item>                 
-                </el-col>                                                                   
+                      :picker-options="pickerOptions"
+                    ></el-date-picker>
+                  </el-form-item>
+                </el-col>
               </el-row>
             </el-col>
-          </el-row>                              
+          </el-row>
           <el-row style="text-align:center;">
             <el-button size="small" @click="resetForm('tplDetailform')">重置</el-button>
-            <el-button size="small" :disabled="disabled === 1" type="primary" @click="addTablerow('tplDetailform')">新增模板详细项</el-button>
-          </el-row>                            
+            <el-button
+              size="small"
+              :disabled="disabled === 1"
+              type="primary"
+              @click="addTablerow('tplDetailform')"
+            >新增模板详细项</el-button>
+          </el-row>
         </el-form>
-        <div class="plac"></div> 
+        <div class="plac"></div>
         <el-alert title="已有模板详细项" type="info" :closable="false"></el-alert>
         <el-table :data="tplAddData" style="width: 100%" stripe size="small">
           <el-table-column width="400" label="播放时段">
@@ -173,40 +236,41 @@
                   range-separator="至"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
-                  placeholder="选择时间范围">                  
-                </el-time-picker>
+                  placeholder="选择时间范围"
+                ></el-time-picker>
               </template>
               <template v-else>
-                <p>{{ scope.row.playStartTime }} - {{ scope.row.playEndTime }}</p>                        
+                <p>{{ scope.row.playStartTime }} - {{ scope.row.playEndTime }}</p>
               </template>
             </template>
-          </el-table-column>  
+          </el-table-column>
           <el-table-column property="channelName" label="栏目名称">
             <template slot-scope="scope">
               <template v-if="scope.row.show">
                 <el-select v-model="scope.row.channelId" placeholder="请选择" size="mini">
-                  <el-option v-for="item in channelList" 
-                    :key="item.channelId" 
+                  <el-option
+                    v-for="item in channelList"
+                    :key="item.channelId"
                     :value="item.channelId"
-                    :label="item.name">
-                  </el-option>
-                </el-select>  
+                    :label="item.name"
+                  ></el-option>
+                </el-select>
               </template>
               <template v-else>
                 <p>{{ scope.row.channelName }}</p>
               </template>
             </template>
-          </el-table-column>  
+          </el-table-column>
           <el-table-column property="priority" label="播放优先级">
             <template slot-scope="scope">
               <template v-if="scope.row.show">
                 <el-select v-model="scope.row.priority" placeholder="请选择" size="mini">
                   <el-option v-for="item in priorityList" :key="item.value" :value="item.value"></el-option>
-                </el-select>                           
+                </el-select>
               </template>
               <template v-else>
                 <p>{{ scope.row.priority }}</p>
-              </template>                   
+              </template>
             </template>
           </el-table-column>
           <el-table-column property="validType" label="栏目有效期">
@@ -215,15 +279,21 @@
                 <p class="simInput" @click="validitySelect(scope.row)">
                   <span v-if="scope.row.validType === 0">长期</span>
                   <span v-else>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</span>
-                </p> 
-                <el-dialog append-to-body center title="选择栏目有效期" :visible.sync="dialogValidity" 
-                @close="validityHide(scope.row)" @open="validityShow(scope.row)">
+                </p>
+                <el-dialog
+                  append-to-body
+                  center
+                  title="选择栏目有效期"
+                  :visible.sync="dialogValidity"
+                  @close="validityHide(scope.row)"
+                  @open="validityShow(scope.row)"
+                >
                   <template>
                     <el-radio-group v-model="radio">
                       <el-radio :label="0">长期</el-radio>
                       <el-radio :label="1">按时段有效</el-radio>
-                    </el-radio-group>  
-                  </template> 
+                    </el-radio-group>
+                  </template>
                   <div style="margin:20px 0 0 20px"></div>
                   <template v-if="radio === 1">
                     <el-row>
@@ -236,34 +306,57 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        :picker-options="pickerOptions">
-                      </el-date-picker>
-                    </el-row>                      
-                  </template>  
+                        :picker-options="pickerOptions"
+                      ></el-date-picker>
+                    </el-row>
+                  </template>
                   <div slot="footer" class="dialog-footer">
                     <el-button size="mini" @click="dialogValidity = false">取消</el-button>
                     <el-button size="mini" type="primary" @click="validitySave(scope.row)">确定</el-button>
-                  </div>                                   
-                </el-dialog>                                  
+                  </div>
+                </el-dialog>
               </template>
               <template v-else>
                 <p v-if="scope.row.validType === 0">长期</p>
-                <p v-else>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</p>                
+                <p v-else>{{ scope.row.validStartTime }} 至 {{ scope.row.validEndTime }}</p>
               </template>
             </template>
-          </el-table-column>     
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button :disabled="scope.row.state === 0" size="mini" type="success" @click="handleInnerSave(scope.$index, scope.row)" v-show="scope.row.show">保存</el-button>
-              <el-button :disabled="scope.row.state === 0" size="mini" v-show="scope.row.show" @click="handleCancel(scope.row)">取消</el-button>
-              <el-button :disabled="scope.row.state === 0" size="mini" type="primary" @click="handleInnerEdit(scope.$index, scope.row)" v-show="!scope.row.show">编辑</el-button>
-              <el-button :disabled="scope.row.state === 0" size="mini" type="danger" @click="handleInnerDelete(scope.$index, scope.row)" v-show="!scope.row.show">删除</el-button>
+              <el-button
+                :disabled="scope.row.state === 0"
+                size="mini"
+                type="success"
+                @click="handleInnerSave(scope.$index, scope.row)"
+                v-show="scope.row.show"
+              >保存</el-button>
+              <el-button
+                :disabled="scope.row.state === 0"
+                size="mini"
+                v-show="scope.row.show"
+                @click="handleCancel(scope.row)"
+              >取消</el-button>
+              <el-button
+                :disabled="scope.row.state === 0"
+                size="mini"
+                type="primary"
+                @click="handleInnerEdit(scope.$index, scope.row)"
+                v-show="!scope.row.show"
+              >编辑</el-button>
+              <el-button
+                :disabled="scope.row.state === 0"
+                size="mini"
+                type="danger"
+                @click="handleInnerDelete(scope.$index, scope.row)"
+                v-show="!scope.row.show"
+              >删除</el-button>
             </template>
-          </el-table-column>                                  
+          </el-table-column>
         </el-table>
-      </el-dialog>  
-    </template> 
-   </div> 
+      </el-dialog>
+    </template>
+  </div>
 </template>
 <script>
 import service from "@/api";

@@ -1,3 +1,88 @@
+//性别
+export const sex = {
+  data() {
+    return {
+      sexList: [{
+          name: "男",
+          id: 1
+        },
+        {
+          name: "女",
+          id: 2
+        }
+      ]
+    }
+  }
+}
+
+export const type = {
+  data() {
+    return {
+      typeList: [{
+          name: "管理员",
+          id: 0
+        },
+        {
+          name: "老师",
+          id: 1
+        }
+      ]
+    }
+  }
+}
+
+export const schoolType = {
+  data() {
+    return {
+      schoolTypeList: [{
+          name: "公办",
+          id: 0
+        },
+        {
+          name: "私立",
+          id: 1
+        },
+        {
+          name: "民办",
+          id: 2
+        }
+      ]
+    }
+  }
+}
+
+export const relation = {
+  data() {
+    return {
+      relationList: [{
+          name: "妈妈",
+          id: 1
+        },
+        {
+          name: "爸爸",
+          id: 2
+        },
+        {
+          name: "爷爷",
+          id: 3
+        },
+        {
+          name: "奶奶",
+          id: 4
+        },
+        {
+          name: "外公",
+          id: 5
+        },
+        {
+          name: "外婆",
+          id: 6
+        }
+      ]
+    }
+  }
+}
+
 //栏目优先级
 export const priority = {
   data() {
@@ -210,6 +295,27 @@ export const typeid = {
         {
           id: 5,
           name: "大学"
+        }
+      ]
+    }
+  }
+}
+
+//作品类型
+export const worksType = {
+  data() {
+    return {
+      worksTypeList: [{
+          id: 1,
+          name: "美术"
+        },
+        {
+          id: 2,
+          name: "书法"
+        },
+        {
+          id: 3,
+          name: "作业"
         }
       ]
     }

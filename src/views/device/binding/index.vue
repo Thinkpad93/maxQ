@@ -5,45 +5,71 @@
       <el-row :gutter="10">
         <el-col :span="24">
           <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+            <el-form
+              :inline="true"
+              :model="query"
+              size="small"
+              label-width="70px"
+              label-position="left"
+            >
               <el-form-item label="区域选择">
                 <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
               </el-form-item>
               <el-form-item label="学校名称">
                 <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
-              </el-form-item>                
+              </el-form-item>
               <el-form-item>
                 <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
                 <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
-              </el-form-item>              
+              </el-form-item>
             </el-form>
           </div>
         </el-col>
       </el-row>
     </template>
-     <!-- 表格数据 -->
-     <template>
-       <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
-         <el-table-column :resizable="false" label="设备ID" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column :resizable="false" label="学校名称" prop="schoolName" :show-overflow-tooltip="true">
-           <template slot-scope="scope">
-             <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
-           </template>
-         </el-table-column>
-         <el-table-column :resizable="false" label="设备编号" prop="deviceNo" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column :resizable="false" label="MAC地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column :resizable="false" label="安装位置" prop="address" :show-overflow-tooltip="true"></el-table-column>
-         <el-table-column :resizable="false" label="安装时间" prop="postTime"></el-table-column>
-         <el-table-column :resizable="false" label="设备管理员" prop="manager"></el-table-column>
-         <el-table-column :resizable="false" label="联系电话" prop="phone"></el-table-column>
-         <el-table-column :resizable="false" label="操作" width="200">
-           <template slot-scope="scope">
-             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-             <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-           </template>
-         </el-table-column>
-       </el-table>
-     </template>    
+    <!-- 表格数据 -->
+    <template>
+      <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
+        <el-table-column
+          :resizable="false"
+          label="设备ID"
+          prop="deviceId"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="学校名称"
+          prop="schoolName"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="设备编号"
+          prop="deviceNo"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column :resizable="false" label="MAC地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          :resizable="false"
+          label="安装位置"
+          prop="address"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column :resizable="false" label="安装时间" prop="postTime"></el-table-column>
+        <el-table-column :resizable="false" label="设备管理员" prop="manager"></el-table-column>
+        <el-table-column :resizable="false" label="联系电话" prop="phone"></el-table-column>
+        <el-table-column :resizable="false" label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -55,15 +81,22 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>     
+    </template>
     <!-- 新增 or 编辑 -->
     <template>
       <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="handleDialogClose">
         <span slot="title" class="dialog-title">{{ isShow ? '新增设备': '编辑设备' }}</span>
-        <el-form :rules="rules" ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+        <el-form
+          :rules="rules"
+          ref="form"
+          :model="form"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+        >
           <template v-if="isShow">
             <el-form-item label="区域选择" prop="regionId">
               <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
@@ -81,8 +114,8 @@
                   v-for="item in schoolList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id">
-                </el-option>               
+                  :value="item.id"
+                ></el-option>
               </el-select>
             </el-form-item>
           </template>
@@ -99,34 +132,40 @@
           </el-form-item>
           <el-form-item label="设备序号" prop="serial">
             <el-input v-model="form.serial" placeholder="请选择设备序号" maxlength="30"></el-input>
-          </el-form-item>  
+          </el-form-item>
           <el-form-item label="冠名企业" prop="labelIds">
-            <el-select v-model="form.labelIds" value-key="labelId" multiple collapse-tags placeholder="请选择冠名企业">
+            <el-select
+              v-model="form.labelIds"
+              value-key="labelId"
+              multiple
+              collapse-tags
+              placeholder="请选择冠名企业"
+            >
               <el-option
                 v-for="item in labelsList"
                 :key="item.labelId"
                 :label="item.name"
-                :value="item.labelId">
-              </el-option>
-            </el-select>              
+                :value="item.labelId"
+              ></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="MAC地址" prop="mac">
             <el-input v-model="form.mac" placeholder="请输入MAC地址"></el-input>
-          </el-form-item>  
+          </el-form-item>
           <el-form-item label="设备管理员" prop="manager">
             <el-input v-model="form.manager" placeholder="请输入设备管理员" maxlength="4"></el-input>
           </el-form-item>
           <el-form-item label="联系电话" prop="phone">
             <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
-          </el-form-item>                          
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
           <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
-        </span>          
+        </span>
       </el-dialog>
     </template>
-  </div>  
+  </div>
 </template>
 <script>
 import service from "@/api";

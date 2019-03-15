@@ -8,16 +8,16 @@
         <qx-aside></qx-aside>
         <!-- 主体 内容 -->
         <el-main id="main">
-            <qx-tabs></qx-tabs>
-            <transition name="fade-transform" mode="out-in">
-                <keep-alive>
-                    <router-view :key="$route.fullPath"/>
-                </keep-alive>
-            </transition>   
-        </el-main>  
-      </el-container> 
+          <qx-tabs></qx-tabs>
+          <transition name="fade-transform" mode="out-in">
+            <keep-alive>
+              <router-view :key="$route.fullPath"/>
+            </keep-alive>
+          </transition>
+        </el-main>
+      </el-container>
     </el-container>
-  </div>  
+  </div>
 </template>
 <script>
 import qxheader from "./components/headers";
