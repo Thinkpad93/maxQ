@@ -35,6 +35,7 @@
       </el-row>
     </template>
     <!-- 表格数据 -->
+    <base-table :data="tableData" :columns="columns"></base-table>
     <template>
       <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有标签哦">
         <el-table-column label="标签ID" prop="labelId"></el-table-column>
@@ -134,11 +135,33 @@
 </template>
 <script>
 import service from "@/api";
+import QTable from "@/components/QTable";
 export default {
   name: "labels",
   inject: ["reload"], //注入依赖
+  components: {
+    "base-table": QTable
+  },
   data() {
     return {
+      columns: [
+        {
+          label: "标签ID",
+          prop: "labelId"
+        },
+        {
+          label: "标签类型",
+          prop: "type"
+        },
+        {
+          label: "标签名称",
+          prop: "name"
+        },
+        {
+          label: "标签描述",
+          prop: "description"
+        }
+      ],
       dialogFormVisible: false,
       formLabelWidth: "100px",
       isShow: true,

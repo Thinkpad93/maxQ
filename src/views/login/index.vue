@@ -1,7 +1,7 @@
 <template>
   <div data-page="login">
     <div class="user-login">
-      <h3 style="text-align:center;margin-bottom:25px;color: rgba(0,0,0,.43);">欢迎登录Q校网</h3>
+      <h3 style="text-align:center;margin-bottom:25px;color: rgba(0,0,0,.43);">欢迎使用Q校网屏端系统</h3>
       <el-form :rules="rules" ref="form" :model="form" style="width: 360px;" @submit.native.prevent>
         <el-form-item prop="userName">
           <el-input
@@ -82,7 +82,7 @@ div[data-page="login"] {
 .user-login {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 40%;
   z-index: 10;
   transform: translate(-50%, -50%);
 }

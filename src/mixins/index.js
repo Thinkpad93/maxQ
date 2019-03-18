@@ -306,6 +306,9 @@ export const worksType = {
   data() {
     return {
       worksTypeList: [{
+          id: 0,
+          name: "全部"
+        }, {
           id: 1,
           name: "美术"
         },

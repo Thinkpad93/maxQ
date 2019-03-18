@@ -1,5 +1,21 @@
 <template>
   <el-aside id="aside" :style="{ width: width + 'px' }" style="background-color: #545c64">
+    <!-- <el-menu>
+      <el-submenu index="1">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>导航一</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="1-1">选项1</el-menu-item>
+          <el-menu-item index="1-2">选项2</el-menu-item>
+        </el-menu-item-group>
+        <el-submenu index="1-4">
+          <template slot="title">选项4</template>
+          <el-menu-item index="1-4-1">选项1</el-menu-item>
+        </el-submenu>
+      </el-submenu>
+    </el-menu>-->
     <el-menu
       class="el-menu-vertical-demo"
       background-color="#545c64"
@@ -27,12 +43,13 @@
               <span>{{ item.name }}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item
-                :index="ren.path"
-                v-if="!ren.meta.hidden"
-                v-for="(ren, i) in item.children"
-                :key="i"
-              >{{ ren.meta.title }}</el-menu-item>
+              <template v-for="(ren, i) in item.children">
+                <el-menu-item
+                  v-if="!ren.meta.hidden"
+                  :index="ren.path"
+                  :key="i"
+                >{{ ren.meta.title }}</el-menu-item>
+              </template>
             </el-menu-item-group>
           </el-submenu>
         </template>

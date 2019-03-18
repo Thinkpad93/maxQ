@@ -1,16 +1,5 @@
 <template>
   <el-header id="header">
-    <!-- <h1 class="h1">
-       <img src="../../../../images/all.png"></img>  
-     </h1>  
-    -->
-    <div class="account-type">
-      <span v-if="type === 0">促进会{{type}}</span>
-      <span v-else-if="type === 1">学校{{type}}</span>
-      <span v-else-if="type === 2">教育局{{type}}</span>
-      <span v-else-if="type === 3">培训机构{{type}}</span>
-      <span v-else>admin</span>
-    </div>
     <div class="toggle-aside" @click="collapseChage">
       <i class="icon iconfont icon-weibiaoti26"></i>
     </div>
@@ -63,12 +52,6 @@ export default {
           return false;
         });
     }
-  },
-  created() {},
-  mounted() {
-    // if (getToken()) {
-    //   this.$store.dispatch("comm/qxregion");
-    // }
   }
 };
 </script>
