@@ -23,14 +23,14 @@
             <el-form-item label="审核状态">
               <el-select v-model="query.checkStage">
                 <el-option
-                  v-for="item in verifyStatusList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in checkStageList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="审核时间">
+            <!-- <el-form-item label="审核时间">
               <el-date-picker
                 v-model="query.startTime"
                 type="daterange"
@@ -39,7 +39,7 @@
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
-            </el-form-item>
+            </el-form-item>-->
             <el-form-item>
               <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
               <el-button
@@ -64,7 +64,6 @@
           >{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span size="mini" v-if="scope.row.type === 1">美术</span>
@@ -156,21 +155,29 @@
     <el-dialog width="60%" top="40px" title="作品列表" :visible.sync="dialogWorks">
       <el-table :data="worksData" style="width: 100%" stripe size="small">
         <el-table-column property="worksId" label="作品ID"></el-table-column>
-        <el-table-column property="worksId" label="图片">
+        <el-table-column property="smallUrl" label="图片">
           <template slot-scope="scope">
             <img :src="scope.row.smallUrl" alt style="width: 50px;height: 50px">
           </template>
         </el-table-column>
+        <el-table-column property="verifyStatus" label="审核状态">
+          <template slot-scope="scope">
+            <span size="mini" v-if="scope.row.verifyStatus === 0">初始</span>
+            <span size="mini" v-else-if="scope.row.verifyStatus === 1">审核通过</span>
+            <span size="mini" v-else>审核不通过</span>
+          </template>
+        </el-table-column>
+        <el-table-column property="recommend" label="推荐"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
 </template>
 <script>
 import service from "@/api";
-import { verifyStatus, worksType } from "@/mixins";
+import { checkStage, worksType } from "@/mixins";
 export default {
   name: "worksList",
-  mixins: [verifyStatus, worksType],
+  mixins: [checkStage, worksType],
   data() {
     return {
       dialogFormVisible: false,
@@ -178,10 +185,8 @@ export default {
       formLabelWidth: "100px",
       query: {
         type: 0,
-        checkStage: 0,
+        checkStage: 9,
         title: "",
-        startTime: "",
-        endTime: "",
         page: 1,
         pageSize: 20
       },
@@ -217,14 +222,14 @@ export default {
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
-      this.queryWorksCollection(this.query);
+      this.querySchoolCollection(this.query);
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
-      this.queryWorksCollection(this.query);
+      this.querySchoolCollection(this.query);
     },
     handleSearch() {
-      this.queryWorksCollection(this.query);
+      this.querySchoolCollection(this.query);
     },
     //作品集详情查询
     handleWorksInfo(collectionId) {
@@ -269,12 +274,12 @@ export default {
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
-        this.queryWorksCollection(this.query);
+        this.querySchoolCollection(this.query);
       }
     },
     //学生作品查询
-    async queryWorksCollection(params = {}) {
-      let res = await service.queryWorksCollection(params, {
+    async querySchoolCollection(params = {}) {
+      let res = await service.querySchoolCollection(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
@@ -294,7 +299,7 @@ export default {
     }
   },
   activated() {
-    this.queryWorksCollection(this.query);
+    this.querySchoolCollection(this.query);
   }
 };
 </script>

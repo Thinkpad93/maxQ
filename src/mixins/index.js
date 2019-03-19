@@ -324,3 +324,23 @@ export const worksType = {
     }
   }
 }
+//审核阶段
+export const checkStage = {
+  data() {
+    return {
+      checkStageList: [{
+          id: 0,
+          name: "待审核 "
+        },
+        {
+          id: 1,
+          name: "审核完成 "
+        },
+        {
+          id: 9,
+          name: "全部 "
+        }
+      ]
+    }
+  }
+}

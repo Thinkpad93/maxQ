@@ -49,8 +49,8 @@ export function queryUnVerifyStatus(params) {
     .catch(e => console.log(e));
 }
 //学生作品上传列表
-export function querySchoolCollection(params) {
-  return ax.post('/action/mod-xiaojiao/works/querySchoolCollection.do', params)
+export function querySchoolCollection(params, config) {
+  return ax.post('/action/mod-xiaojiao/works/querySchoolCollection.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

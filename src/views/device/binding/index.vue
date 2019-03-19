@@ -28,48 +28,14 @@
       </el-row>
     </template>
     <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" stripe :height="tableHeight" size="small">
-        <el-table-column
-          :resizable="false"
-          label="设备ID"
-          prop="deviceId"
-          :show-overflow-tooltip="true"
-        ></el-table-column>
-        <el-table-column
-          :resizable="false"
-          label="学校名称"
-          prop="schoolName"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">
-            <span style="color:#409EFF">{{ scope.row.schoolName }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          :resizable="false"
-          label="设备编号"
-          prop="deviceNo"
-          :show-overflow-tooltip="true"
-        ></el-table-column>
-        <el-table-column :resizable="false" label="MAC地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column
-          :resizable="false"
-          label="安装位置"
-          prop="address"
-          :show-overflow-tooltip="true"
-        ></el-table-column>
-        <el-table-column :resizable="false" label="安装时间" prop="postTime"></el-table-column>
-        <el-table-column :resizable="false" label="设备管理员" prop="manager"></el-table-column>
-        <el-table-column :resizable="false" label="联系电话" prop="phone"></el-table-column>
-        <el-table-column :resizable="false" label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+    <base-table :data="tableData" :columns="columns">
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </base-table>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -173,15 +139,50 @@ import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import { isMac, isPhone } from "@/utils/validator";
 import { mapGetters } from "vuex";
-
+import QTable from "@/components/QTable";
 export default {
   name: "binding",
   components: {
     "qx-region": region,
-    "qx-region-t": regiont
+    "qx-region-t": regiont,
+    "base-table": QTable
   },
   data() {
     return {
+      columns: [
+        {
+          label: "设备ID",
+          prop: "deviceId"
+        },
+        {
+          label: "学校名称",
+          prop: "schoolName"
+        },
+        {
+          label: "设备编号",
+          prop: "deviceNo"
+        },
+        {
+          label: "MAC地址",
+          prop: "mac"
+        },
+        {
+          label: "安装位置",
+          prop: "address"
+        },
+        {
+          label: "安装时间",
+          prop: "postTime"
+        },
+        {
+          label: "设备管理员",
+          prop: "manager"
+        },
+        {
+          label: "联系电话",
+          prop: "phone"
+        }
+      ],
       dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",

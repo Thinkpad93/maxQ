@@ -21,19 +21,15 @@
       </div>
     </template>
     <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column width="300" label="栏目ID" prop="channelId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column width="300" label="栏目名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="栏目描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column width="200" label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+    <base-table :data="tableData" :columns="columns">
+      <el-table-column width="200" label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </base-table>
+    <!-- 表格数据 -->
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -83,11 +79,29 @@
 </template>
 <script>
 import service from "@/api";
+import QTable from "@/components/QTable";
 export default {
   name: "column",
   inject: ["reload"], //注入依赖
+  components: {
+    "base-table": QTable
+  },
   data() {
     return {
+      columns: [
+        {
+          label: "栏目ID",
+          prop: "channelId"
+        },
+        {
+          label: "栏目名称",
+          prop: "name"
+        },
+        {
+          label: "栏目描述",
+          prop: "description"
+        }
+      ],
       dialogFormVisible: false,
       formLabelWidth: "100px",
       isDialogTitle: true,
@@ -103,12 +117,6 @@ export default {
       tableData: [],
       totalCount: 0 //分页总数
     };
-  },
-  computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
   },
   methods: {
     handleCurrentChange(curr) {
