@@ -9,7 +9,7 @@ import '@/element'; //element UI
 
 import './permission';
 
-
+Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
 

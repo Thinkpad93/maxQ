@@ -19,32 +19,20 @@ export function uploadWorks(params, config) {
     .catch(e => console.log(e));
 }
 //作品审核
-export function checkWorks(params) {
-  return ax.post('/action/mod-xiaojiao/works/checkWorks.do', params)
+export function checkWorks(params, config) {
+  return ax.post('/action/mod-xiaojiao/works/checkWorks.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //作品推荐
-export function recommendWorks(params) {
-  return ax.post('/action/mod-xiaojiao/works/recommendWorks.do', params)
-    .then(res => res.data)
-    .catch(e => console.log(e));
-}
-//作品屏端播放查询
-export function queryWorksTerminal(params) {
-  return ax.post('/action/mod-xiaojiao/works/queryWorksTerminal.do', params)
+export function recommendWorks(params, config) {
+  return ax.post('/action/mod-xiaojiao/works/recommendWorks.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }
 //上传文件
 export function uploadFile(params, config) {
   return ax.post('/action/mod-xiaojiao/works/uploadFile.do', params, config)
-    .then(res => res.data)
-    .catch(e => console.log(e));
-}
-//学生作品查询--审核列表--审核不通过
-export function queryUnVerifyStatus(params) {
-  return ax.post('/action/mod-xiaojiao/works/queryUnVerifyStatus.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

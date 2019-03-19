@@ -285,16 +285,6 @@
             :picker-options="pickerOptions"
             placeholder="播放开始日期"
           ></el-date-picker>
-          <!-- <el-date-picker 
-            value-format="yyyy-MM-dd"
-            format="yyyy-MM-dd"
-            v-model="form.rollTime"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions">
-          </el-date-picker>-->
         </el-form-item>
         <el-form-item
           label="结束日期"
@@ -358,23 +348,28 @@
           </div>
           <div class="two">
             <div class="list">
-              <p>标题：
+              <p>
+                标题：
                 <span>{{ info.title }}</span>
               </p>
-              <p>内容类型：
+              <p>
+                内容类型：
                 <span v-if="info.contentType === 0">全屏播放</span>
                 <span v-else>滚动播放</span>
               </p>
               <template v-if="info.contentType === 0">
-                <p>内容属性：
+                <p>
+                  内容属性：
                   <span v-if="info.contentProperty === 0">原创</span>
                   <span v-else>摘要</span>
                 </p>
-                <p>作者：
+                <p>
+                  作者：
                   <span v-if="info.author">{{ info.author }}</span>
                   <span v-else>无</span>
                 </p>
-                <p>播放时长：
+                <p>
+                  播放时长：
                   <span>{{ info.durationTime }}</span>
                 </p>
                 <p>
@@ -388,10 +383,12 @@
                 </p>
               </template>
               <template v-else>
-                <p>播放有效期：
+                <p>
+                  播放有效期：
                   <span>{{ info.playTime }} 至 {{ info.endTime }}</span>
                 </p>
-                <p v-if="info.contentType === 1">滚动内容：
+                <p v-if="info.contentType === 1">
+                  滚动内容：
                   <span>{{ info.rollContent }}</span>
                 </p>
               </template>
