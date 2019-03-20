@@ -160,35 +160,29 @@
       </span>
     </el-dialog>
     <!-- 作品集详情 -->
-    <el-dialog width="60%" top="40px" title="作品列表" :visible.sync="dialogWorks" @open="handleOpen">
-      <el-table :data="worksData" style="width: 100%" stripe size="small">
-        <el-table-column property="worksId" label="作品ID"></el-table-column>
-        <el-table-column property="smallUrl" label="图片">
+    <el-dialog width="60%" top="40px" title="作品列表" :visible.sync="dialogWorks">
+      <el-table ref="singleTable" :data="worksData" style="width: 100%" stripe size="small">
+        <el-table-column prop="worksId" label="作品ID"></el-table-column>
+        <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
             <img :src="scope.row.smallUrl" alt style="width:40px;height:40px">
           </template>
         </el-table-column>
-        <el-table-column property="verifyStatus" label="审核状态">
+        <el-table-column prop="verifyStatus" label="审核状态">
           <template slot-scope="scope">
+            {{ scope.row.verifyStatus }}
             <span v-if="scope.row.verifyStatus === 0">待审核</span>
-            <span v-else-if="scope.row.verifyStatus === 1">审核通过</span>
-            <span v-else>审核不通过</span>
+            <span v-else-if="scope.row.verifyStatus === 2">审核不通过</span>
+            <span v-else>审核通过</span>
           </template>
         </el-table-column>
-        <el-table-column property="verifyDescrition" label="审核意见"></el-table-column>
-        <el-table-column property="verifyTime" label="审核时间"></el-table-column>
-        <el-table-column property="recommend" label="推荐">
+        <el-table-column prop="verifyDescrition" label="审核意见"></el-table-column>
+        <el-table-column prop="verifyTime" label="审核时间"></el-table-column>
+        <el-table-column prop="recommend" label="推荐">
           <template slot-scope="scope">
             <!-- 审核通过 -->
-            <template v-if="scope.row.verifyStatus === 1">
-              <el-switch
-                v-model="scope.row.verifyStatus"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-              ></el-switch>
-            </template>
-            <template v-else>
-              <el-switch v-model="scope.row.verifyStatus" disabled></el-switch>
+            <template v-if="scope.row.verifyStatus === false || scope.row.verifyStatus === 1">
+              <el-switch v-model="verifyStatus" @change="handleChangeSwitch"></el-switch>
             </template>
           </template>
         </el-table-column>
@@ -217,6 +211,7 @@ export default {
     return {
       dialogFormVisible: false,
       dialogWorks: false,
+      verifyStatus: false,
       formLabelWidth: "100px",
       query: {
         type: 0,
@@ -228,7 +223,7 @@ export default {
       querys: {
         collectionId: null,
         page: 1,
-        pageSize: 10
+        pageSize: 8
       },
       uploadType: [
         { id: 0, name: "多图片上传" },
@@ -266,9 +261,6 @@ export default {
     handleSearch() {
       this.querySchoolCollection(this.query);
     },
-    handleOpen() {
-      console.log("open");
-    },
     //作品集详情查询
     handleWorksInfo(collectionId) {
       this.querys.collectionId = collectionId;
@@ -277,6 +269,9 @@ export default {
     worksCurrentChange(curr) {
       this.querys.page = curr;
       this.queryWorksDetailList(this.querys);
+    },
+    handleChangeSwitch(value) {
+      console.log(value);
     },
     async submitAssess() {
       this.uploadForm = new FormData();
