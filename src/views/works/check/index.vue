@@ -186,9 +186,9 @@ export default {
         pageSize: 8
       },
       form: {
-        worksIds: [19, 20, 21],
-        verifyStatus: 2,
-        verifyDescrition: "有问题"
+        worksIds: [1, 2, 3],
+        verifyStatus: 1,
+        verifyDescrition: "没有问题"
       },
       totalCount: 0,
       worksCount: 0,

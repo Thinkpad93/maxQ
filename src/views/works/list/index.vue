@@ -54,15 +54,10 @@
           <span size="mini" v-else>作业</span>
         </template>
       </el-table-column>
-      <el-table-column label="作品" prop="processStage" :show-overflow-tooltip="true">
+      <el-table-column label="处理阶段" prop="processStage" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span v-if="scope.row.processStage === 0">待处理</span>
-          <el-button
-            v-else
-            size="mini"
-            type="primary"
-            @click="handleWorksInfo(scope.row.collectionId)"
-          >查看</el-button>
+          <span v-else>处理完成</span>
         </template>
       </el-table-column>
       <el-table-column label="审核阶段" prop="checkStage" :show-overflow-tooltip="true">
@@ -73,6 +68,11 @@
       </el-table-column>
       <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleWorksInfo(scope.row.collectionId)">查看</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
     <div class="qx-pagination" v-if="totalCount">
@@ -160,20 +160,32 @@
       </span>
     </el-dialog>
     <!-- 作品集详情 -->
-    <el-dialog width="60%" top="40px" title="作品列表" :visible.sync="dialogWorks">
+    <el-dialog width="80%" top="40px" title="作品列表" :visible.sync="dialogWorks">
+      <el-dialog width="50%" append-to-body title="作品集查看" :visible.sync="dialogWorksInner">
+        <el-carousel height="150px">
+          <el-carousel-item v-for="works in worksData" :key="works.worksId">
+            <img :src="works.imageUrl" class="image">
+          </el-carousel-item>
+        </el-carousel>
+      </el-dialog>
       <el-table ref="singleTable" :data="worksData" style="width: 100%" stripe size="small">
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
-            <img :src="scope.row.smallUrl" alt style="width:40px;height:40px">
+            <img
+              :src="scope.row.smallUrl"
+              alt
+              style="width:40px;height:40px"
+              @click="dialogWorksInner = true"
+            >
           </template>
         </el-table-column>
         <el-table-column prop="verifyStatus" label="审核状态">
           <template slot-scope="scope">
-            {{ scope.row.verifyStatus }}
             <span v-if="scope.row.verifyStatus === 0">待审核</span>
-            <span v-else-if="scope.row.verifyStatus === 2">审核不通过</span>
-            <span v-else>审核通过</span>
+            <span v-else-if="scope.row.verifyStatus === 1">审核通过</span>
+            <span v-else>审核不通过</span>
           </template>
         </el-table-column>
         <el-table-column prop="verifyDescrition" label="审核意见"></el-table-column>
@@ -181,8 +193,13 @@
         <el-table-column prop="recommend" label="推荐">
           <template slot-scope="scope">
             <!-- 审核通过 -->
-            <template v-if="scope.row.verifyStatus === false || scope.row.verifyStatus === 1">
-              <el-switch v-model="verifyStatus" @change="handleChangeSwitch"></el-switch>
+            <template v-if="scope.row.verifyStatus === 1">
+              <el-switch
+                :inactive-value="0"
+                :active-value="1"
+                v-model="scope.row.recommend"
+                @change="handleChangeSwitch(scope.row)"
+              ></el-switch>
             </template>
           </template>
         </el-table-column>
@@ -211,7 +228,7 @@ export default {
     return {
       dialogFormVisible: false,
       dialogWorks: false,
-      verifyStatus: false,
+      dialogWorksInner: false,
       formLabelWidth: "100px",
       query: {
         type: 0,
@@ -270,8 +287,10 @@ export default {
       this.querys.page = curr;
       this.queryWorksDetailList(this.querys);
     },
-    handleChangeSwitch(value) {
-      console.log(value);
+    handleChangeSwitch(row) {
+      let { worksId, recommend } = row;
+
+      this.recommendWorks({ recommend, worksIds: [worksId] });
     },
     async submitAssess() {
       this.uploadForm = new FormData();
@@ -294,12 +313,10 @@ export default {
         return true;
       }
     },
-    //多图片自定义上传
+    //文件上传
     submitUpload(file) {
       this.uploadForm.append("files", file.file);
     },
-    //压缩包自定义上传
-    submitUploadZip(file) {},
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
@@ -343,6 +360,14 @@ export default {
           this.worksData = res.data.data || [];
           this.worksCount = res.data.totalCount;
         }
+      }
+    },
+    //作品推荐
+    async recommendWorks(params) {
+      let res = await service.recommendWorks(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
       }
     }
   },
