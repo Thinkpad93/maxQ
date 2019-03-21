@@ -25,20 +25,14 @@
       </el-row>
     </template>
     <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="角色ID" prop="roleId"></el-table-column>
-        <el-table-column label="角色名称" prop="roleName"></el-table-column>
-        <el-table-column label="角色等级" prop="roleLevel"></el-table-column>
-        <el-table-column label="备注" prop="description"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+    <base-table :data="tableData" :columns="columns">
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </base-table>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -105,10 +99,32 @@
 </template>
 <script>
 import service from "@/api";
+import QTable from "@/components/QTable";
 export default {
   name: "role",
+  components: {
+    "base-table": QTable
+  },
   data() {
     return {
+      columns: [
+        {
+          label: "角色ID",
+          prop: "roleId"
+        },
+        {
+          label: "角色名称",
+          prop: "roleName"
+        },
+        {
+          label: "角色等级",
+          prop: "roleLevel"
+        },
+        {
+          label: "备注",
+          prop: "description"
+        }
+      ],
       dialogAdd: false,
       formLabelWidth: "100px",
       query: {

@@ -68,36 +68,62 @@
       </el-table-column>
     </el-table>
     <!-- 作品集详情 -->
-    <el-dialog width="60%" top="40px" title="作品列表" :visible.sync="dialogWorks">
-      <el-dialog width="80%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
+    <el-dialog
+      width="80%"
+      top="20px"
+      title="作品列表"
+      :visible.sync="dialogWorks"
+      @close="querys.page = 1"
+    >
+      <el-dialog width="50%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
         <el-row :gutter="10" type="flex" class="row-bg">
-          <div class="one"></div>
+          <div class="one">
+            <div class="image-box">
+              <el-carousel height="150px" @change="changeCarousel" :autoplay="false" arrow="always">
+                <el-carousel-item v-for="works in worksData" :key="works.worksId">
+                  <img :src="works.imageUrl" class="image">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+          </div>
           <div class="two">
-            <!-- <el-form ref="check" label-position="left" :model="form" size="mini">
-              <el-form-item label="是否通过" prop="name">
+            <el-form
+              ref="check"
+              label-position="left"
+              :model="form"
+              size="mini"
+              :label-width="formLabelWidth"
+            >
+              <el-form-item label="是否通过" prop="verifyStatus">
                 <el-radio-group v-model="form.verifyStatus">
                   <el-radio :label="1">通过</el-radio>
                   <el-radio :label="2">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
-            </el-form>-->
-            <el-form-item label="审核意见" prop="verifyDescrition">
-              <el-input
-                type="textarea"
-                v-model="form.verifyDescrition"
-                :rows="5"
-                placeholder="审核意见"
-              ></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small">取消</el-button>
-              <el-button size="small" type="primary">审核</el-button>
-            </el-form-item>
+              <el-form-item
+                label="审核意见"
+                prop="verifyDescrition"
+                :rules="[
+              { required: true, message: '请填写审核意见', trigger: 'blur' }
+            ]"
+              >
+                <el-input
+                  type="textarea"
+                  v-model="form.verifyDescrition"
+                  :rows="5"
+                  placeholder="审核意见"
+                ></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button size="small" @click="dialogCheckWorks = false">取消</el-button>
+                <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
+              </el-form-item>
+            </el-form>
           </div>
         </el-row>
       </el-dialog>
       <el-table ref="multipleTable" :data="worksData" style="width: 100%" stripe size="small">
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="selection" width="55" :selectable="selectable"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
@@ -116,21 +142,21 @@
         <el-table-column prop="recommend" label="推荐">
           <template slot-scope="scope">
             <!-- 审核通过 -->
-            <template v-if="scope.row.verifyStatus === 1">
-              <el-switch
-                v-model="scope.row.verifyStatus"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-              ></el-switch>
-            </template>
-            <template v-else>
-              <el-switch v-model="scope.row.verifyStatus" disabled></el-switch>
-            </template>
+            <el-switch
+              active-color="#67c23a"
+              :disabled="scope.row.verifyStatus !== 1"
+              :inactive-value="0"
+              :active-value="1"
+              v-model="scope.row.recommend"
+              @change="handleChangeSwitch(scope.row)"
+            ></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleWorksCheck">审核</el-button>
+            <template v-if="scope.row.verifyStatus !== 1">
+              <el-button size="mini" type="primary" @click="handleWorksCheck">审核</el-button>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -163,14 +189,15 @@
 </template>
 <script>
 import service from "@/api";
-import { checkStage, worksType } from "@/mixins";
+import { worksType } from "@/mixins";
 export default {
   name: "worksCheck",
-  mixins: [checkStage, worksType],
+  mixins: [worksType],
   data() {
     return {
       dialogCheckWorks: false,
       dialogWorks: false,
+      formLabelWidth: "80px",
       query: {
         type: 0,
         checkStage: 0,
@@ -186,14 +213,19 @@ export default {
         pageSize: 8
       },
       form: {
-        worksIds: [1, 2, 3],
+        worksIds: [],
         verifyStatus: 1,
-        verifyDescrition: "没有问题"
+        verifyDescrition: ""
       },
       totalCount: 0,
       worksCount: 0,
       tableData: [],
-      worksData: []
+      worksData: [],
+      checkStageList: [
+        { id: 0, name: "待审核" },
+        { id: 1, name: "审核完成" },
+        { id: 2, name: "审核不通过" }
+      ]
     };
   },
   methods: {
@@ -218,7 +250,25 @@ export default {
       this.queryWorksDetailList(this.querys);
     },
     handleWorksCheck() {
-      this.checkWorks(this.form);
+      this.dialogCheckWorks = true;
+      //this.checkWorks(this.form);
+    },
+    handleChangeSwitch(row) {},
+    changeCarousel(newIndex, oloIndex) {
+      console.log(`${newIndex}-${oloIndex}`);
+    },
+    selectable(row, index) {
+      if (row.verifyStatus !== 1) {
+        return true;
+      }
+      return false;
+    },
+    checkForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.checkWorks(this.form);
+        }
+      });
     },
     //学生作品查询--审核列表
     async queryWorksCollection(params = {}) {

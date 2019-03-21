@@ -160,7 +160,7 @@
       </span>
     </el-dialog>
     <!-- 作品集详情 -->
-    <el-dialog width="80%" top="40px" title="作品列表" :visible.sync="dialogWorks">
+    <el-dialog width="80%" top="20px" title="作品列表" :visible.sync="dialogWorks">
       <el-dialog width="50%" append-to-body title="作品集查看" :visible.sync="dialogWorksInner">
         <el-carousel height="150px">
           <el-carousel-item v-for="works in worksData" :key="works.worksId">
@@ -169,7 +169,6 @@
         </el-carousel>
       </el-dialog>
       <el-table ref="singleTable" :data="worksData" style="width: 100%" stripe size="small">
-        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
@@ -188,19 +187,19 @@
             <span v-else>审核不通过</span>
           </template>
         </el-table-column>
-        <el-table-column prop="verifyDescrition" label="审核意见"></el-table-column>
+        <el-table-column prop="verifyDescrition" label="审核意见" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="verifyTime" label="审核时间"></el-table-column>
         <el-table-column prop="recommend" label="推荐">
           <template slot-scope="scope">
             <!-- 审核通过 -->
-            <template v-if="scope.row.verifyStatus === 1">
-              <el-switch
-                :inactive-value="0"
-                :active-value="1"
-                v-model="scope.row.recommend"
-                @change="handleChangeSwitch(scope.row)"
-              ></el-switch>
-            </template>
+            <el-switch
+              active-color="#67c23a"
+              :disabled="scope.row.verifyStatus !== 1"
+              :inactive-value="0"
+              :active-value="1"
+              v-model="scope.row.recommend"
+              @change="handleChangeSwitch(scope.row)"
+            ></el-switch>
           </template>
         </el-table-column>
       </el-table>
@@ -289,7 +288,6 @@ export default {
     },
     handleChangeSwitch(row) {
       let { worksId, recommend } = row;
-
       this.recommendWorks({ recommend, worksIds: [worksId] });
     },
     async submitAssess() {

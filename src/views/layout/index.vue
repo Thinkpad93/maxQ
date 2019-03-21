@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper">
-    <el-container style="height:100vh;" class="is-vertical">
-      <!-- 主体 顶栏 -->
-      <qx-header></qx-header>
-      <el-container>
-        <!-- 主体 侧边栏 -->
-        <qx-aside></qx-aside>
+    <el-container style="height:100vh;">
+      <!-- 主体 侧边栏 -->
+      <qx-aside></qx-aside>
+      <el-container class="is-vertical">
+        <!-- 主体 顶栏 -->
+        <qx-header></qx-header>
         <!-- 主体 内容 -->
         <el-main id="main">
           <qx-tabs></qx-tabs>
