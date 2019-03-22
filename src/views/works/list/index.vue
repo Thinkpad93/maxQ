@@ -70,7 +70,11 @@
       <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleWorksInfo(scope.row.collectionId)">查看</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleWorksInfo(scope.row.collectionId, scope.$index)"
+          >查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -162,7 +166,13 @@
     <!-- 作品集详情 -->
     <el-dialog width="80%" top="20px" title="作品列表" :visible.sync="dialogWorks">
       <el-dialog width="50%" append-to-body title="作品集查看" :visible.sync="dialogWorksInner">
-        <el-carousel height="150px">
+        <el-carousel
+          height="150px"
+          indicator-position="none"
+          :autoplay="false"
+          :loop="false"
+          arrow="always"
+        >
           <el-carousel-item v-for="works in worksData" :key="works.worksId">
             <img :src="works.imageUrl" class="image">
           </el-carousel-item>
@@ -172,12 +182,8 @@
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
-            <img
-              :src="scope.row.smallUrl"
-              alt
-              style="width:40px;height:40px"
-              @click="dialogWorksInner = true"
-            >
+            <!-- @click="dialogWorksInner = true" -->
+            <img :src="scope.row.smallUrl" alt style="width:40px;height:40px">
           </template>
         </el-table-column>
         <el-table-column prop="verifyStatus" label="审核状态">
@@ -225,6 +231,7 @@ export default {
   mixins: [checkStage, worksType],
   data() {
     return {
+      rowIndex: null,
       dialogFormVisible: false,
       dialogWorks: false,
       dialogWorksInner: false,
@@ -278,7 +285,12 @@ export default {
       this.querySchoolCollection(this.query);
     },
     //作品集详情查询
-    handleWorksInfo(collectionId) {
+    handleWorksInfo(collectionId, index) {
+      if (this.rowIndex === index) {
+      } else {
+        this.rowIndex = index;
+        this.querys.page = 1;
+      }
       this.querys.collectionId = collectionId;
       this.queryWorksDetailList(this.querys);
     },

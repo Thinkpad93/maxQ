@@ -329,16 +329,35 @@ export const checkStage = {
   data() {
     return {
       checkStageList: [{
+          id: 9,
+          name: "全部 "
+        }, {
           id: 0,
           name: "待审核 "
         },
         {
           id: 1,
           name: "审核完成 "
+        }
+      ]
+    }
+  }
+}
+//审核阶段2
+export const checkStages = {
+  data() {
+    return {
+      checkStageLists: [{
+          id: 0,
+          name: "待审核"
         },
         {
-          id: 9,
-          name: "全部 "
+          id: 1,
+          name: "审核完成"
+        },
+        {
+          id: 2,
+          name: "审核不通过"
         }
       ]
     }

@@ -24,7 +24,7 @@
             <el-form-item label="审核状态">
               <el-select v-model="query.checkStage">
                 <el-option
-                  v-for="item in checkStageList"
+                  v-for="item in checkStageLists"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -50,7 +50,19 @@
     </el-row>
     <!-- 表格数据 -->
     <el-table :data="tableData" style="width: 100%" stripe size="small">
-      <el-table-column label="作品集ID" prop="collectionId" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column
+        :key="Math.random()"
+        v-if="!isShow"
+        label="作品集ID"
+        prop="collectionId"
+        :show-overflow-tooltip="true"
+      ></el-table-column>
+      <el-table-column v-if="isShow" label="作品ID" prop="worksId" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column v-if="isShow" label="作品" prop="imageUrl" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <img :src="scope.row.imageUrl" alt style="width:40px;height:40px">
+        </template>
+      </el-table-column>
       <el-table-column label="作品标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -60,10 +72,24 @@
         </template>
       </el-table-column>
       <el-table-column label="所属学校" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column
+        :key="Math.random()"
+        v-if="isShow"
+        label="审核意见"
+        prop="verifyDescrition"
+        :show-overflow-tooltip="true"
+      ></el-table-column>
       <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleWorksInfo(scope.row.collectionId)">查看</el-button>
+          <el-button
+            :key="Math.random()"
+            v-if="!isShow"
+            size="mini"
+            type="primary"
+            @click="handleWorksInfo(scope.row.collectionId)"
+          >查看</el-button>
+          <el-button v-if="isShow" size="mini" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -77,15 +103,22 @@
     >
       <el-dialog width="50%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
         <el-row :gutter="10" type="flex" class="row-bg">
-          <div class="one">
+          <!-- <div class="one">
             <div class="image-box">
-              <el-carousel height="150px" @change="changeCarousel" :autoplay="false" arrow="always">
+              <el-carousel
+                height="150px"
+                @change="changeCarousel"
+                indicator-position="none"
+                :autoplay="false"
+                :loop="false"
+                arrow="always"
+              >
                 <el-carousel-item v-for="works in worksData" :key="works.worksId">
                   <img :src="works.imageUrl" class="image">
                 </el-carousel-item>
               </el-carousel>
             </div>
-          </div>
+          </div>-->
           <div class="two">
             <el-form
               ref="check"
@@ -123,7 +156,7 @@
         </el-row>
       </el-dialog>
       <el-table ref="multipleTable" :data="worksData" style="width: 100%" stripe size="small">
-        <el-table-column type="selection" width="55" :selectable="selectable"></el-table-column>
+        <!-- <el-table-column type="selection" width="55" :selectable="selectable"></el-table-column> -->
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
@@ -132,9 +165,9 @@
         </el-table-column>
         <el-table-column prop="verifyStatus" label="审核状态">
           <template slot-scope="scope">
-            <span v-if="scope.row.verifyStatus === 1">审核通过</span>
-            <span v-else-if="scope.row.verifyStatus === 2">审核不通过</span>
-            <span v-else>待审核</span>
+            <span v-if="scope.row.verifyStatus === 0">待审核</span>
+            <span v-else-if="scope.row.verifyStatus === 1">审核通过</span>
+            <span v-else>审核不通过</span>
           </template>
         </el-table-column>
         <el-table-column prop="verifyDescrition" label="审核意见"></el-table-column>
@@ -154,8 +187,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <template v-if="scope.row.verifyStatus !== 1">
-              <el-button size="mini" type="primary" @click="handleWorksCheck">审核</el-button>
+            <template v-if="scope.row.verifyStatus === 0">
+              <el-button size="mini" type="primary" @click="handleWorksCheck(scope.row)">审核</el-button>
             </template>
           </template>
         </el-table-column>
@@ -189,12 +222,15 @@
 </template>
 <script>
 import service from "@/api";
-import { worksType } from "@/mixins";
+import { checkStages, worksType } from "@/mixins";
 export default {
   name: "worksCheck",
-  mixins: [worksType],
+  mixins: [checkStages, worksType],
   data() {
     return {
+      carouselIndex: 0,
+      worksId: null,
+      isShow: false,
       dialogCheckWorks: false,
       dialogWorks: false,
       formLabelWidth: "80px",
@@ -220,12 +256,7 @@ export default {
       totalCount: 0,
       worksCount: 0,
       tableData: [],
-      worksData: [],
-      checkStageList: [
-        { id: 0, name: "待审核" },
-        { id: 1, name: "审核完成" },
-        { id: 2, name: "审核不通过" }
-      ]
+      worksData: []
     };
   },
   methods: {
@@ -249,13 +280,17 @@ export default {
       this.querys.collectionId = collectionId;
       this.queryWorksDetailList(this.querys);
     },
-    handleWorksCheck() {
+    handleWorksCheck(row) {
+      this.worksId = row.worksId;
       this.dialogCheckWorks = true;
-      //this.checkWorks(this.form);
     },
-    handleChangeSwitch(row) {},
+    handleChangeSwitch(row) {
+      let { worksId, recommend } = row;
+      this.recommendWorks({ recommend, worksIds: [worksId] });
+    },
+    //当幻灯片切换时
     changeCarousel(newIndex, oloIndex) {
-      console.log(`${newIndex}-${oloIndex}`);
+      this.worksId = this.worksData[newIndex].worksId;
     },
     selectable(row, index) {
       if (row.verifyStatus !== 1) {
@@ -266,6 +301,8 @@ export default {
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.form.worksIds = [];
+          this.form.worksIds.push(this.worksId);
           this.checkWorks(this.form);
         }
       });
@@ -276,6 +313,11 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        if (this.query.checkStage === 2) {
+          this.isShow = true;
+        } else {
+          this.isShow = false;
+        }
         this.tableData = res.data.data || [];
         this.totalCount = res.data.totalCount;
       }
@@ -294,6 +336,24 @@ export default {
     //作品审核
     async checkWorks(params = {}) {
       let res = await service.checkWorks(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogCheckWorks = false;
+        this.queryWorksDetailList(this.querys);
+      }
+    },
+    //作品推荐
+    async recommendWorks(params) {
+      let res = await service.recommendWorks(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+      }
+    },
+    //删除不通过作品
+    async deleteDetail(params) {
+      let res = await service.deleteDetail(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {

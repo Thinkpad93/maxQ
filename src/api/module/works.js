@@ -42,3 +42,9 @@ export function querySchoolCollection(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//删除不通过作品
+export function deleteDetail(params, config) {
+  return ax.post('/action/mod-xiaojiao/works/deleteDetail.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
