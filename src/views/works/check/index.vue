@@ -89,7 +89,7 @@
             type="primary"
             @click="handleWorksInfo(scope.row.collectionId)"
           >查看</el-button>
-          <el-button v-if="isShow" size="mini" type="danger">删除</el-button>
+          <el-button v-if="isShow" size="mini" type="danger" @click="handleDelWorks(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -280,6 +280,10 @@ export default {
       this.querys.collectionId = collectionId;
       this.queryWorksDetailList(this.querys);
     },
+    //删除不通过作品
+    handleDelWorks(row) {
+      this.deleteDetail({ worksIds: [row.worksId] });
+    },
     handleWorksCheck(row) {
       this.worksId = row.worksId;
       this.dialogCheckWorks = true;
@@ -293,10 +297,7 @@ export default {
       this.worksId = this.worksData[newIndex].worksId;
     },
     selectable(row, index) {
-      if (row.verifyStatus !== 1) {
-        return true;
-      }
-      return false;
+      return row.verifyStatus !== 1 ? true : false;
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -340,6 +341,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogCheckWorks = false;
+        this.$refs.check.resetFields();
         this.queryWorksDetailList(this.querys);
       }
     },
@@ -357,6 +359,7 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.queryWorksCollection(this.query);
       }
     }
   },

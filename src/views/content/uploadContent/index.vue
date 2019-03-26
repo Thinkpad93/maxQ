@@ -5,7 +5,7 @@
       <div class="page-header" :class="[ collapse ? 'collapse-200' : 'collapse-64' ]">
         <!-- <el-button @click="submitAssess">测试上传图片</el-button> -->
         <!-- <el-button @click="handleCancel">取消</el-button> -->
-        <!-- <el-button @click="handleViewContent">预览内容</el-button> -->
+        <el-button @click="handleViewContent">预览内容</el-button>
         <el-button type="primary" @click="handleUpload('form')">上传内容</el-button>
       </div>
       <el-row :gutter="30">

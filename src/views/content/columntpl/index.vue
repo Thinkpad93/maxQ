@@ -25,31 +25,25 @@
       </el-row>
     </template>
     <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="栏目模板ID" prop="templateId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="栏目模板" prop="name" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="栏目模板描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleDetail(scope.row)">模板详细</el-button>
-            <!-- 默认模板不能删除 -->
-            <template v-if="scope.row.type">
-              <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>
-            </template>
-            <template v-else>
-              <el-button size="mini" type="primary" @click="handleChannelDefautl(scope.row)">设置默认模板</el-button>
-            </template>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDel(scope.$index,scope.row)"
-              v-if="!scope.row.type"
-            >删除</el-button>
+    <base-table :data="tableData" :columns="columns">
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleDetail(scope.row)">模板详细</el-button>
+          <template v-if="scope.row.type">
+            <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>
           </template>
-        </el-table-column>
-      </el-table>
-    </template>
+          <template v-else>
+            <el-button size="mini" type="primary" @click="handleChannelDefautl(scope.row)">设置默认模板</el-button>
+          </template>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDel(scope.$index,scope.row)"
+            v-if="!scope.row.type"
+          >删除</el-button>
+        </template>
+      </el-table-column>
+    </base-table>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -362,12 +356,29 @@
 import service from "@/api";
 import { scrollType, priority, validType } from "@/mixins";
 import { disabledDate, hours } from "@/utils/tools";
-
+import QTable from "@/components/QTable";
 export default {
   name: "columnTpl",
   mixins: [scrollType, priority, validType],
+  components: {
+    "base-table": QTable
+  },
   data() {
     return {
+      columns: [
+        {
+          label: "栏目模板ID",
+          prop: "templateId"
+        },
+        {
+          label: "栏目模板",
+          prop: "name"
+        },
+        {
+          label: "栏目模板描述",
+          prop: "description"
+        }
+      ],
       dialogAdd: false,
       dialogDetail: false,
       dialogValidity: false,

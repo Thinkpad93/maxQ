@@ -16,7 +16,6 @@
 </template>
 <script>
 import bus from "@/utils/bus";
-import { getToken } from "@/utils/auth";
 //在组件中分发 Action
 import { mapGetters } from "vuex";
 

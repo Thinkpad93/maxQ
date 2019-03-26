@@ -1,6 +1,9 @@
 import store from '@/store';
 import axios from 'axios';
 import qs from 'qs';
+import {
+  MessageBox
+} from 'element-ui';
 
 import {
   getToken
@@ -9,7 +12,7 @@ import {
 
 const service = axios.create({
   baseURL: process.env.BASE_API,
-  timeout: 20000,
+  timeout: 5000,
   withCredentials: true //允许携带cookie
 });
 
@@ -36,9 +39,23 @@ service.interceptors.request.use(config => {
 
 // 响应拦截器
 service.interceptors.response.use(config => {
-  //console.log("响应拦截器");
-  console.log(config);
-  return config;
+  const res = config.data;
+  if (res.errorCode === -1 && res.errorMsg === "用户未登录，请登录！") {
+    MessageBox.alert("session失效，请重新登陆", "提示", {
+      type: 'warning',
+      showClose: false,
+      showCancelButton: false,
+    }).then(() => {
+      store.dispatch("qxuser/qxLogout").then(res => {
+        if (res.errorCode === 0) {
+          location.reload();
+        }
+      });
+    });
+    return Promise.reject('error');
+  } else {
+    return config;
+  }
 }, error => {
   console.log('err' + error) // for debug
   return Promise.reject(error);

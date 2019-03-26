@@ -71,6 +71,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
+            :disabled="scope.row.processStage === 0"
             size="mini"
             type="primary"
             @click="handleWorksInfo(scope.row.collectionId, scope.$index)"
@@ -132,6 +133,7 @@
               :multiple="true"
               :with-credentials="true"
               action="#"
+              accept="application/zip, application/x-zip, application/x-zip-compressed"
               :http-request="submitUpload"
             >
               <el-button size="small" type="primary">点击上传</el-button>
@@ -165,25 +167,34 @@
     </el-dialog>
     <!-- 作品集详情 -->
     <el-dialog width="80%" top="20px" title="作品列表" :visible.sync="dialogWorks">
-      <el-dialog width="50%" append-to-body title="作品集查看" :visible.sync="dialogWorksInner">
+      <el-dialog
+        custom-class="qx-dialog"
+        append-to-body
+        title="作品集查看"
+        :visible.sync="dialogWorksInner"
+      >
         <el-carousel
-          height="150px"
           indicator-position="none"
+          :height="carouselHeight + 'px'"
           :autoplay="false"
           :loop="false"
           arrow="always"
         >
           <el-carousel-item v-for="works in worksData" :key="works.worksId">
-            <img :src="works.imageUrl" class="image">
+            <img :src="works.imageUrl" class="image" ref="image" @load="handleImageLoad">
           </el-carousel-item>
         </el-carousel>
       </el-dialog>
       <el-table ref="singleTable" :data="worksData" style="width: 100%" stripe size="small">
+        <el-table-column type="selection" width="55" :selectable="handleSelectCheckbox"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
-            <!-- @click="dialogWorksInner = true" -->
-            <img :src="scope.row.smallUrl" alt style="width:40px;height:40px">
+            <img
+              :src="scope.row.smallUrl"
+              style="width:40px;height:40px"
+              @click="dialogWorksInner = true"
+            >
           </template>
         </el-table-column>
         <el-table-column prop="verifyStatus" label="审核状态">
@@ -219,6 +230,9 @@
           layout="total,prev, pager, next"
           :total="worksCount"
         ></el-pagination>
+        <!-- <div class="barasingha">
+          <el-button size="mini" type="primary">推荐</el-button>
+        </div>-->
       </div>
     </el-dialog>
   </div>
@@ -231,6 +245,7 @@ export default {
   mixins: [checkStage, worksType],
   data() {
     return {
+      carouselHeight: 0,
       rowIndex: null,
       dialogFormVisible: false,
       dialogWorks: false,
@@ -273,6 +288,12 @@ export default {
     }
   },
   methods: {
+    //获取图片高度，从而设置carousel高度
+    handleImageLoad() {
+      this.$nextTick(() => {
+        this.carouselHeight = this.$refs.image[0].height;
+      });
+    },
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.querySchoolCollection(this.query);
@@ -302,6 +323,9 @@ export default {
       let { worksId, recommend } = row;
       this.recommendWorks({ recommend, worksIds: [worksId] });
     },
+    handleSelectCheckbox(row, index) {
+      return row.verifyStatus !== 1 ? true : false;
+    },
     async submitAssess() {
       this.uploadForm = new FormData();
       this.$refs.uploadImage.submit();
@@ -316,9 +340,7 @@ export default {
         if (this.form.uploadType) {
           this.form.compressFile = res.data[0];
         } else {
-          res.data.forEach(img => {
-            this.form.images.push(img);
-          });
+          this.form.images = res.data;
         }
         return true;
       }
@@ -381,10 +403,15 @@ export default {
       }
     }
   },
+  mounted() {},
   activated() {
     this.querySchoolCollection(this.query);
   }
 };
 </script>
 <style lang="less" scoped>
+.barasingha {
+  display: flex;
+  justify-content: space-between;
+}
 </style>
