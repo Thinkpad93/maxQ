@@ -1,42 +1,54 @@
 <template>
   <div class="page">
-    <!-- 表单 -->
-    <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-        <el-form-item label="栏目名称">
-          <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-          <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增栏目</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <!-- 表格数据 -->
-    <base-table :data="tableData" :columns="columns">
-      <el-table-column width="200" label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </base-table>
-    <!-- 表格数据 -->
-    <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
-        ></el-pagination>
+    <div class="page-hd">
+      <!-- 表单 -->
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="栏目名称">
+            <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增栏目</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <base-table :data="tableData" :columns="columns">
+        <el-table-column width="200" label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </base-table>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+          ></el-pagination>
+        </div>
+      </template>
+    </div>
     <!-- 新增 or 编辑 -->
     <template>
       <el-dialog top="40px" title :visible.sync="dialogFormVisible">

@@ -1,7 +1,14 @@
 <template>
   <div class="page">
     <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+      <el-form
+        class="demo-form-inline"
+        :inline="true"
+        :model="query"
+        size="small"
+        label-width="70px"
+        label-position="left"
+      >
         <el-form-item label="年级">
           <el-select v-model="query.grade" placeholder="选择年级">
             <el-option

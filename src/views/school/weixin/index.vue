@@ -5,6 +5,7 @@
       <el-col :span="24">
         <div class="page-form">
           <el-form
+            class="demo-form-inline"
             :inline="true"
             :model="query"
             size="small"

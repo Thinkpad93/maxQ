@@ -13,20 +13,20 @@ export default {
       });
     },
     del(state, params) {
-      let ientries = state.tabList.entries();
-      for (let [i, v] of ientries) {
-        if (v.path === params) {
-          state.tabList.splice(i, 1);
-          break;
-        }
-      }
       // let ientries = state.tabList.entries();
       // for (let [i, v] of ientries) {
-      //   if (v.path === params.path) {
+      //   if (v.path === params) {
       //     state.tabList.splice(i, 1);
       //     break;
       //   }
       // }
+      let ientries = state.tabList.entries();
+      for (let [i, v] of ientries) {
+        if (v.path === params.path) {
+          state.tabList.splice(i, 1);
+          break;
+        }
+      }
     }
   },
   actions: {

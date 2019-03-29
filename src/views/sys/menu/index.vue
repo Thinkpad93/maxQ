@@ -1,34 +1,38 @@
 <template>
   <div class="page">
-    <div class="page-form" style="padding-bottom: 18px;">
-      <el-button icon="el-icon-plus" type="primary" size="small" @click="dialogAdd = true">新增一级菜单</el-button>
-      <qx-treeTable :data="data" :columns="columns">
-        <el-table-column label="状态" prop="status">
-          <template slot-scope="scope">
-            <span v-if="scope.row.status === 0" style="color:#67C23A;">正常</span>
-            <span v-else style="color:#F56C6C;">关闭</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="平台类型" prop="flatFlag">
-          <template slot-scope="scope">
-            <span v-if="scope.row.flatFlag === 0">PC端</span>
-            <span v-else>手机端</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" plain @click="handleChild(scope.row)">新增子菜单</el-button>
-            <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
-            <template v-if="scope.row.children === null && !scope.row.children">
-              <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
+    <div class="page-hd"></div>
+    <div class="page-bd">
+      <div class="page-form" style="padding-bottom: 18px;">
+        <el-button icon="el-icon-plus" type="primary" size="small" @click="dialogAdd = true">新增一级菜单</el-button>
+        <qx-treeTable :data="data" :columns="columns">
+          <el-table-column label="状态" prop="status">
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === 0" style="color:#67C23A;">正常</span>
+              <span v-else style="color:#F56C6C;">关闭</span>
             </template>
-            <template v-else-if="scope.row.children.length === 0">
-              <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
+          </el-table-column>
+          <el-table-column label="平台类型" prop="flatFlag">
+            <template slot-scope="scope">
+              <span v-if="scope.row.flatFlag === 0">PC端</span>
+              <span v-else>手机端</span>
             </template>
-          </template>
-        </el-table-column>
-      </qx-treeTable>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" plain @click="handleChild(scope.row)">新增子菜单</el-button>
+              <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
+              <template v-if="scope.row.children === null && !scope.row.children">
+                <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
+              </template>
+              <template v-else-if="scope.row.children.length === 0">
+                <el-button size="mini" type="danger" plain @click="handleDel(scope.row)">删除</el-button>
+              </template>
+            </template>
+          </el-table-column>
+        </qx-treeTable>
+      </div>
     </div>
+    <div class="page-ft"></div>
     <!-- 新增 -->
     <template>
       <el-dialog top="40px" title="新增菜单名称" :visible.sync="dialogAdd">

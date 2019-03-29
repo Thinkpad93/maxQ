@@ -1,28 +1,27 @@
 <template>
   <div class="page">
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form" style="padding-bottom: 18px;">
-            <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">新增网站菜单</el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
-    <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" stripe size="small">
-        <el-table-column label="序号" prop="id"></el-table-column>
-        <el-table-column label="网站菜单" prop="menuName"></el-table-column>
-        <el-table-column label="页数" prop="page"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+    <div class="page-hd">
+      <div class="page-form" style="padding-bottom: 18px;">
+        <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">新增网站菜单</el-button>
+      </div>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <template>
+        <el-table :data="tableData" style="width: 100%" stripe size="small">
+          <el-table-column label="序号" prop="id"></el-table-column>
+          <el-table-column label="网站菜单" prop="menuName"></el-table-column>
+          <el-table-column label="页数" prop="page"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </div>
+    <div class="page-ft"></div>
   </div>
 </template>
 <script>

@@ -41,7 +41,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(config => {
   const res = config.data;
   if (res.errorCode === -1 && res.errorMsg === "用户未登录，请登录！") {
-    MessageBox.alert("登陆失效，请重新登陆", "提示", {
+    MessageBox.alert("请重新登陆", "提示", {
       type: 'warning',
       showClose: false,
       showCancelButton: false,

@@ -1,96 +1,99 @@
 <template>
   <div class="page">
-    <el-row :gutter="10">
-      <el-col :span="24">
-        <div class="page-form">
-          <el-form
-            :inline="true"
-            :model="query"
-            size="small"
-            label-width="70px"
-            label-position="left"
-          >
-            <el-form-item label="作品类别">
-              <el-select v-model="query.type" placeholder="选择作品类别">
-                <el-option
-                  v-for="item in worksTypeList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="审核状态">
-              <el-select v-model="query.checkStage">
-                <el-option
-                  v-for="item in checkStageList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              <el-button
-                size="small"
-                icon="el-icon-plus"
-                type="primary"
-                @click="dialogFormVisible = true"
-              >上传作品</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-col>
-    </el-row>
-    <!-- 表格数据 -->
-    <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-      <el-table-column label="作品集ID" prop="collectionId" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span size="mini" v-if="scope.row.type === 1">美术</span>
-          <span size="mini" v-else-if="scope.row.type === 2">书法</span>
-          <span size="mini" v-else>作业</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="处理阶段" prop="processStage" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span v-if="scope.row.processStage === 0">待处理</span>
-          <span v-else>处理完成</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核阶段" prop="checkStage" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span size="mini" v-if="scope.row.checkStage === 0">待审核</span>
-          <span size="mini" v-else>审核完成</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            :disabled="scope.row.processStage === 0"
-            size="mini"
-            type="primary"
-            @click="handleWorksInfo(scope.row.collectionId, scope.$index)"
-          >查看</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <div class="qx-pagination" v-if="totalCount">
-      <el-pagination
-        background
-        small
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="query.page"
-        :page-size="query.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="totalCount"
-      ></el-pagination>
+    <div class="page-hd">
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="作品类别">
+            <el-select v-model="query.type" placeholder="选择作品类别">
+              <el-option
+                v-for="item in worksTypeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核状态">
+            <el-select v-model="query.checkStage">
+              <el-option
+                v-for="item in checkStageList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-plus"
+              type="primary"
+              @click="dialogFormVisible = true"
+            >上传作品</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table-column label="作品集ID" prop="collectionId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span size="mini" v-if="scope.row.type === 1">美术</span>
+            <span size="mini" v-else-if="scope.row.type === 2">书法</span>
+            <span size="mini" v-else>作业</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="处理阶段" prop="processStage" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="scope.row.processStage === 0">待处理</span>
+            <span v-else>处理完成</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核阶段" prop="checkStage" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span size="mini" v-if="scope.row.checkStage === 0">待审核</span>
+            <span size="mini" v-else>审核完成</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              :disabled="scope.row.processStage === 0"
+              size="mini"
+              type="primary"
+              @click="handleWorksInfo(scope.row.collectionId, scope.$index)"
+            >查看</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
     </div>
     <!-- 新增 -->
     <el-dialog

@@ -1,47 +1,59 @@
 <template>
   <div class="page">
-    <!-- 表单 -->
-    <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-        <el-form-item label="标签类型">
-          <el-select v-model="query.queryType" placeholder="选择标签类型">
-            <el-option
-              v-for="item in labelsType"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="标签名称">
-          <el-input v-model="query.name" placeholder="请输入标签名称" maxlength="10"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-          <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="page-hd">
+      <!-- 表单 -->
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="标签类型">
+            <el-select v-model="query.queryType" placeholder="选择标签类型">
+              <el-option
+                v-for="item in labelsType"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="标签名称">
+            <el-input v-model="query.name" placeholder="请输入标签名称" maxlength="10"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
+            <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
-    <!-- 表格数据 -->
-    <el-table :data="tableData" style="width: 100%" stripe size="small">
-      <el-table-column label="标签ID" prop="labelId"></el-table-column>
-      <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span size="mini" v-if="scope.row.type === 0">全部</span>
-          <span size="mini" v-else-if="scope.row.type === 1">特色</span>
-          <span size="mini" v-else-if="scope.row.type === 2">商圈</span>
-          <span size="mini" v-else>冠名企业</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table-column label="标签ID" prop="labelId"></el-table-column>
+        <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span size="mini" v-if="scope.row.type === 0">全部</span>
+            <span size="mini" v-else-if="scope.row.type === 1">特色</span>
+            <span size="mini" v-else-if="scope.row.type === 2">商圈</span>
+            <span size="mini" v-else>冠名企业</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="page-ft"></div>
     <!-- 新增 or 编辑 -->
     <template>
       <el-dialog top="40px" title :visible.sync="dialogFormVisible">

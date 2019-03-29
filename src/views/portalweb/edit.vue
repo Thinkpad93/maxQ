@@ -1,67 +1,72 @@
 <template>
   <div class="page">
-    <div class="portalweb">
-      <template>
-        <el-row :gutter="10">
-          <el-col :span="24">
-            <div class="page-form">
-              <el-form
-                :inline="true"
-                ref="form"
-                :model="query"
-                size="small"
-                label-width="120px"
-                label-position="left"
-              >
-                <el-form-item
-                  label="网站菜单名称"
-                  prop="menuName"
-                  :rules="[
+    <div class="page-hd"></div>
+    <div class="page-bd">
+      <div class="portalweb">
+        <template>
+          <el-row :gutter="10">
+            <el-col :span="24">
+              <div class="page-form">
+                <el-form
+                  class="demo-form-inline"
+                  :inline="true"
+                  ref="form"
+                  :model="query"
+                  size="small"
+                  label-width="120px"
+                  label-position="left"
+                >
+                  <el-form-item
+                    label="网站菜单名称"
+                    prop="menuName"
+                    :rules="[
                     { required: true, message: '请输入菜单名称', trigger: 'blur' }
                   ]"
-                >
-                  <el-input placeholder="请输入菜单名称" v-model="query.menuName"></el-input>
-                </el-form-item>
-              </el-form>
-              <el-row>
-                <el-button type="primary" size="small" @click="formSubmit('form')">保存</el-button>
-              </el-row>
+                  >
+                    <el-input placeholder="请输入菜单名称" v-model="query.menuName"></el-input>
+                  </el-form-item>
+                </el-form>
+                <el-row>
+                  <el-button type="primary" size="small" @click="formSubmit('form')">保存</el-button>
+                </el-row>
+              </div>
+            </el-col>
+          </el-row>
+        </template>
+        <template>
+          <el-row v-loading="loadding">
+            <div class="edit-container">
+              <quill-editor
+                v-model="content"
+                ref="myQuillEditor"
+                :options="editorOption"
+                @blur="onEditorBlur($event)"
+                @focus="onEditorFocus($event)"
+                @change="onEditorChange($event)"
+              ></quill-editor>
             </div>
-          </el-col>
-        </el-row>
-      </template>
-      <template>
-        <el-row v-loading="loadding">
-          <div class="edit-container">
-            <quill-editor
-              v-model="content"
-              ref="myQuillEditor"
-              :options="editorOption"
-              @blur="onEditorBlur($event)"
-              @focus="onEditorFocus($event)"
-              @change="onEditorChange($event)"
-            ></quill-editor>
-          </div>
-        </el-row>
-        <!-- 图片上传组件辅助-->
-        <el-upload
-          :with-credentials="true"
-          list-type="picture-card"
-          class="avatar-uploader"
-          name="honorImage"
-          ref="upload"
-          accept="image/jpeg, image/gif, image/png, image/bmp"
-          action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
-          :multiple="false"
-          :show-file-list="false"
-          :auto-upload="true"
-          :on-success="handleImageOneSuccess"
-          :before-upload="beforeImageUpload"
-        >
-          <i class="el-icon-plus"></i>
-        </el-upload>
-      </template>
+          </el-row>
+          <!-- 图片上传组件辅助-->
+          <el-upload
+            :with-credentials="true"
+            list-type="picture-card"
+            class="avatar-uploader"
+            name="honorImage"
+            ref="upload"
+            accept="image/jpeg, image/gif, image/png, image/bmp"
+            action="/qxiao-cms/action/mod-xiaojiao/region/addImage.do"
+            :multiple="false"
+            :show-file-list="false"
+            :auto-upload="true"
+            :on-success="handleImageOneSuccess"
+            :before-upload="beforeImageUpload"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </template>
+      </div>
     </div>
+    <div class="page-ft"></div>
   </div>
 </template>
 <script>

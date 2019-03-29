@@ -1,52 +1,65 @@
 <template>
   <div class="page">
-    <!-- 表单 -->
-    <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-        <el-form-item label="栏目模板">
-          <el-input v-model="query.templateName" placeholder="请输入栏目模板" maxlength="40"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-          <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增栏目模板</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <!-- 表格数据 -->
-    <base-table :data="tableData" :columns="columns">
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleDetail(scope.row)">模板详细</el-button>
-          <template v-if="scope.row.type">
-            <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>
-          </template>
-          <template v-else>
-            <el-button size="mini" type="primary" @click="handleChannelDefautl(scope.row)">设置默认模板</el-button>
-          </template>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDel(scope.$index,scope.row)"
-            v-if="!scope.row.type"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </base-table>
-    <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
-        ></el-pagination>
+    <div class="page-hd">
+      <!-- 表单 -->
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="栏目模板">
+            <el-input v-model="query.templateName" placeholder="请输入栏目模板" maxlength="40"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增栏目模板</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <base-table :data="tableData" :columns="columns">
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleDetail(scope.row)">模板详细</el-button>
+            <template v-if="scope.row.type">
+              <el-button :disabled="scope.row.type === 1" size="mini" type="info">默认模板</el-button>
+            </template>
+            <template v-else>
+              <el-button size="mini" type="primary" @click="handleChannelDefautl(scope.row)">设置默认模板</el-button>
+            </template>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDel(scope.$index,scope.row)"
+              v-if="!scope.row.type"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </base-table>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+          ></el-pagination>
+        </div>
+      </template>
+    </div>
     <!-- 新增栏目模板 -->
     <template>
       <el-dialog top="40px" title="新增栏目模板" :visible.sync="dialogAdd">

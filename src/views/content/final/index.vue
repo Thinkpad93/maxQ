@@ -1,65 +1,78 @@
 <template>
   <div class="page">
-    <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-        <el-form-item label="内容标题">
-          <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
-        </el-form-item>
-        <el-form-item label="审核状态">
-          <el-select v-model="query.verifyStatus" clearable placeholder="请选择审核状态">
-            <el-option
-              v-for="item in verifyStatusList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span
-              style="color:#409EFF;cursor: pointer;"
-              @click="handleViewContent(scope.row)"
-            >{{ scope.row.title }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <template v-if="scope.row.verifyStatus === 0">
-              <el-button size="mini" type="primary" @click="handleStage(scope.row)">预览审核</el-button>
-            </template>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
-    <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
-        ></el-pagination>
+    <div class="page-hd">
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="内容标题">
+            <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
+          </el-form-item>
+          <el-form-item label="审核状态">
+            <el-select v-model="query.verifyStatus" clearable placeholder="请选择审核状态">
+              <el-option
+                v-for="item in verifyStatusList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <template>
+        <el-table :data="tableData" style="width: 100%" stripe size="small">
+          <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span
+                style="color:#409EFF;cursor: pointer;"
+                @click="handleViewContent(scope.row)"
+              >{{ scope.row.title }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="上传者" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <template v-if="scope.row.verifyStatus === 0">
+                <el-button size="mini" type="primary" @click="handleStage(scope.row)">预览审核</el-button>
+              </template>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+          ></el-pagination>
+        </div>
+      </template>
+    </div>
     <!-- 预览审核 -->
     <!-- 查看上传详情信息 -->
     <!-- 预览审核 -->

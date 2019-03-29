@@ -1,70 +1,83 @@
 <template>
   <div class="page">
-    <!-- 表单 -->
-    <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-        <el-form-item label="区域选择">
-          <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
-        </el-form-item>
-        <el-form-item label="学校名称">
-          <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-          <el-button icon="el-icon-plus" type="primary" @click="handleAddSchool">新增学校</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span
-              style="color:#409EFF;cursor:pointer;"
-              @click="handleViewInfo(scope.row)"
-            >{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="scope.row.headName === null">无</span>
-            <span v-else>{{ scope.row.headName }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span v-if="scope.row.headPhone === null">无</span>
-            <span v-else>{{ scope.row.headPhone }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
-    <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
-        ></el-pagination>
+    <div class="page-hd">
+      <!-- 表单 -->
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="区域选择">
+            <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
+          </el-form-item>
+          <el-form-item label="学校名称">
+            <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="handleAddSchool">新增学校</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <template>
+        <el-table :data="tableData" style="width: 100%" stripe size="small">
+          <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span
+                style="color:#409EFF;cursor:pointer;"
+                @click="handleViewInfo(scope.row)"
+              >{{ scope.row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="负责人" prop="headName" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span v-if="scope.row.headName === null">无</span>
+              <span v-else>{{ scope.row.headName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="负责人电话" prop="headPhone" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span v-if="scope.row.headPhone === null">无</span>
+              <span v-else>{{ scope.row.headPhone }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+          ></el-pagination>
+        </div>
+      </template>
+    </div>
     <!-- 查看学校信息 -->
     <template>
       <el-dialog width="70%" center top="40px" title :visible.sync="dialogView">
@@ -203,7 +216,7 @@ export default {
   computed: {
     //设置表格高度
     tableHeight() {
-      return window.innerHeight - 255;
+      return window.innerHeight - 230;
     },
     ...mapGetters(["scopeType"])
   },

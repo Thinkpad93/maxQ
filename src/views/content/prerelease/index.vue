@@ -1,99 +1,104 @@
 <template>
   <div class="page">
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form
-              :inline="true"
-              :model="query"
-              size="small"
-              label-width="70px"
-              label-position="left"
-            >
-              <el-form-item label="内容标题">
-                <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
-    <div class="release">
-      <template>
-        <el-row :gutter="10">
-          <el-col :span="24">
-            <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
-              <el-tab-pane label="待预发布" name="0">
-                <el-table :data="tableData" style="width: 100%" stripe size="small">
-                  <el-table-column
-                    width="150"
-                    label="内容编号"
-                    type="index"
-                    :show-overflow-tooltip="true"
-                  ></el-table-column>
-                  <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                      <span
-                        style="color:#409EFF;cursor: pointer;"
-                        @click="handleViewContent(scope.row)"
-                      >{{ scope.row.title }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="操作" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                      <el-button size="mini" type="primary" @click="handleRelease(scope.row)">预发布</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-tab-pane>
-              <el-tab-pane label="已预发布" name="1">
-                <el-table :data="tableData2" style="width: 100%" stripe size="small">
-                  <el-table-column
-                    width="150"
-                    label="内容编号"
-                    type="index"
-                    :show-overflow-tooltip="true"
-                  ></el-table-column>
-                  <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                      <span
-                        style="color:#409EFF;cursor: pointer;"
-                        @click="handleViewContent(scope.row)"
-                      >{{ scope.row.title }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
-                  <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                      <span
-                        style="color:#409EFF;cursor:pointer;"
-                        @click="handleViewSchool(scope.row)"
-                      >查看</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                      <el-button size="mini" type="primary" @click="handleRelease(scope.row)">再次预发布</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-tab-pane>
-            </el-tabs>
-          </el-col>
-        </el-row>
-      </template>
+    <div class="page-hd">
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="内容标题">
+            <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div class="page-bd">
+      <div class="release">
+        <template>
+          <el-row :gutter="10">
+            <el-col :span="24">
+              <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
+                <el-tab-pane label="待预发布" name="0">
+                  <el-table :data="tableData" style="width: 100%" stripe size="small">
+                    <el-table-column
+                      width="150"
+                      label="内容编号"
+                      type="index"
+                      :show-overflow-tooltip="true"
+                    ></el-table-column>
+                    <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <span
+                          style="color:#409EFF;cursor: pointer;"
+                          @click="handleViewContent(scope.row)"
+                        >{{ scope.row.title }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="发布来源" prop="resources" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="操作" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <el-button size="mini" type="primary" @click="handleRelease(scope.row)">预发布</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="已预发布" name="1">
+                  <el-table :data="tableData2" style="width: 100%" stripe size="small">
+                    <el-table-column
+                      width="150"
+                      label="内容编号"
+                      type="index"
+                      :show-overflow-tooltip="true"
+                    ></el-table-column>
+                    <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <span
+                          style="color:#409EFF;cursor: pointer;"
+                          @click="handleViewContent(scope.row)"
+                        >{{ scope.row.title }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="栏目名称" prop="channelName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="申请人" prop="userName" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="上传时间" prop="publishTime" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="审核时间" prop="checkTime" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="发布学校" prop="schoolName" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <span
+                          style="color:#409EFF;cursor:pointer;"
+                          @click="handleViewSchool(scope.row)"
+                        >查看</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作" :show-overflow-tooltip="true">
+                      <template slot-scope="scope">
+                        <el-button
+                          size="mini"
+                          type="primary"
+                          @click="handleRelease(scope.row)"
+                        >再次预发布</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-tab-pane>
+              </el-tabs>
+            </el-col>
+          </el-row>
+        </template>
+      </div>
+    </div>
+    <div class="page-ft">
       <!-- 分页 -->
       <template>
         <div class="qx-pagination" v-if="totalCount">

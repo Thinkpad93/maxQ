@@ -1,11 +1,8 @@
 <template>
   <div class="page">
-    <el-row :gutter="10">
-      <el-col :span="6"></el-col>
-      <el-col :span="6"></el-col>
-      <el-col :span="6"></el-col>
-      <el-col :span="6"></el-col>
-    </el-row>
+    <div class="page-hd"></div>
+    <div class="page-bd"></div>
+    <div class="page-ft"></div>
   </div>
 </template>
 <script>

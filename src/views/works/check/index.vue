@@ -1,98 +1,114 @@
 
 <template>
   <div class="page">
-    <el-row :gutter="10">
-      <el-col :span="24">
-        <div class="page-form">
-          <el-form
-            :inline="true"
-            :model="query"
-            size="small"
-            label-width="70px"
-            label-position="left"
-          >
-            <el-form-item label="作品类别">
-              <el-select v-model="query.type" placeholder="选择作品类别">
-                <el-option
-                  v-for="item in worksTypeList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="审核状态">
-              <el-select v-model="query.checkStage">
-                <el-option
-                  v-for="item in checkStageLists"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="审核时间">
-              <el-date-picker
-                v-model="query.startTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                value-format="yyyy-MM-dd"
-              ></el-date-picker>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-col>
-    </el-row>
-    <!-- 表格数据 -->
-    <el-table :data="tableData" style="width: 100%" stripe size="small">
-      <el-table-column
-        :key="Math.random()"
-        v-if="!isShow"
-        label="作品集ID"
-        prop="collectionId"
-        :show-overflow-tooltip="true"
-      ></el-table-column>
-      <el-table-column v-if="isShow" label="作品ID" prop="worksId" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column v-if="isShow" label="作品" prop="imageUrl" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <img :src="scope.row.imageUrl" alt style="width:40px;height:40px">
-        </template>
-      </el-table-column>
-      <el-table-column label="作品标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span size="mini" v-if="scope.row.type === 1">美术</span>
-          <span size="mini" v-else-if="scope.row.type === 2">书法</span>
-          <span size="mini" v-else>作业</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="所属学校" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column
-        :key="Math.random()"
-        v-if="isShow"
-        label="审核意见"
-        prop="verifyDescrition"
-        :show-overflow-tooltip="true"
-      ></el-table-column>
-      <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            :key="Math.random()"
-            v-if="!isShow"
-            size="mini"
-            type="primary"
-            @click="handleWorksInfo(scope.row.collectionId)"
-          >查看</el-button>
-          <el-button v-if="isShow" size="mini" type="danger" @click="handleDelWorks(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="page-hd">
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="作品类别">
+            <el-select v-model="query.type" placeholder="选择作品类别">
+              <el-option
+                v-for="item in worksTypeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核状态">
+            <el-select v-model="query.checkStage">
+              <el-option
+                v-for="item in checkStageLists"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核时间">
+            <el-date-picker
+              v-model="query.startTime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table-column
+          :key="Math.random()"
+          v-if="!isShow"
+          label="作品集ID"
+          prop="collectionId"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column v-if="isShow" label="作品ID" prop="worksId" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column v-if="isShow" label="作品" prop="imageUrl" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <img :src="scope.row.imageUrl" alt style="width:40px;height:40px">
+          </template>
+        </el-table-column>
+        <el-table-column label="作品标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span size="mini" v-if="scope.row.type === 1">美术</span>
+            <span size="mini" v-else-if="scope.row.type === 2">书法</span>
+            <span size="mini" v-else>作业</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属学校" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          :key="Math.random()"
+          v-if="isShow"
+          label="审核意见"
+          prop="verifyDescrition"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
+        <el-table-column label="上传时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              :key="Math.random()"
+              v-if="!isShow"
+              size="mini"
+              type="primary"
+              @click="handleWorksInfo(scope.row.collectionId)"
+            >查看</el-button>
+            <el-button v-if="isShow" size="mini" type="danger" @click="handleDelWorks(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
+    </div>
     <!-- 作品集详情 -->
     <el-dialog
       width="80%"
@@ -205,19 +221,6 @@
         ></el-pagination>
       </div>
     </el-dialog>
-    <!-- 分页 -->
-    <div class="qx-pagination" v-if="totalCount">
-      <el-pagination
-        background
-        small
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="query.page"
-        :page-size="query.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="totalCount"
-      ></el-pagination>
-    </div>
   </div>
 </template>
 <script>
@@ -238,7 +241,7 @@ export default {
         type: 0,
         checkStage: 0,
         title: "",
-        startTime: "",
+        startTime: [],
         endTime: "",
         page: 1,
         pageSize: 20
@@ -269,6 +272,9 @@ export default {
       this.queryWorksCollection(this.query);
     },
     handleSearch() {
+      if (this.query.page !== 1) {
+        this.query.page = 1;
+      }
       this.queryWorksCollection(this.query);
     },
     worksCurrentChange(curr) {
