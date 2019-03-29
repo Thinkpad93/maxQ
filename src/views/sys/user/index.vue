@@ -1,73 +1,86 @@
 <template>
   <div class="page">
-    <!-- 表单 -->
-    <div class="page-form">
-      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-        <el-form-item label="学校名称">
-          <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
-        </el-form-item>
-        <el-form-item label="账号名称">
-          <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-          <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
-        <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <span
-              style="color:#409EFF;cursor:pointer;"
-              @click="handleViewInfo(scope.row)"
-            >{{ scope.row.userName }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="用户角色" prop="roleName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人" prop="masterName" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="负责人电话" prop="masterPhone" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="所属学校" prop="name" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="添加时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="账号状态" prop="status" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              :width="35"
-              :active-value="0"
-              inactive-value="1"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="handleSwitch(scope.row)"
-            ></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" prop :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleReset(scope.row)">重置密码</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
-    <!-- 新增账号 -->
-    <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
-        ></el-pagination>
+    <div class="page-hd">
+      <!-- 表单 -->
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="学校名称">
+            <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
+          </el-form-item>
+          <el-form-item label="账号名称">
+            <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
+    </div>
+    <div class="page-bd">
+      <!-- 表格数据 -->
+      <template>
+        <el-table :data="tableData" style="width: 100%" stripe size="small">
+          <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span
+                style="color:#409EFF;cursor:pointer;"
+                @click="handleViewInfo(scope.row)"
+              >{{ scope.row.userName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="用户角色" prop="roleName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="负责人" prop="masterName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="负责人电话" prop="masterPhone" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="所属学校" prop="name" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="添加时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="账号状态" prop="status" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                :width="35"
+                :active-value="0"
+                inactive-value="1"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                @change="handleSwitch(scope.row)"
+              ></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" prop :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" @click="handleReset(scope.row)">重置密码</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <template>
+        <div class="qx-pagination" v-if="totalCount">
+          <el-pagination
+            background
+            small
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="query.page"
+            :page-size="query.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+          ></el-pagination>
+        </div>
+      </template>
+    </div>
+
     <template>
       <el-dialog top="40px" title="新增账号" :visible.sync="dialogAdd">
         <el-form
@@ -300,7 +313,7 @@ export default {
   computed: {
     //设置表格高度
     tableHeight() {
-      return window.innerHeight - 255;
+      return window.innerHeight - 230;
     },
     computedPage() {
       return this.tableData.slice(

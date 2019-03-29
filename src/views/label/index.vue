@@ -176,8 +176,6 @@ export default {
       let res = await service.addLabel(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
-        //this.resetForm("form");
         this.queryLabel(this.query);
       }
     },
@@ -185,7 +183,6 @@ export default {
     async deleteLabel(labelId) {
       let res = await service.deleteLabel({ labelId });
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryLabel(this.query);
       }
     }

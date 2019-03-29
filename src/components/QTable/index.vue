@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="data" stripe size="small" :max-height="tableHeight">
+  <el-table :data="data" stripe size="small">
     <template v-for="(column, index) in columns">
       <el-table-column :show-overflow-tooltip="true" :key="index" v-bind="column || {}">
         <!-- <template slot-scope="scope">
