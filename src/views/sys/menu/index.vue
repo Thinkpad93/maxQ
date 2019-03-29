@@ -1,20 +1,7 @@
 <template>
   <div class="page">
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form" style="padding-bottom: 18px;">
-            <el-button
-              icon="el-icon-plus"
-              type="primary"
-              size="small"
-              @click="dialogAdd = true"
-            >新增一级菜单</el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
-    <template>
+    <div class="page-form" style="padding-bottom: 18px;">
+      <el-button icon="el-icon-plus" type="primary" size="small" @click="dialogAdd = true">新增一级菜单</el-button>
       <qx-treeTable :data="data" :columns="columns">
         <el-table-column label="状态" prop="status">
           <template slot-scope="scope">
@@ -41,7 +28,7 @@
           </template>
         </el-table-column>
       </qx-treeTable>
-    </template>
+    </div>
     <!-- 新增 -->
     <template>
       <el-dialog top="40px" title="新增菜单名称" :visible.sync="dialogAdd">

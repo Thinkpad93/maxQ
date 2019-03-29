@@ -1,32 +1,20 @@
 <template>
   <div class="page">
     <!-- 表单 -->
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form
-              :inline="true"
-              :model="query"
-              size="small"
-              label-width="70px"
-              label-position="left"
-            >
-              <el-form-item label="学校名称">
-                <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
-              </el-form-item>
-              <el-form-item label="账号名称">
-                <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="学校名称">
+          <el-input v-model.trim="query.schoolName" placeholder="请输入学校名称" maxlength="40"></el-input>
+        </el-form-item>
+        <el-form-item label="账号名称">
+          <el-input v-model.trim="query.userName" placeholder="请输入账号" maxlength="40"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          <el-button icon="el-icon-plus" type="primary" @click="dialogAdd = true">新增账号</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
@@ -46,12 +34,15 @@
         <el-table-column label="添加时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="账号状态" prop="status" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span
-              @click="handleSwitch(scope.row)"
-              v-if="scope.row.status === 1"
-              style="color:#ff4949;cursor: pointer;"
-            >停用</span>
-            <span @click="handleSwitch(scope.row)" v-else style="color:#13ce66;cursor: pointer;">启用</span>
+            <el-switch
+              v-model="scope.row.status"
+              :width="35"
+              :active-value="0"
+              inactive-value="1"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              @change="handleSwitch(scope.row)"
+            ></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" prop :show-overflow-tooltip="true">
@@ -360,8 +351,7 @@ export default {
     },
     handleSwitch(row) {
       let { status, accountId } = row;
-      status === 0 ? (status = 1) : (status = 0);
-      this.changeStatus({ accountId, status });
+      this.changeStatus({ accountId, status: status ? 1 : 0 });
     },
     handleReset(row) {
       let { userName, name, accountId } = row;
@@ -448,8 +438,6 @@ export default {
     async changeStatus({ accountId, status }) {
       let res = await service.changeStatus({ accountId, status });
       if (res.errorCode === 0) {
-        this.queryAccount();
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
     //用户列表

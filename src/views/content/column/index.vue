@@ -1,25 +1,17 @@
 <template>
   <div class="page">
     <!-- 表单 -->
-    <template>
-      <div class="page-form">
-        <el-form
-          :inline="true"
-          :model="query"
-          size="small"
-          label-width="70px"
-          label-position="left"
-        >
-          <el-form-item label="栏目名称">
-            <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增栏目</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="栏目名称">
+          <el-input v-model="query.channelName" placeholder="请输入栏目名称" maxlength="40"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增栏目</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 表格数据 -->
     <base-table :data="tableData" :columns="columns">
       <el-table-column width="200" label="操作">

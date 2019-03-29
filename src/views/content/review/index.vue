@@ -1,37 +1,25 @@
 <template>
   <div class="page">
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form
-              :inline="true"
-              :model="query"
-              size="small"
-              label-width="70px"
-              label-position="left"
-            >
-              <el-form-item label="内容标题">
-                <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
-              </el-form-item>
-              <el-form-item label="审核状态">
-                <el-select v-model="query.verifyStatus" clearable placeholder="请选择审核状态">
-                  <el-option
-                    v-for="item in verifyStatusList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="内容标题">
+          <el-input v-model="query.title" placeholder="请输入内容标题" maxlength="10"></el-input>
+        </el-form-item>
+        <el-form-item label="审核状态">
+          <el-select v-model="query.verifyStatus" clearable placeholder="请选择审核状态">
+            <el-option
+              v-for="item in verifyStatusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
@@ -106,23 +94,28 @@
           </div>
           <div class="two">
             <div class="list">
-              <p>标题：
+              <p>
+                标题：
                 <span>{{ info.title }}</span>
               </p>
-              <p>内容类型：
+              <p>
+                内容类型：
                 <span v-if="info.contentType === 0">全屏播放</span>
                 <span v-else>滚动播放</span>
               </p>
               <template v-if="info.contentType === 0">
-                <p>内容属性：
+                <p>
+                  内容属性：
                   <span v-if="info.contentProperty === 0">原创</span>
                   <span v-else>摘要</span>
                 </p>
-                <p>作者：
+                <p>
+                  作者：
                   <span v-if="info.author">{{ info.author }}</span>
                   <span v-else>无</span>
                 </p>
-                <p>播放时长：
+                <p>
+                  播放时长：
                   <span>{{ info.durationTime }}</span>
                 </p>
                 <p>
@@ -136,10 +129,12 @@
                 </p>
               </template>
               <template v-else>
-                <p>播放有效期：
+                <p>
+                  播放有效期：
                   <span>{{ info.playTime }} 至 {{ info.endTime }}</span>
                 </p>
-                <p v-if="info.contentType === 1">滚动内容：
+                <p v-if="info.contentType === 1">
+                  滚动内容：
                   <span>{{ info.rollContent }}</span>
                 </p>
               </template>

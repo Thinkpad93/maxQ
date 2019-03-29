@@ -1,89 +1,47 @@
 <template>
   <div class="page">
     <!-- 表单 -->
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form
-              :inline="true"
-              :model="query"
-              size="small"
-              label-width="70px"
-              label-position="left"
-            >
-              <el-form-item label="标签类型">
-                <el-select v-model="query.queryType" placeholder="选择标签类型">
-                  <el-option
-                    v-for="item in labelsType"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="标签名称">
-                <el-input v-model="query.name" placeholder="请输入标签名称" maxlength="10"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="标签类型">
+          <el-select v-model="query.queryType" placeholder="选择标签类型">
+            <el-option
+              v-for="item in labelsType"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="标签名称">
+          <el-input v-model="query.name" placeholder="请输入标签名称" maxlength="10"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
+          <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有标签哦">
-        <el-table-column label="标签ID" prop="labelId"></el-table-column>
-        <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <template v-if="scope.row.show">
-              <el-select v-model="scope.row.type" size="mini">
-                <el-option
-                  v-for="item in labelsList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </template>
-            <template v-else>
-              <span size="mini" v-if="scope.row.type === 0" style="color:#409EFF">全部</span>
-              <span size="mini" v-else-if="scope.row.type === 1" style="color:#409EFF">特色</span>
-              <span size="mini" v-else-if="scope.row.type === 2" style="color:#409EFF">商圈</span>
-              <span size="mini" v-else style="color:#409EFF">冠名企业</span>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <template v-if="scope.row.show">
-              <el-input v-model="scope.row.name" size="mini"></el-input>
-            </template>
-            <template v-else>
-              <span>{{ scope.row.name }}</span>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="描述" prop="description" :show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <template v-if="scope.row.show">
-              <el-input v-model="scope.row.description" size="mini"></el-input>
-            </template>
-            <template v-else>{{ scope.row.description }}</template>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+    <el-table :data="tableData" style="width: 100%" stripe size="small">
+      <el-table-column label="标签ID" prop="labelId"></el-table-column>
+      <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span size="mini" v-if="scope.row.type === 0">全部</span>
+          <span size="mini" v-else-if="scope.row.type === 1">特色</span>
+          <span size="mini" v-else-if="scope.row.type === 2">商圈</span>
+          <span size="mini" v-else>冠名企业</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="标签名称" prop="name" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column label="描述" prop="description" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     <!-- 新增 or 编辑 -->
     <template>
       <el-dialog top="40px" title :visible.sync="dialogFormVisible">
@@ -134,9 +92,13 @@
 </template>
 <script>
 import service from "@/api";
+import QTable from "@/components/QTable";
 export default {
   name: "labels",
   inject: ["reload"], //注入依赖
+  components: {
+    "base-table": QTable
+  },
   data() {
     return {
       dialogFormVisible: false,

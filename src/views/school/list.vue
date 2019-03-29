@@ -1,34 +1,31 @@
 <template>
   <div class="page">
     <!-- 表单 -->
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
-              <el-form-item label="区域选择">
-                <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
-              </el-form-item>
-              <el-form-item label="学校名称">
-                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
-              </el-form-item>                     
-              <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-                <el-button icon="el-icon-plus" type="primary" @click="handleAddSchool">新增学校</el-button>
-              </el-form-item>                
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="区域选择">
+          <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
+        </el-form-item>
+        <el-form-item label="学校名称">
+          <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          <el-button icon="el-icon-plus" type="primary" @click="handleAddSchool">新增学校</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 表格数据 -->
     <template>
       <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
         <el-table-column label="学校ID" prop="schoolId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校名称" prop="name" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span style="color:#409EFF;cursor:pointer;" @click="handleViewInfo(scope.row)">{{ scope.row.name }}</span>
-          </template>                    
+            <span
+              style="color:#409EFF;cursor:pointer;"
+              @click="handleViewInfo(scope.row)"
+            >{{ scope.row.name }}</span>
+          </template>
         </el-table-column>
         <el-table-column label="学校性质" prop="propertyName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="学校类型" prop="typeName" :show-overflow-tooltip="true"></el-table-column>
@@ -42,17 +39,17 @@
           <template slot-scope="scope">
             <span v-if="scope.row.headPhone === null">无</span>
             <span v-else>{{ scope.row.headPhone }}</span>
-          </template>          
+          </template>
         </el-table-column>
         <el-table-column label="地址" prop="address" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-          </template>                       
-        </el-table-column>        
+          </template>
+        </el-table-column>
       </el-table>
-    </template>  
+    </template>
     <!-- 分页 -->
     <template>
       <div class="qx-pagination" v-if="totalCount">
@@ -64,13 +61,13 @@
           :current-page="query.page"
           :page-size="query.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
-        </el-pagination>
+          :total="totalCount"
+        ></el-pagination>
       </div>
-    </template>   
+    </template>
     <!-- 查看学校信息 -->
     <template>
-      <el-dialog width="70%" center top="40px" title="" :visible.sync="dialogView">
+      <el-dialog width="70%" center top="40px" title :visible.sync="dialogView">
         <div class="qx-card">
           <div class="qx-card-head">
             <div class="qx-card-head-wrapper">
@@ -81,12 +78,14 @@
             <el-row :gutter="10">
               <el-col :span="8">
                 <div class="qx-trem">区域</div>
-                <div class="qx-detail">{{ info.provinceName }} {{ info.cityName }} {{ info.regionName }}</div>
+                <div
+                  class="qx-detail"
+                >{{ info.provinceName }} {{ info.cityName }} {{ info.regionName }}</div>
               </el-col>
               <el-col :span="8">
                 <div class="qx-trem">详细地址</div>
                 <div class="qx-detail">{{ info.address }}</div>
-              </el-col>  
+              </el-col>
             </el-row>
             <el-row :gutter="10">
               <el-col :span="8">
@@ -100,47 +99,47 @@
               <el-col :span="8">
                 <div class="qx-trem">学校类型</div>
                 <div class="qx-detail">{{ info.propertyName }}</div>
-              </el-col> 
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">办学元年</div>
                 <div class="qx-detail">{{ info.firstYear }}</div>
-              </el-col>   
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">班级数量</div>
                 <div class="qx-detail">{{ info.classNumber }}</div>
-              </el-col>   
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">学校人数</div>
                 <div class="qx-detail">{{ info.studentNumber }}</div>
-              </el-col>                
+              </el-col>
             </el-row>
             <el-row :gutter="10">
               <el-col :span="8">
                 <div class="qx-trem">校长</div>
                 <div class="qx-detail">{{ info.masterName }}</div>
-              </el-col>  
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">校长电话</div>
                 <div class="qx-detail">{{ info.masterPhone }}</div>
-              </el-col>  
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">校长邮箱</div>
                 <div class="qx-detail">{{ info.masterEmail }}</div>
-              </el-col>  
+              </el-col>
             </el-row>
-            <el-row :gutter="10">  
+            <el-row :gutter="10">
               <el-col :span="8">
                 <div class="qx-trem">负责人</div>
                 <div class="qx-detail">{{ info.headName }}</div>
-              </el-col>  
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">负责人电话</div>
                 <div class="qx-detail">{{ info.headPhone }}</div>
-              </el-col>     
+              </el-col>
               <el-col :span="8">
                 <div class="qx-trem">负责人邮箱</div>
                 <div class="qx-detail">{{ info.headEmail }}</div>
-              </el-col>                                                                                                                                                                                               
+              </el-col>
             </el-row>
             <el-row :gutter="10">
               <el-col :span="24">
@@ -154,7 +153,7 @@
               <el-col :span="8">
                 <div class="qx-trem">学校标语</div>
                 <div class="qx-detail">{{ info.slogan }}</div>
-              </el-col>                
+              </el-col>
             </el-row>
             <el-row :gutter="10">
               <el-col :span="24">
@@ -166,12 +165,12 @@
               <el-col :span="12" v-for="(item, index) in info.schoolImage" :key="index">
                 <div class="qx-honour" :style="{ backgroundImage: `url(${item.imageUrl})` }"></div>
               </el-col>
-            </el-row>            
+            </el-row>
           </div>
         </div>
       </el-dialog>
-    </template>   
-  </div>  
+    </template>
+  </div>
 </template>
 <script>
 import service from "@/api";

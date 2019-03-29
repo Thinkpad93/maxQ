@@ -1,33 +1,23 @@
 <template>
   <div class="page">
-    <el-row :gutter="10">
-      <el-col :span="24">
-        <div class="page-form">
-          <el-form
-            :inline="true"
-            :model="query"
-            size="small"
-            label-width="70px"
-            label-position="left"
-          >
-            <el-form-item label="年级">
-              <el-select v-model="query.grade" placeholder="选择年级">
-                <el-option
-                  v-for="item in labelsType"
-                  :key="item.classId"
-                  :label="item.className"
-                  :value="item.classId"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              <el-button size="small" icon="el-icon-plus" type="primary">新增</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-col>
-    </el-row>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="年级">
+          <el-select v-model="query.grade" placeholder="选择年级">
+            <el-option
+              v-for="item in labelsType"
+              :key="item.classId"
+              :label="item.className"
+              :value="item.classId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          <el-button size="small" icon="el-icon-plus" type="primary">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有班级哦">
       <el-table-column label="序号" prop="classId"></el-table-column>
       <el-table-column label="班级名称" prop="className"></el-table-column>

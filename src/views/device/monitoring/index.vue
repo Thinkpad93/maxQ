@@ -1,40 +1,28 @@
 <template>
   <div class="page">
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form
-              :inline="true"
-              :model="query"
-              size="small"
-              label-width="70px"
-              label-position="left"
-            >
-              <el-form-item label="区域选择">
-                <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
-              </el-form-item>
-              <el-form-item label="学校名称">
-                <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
-              </el-form-item>
-              <el-form-item label="设备状态">
-                <el-select v-model="query.status" placeholder="请选择设备状态">
-                  <el-option
-                    v-for="item in deviceStatus"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="区域选择">
+          <qx-region-t @regionChange="handleRegionChange" :scopeType.sync="scopeType"></qx-region-t>
+        </el-form-item>
+        <el-form-item label="学校名称">
+          <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
+        </el-form-item>
+        <el-form-item label="设备状态">
+          <el-select v-model="query.status" placeholder="请选择设备状态">
+            <el-option
+              v-for="item in deviceStatus"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 设备列表 -->
     <template>
       <div class="container-block">
@@ -113,16 +101,20 @@
           </div>
           <div class="two">
             <div class="list">
-              <p>学校：
+              <p>
+                学校：
                 <span>{{ viewDevice.schoolName }}</span>
               </p>
-              <p>设备编号：
+              <p>
+                设备编号：
                 <span>{{ viewDevice.deviceNo }}</span>
               </p>
-              <p>设备IP：
+              <p>
+                设备IP：
                 <span>{{ viewDevice.ip }}</span>
               </p>
-              <p>MAC地址：
+              <p>
+                MAC地址：
                 <span>{{ viewDevice.mac }}</span>
               </p>
               <p>
@@ -131,16 +123,20 @@
                 <span v-else-if="viewDevice.status === 1" style="color:#F56C6C;">故障</span>
                 <span v-else style="color:#E6A23C;">正常关机</span>
               </p>
-              <p>安装位置：
+              <p>
+                安装位置：
                 <span>{{ viewDevice.address }}</span>
               </p>
-              <p>设备管理员：
+              <p>
+                设备管理员：
                 <span>{{ viewDevice.manager }}</span>
               </p>
-              <p>联系电话：
+              <p>
+                联系电话：
                 <span>{{ viewDevice.phone }}</span>
               </p>
-              <p>快照时间：
+              <p>
+                快照时间：
                 <span>{{ viewDevice.snapshotTime }}</span>
               </p>
             </div>

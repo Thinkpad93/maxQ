@@ -1,29 +1,17 @@
 <template>
   <div class="page">
     <!-- 表单 -->
-    <template>
-      <el-row :gutter="10">
-        <el-col :span="24">
-          <div class="page-form">
-            <el-form
-              :inline="true"
-              :model="query"
-              size="small"
-              label-width="70px"
-              label-position="left"
-            >
-              <el-form-item label="角色名称">
-                <el-input v-model.trim="query.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-                <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增角色</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-    </template>
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="角色名称">
+          <el-input v-model.trim="query.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+          <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增角色</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!-- 表格数据 -->
     <base-table :data="tableData" :columns="columns">
       <el-table-column label="操作">
@@ -34,67 +22,63 @@
       </el-table-column>
     </base-table>
     <!-- 分页 -->
-    <template>
-      <div class="qx-pagination" v-if="totalCount">
-        <el-pagination
-          background
-          small
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="query.page"
-          :page-size="query.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount"
-        ></el-pagination>
-      </div>
-    </template>
+    <div class="qx-pagination" v-if="totalCount">
+      <el-pagination
+        background
+        small
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="query.page"
+        :page-size="query.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalCount"
+      ></el-pagination>
+    </div>
     <!-- 新增 or 编辑 -->
-    <template>
-      <el-dialog top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
-        <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
-          <el-form-item
-            label="角色名称"
-            prop="roleName"
-            :rules="[
+    <el-dialog top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
+      <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+        <el-form-item
+          label="角色名称"
+          prop="roleName"
+          :rules="[
               { required: true, message: '请输入角色名称', trigger: 'blur' }
             ]"
-          >
-            <el-input v-model="form.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
-          </el-form-item>
-          <el-form-item label="角色等级">
-            <el-select v-model="form.roleLevel" placeholder="选择标签类型" disabled>
-              <el-option
-                v-for="item in roleLevelList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="备注" prop="description">
-            <el-input type="textarea" v-model="form.description" :rows="4" placeholder="请输入备注"></el-input>
-          </el-form-item>
-          <el-form-item label="菜单权限设置">
-            <!--  -->
-            <el-tree
-              ref="tree"
-              :data="menuData"
-              highlight-current
-              default-expand-all
-              check-on-click-node
-              show-checkbox
-              node-key="permitId"
-              :default-checked-keys="permitIds"
-              :props="defaultProps"
-            ></el-tree>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="dialogAdd = false">取消</el-button>
-          <el-button size="small" type="primary" @click="formSubmit('form')">确定</el-button>
-        </span>
-      </el-dialog>
-    </template>
+        >
+          <el-input v-model="form.roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
+        </el-form-item>
+        <el-form-item label="角色等级">
+          <el-select v-model="form.roleLevel" placeholder="选择标签类型" disabled>
+            <el-option
+              v-for="item in roleLevelList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注" prop="description">
+          <el-input type="textarea" v-model="form.description" :rows="4" placeholder="请输入备注"></el-input>
+        </el-form-item>
+        <el-form-item label="菜单权限设置">
+          <!--  -->
+          <el-tree
+            ref="tree"
+            :data="menuData"
+            highlight-current
+            default-expand-all
+            check-on-click-node
+            show-checkbox
+            node-key="permitId"
+            :default-checked-keys="permitIds"
+            :props="defaultProps"
+          ></el-tree>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="dialogAdd = false">取消</el-button>
+        <el-button size="small" type="primary" @click="formSubmit('form')">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>

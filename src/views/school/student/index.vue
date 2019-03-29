@@ -1,53 +1,43 @@
 <template>
   <div class="page">
-    <el-row :gutter="10">
-      <el-col :span="24">
-        <div class="page-form">
-          <el-form
-            :inline="true"
-            :model="query"
+    <div class="page-form">
+      <el-form :inline="true" :model="query" size="small" label-width="70px" label-position="left">
+        <el-form-item label="年级">
+          <el-select v-model="query.grade" placeholder="选择年级">
+            <el-option
+              v-for="item in labelsType"
+              :key="item.classId"
+              :label="item.className"
+              :value="item.classId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="班级">
+          <el-select v-model="query.classId" placeholder="选择班级">
+            <el-option
+              v-for="item in classList"
+              :key="item.classId"
+              :label="item.classId"
+              :value="item.classId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="学生姓名">
+          <el-input v-model="query.studentName" placeholder="请输入学生姓名" maxlength="10"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+          <el-button
             size="small"
-            label-width="70px"
-            label-position="left"
-          >
-            <el-form-item label="年级">
-              <el-select v-model="query.grade" placeholder="选择年级">
-                <el-option
-                  v-for="item in labelsType"
-                  :key="item.classId"
-                  :label="item.className"
-                  :value="item.classId"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="班级">
-              <el-select v-model="query.classId" placeholder="选择班级">
-                <el-option
-                  v-for="item in classList"
-                  :key="item.classId"
-                  :label="item.classId"
-                  :value="item.classId"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="学生姓名">
-              <el-input v-model="query.studentName" placeholder="请输入学生姓名" maxlength="10"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              <el-button
-                size="small"
-                icon="el-icon-plus"
-                type="primary"
-                @click="dialogFormVisible = true"
-              >录入</el-button>
-              <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
-              <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-col>
-    </el-row>
+            icon="el-icon-plus"
+            type="primary"
+            @click="dialogFormVisible = true"
+          >录入</el-button>
+          <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
+          <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学生哦">
       <el-table-column label="序号" prop="studentId"></el-table-column>
       <el-table-column label="学生姓名" prop="studentName"></el-table-column>

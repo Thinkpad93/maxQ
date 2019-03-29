@@ -44,7 +44,7 @@
       </el-col>
     </el-row>
     <!-- 表格数据 -->
-    <el-table :data="tableData" style="width: 100%" stripe size="small">
+    <el-table :data="tableData" style="width: 100%" :height="tableHeight" stripe size="small">
       <el-table-column label="作品集ID" prop="collectionId" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
@@ -93,7 +93,14 @@
       ></el-pagination>
     </div>
     <!-- 新增 -->
-    <el-dialog width="60%" top="40px" title="上传作品" :visible.sync="dialogFormVisible">
+    <el-dialog
+      width="60%"
+      top="40px"
+      title="上传作品"
+      :close-on-click-modal="false"
+      :show-close="false"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
         <el-form-item
           label="作品标题"
