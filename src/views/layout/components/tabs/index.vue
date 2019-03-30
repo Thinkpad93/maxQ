@@ -7,17 +7,6 @@
       </template>
     </router-link>
   </div>
-  <!-- <div class="q-tabs">
-    <el-tabs
-      v-model="activeName2"
-      type="card"
-      :closable="true"
-      @tab-click="handleTabClick"
-      @tab-remove="handleTabRemove"
-    >
-      <el-tab-pane v-for="tab in tabList" :key="tab.path" :name="tab.path" :label="tab.meta.title"></el-tab-pane>
-    </el-tabs>
-  </div>-->
 </template>
 <script>
 //在组件中分发 Action
@@ -33,12 +22,6 @@ export default {
     }
   },
   computed: {
-    // activeName2: {
-    //   get() {
-    //     return this.$route.path;
-    //   },
-    //   set() {}
-    // },
     ...mapState("tabs", ["tabList"])
   },
   methods: {
@@ -55,26 +38,6 @@ export default {
         }
       });
     }
-    // handleTabClick(tab) {
-    //   if (tab.name === this.$route.path) {
-    //     return;
-    //   } else {
-    //     this.$router.push({ path: tab.name });
-    //   }
-    // },
-    // handleTabRemove(name) {
-    //   if (name) {
-    //     this.removes(name).then(res => {
-    //       console.log(res);
-    //       const latestView = res.slice(-1)[0];
-    //       if (latestView) {
-    //         this.$router.push(latestView);
-    //       } else {
-    //         this.$router.push({ path: "/" });
-    //       }
-    //     });
-    //   }
-    // }
   },
   mounted() {
     return this.$store.commit("tabs/adds", this.$route);
@@ -90,7 +53,7 @@ export default {
   width: 100%;
   display: flex;
   background-color: #fff;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
   a {
     display: flex;
     align-items: center;
@@ -100,29 +63,27 @@ export default {
     padding: 0 10px;
     color: #909399;
     font-size: 13px;
+    border-right: 1px solid #f6f6f6;
     i {
       display: inline-block;
       margin-left: 5px;
-      border-radius: 50%;
-      color: #fff;
-      background-color: #ccc;
     }
     &.router-link-exact-active {
       color: #333;
       background-color: #f6f6f6;
-      i {
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 2px;
         background-color: #409eff;
       }
+      // i {
+      //   background-color: #409eff;
+      // }
     }
   }
 }
-// .q-tabs {
-//   position: absolute;
-//   left: 0;
-//   top: 0;
-//   z-index: 990;
-//   width: 100%;
-//   display: flex;
-//   background-color: #fff;
-// }
 </style>

@@ -117,11 +117,12 @@
       :visible.sync="dialogWorks"
       @close="querys.page = 1"
     >
-      <el-dialog width="50%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
+      <el-dialog width="70%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
         <el-row :gutter="10" type="flex" class="row-bg">
-          <!-- <div class="one">
+          <div class="one">
             <div class="image-box">
-              <el-carousel
+              <div class="cheetah" :style="{backgroundImage: 'url(' + imageUrl +')'}"></div>
+              <!-- <el-carousel
                 height="150px"
                 @change="changeCarousel"
                 indicator-position="none"
@@ -132,9 +133,9 @@
                 <el-carousel-item v-for="works in worksData" :key="works.worksId">
                   <img :src="works.imageUrl" class="image">
                 </el-carousel-item>
-              </el-carousel>
+              </el-carousel>-->
             </div>
-          </div>-->
+          </div>
           <div class="two">
             <el-form
               ref="check"
@@ -172,7 +173,7 @@
         </el-row>
       </el-dialog>
       <el-table ref="multipleTable" :data="worksData" style="width: 100%" stripe size="small">
-        <!-- <el-table-column type="selection" width="55" :selectable="selectable"></el-table-column> -->
+        <el-table-column type="selection" width="55" :selectable="selectable"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
@@ -190,15 +191,16 @@
         <el-table-column prop="verifyTime" label="审核时间"></el-table-column>
         <el-table-column prop="recommend" label="推荐">
           <template slot-scope="scope">
-            <!-- 审核通过 -->
-            <el-switch
-              active-color="#67c23a"
-              :disabled="scope.row.verifyStatus !== 1"
-              :inactive-value="0"
-              :active-value="1"
-              v-model="scope.row.recommend"
-              @change="handleChangeSwitch(scope.row)"
-            ></el-switch>
+            <template v-if="scope.row.verifyStatus === 1">
+              <!-- 审核通过 -->
+              <el-switch
+                active-color="#67c23a"
+                :inactive-value="0"
+                :active-value="1"
+                v-model="scope.row.recommend"
+                @change="handleChangeSwitch(scope.row)"
+              ></el-switch>
+            </template>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -237,6 +239,7 @@ export default {
       dialogCheckWorks: false,
       dialogWorks: false,
       formLabelWidth: "80px",
+      imageUrl: "",
       query: {
         type: 0,
         checkStage: 0,
@@ -291,6 +294,7 @@ export default {
       this.deleteDetail({ worksIds: [row.worksId] });
     },
     handleWorksCheck(row) {
+      this.imageUrl = row.imageUrl;
       this.worksId = row.worksId;
       this.dialogCheckWorks = true;
     },
@@ -375,4 +379,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.cheetah {
+  height: 400px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
 </style>

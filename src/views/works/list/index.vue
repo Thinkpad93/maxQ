@@ -218,15 +218,16 @@
         <el-table-column prop="verifyTime" label="审核时间"></el-table-column>
         <el-table-column prop="recommend" label="推荐">
           <template slot-scope="scope">
-            <!-- 审核通过 -->
-            <el-switch
-              active-color="#67c23a"
-              :disabled="scope.row.verifyStatus !== 1"
-              :inactive-value="0"
-              :active-value="1"
-              v-model="scope.row.recommend"
-              @change="handleChangeSwitch(scope.row)"
-            ></el-switch>
+            <template v-if="scope.row.verifyStatus === 1">
+              <!-- 审核通过 -->
+              <el-switch
+                active-color="#67c23a"
+                :inactive-value="0"
+                :active-value="1"
+                v-model="scope.row.recommend"
+                @change="handleChangeSwitch(scope.row)"
+              ></el-switch>
+            </template>
           </template>
         </el-table-column>
       </el-table>
