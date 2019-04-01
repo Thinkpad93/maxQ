@@ -5,5 +5,6 @@ export default {
   type: state => state.qxuser.type,
   scopeId: state => state.qxuser.scopeId,
   scopeType: state => state.qxuser.scopeType,
+  schoolId: state => state.qxuser.schoolId,
   distpickerData: state => state.comm.distpickerData
 }

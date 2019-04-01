@@ -14,6 +14,7 @@ export default {
     type: null, //账号类型 0-促进会 1-学校 2-教育局 3-培训机构
     scopeId: null,
     scopeType: null, // 0省 1市 2区 5admin
+    schoolId: null, //微信端学校ID
     menu: []
   },
   mutations: {
@@ -34,6 +35,9 @@ export default {
     },
     SET_MENU: (state, menu) => {
       state.menu = menu;
+    },
+    SET_SCHOOLID: (state, schoolId) => {
+      state.schoolId = schoolId;
     }
   },
   actions: {
@@ -69,6 +73,7 @@ export default {
               commit('SET_SCOPEID', res.data.scopeId);
               commit('SET_SCOPETYPE', res.data.scopeType);
               commit('SET_MENU', res.data.router);
+              commit('SET_SCHOOLID', res.data.schoolId);
             }
             resolve(res);
           } else if (res.errorCode === -1) {

@@ -1,64 +1,70 @@
 <template>
   <div class="page">
-    <div class="page-form">
-      <el-form
-        class="demo-form-inline"
-        :inline="true"
-        :model="query"
-        size="small"
-        label-width="70px"
-        label-position="left"
-      >
-        <el-form-item label="年级">
-          <el-select v-model="query.grade" placeholder="选择年级">
-            <el-option
-              v-for="item in labelsType"
-              :key="item.classId"
-              :label="item.className"
-              :value="item.classId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="班级">
-          <el-select v-model="query.classId" placeholder="选择班级">
-            <el-option
-              v-for="item in classList"
-              :key="item.classId"
-              :label="item.classId"
-              :value="item.classId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="学生姓名">
-          <el-input v-model="query.studentName" placeholder="请输入学生姓名" maxlength="10"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-          <el-button
-            size="small"
-            icon="el-icon-plus"
-            type="primary"
-            @click="dialogFormVisible = true"
-          >录入</el-button>
-          <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
-          <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="page-hd">
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="年级">
+            <el-select v-model="query.grade" placeholder="选择年级">
+              <el-option
+                v-for="item in labelsType"
+                :key="item.classId"
+                :label="item.className"
+                :value="item.classId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="班级">
+            <el-select v-model="query.classId" placeholder="选择班级">
+              <el-option
+                v-for="item in classList"
+                :key="item.classId"
+                :label="item.classId"
+                :value="item.classId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="学生姓名">
+            <el-input v-model="query.studentName" placeholder="请输入学生姓名" maxlength="10"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-plus"
+              type="primary"
+              @click="dialogFormVisible = true"
+            >录入</el-button>
+            <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
+            <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
-    <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学生哦">
-      <el-table-column label="序号" prop="studentId"></el-table-column>
-      <el-table-column label="学生姓名" prop="studentName"></el-table-column>
-      <el-table-column label="手机号" prop="tel"></el-table-column>
-      <el-table-column label="年级" prop="grade"></el-table-column>
-      <el-table-column label="班级" prop="className"></el-table-column>
-      <el-table-column label="关系" prop="relation"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="page-bd">
+      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学生哦">
+        <el-table-column label="序号" prop="studentId"></el-table-column>
+        <el-table-column label="学生姓名" prop="studentName"></el-table-column>
+        <el-table-column label="手机号" prop="tel"></el-table-column>
+        <el-table-column label="年级" prop="grade"></el-table-column>
+        <el-table-column label="班级" prop="className"></el-table-column>
+        <el-table-column label="关系" prop="relation"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="page-ft"></div>
+
     <!-- 新增 or 编辑 -->
     <el-dialog top="40px" title :visible.sync="dialogFormVisible">
       <el-form

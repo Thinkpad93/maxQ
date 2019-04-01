@@ -1,46 +1,47 @@
 
 <template>
   <div class="page">
-    <el-row :gutter="10">
-      <el-col :span="24">
-        <div class="page-form">
-          <el-form
-            class="demo-form-inline"
-            :inline="true"
-            :model="query"
-            size="small"
-            label-width="70px"
-            label-position="left"
-          >
-            <el-form-item label="学校名称">
-              <el-input v-model="query.schoolName" placeholder="请输入学校名称" maxlength="10"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-              <el-button
-                size="small"
-                icon="el-icon-plus"
-                type="primary"
-                @click="dialogFormVisible = true"
-              >新增</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-col>
-    </el-row>
-    <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学校哦">
-      <el-table-column label="学校ID" prop="id"></el-table-column>
-      <el-table-column label="学校名称" prop="schoolName"></el-table-column>
-      <el-table-column label="手机号" prop="tel"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="primary">班级管理</el-button>
-          <el-button size="mini" type="primary">老师管理</el-button>
-          <el-button size="mini" type="primary">学生管理</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="page-hd">
+      <div class="page-form">
+        <el-form
+          class="demo-form-inline"
+          :inline="true"
+          :model="query"
+          size="small"
+          label-width="70px"
+          label-position="left"
+        >
+          <el-form-item label="学校名称">
+            <el-input v-model="query.schoolName" placeholder="请输入学校名称" maxlength="10"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-plus"
+              type="primary"
+              @click="dialogFormVisible = true"
+            >新增</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div class="page-bd">
+      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学校哦">
+        <el-table-column label="学校ID" prop="id"></el-table-column>
+        <el-table-column label="学校名称" prop="schoolName"></el-table-column>
+        <el-table-column label="手机号" prop="tel"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="primary">班级管理</el-button>
+            <el-button size="mini" type="primary">老师管理</el-button>
+            <el-button size="mini" type="primary">学生管理</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="page-ft"></div>
     <!-- 新增 or 编辑 -->
     <el-dialog top="40px" title :visible.sync="dialogFormVisible">
       <el-form
