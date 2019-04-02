@@ -80,13 +80,13 @@
     </div>
     <!-- 查看学校信息 -->
     <template>
-      <el-dialog width="70%" center top="40px" title :visible.sync="dialogView">
+      <el-dialog width="70%" title="学校信息详情" top="40px" :visible.sync="dialogView">
         <div class="qx-card">
-          <div class="qx-card-head">
+          <!-- <div class="qx-card-head">
             <div class="qx-card-head-wrapper">
               <div class="qx-card-head-title">学校信息详情</div>
             </div>
-          </div>
+          </div>-->
           <div class="qx-card-body">
             <el-row :gutter="10">
               <el-col :span="8">
@@ -320,10 +320,6 @@ export default {
   padding: 16px 0;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.qx-card-body {
-  padding: 24px 0px;
-  transition: padding 0.3s;
 }
 .qx-trem {
   display: table-cell;

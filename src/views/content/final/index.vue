@@ -195,7 +195,6 @@ export default {
   mixins: [verifyStatus],
   data() {
     return {
-      //dialogViewContent: false,
       isShowform: false,
       dialogView: false,
       formLabelWidth: "100px",
@@ -241,7 +240,6 @@ export default {
       this.queryContentByContentId(row.contentId);
     },
     handleStage(row) {
-      //let { title, contentId, checkStage } = row;
       this.isShowform = true;
       this.title = row.title;
       this.form.contentId = row.contentId;
@@ -281,11 +279,6 @@ export default {
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
         this.dialogView = true;
-        // if (str == "view") {
-        //   this.dialogView = true;
-        // } else {
-        //   this.dialogViewContent = true;
-        // }
       }
     }
   },

@@ -286,7 +286,6 @@
 </template>
 <script>
 import service from "@/api";
-import bus from "@/utils/bus";
 import region from "@/components/region";
 import { isPhone } from "@/utils/validator";
 import { property, typeid } from "@/mixins";
@@ -300,7 +299,6 @@ export default {
   inject: ["reload"], //注入依赖
   data() {
     return {
-      collapse: true,
       dialogViewImg: false,
       previewChannel: false,
       formLabelWidth: "100px",
@@ -485,11 +483,6 @@ export default {
       }
     }
   },
-  mounted() {
-    bus.$on("collapse", msg => {
-      return msg ? (this.collapse = false) : (this.collapse = true);
-    });
-  },
   activated() {
     this.queryLabel();
     this.queryChannelTemplateAll();
@@ -506,21 +499,10 @@ export default {
   height: 100%;
   background-size: cover;
 }
-.collapse-200 {
-  left: 200px;
-  width: calc(100% - 200px);
-}
-.collapse-64 {
-  left: 64px;
-  width: calc(100% - 64px);
-}
 .views-image {
   text-align: center;
 }
 .page-header {
-  // position: fixed;
-  // bottom: 0;
-  // z-index: 10;
   border-top: 1px solid #ebeef5;
   height: 80px;
   display: flex;

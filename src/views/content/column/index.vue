@@ -214,9 +214,4 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.dialog-title {
-  line-height: 24px;
-  font-size: 18px;
-  color: #303133;
-}
 </style>

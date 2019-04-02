@@ -80,9 +80,6 @@ export default {
         height: 2px;
         background-color: #409eff;
       }
-      // i {
-      //   background-color: #409eff;
-      // }
     }
   }
 }

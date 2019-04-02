@@ -10,7 +10,7 @@
           label-width="70px"
           label-position="left"
         >
-          <el-form-item label="年级">
+          <!-- <el-form-item label="年级">
             <el-select v-model="query.grade" placeholder="选择年级">
               <el-option
                 v-for="item in labelsType"
@@ -19,13 +19,13 @@
                 :value="item.classId"
               ></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="班级">
             <el-select v-model="query.classId" placeholder="选择班级">
               <el-option
                 v-for="item in classList"
                 :key="item.classId"
-                :label="item.classId"
+                :label="item.className"
                 :value="item.classId"
               ></el-option>
             </el-select>
@@ -35,12 +35,7 @@
           </el-form-item>
           <el-form-item>
             <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            <el-button
-              size="small"
-              icon="el-icon-plus"
-              type="primary"
-              @click="dialogFormVisible = true"
-            >录入</el-button>
+            <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
             <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
             <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
           </el-form-item>
@@ -68,10 +63,24 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="page-ft"></div>
+    <div class="page-ft">
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
+    </div>
 
     <!-- 新增 or 编辑 -->
     <el-dialog top="40px" title :visible.sync="dialogFormVisible">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form
         :rules="rules"
         ref="form"
@@ -81,7 +90,7 @@
         :label-width="formLabelWidth"
       >
         <el-form-item label="老师名称" prop="teacherName">
-          <el-input v-model="form.teacherName" placeholder="请输入老师名称"></el-input>
+          <el-input v-model="form.teacherName" placeholder="输入老师名称"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-select v-model="form.sex" placeholder="选择性别">
@@ -89,20 +98,26 @@
           </el-select>
         </el-form-item>
         <el-form-item label="手机号" prop="tel">
-          <el-input v-model="form.tel" placeholder="请输入手机号"></el-input>
+          <el-input v-model="form.tel" placeholder="输入手机号"></el-input>
         </el-form-item>
         <el-form-item label="类别" prop="type">
-          <el-select v-model="form.type" placeholder="选择类别">
+          <el-select v-model="form.type" placeholder="选择职位类别">
             <el-option v-for="item in typeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="任教班级" prop="classIds">
-          <el-select multiple collapse-tags v-model="form.classIds" placeholder="选择任教班级">
+          <el-select
+            multiple
+            collapse-tags
+            v-model="form.classIds"
+            value-key="classId"
+            placeholder="选择任教班级"
+          >
             <el-option
-              v-for="item in labelsFilter"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              v-for="item in classList"
+              :key="item.classId"
+              :label="item.className"
+              :value="item.classId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -123,14 +138,14 @@ export default {
   mixins: [sex, type],
   data() {
     return {
+      isShow: true,
       dialogFormVisible: false,
       formLabelWidth: "100px",
-      classList: [],
       query: {
         grade: 0,
         classId: 0,
         teacherName: "",
-        schoolId: this.$store.getters.schoolId,
+        schoolId: this.$route.params.id,
         page: 1,
         pageSize: 20
       },
@@ -139,14 +154,20 @@ export default {
         sex: 1,
         tel: "",
         type: 1,
-        schoolId: null,
         classIds: []
       },
       rules: {
         teacherName: [
           {
             required: true,
-            message: "请输入老师名称",
+            message: "输入老师名称",
+            trigger: "blur"
+          }
+        ],
+        sex: [
+          {
+            required: true,
+            message: "选择性别",
             trigger: "blur"
           }
         ],
@@ -162,20 +183,43 @@ export default {
             trigger: "blur"
           }
         ],
+        type: [
+          {
+            required: true,
+            message: "选择职位类别",
+            trigger: "blur"
+          }
+        ],
         classIds: [
           {
             required: true,
-            message: "请选择任教班级",
+            message: "选择任教班级",
             trigger: "blur"
           }
         ]
       },
-      tableData: []
+      classList: [],
+      tableData: [],
+      totalCount: 0
     };
   },
   methods: {
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+    },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+    },
     handleSearch() {},
-    handleEdit(row) {},
+    handleAdd() {
+      this.dialogFormVisible = true;
+      this.form = {};
+      this.isShow = true;
+    },
+    handleEdit(row) {
+      this.isShow = false;
+      this.dialogFormVisible = true;
+    },
     handleDel(row) {
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
@@ -192,6 +236,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let schoolId = this.$route.params.id;
+          let classIds = this.form.classIds.map(item => {
+            return { classId: item };
+          });
+          Object.assign(this.form, { schoolId, classIds });
+          if (this.isShow) {
+            this.addTeacher(this.form);
+          } else {
+            this.updateTeacher(this.form);
+          }
+          console.log(this.form);
         }
       });
     },
@@ -211,6 +266,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.queryTeachers(this.query);
       }
     },
     //删除老师信息（微信端）
@@ -235,16 +291,21 @@ export default {
         this.dialogFormVisible = false;
       }
     },
-    async queryClasses(params = {}) {
+    //查询班级列表（微信端）
+    async queryClasses() {
+      let { schoolId, grade } = this.query;
+      let params = { schoolId, grade, className: "" };
       let res = await service.queryClasses(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.classList = res.data;
       }
     }
   },
   mounted() {
     this.queryTeachers(this.query);
+    this.queryClasses();
   }
 };
 </script>

@@ -17,9 +17,6 @@
                   <el-form-item label="区域选择" prop="regionName">
                     <el-input v-model="form.regionName" placeholder="请输入详细地址" disabled></el-input>
                   </el-form-item>
-                  <!-- <el-form-item label="区域选择" prop="regionId">
-                  <qx-region @last="lastInnerChange" v-model="form.regionId"></qx-region>
-                  </el-form-item>-->
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="详细地址" prop="address">
@@ -290,7 +287,6 @@
 </template>
 <script>
 import service from "@/api";
-import bus from "@/utils/bus";
 import region from "@/components/region";
 import { isPhone } from "@/utils/validator";
 import { property, typeid } from "@/mixins";
@@ -305,7 +301,6 @@ export default {
   data() {
     return {
       loading: true,
-      collapse: true,
       dialogViewImg: false,
       previewChannel: false,
       formLabelWidth: "100px",
@@ -495,9 +490,6 @@ export default {
     }
   },
   mounted() {
-    bus.$on("collapse", msg => {
-      return msg ? (this.collapse = false) : (this.collapse = true);
-    });
     this.queryLabel();
     this.queryChannelTemplateAll();
   },
@@ -516,21 +508,10 @@ export default {
   height: 100%;
   background-size: cover;
 }
-.collapse-200 {
-  left: 200px;
-  width: calc(100% - 200px);
-}
-.collapse-64 {
-  left: 64px;
-  width: calc(100% - 64px);
-}
 .views-image {
   text-align: center;
 }
 .page-header {
-  // position: fixed;
-  // bottom: 0;
-  // z-index: 10;
   border-top: 1px solid #ebeef5;
   height: 80px;
   display: flex;

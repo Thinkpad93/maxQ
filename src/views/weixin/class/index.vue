@@ -10,7 +10,7 @@
           label-width="70px"
           label-position="left"
         >
-          <el-form-item label="年级">
+          <!-- <el-form-item label="年级">
             <el-select v-model="query.grade" placeholder="选择年级">
               <el-option
                 v-for="item in labelsType"
@@ -19,10 +19,13 @@
                 :value="item.classId"
               ></el-option>
             </el-select>
+          </el-form-item>-->
+          <el-form-item label="班级名称">
+            <el-input v-model="query.className" placeholder="请输入标签名称" maxlength="10"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            <el-button size="small" icon="el-icon-plus" type="primary">新增</el-button>
+            <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -43,13 +46,31 @@
     <div class="page-ft"></div>
     <!-- 新增 or 编辑 -->
     <el-dialog top="40px" title :visible.sync="dialogFormVisible">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
-        <el-form-item label="年级" prop="grade">
+        <el-form-item
+          label="年级"
+          prop="grade"
+          :rules="[
+              { required: true, message: '选择年级', trigger: 'blur' }
+            ]"
+        >
           <el-select v-model="form.grade" placeholder="选择年级">
-            <el-option v-for="item in typeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in mpClassList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="班级名称" prop="className">
+        <el-form-item
+          label="班级名称"
+          prop="className"
+          :rules="[
+              { required: true, message: '请输入班级名称', trigger: 'blur' }
+            ]"
+        >
           <el-input v-model="form.className" placeholder="请输入班级名称"></el-input>
         </el-form-item>
       </el-form>
@@ -66,56 +87,113 @@ export default {
   name: "class",
   data() {
     return {
+      isShow: true,
       dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
         className: "",
-        schoolId: null,
-        grade: null
+        schoolId: this.$route.params.id,
+        grade: 0
       },
       form: {
-        schoolId: null,
         className: "",
         grade: null
       },
+      mpClassList: [
+        { id: 0, name: "一年级" },
+        { id: 1, name: "二年级" },
+        { id: 2, name: "三年级" },
+        { id: 3, name: "四年级" }
+      ],
       tableData: []
     };
   },
   methods: {
     handleSearch() {},
-    handleEdit(row) {},
-    handleDel(row) {},
+    handleAdd() {
+      this.dialogFormVisible = true;
+      this.form = {};
+      this.isShow = true;
+    },
+    handleEdit(row) {
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+    },
+    handleDel(row) {
+      let that = this;
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
+          that.deleteClass(row.classId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
+    //表单提交
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let schoolId = this.$route.params.id;
+          Object.assign(this.form, { schoolId });
+          if (this.isShow) {
+            this.addClass(this.form);
+          } else {
+            this.updateClass(this.form);
+          }
         }
       });
     },
     //查询班级列表（微信端）
     async queryClasses(params = {}) {
-      let res = await service.queryClasses(params);
+      let res = await service.queryClasses(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
-        this.tableData = res.data.data;
+        this.tableData = res.data;
       }
     },
     //新增班级信息（微信端）
     async addClass(params = {}) {
-      let res = await service.getClass(params);
+      let res = await service.addClass(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryClasses(this.query);
       }
     },
     //编辑班级信息（微信端）
     async updateClass(params = {}) {
-      let res = await service.updateClass(params);
+      let res = await service.updateClass(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.$refs.form.resetFields();
+        this.dialogFormVisible = false;
+        this.queryClasses(this.query);
       }
     },
     //删除班级信息（微信端）
     async deleteClass(classId) {
-      let res = await service.deleteClass({ classId });
+      let res = await service.deleteClass(
+        { classId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
       if (res.errorCode === 0) {
+        this.queryClasses(this.query);
       }
     }
+  },
+  activated() {
+    this.queryClasses(this.query);
   }
 };
 </script>

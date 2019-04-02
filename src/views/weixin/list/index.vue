@@ -27,23 +27,36 @@
       </div>
     </div>
     <div class="page-bd">
-      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学校哦">
-        <el-table-column label="学校ID" prop="id"></el-table-column>
+      <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table-column label="学校ID" prop="schoolId"></el-table-column>
         <el-table-column label="学校名称" prop="schoolName"></el-table-column>
         <el-table-column label="手机号" prop="tel"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="primary">班级管理</el-button>
-            <el-button size="mini" type="primary">老师管理</el-button>
-            <el-button size="mini" type="primary">学生管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row, 1)">班级管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row, 2)">老师管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row, 3)">学生管理</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="page-ft"></div>
+    <div class="page-ft">
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
+    </div>
     <!-- 新增 or 编辑 -->
-    <el-dialog top="40px" title :visible.sync="dialogFormVisible">
+    <el-dialog title top="40px" :visible.sync="dialogFormVisible">
       <el-form
         :rules="rules"
         ref="form"
@@ -55,8 +68,13 @@
         <el-form-item label="区域选择" prop="regionId">
           <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
         </el-form-item>
-        <el-form-item label="学校名称" prop="schoolId">
-          <el-select v-model="form.terminalSchoolId" clearable placeholder="选择学校">
+        <el-form-item label="学校名称" prop="terminalSchoolId">
+          <el-select
+            v-model="form.terminalSchoolId"
+            clearable
+            placeholder="选择学校"
+            @change="handleChangeSchool"
+          >
             <el-option
               v-for="item in schoolList"
               :key="item.id"
@@ -91,6 +109,7 @@ export default {
       formLabelWidth: "100px",
       query: {
         schoolName: "",
+        leaderName: "",
         page: 1,
         pageSize: 20
       },
@@ -129,20 +148,51 @@ export default {
         ]
       },
       tableData: [],
+      totalCount: 0,
       schoolList: []
     };
   },
   methods: {
-    handleSearch() {},
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+    },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+    },
+    handleSearch() {
+      this.querySchoolList(this.query);
+    },
+    handleChangeSchool(value) {
+      let obj = this.schoolList.find(item => item.id === value);
+      this.form.schoolName = obj.name;
+    },
     handleEdit(row) {},
+    //班级管理 老师管理 学生管理
+    handleOpen(row, index) {
+      if (index == 1) {
+        this.$router.push({
+          path: `/weixin/class/${row.schoolId}`
+        });
+      } else if (index == 2) {
+        this.$router.push({
+          path: `/weixin/teacher/${row.schoolId}`
+        });
+      } else {
+        this.$router.push({
+          path: `/weixin/student/${row.schoolId}`
+        });
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let { regionId, ...args } = this.form;
+          this.addLeaderInit(args);
         }
       });
     },
     //加载学校数据
-    async queryRegion() {
+    async queryRegion(value) {
       this.form.regionId = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
@@ -159,6 +209,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     },
     //预录入号码（微信端）
@@ -167,6 +218,8 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.querySchoolList(this.query);
       }
     },
     //根据名称查询学校（微信端）

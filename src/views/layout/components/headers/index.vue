@@ -1,17 +1,19 @@
 <template>
   <el-header id="header">
-    <div class="toggle-aside" @click="collapseChage">
-      <i class="icon iconfont icon-weibiaoti26"></i>
+    <div class="head-container">
+      <div class="toggle-aside" @click="collapseChage">
+        <i class="icon iconfont icon-weibiaoti26"></i>
+      </div>
+      <el-dropdown @command="handleCommand">
+        <span class="el-dropdown-link">
+          {{ name }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>退出</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
-    <el-dropdown class="us" @command="handleCommand">
-      <span class="el-dropdown-link">
-        {{ name }}
-        <i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>退出</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
   </el-header>
 </template>
 <script>
@@ -55,35 +57,22 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.head-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
 #header {
   height: 60px;
   background-color: #ebf1f6;
-  h1 {
-    float: left;
-    width: 200px;
-    text-align: center;
-    img {
-      width: 120px;
-      height: 60px;
-    }
-  }
   .toggle-aside {
-    float: left;
     cursor: pointer;
-    line-height: 60px;
     i {
       font-size: 26px;
       color: #606266;
     }
   }
-}
-.us {
-  cursor: pointer;
-  float: right;
-  margin-top: 22px;
-  margin-right: 40px;
-}
-.account-type {
-  display: none !important;
 }
 </style>

@@ -128,12 +128,12 @@ export default {
         grade: null,
         classId: null,
         studentName: "",
-        schoolId: null
+        schoolId: this.$route.params.id
       },
       form: {
         studentName: "",
         classId: null,
-        schoolId: null,
+        schoolId: this.$route.params.id,
         sex: 1,
         tel: "",
         relation: 1
