@@ -162,14 +162,13 @@ export default {
       this.form = Object.assign({}, row);
     },
     handleDel(row) {
-      let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(function() {
-          that.deleteLabel(row.labelId);
+        .then(() => {
+          this.deleteLabel(row.labelId);
         })
         .catch(error => {
           return false;

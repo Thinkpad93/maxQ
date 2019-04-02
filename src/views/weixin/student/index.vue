@@ -35,12 +35,7 @@
           </el-form-item>
           <el-form-item>
             <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            <el-button
-              size="small"
-              icon="el-icon-plus"
-              type="primary"
-              @click="dialogFormVisible = true"
-            >录入</el-button>
+            <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">录入</el-button>
             <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
             <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
           </el-form-item>
@@ -48,7 +43,7 @@
       </div>
     </div>
     <div class="page-bd">
-      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有学生哦">
+      <el-table :data="tableData" style="width: 100%" stripe size="small">
         <el-table-column label="序号" prop="studentId"></el-table-column>
         <el-table-column label="学生姓名" prop="studentName"></el-table-column>
         <el-table-column label="手机号" prop="tel"></el-table-column>
@@ -67,6 +62,7 @@
 
     <!-- 新增 or 编辑 -->
     <el-dialog top="40px" title :visible.sync="dialogFormVisible">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form
         :rules="rules"
         ref="form"
@@ -89,10 +85,10 @@
         <el-form-item label="班级" prop="classId">
           <el-select v-model="form.classId" placeholder="选择班级">
             <el-option
-              v-for="item in labelsFilter"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              v-for="item in classList"
+              :key="item.classId"
+              :label="item.className"
+              :value="item.classId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -122,13 +118,16 @@ export default {
   mixins: [sex, relation],
   data() {
     return {
+      isShow: true,
       dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
-        grade: null,
-        classId: null,
+        grade: 0,
+        classId: 0,
         studentName: "",
-        schoolId: this.$route.params.id
+        schoolId: this.$route.params.id,
+        page: 1,
+        pageSize: 20
       },
       form: {
         studentName: "",
@@ -139,44 +138,91 @@ export default {
         relation: 1
       },
       rules: {},
-      tableData: []
+      tableData: [],
+      totalCount: 0,
+      classList: []
     };
   },
   methods: {
     handleSearch() {},
+    handleAdd() {
+      this.form = {};
+    },
     handleEdit(row) {},
-    handleDel(row) {},
+    handleDel(row) {
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deleteStudent(row.studentId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(this.form);
         }
       });
     },
     //查询学生列表（微信端）
     async queryStudent(params = {}) {
-      let res = await service.queryStudent(params);
+      let res = await service.queryStudent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     },
     //录入学生信息（微信端）
     async addStudent(params = {}) {
-      let res = await service.addStudent(params);
+      let res = await service.addStudent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.queryStudent(this.query);
       }
     },
     //编辑学生信息（微信端）
     async updateStudent() {
-      let res = await service.updateStudent(params);
+      let res = await service.updateStudent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.queryStudent(this.query);
       }
     },
     //删除学生信息（微信端）
     async deleteStudent() {
-      let res = await service.deleteStudent(params);
+      let res = await service.deleteStudent(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.queryStudent(this.query);
+      }
+    },
+    //查询班级列表（微信端）
+    async queryClasses() {
+      let { schoolId, grade } = this.query;
+      let params = { schoolId, grade, className: "" };
+      let res = await service.queryClasses(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.classList = res.data;
       }
     }
+  },
+  activated() {
+    this.queryStudent(this.query);
+    this.queryClasses();
   }
 };
 </script>

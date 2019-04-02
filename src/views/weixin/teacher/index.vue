@@ -46,7 +46,12 @@
       <el-table :data="tableData" style="width: 100%" stripe size="small">
         <el-table-column label="序号" prop="teacherId"></el-table-column>
         <el-table-column label="老师姓名" prop="teacherName"></el-table-column>
-        <el-table-column label="性别" prop="sex"></el-table-column>
+        <el-table-column label="性别" prop="sex">
+          <template slot-scope="scope">
+            <span v-if="scope.row.sex === 1">男</span>
+            <span v-else>女</span>
+          </template>
+        </el-table-column>
         <el-table-column label="手机号" prop="tel"></el-table-column>
         <el-table-column label="职务类别" prop="type">
           <template slot-scope="scope">
@@ -54,7 +59,15 @@
             <span v-else>管理员</span>
           </template>
         </el-table-column>
-        <el-table-column label="任教班级" prop="className"></el-table-column>
+        <el-table-column label="任教班级" prop="className">
+          <template slot-scope="scope">
+            <el-tag
+              size="small"
+              v-for="name in scope.row.classNames"
+              :key="name.classId"
+            >{{ name.className }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
@@ -206,19 +219,28 @@ export default {
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
+      this.queryTeachers(this.query);
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
+      this.queryTeachers(this.query);
     },
-    handleSearch() {},
+    handleSearch() {
+      this.queryTeachers(this.query);
+    },
     handleAdd() {
       this.dialogFormVisible = true;
-      this.form = {};
+      this.form = {
+        classIds: []
+      };
       this.isShow = true;
     },
     handleEdit(row) {
+      let { classNames, ...args } = row;
+      let classIds = classNames.map(item => item.classId);
       this.isShow = false;
       this.dialogFormVisible = true;
+      this.form = Object.assign({}, args, { classIds });
     },
     handleDel(row) {
       this.$confirm(`确定删除吗?`, "提示", {
@@ -226,7 +248,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(function() {
+        .then(() => {
           this.deleteTeacher(row.teacherId);
         })
         .catch(error => {
@@ -237,16 +259,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let schoolId = this.$route.params.id;
-          let classIds = this.form.classIds.map(item => {
-            return { classId: item };
-          });
-          Object.assign(this.form, { schoolId, classIds });
+          Object.assign(this.form, { schoolId });
           if (this.isShow) {
             this.addTeacher(this.form);
           } else {
             this.updateTeacher(this.form);
           }
-          console.log(this.form);
         }
       });
     },
@@ -257,6 +275,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     },
     //录入老师信息（微信端）
@@ -266,6 +285,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
         this.queryTeachers(this.query);
       }
     },
@@ -278,7 +298,6 @@ export default {
         }
       );
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryTeachers(this.query);
       }
     },
@@ -289,6 +308,8 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryTeachers(this.query);
       }
     },
     //查询班级列表（微信端）

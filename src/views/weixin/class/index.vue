@@ -121,14 +121,13 @@ export default {
       this.form = Object.assign({}, row);
     },
     handleDel(row) {
-      let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(function() {
-          that.deleteClass(row.classId);
+        .then(() => {
+          this.deleteClass(row.classId);
         })
         .catch(error => {
           return false;
