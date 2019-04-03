@@ -48,6 +48,18 @@ export function updateTeacher(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//下载Excel模板
+export function teacherDownloadExcelTemp(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/teacher/downloadExcelTemp.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//批量导入老师（微信）
+export function teacherBatchAdd(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/teacher/teacherBatchAdd.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //查询班级列表（微信端）
 export function queryClasses(params, config) {
   return ax.post('/action/mod-xiaojiao/weixin/class/queryClasses.do', params, config)
@@ -97,8 +109,14 @@ export function deleteStudent(params, config) {
     .catch(e => console.log(e));
 }
 //批量导入学生（微信端）
-export function addStudents(params, config) {
-  return ax.post('/action/mod-xiaojiao/weixin/student/addStudents.do', params, config)
+export function studentDownloadExcelTemp(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/student/downloadExcelTemp.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//批量导入学生（微信端）
+export function batchStudents(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/student/batchStudents.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

@@ -33,8 +33,8 @@
     <div class="page-bd">
       <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有班级哦">
         <el-table-column label="序号" prop="classId"></el-table-column>
+        <el-table-column label="年级名称" prop="gradeName"></el-table-column>
         <el-table-column label="班级名称" prop="className"></el-table-column>
-        <el-table-column label="年级" prop="grade"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
@@ -100,16 +100,18 @@ export default {
         grade: null
       },
       mpClassList: [
-        { id: 0, name: "一年级" },
-        { id: 1, name: "二年级" },
-        { id: 2, name: "三年级" },
-        { id: 3, name: "四年级" }
+        { id: 1, name: "一年级" },
+        { id: 2, name: "二年级" },
+        { id: 3, name: "三年级" },
+        { id: 4, name: "四年级" }
       ],
       tableData: []
     };
   },
   methods: {
-    handleSearch() {},
+    handleSearch() {
+      this.queryClasses(this.query);
+    },
     handleAdd() {
       this.dialogFormVisible = true;
       this.form = {};

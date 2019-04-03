@@ -10,7 +10,7 @@
           label-width="70px"
           label-position="left"
         >
-          <el-form-item label="年级">
+          <!-- <el-form-item label="年级">
             <el-select v-model="query.grade" placeholder="选择年级">
               <el-option
                 v-for="item in labelsType"
@@ -19,13 +19,13 @@
                 :value="item.classId"
               ></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="班级">
             <el-select v-model="query.classId" placeholder="选择班级">
               <el-option
                 v-for="item in classList"
                 :key="item.classId"
-                :label="item.classId"
+                :label="item.className"
                 :value="item.classId"
               ></el-option>
             </el-select>
@@ -36,8 +36,21 @@
           <el-form-item>
             <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
             <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">录入</el-button>
-            <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button>
-            <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button>
+            <el-upload
+              class="upload-excel"
+              ref="excel"
+              list-type="text"
+              :multiple="false"
+              :with-credentials="true"
+              :show-file-list="false"
+              action
+              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              :before-upload="beforeUpload"
+              :on-exceed="handleExceed"
+              :http-request="submitUpload"
+            >
+              <el-button size="small" icon="el-icon-plus" type="primary">文件导入上传</el-button>
+            </el-upload>
           </el-form-item>
         </el-form>
       </div>
@@ -144,6 +157,42 @@ export default {
     };
   },
   methods: {
+    //上传文件之前
+    async beforeUpload(file) {
+      console.log(file);
+      let schoolId = this.$route.params.id; //微信端学校Id
+      let fileName = file.name.split(".");
+      const extension = fileName[fileName.length - 1] === "xls";
+      const extensions = fileName[fileName.length - 1] === "xlsx";
+      if (!extension && !extensions) {
+        this.$message({
+          message: "文件只能是xls、xlsx格式!",
+          type: "warning"
+        });
+      }
+      if (extension || extensions) {
+        let config = {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        };
+        let uploadForm = new FormData();
+        uploadForm.append("file", file);
+        uploadForm.append("schoolId", schoolId);
+        let res = await service.batchStudents(uploadForm, config);
+        if (res.errorCode === 0) {
+          this.$alert("导入成功", "提示", {
+            confirmButtonText: "确定"
+          });
+          this.queryStudent(this.query);
+        }
+      }
+      return extension || extensions;
+    },
+    //文件超出个数限制时
+    handleExceed(files, fileList) {},
+    //自定义上传的实现
+    submitUpload(file) {},
     handleSearch() {},
     handleAdd() {
       this.form = {};
@@ -227,4 +276,8 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.upload-excel {
+  display: inline-block;
+  margin-left: 10px;
+}
 </style>
