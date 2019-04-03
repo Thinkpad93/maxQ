@@ -51,8 +51,6 @@
             >
               <el-button size="small" icon="el-icon-plus" type="primary">文件导入上传</el-button>
             </el-upload>
-            <!-- <el-button size="small" icon="el-icon-plus" type="primary">批量录入</el-button> -->
-            <!-- <el-button size="small" icon="el-icon-plus" type="primary">模板下载</el-button> -->
           </el-form-item>
         </el-form>
       </div>

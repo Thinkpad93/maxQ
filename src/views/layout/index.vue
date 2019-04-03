@@ -9,11 +9,9 @@
         <!-- 主体 内容 -->
         <el-main id="main">
           <qx-tabs></qx-tabs>
-          <transition name="fade-transform" mode="out-in">
-            <keep-alive>
-              <router-view :key="$route.fullPath"/>
-            </keep-alive>
-          </transition>
+          <keep-alive>
+            <router-view :key="$route.fullPath"/>
+          </keep-alive>
         </el-main>
       </el-container>
     </el-container>

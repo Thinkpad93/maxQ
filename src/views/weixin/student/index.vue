@@ -71,7 +71,20 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="page-ft"></div>
+    <div class="page-ft">
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
+    </div>
 
     <!-- 新增 or 编辑 -->
     <el-dialog top="40px" title :visible.sync="dialogFormVisible">
@@ -92,9 +105,6 @@
             <el-option v-for="item in sexList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="手机号" prop="tel">
-          <el-input v-model="form.tel" placeholder="请输入手机号"></el-input>
-        </el-form-item>
         <el-form-item label="班级" prop="classId">
           <el-select v-model="form.classId" placeholder="选择班级">
             <el-option
@@ -105,16 +115,34 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="学生与家长关系" prop="relation">
-          <el-select v-model="form.relation" placeholder="请选择学生与家长关系">
-            <el-option
-              v-for="item in relationList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+        <el-form-item>
+          <el-button icon="el-icon-plus" size="mini" type="primary" @click="handleAddlinkMan">新增家长</el-button>
         </el-form-item>
+        <!-- for -->
+        <el-row :gutter="5" v-for="(item,index) in form.linkMan" :key="index">
+          <el-col :span="8">
+            <el-form-item :label="`家长手机号`" :prop="`linkMan.${index}.tel`" :rules="linkmanRules.tel">
+              <el-input v-model="item.tel" placeholder="请输入手机号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item :label="`关系`" :prop="`relation`">
+              <el-select v-model="item.relation" placeholder="请选择学生与家长关系">
+                <el-option
+                  v-for="item in relationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item>
+              <el-button size="mini" type="danger">移除</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
@@ -126,6 +154,7 @@
 <script>
 import service from "@/api";
 import { sex, relation } from "@/mixins";
+import { isPhone } from "@/utils/validator";
 export default {
   name: "student",
   mixins: [sex, relation],
@@ -145,12 +174,48 @@ export default {
       form: {
         studentName: "",
         classId: null,
-        schoolId: this.$route.params.id,
         sex: 1,
         tel: "",
-        relation: 1
+        linkMan: []
       },
-      rules: {},
+      linkMan: [{ tel: "", relation: 1 }],
+      linkmanRules: {
+        tel: [
+          {
+            required: true,
+            message: "手机号不能为空",
+            trigger: "blur"
+          },
+          {
+            required: true,
+            validator: isPhone,
+            trigger: "blur"
+          }
+        ]
+      },
+      rules: {
+        studentName: [
+          {
+            required: true,
+            message: "请输入学生姓名",
+            trigger: "blur"
+          }
+        ],
+        sex: [
+          {
+            required: true,
+            message: "选择性别",
+            trigger: "blur"
+          }
+        ],
+        classId: [
+          {
+            required: true,
+            message: "选择班级",
+            trigger: "blur"
+          }
+        ]
+      },
       tableData: [],
       totalCount: 0,
       classList: []
@@ -159,7 +224,6 @@ export default {
   methods: {
     //上传文件之前
     async beforeUpload(file) {
-      console.log(file);
       let schoolId = this.$route.params.id; //微信端学校Id
       let fileName = file.name.split(".");
       const extension = fileName[fileName.length - 1] === "xls";
@@ -193,9 +257,25 @@ export default {
     handleExceed(files, fileList) {},
     //自定义上传的实现
     submitUpload(file) {},
-    handleSearch() {},
+    handleSearch() {
+      this.queryStudent(this.query);
+    },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.queryStudent(this.query);
+    },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.queryStudent(this.query);
+    },
+    handleAddlinkMan() {
+      this.form.linkMan.push({ tel: "", relation: 1 });
+    },
     handleAdd() {
-      this.form = {};
+      this.dialogFormVisible = true;
+      this.form = {
+        linkMan: [{ tel: "", relation: 1 }]
+      };
     },
     handleEdit(row) {},
     handleDel(row) {
@@ -214,6 +294,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let schoolId = this.$route.params.id;
+          Object.assign(this.form, { schoolId });
           console.log(this.form);
         }
       });
@@ -239,7 +321,7 @@ export default {
       }
     },
     //编辑学生信息（微信端）
-    async updateStudent() {
+    async updateStudent(params) {
       let res = await service.updateStudent(params, {
         headers: { "Content-Type": "application/json" }
       });
@@ -249,10 +331,13 @@ export default {
       }
     },
     //删除学生信息（微信端）
-    async deleteStudent() {
-      let res = await service.deleteStudent(params, {
-        headers: { "Content-Type": "application/json" }
-      });
+    async deleteStudent(studentId) {
+      let res = await service.deleteStudent(
+        { studentId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
       if (res.errorCode === 0) {
         this.queryStudent(this.query);
       }
