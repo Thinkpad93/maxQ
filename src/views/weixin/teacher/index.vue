@@ -46,8 +46,6 @@
               action
               accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               :before-upload="beforeUpload"
-              :on-exceed="handleExceed"
-              :http-request="submitUpload"
             >
               <el-button size="small" icon="el-icon-plus" type="primary">文件导入上传</el-button>
             </el-upload>
@@ -255,17 +253,14 @@ export default {
         let res = await service.teacherBatchAdd(uploadForm, config);
         if (res.errorCode === 0) {
           this.$alert("导入成功", "提示", {
-            confirmButtonText: "确定"
+            confirmButtonText: "确定",
+            type: "success"
           });
           this.queryTeachers(this.query);
         }
       }
       return extension || extensions;
     },
-    //文件超出个数限制时
-    handleExceed(files, fileList) {},
-    //自定义上传的实现
-    submitUpload(file) {},
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryTeachers(this.query);

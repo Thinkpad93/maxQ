@@ -9,9 +9,11 @@
         <!-- 主体 内容 -->
         <el-main id="main">
           <qx-tabs></qx-tabs>
-          <keep-alive>
-            <router-view :key="$route.fullPath"/>
-          </keep-alive>
+          <transition>
+            <keep-alive>
+              <router-view :key="$route.fullPath"/>
+            </keep-alive>
+          </transition>
         </el-main>
       </el-container>
     </el-container>

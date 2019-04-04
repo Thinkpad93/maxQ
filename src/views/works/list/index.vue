@@ -172,7 +172,12 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
-        <el-button size="small" type="primary" @click="submitForm('form')">确定</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          :loading="btnLoading"
+          @click="submitForm('form')"
+        >{{ btnLoading ? '上传中':'确定' }}</el-button>
       </span>
     </el-dialog>
     <!-- 作品集详情 -->
@@ -256,6 +261,7 @@ export default {
   mixins: [checkStage, worksType],
   data() {
     return {
+      btnLoading: false,
       carouselHeight: 0,
       rowIndex: null,
       dialogFormVisible: false,
@@ -365,6 +371,7 @@ export default {
         if (valid) {
           let res = await this.submitAssess();
           if (res) {
+            this.btnLoading = true;
             this.uploadWorks(this.form);
           }
         }
@@ -376,6 +383,7 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.btnLoading = false;
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.$refs.uploadImage.clearFiles();

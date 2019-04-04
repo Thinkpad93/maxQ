@@ -10,26 +10,6 @@
           label-width="70px"
           label-position="left"
         >
-          <!-- <el-form-item label="年级">
-            <el-select v-model="query.grade" placeholder="选择年级">
-              <el-option
-                v-for="item in labelsType"
-                :key="item.classId"
-                :label="item.className"
-                :value="item.classId"
-              ></el-option>
-            </el-select>
-          </el-form-item>-->
-          <el-form-item label="班级">
-            <el-select v-model="query.classId" placeholder="选择班级">
-              <el-option
-                v-for="item in classList"
-                :key="item.classId"
-                :label="item.className"
-                :value="item.classId"
-              ></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="学生姓名">
             <el-input v-model="query.studentName" placeholder="请输入学生姓名" maxlength="10"></el-input>
           </el-form-item>
@@ -46,8 +26,6 @@
               action
               accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               :before-upload="beforeUpload"
-              :on-exceed="handleExceed"
-              :http-request="submitUpload"
             >
               <el-button size="small" icon="el-icon-plus" type="primary">文件导入上传</el-button>
             </el-upload>
@@ -59,10 +37,24 @@
       <el-table :data="tableData" style="width: 100%" stripe size="small">
         <el-table-column label="序号" prop="studentId"></el-table-column>
         <el-table-column label="学生姓名" prop="studentName"></el-table-column>
-        <el-table-column label="手机号" prop="tel"></el-table-column>
         <el-table-column label="年级" prop="grade"></el-table-column>
         <el-table-column label="班级" prop="className"></el-table-column>
-        <el-table-column label="关系" prop="relation"></el-table-column>
+        <el-table-column label="家长" prop="linkMan">
+          <template slot-scope="scope">
+            <p v-for="link in scope.row.linkMan" :key="link.relation">
+              <span>手机号: {{ link.tel }}</span>
+              <span>
+                关系:
+                <template v-if="link.relation == 1">妈妈</template>
+                <template v-else-if="link.relation == 2">爸爸</template>
+                <template v-else-if="link.relation == 3">爷爷</template>
+                <template v-else-if="link.relation == 4">奶奶</template>
+                <template v-else-if="link.relation == 5">外公</template>
+                <template v-else>外婆</template>
+              </span>
+            </p>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
@@ -139,7 +131,13 @@
           </el-col>
           <el-col :span="8">
             <el-form-item>
-              <el-button size="mini" type="danger">移除</el-button>
+              <el-button
+                size="mini"
+                icon="el-icon-delete"
+                circle
+                type="danger"
+                @click="handleRemoveLinkMan(index)"
+              ></el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -178,7 +176,7 @@ export default {
         tel: "",
         linkMan: []
       },
-      linkMan: [{ tel: "", relation: 1 }],
+      linkMan: [{ tel: "", relation: 1, patriarchId: 0 }],
       linkmanRules: {
         tel: [
           {
@@ -246,17 +244,14 @@ export default {
         let res = await service.batchStudents(uploadForm, config);
         if (res.errorCode === 0) {
           this.$alert("导入成功", "提示", {
-            confirmButtonText: "确定"
+            confirmButtonText: "确定",
+            type: "success"
           });
           this.queryStudent(this.query);
         }
       }
       return extension || extensions;
     },
-    //文件超出个数限制时
-    handleExceed(files, fileList) {},
-    //自定义上传的实现
-    submitUpload(file) {},
     handleSearch() {
       this.queryStudent(this.query);
     },
@@ -269,15 +264,23 @@ export default {
       this.queryStudent(this.query);
     },
     handleAddlinkMan() {
-      this.form.linkMan.push({ tel: "", relation: 1 });
+      this.form.linkMan.push({ tel: "", relation: 1, patriarchId: 0 });
+    },
+    handleRemoveLinkMan(index) {
+      return this.form.linkMan.splice(index, 1);
     },
     handleAdd() {
       this.dialogFormVisible = true;
       this.form = {
-        linkMan: [{ tel: "", relation: 1 }]
+        linkMan: [{ tel: "", relation: 1, patriarchId: 0 }]
       };
     },
-    handleEdit(row) {},
+    handleEdit(row) {
+      console.log(row);
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+    },
     handleDel(row) {
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
@@ -296,7 +299,13 @@ export default {
         if (valid) {
           let schoolId = this.$route.params.id;
           Object.assign(this.form, { schoolId });
-          console.log(this.form);
+          if (this.isShow) {
+            console.log(this.form);
+            this.addStudent(this.form);
+          } else {
+            console.log(this.form);
+            this.updateStudent(this.form);
+          }
         }
       });
     },
@@ -317,6 +326,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
         this.queryStudent(this.query);
       }
     },
@@ -327,6 +337,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
         this.queryStudent(this.query);
       }
     },

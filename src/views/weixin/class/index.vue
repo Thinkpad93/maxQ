@@ -10,16 +10,6 @@
           label-width="70px"
           label-position="left"
         >
-          <!-- <el-form-item label="年级">
-            <el-select v-model="query.grade" placeholder="选择年级">
-              <el-option
-                v-for="item in labelsType"
-                :key="item.classId"
-                :label="item.className"
-                :value="item.classId"
-              ></el-option>
-            </el-select>
-          </el-form-item>-->
           <el-form-item label="班级名称">
             <el-input v-model="query.className" placeholder="请输入标签名称" maxlength="10"></el-input>
           </el-form-item>
