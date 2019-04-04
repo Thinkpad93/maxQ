@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="page-bd">
-      <el-table :data="tableData" style="width: 100%" stripe size="small" empty-text="没有班级哦">
+      <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="序号" prop="classId"></el-table-column>
         <el-table-column label="年级名称" prop="gradeName"></el-table-column>
         <el-table-column label="班级名称" prop="className"></el-table-column>

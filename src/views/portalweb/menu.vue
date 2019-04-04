@@ -8,7 +8,7 @@
     <div class="page-bd">
       <!-- 表格数据 -->
       <template>
-        <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table :data="tableData" style="width: 100%" size="small">
           <el-table-column label="序号" prop="id"></el-table-column>
           <el-table-column label="网站菜单" prop="menuName"></el-table-column>
           <el-table-column label="页数" prop="page"></el-table-column>

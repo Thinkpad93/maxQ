@@ -3,7 +3,7 @@
     <div class="page-hd"></div>
     <div class="page-bd">
       <template>
-        <el-table :data="tableData" style="width: 100%" stripe size="mini">
+        <el-table :data="tableData" style="width: 100%" size="mini">
           <el-table-column label="内容ID" prop="contentId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true">
             <template slot-scope="scope">

@@ -44,7 +44,7 @@
     </div>
     <div class="page-bd">
       <!-- 表格数据 -->
-      <el-table :data="tableData" style="width: 100%" stripe size="small">
+      <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="作品集ID" prop="collectionId" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="内容标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">

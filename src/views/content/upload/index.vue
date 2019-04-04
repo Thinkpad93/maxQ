@@ -44,7 +44,7 @@
                     </el-form-item>
                   </el-form>
                 </div>
-                <el-table :data="tableData" style="width: 100%" stripe size="small">
+                <el-table :data="tableData" style="width: 100%" size="small">
                   <el-table-column
                     :resizable="false"
                     label="内容ID"
@@ -168,7 +168,7 @@
                     </el-form-item>
                   </el-form>
                 </div>
-                <el-table :data="tableData2" style="width: 100%" stripe size="small">
+                <el-table :data="tableData2" style="width: 100%" size="small">
                   <el-table-column
                     :resizable="false"
                     label="标题"

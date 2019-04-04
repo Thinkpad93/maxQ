@@ -27,7 +27,7 @@
     <div class="page-bd">
       <!-- 表格数据 -->
       <template>
-        <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table :data="tableData" style="width: 100%" size="small">
           <el-table-column label="用户ID" prop="accountId" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column label="账号" prop="userName" :show-overflow-tooltip="true">
             <template slot-scope="scope">

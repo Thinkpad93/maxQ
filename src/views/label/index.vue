@@ -33,7 +33,7 @@
     </div>
     <div class="page-bd">
       <!-- 表格数据 -->
-      <el-table :data="tableData" style="width: 100%" stripe size="small">
+      <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="标签ID" prop="labelId"></el-table-column>
         <el-table-column label="标签类型" prop="type" :show-overflow-tooltip="true">
           <template slot-scope="scope">

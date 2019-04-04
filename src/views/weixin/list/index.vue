@@ -17,6 +17,7 @@
           <el-form-item>
             <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
             <el-button
+              v-if="schoolId === 0"
               size="small"
               icon="el-icon-plus"
               type="primary"
@@ -27,13 +28,18 @@
       </div>
     </div>
     <div class="page-bd">
-      <el-table :data="tableData" style="width: 100%" stripe size="small">
+      <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="学校ID" prop="schoolId"></el-table-column>
         <el-table-column label="学校名称" prop="schoolName"></el-table-column>
         <el-table-column label="手机号" prop="tel"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.row)"
+              v-if="schoolId === 0"
+            >编辑</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row, 1)">班级管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row, 2)">老师管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row, 3)">学生管理</el-button>
@@ -57,6 +63,7 @@
     </div>
     <!-- 新增 or 编辑 -->
     <el-dialog title top="40px" :visible.sync="dialogFormVisible">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form
         :rules="rules"
         ref="form"
@@ -98,6 +105,7 @@
 import service from "@/api";
 import region from "@/components/region";
 import { isPhone } from "@/utils/validator";
+import { mapGetters } from "vuex";
 export default {
   name: "weixinSchool",
   components: {
@@ -105,6 +113,7 @@ export default {
   },
   data() {
     return {
+      isShow: false,
       dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
@@ -152,6 +161,9 @@ export default {
       schoolList: []
     };
   },
+  computed: {
+    ...mapGetters(["schoolId"])
+  },
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
@@ -166,7 +178,9 @@ export default {
       let obj = this.schoolList.find(item => item.id === value);
       this.form.schoolName = obj.name;
     },
-    handleEdit(row) {},
+    handleEdit(row) {
+      console.log(row);
+    },
     //班级管理 老师管理 学生管理
     handleOpen(row, index) {
       if (index == 1) {

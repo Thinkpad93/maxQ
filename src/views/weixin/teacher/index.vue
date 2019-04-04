@@ -10,16 +10,6 @@
           label-width="70px"
           label-position="left"
         >
-          <!-- <el-form-item label="年级">
-            <el-select v-model="query.grade" placeholder="选择年级">
-              <el-option
-                v-for="item in labelsType"
-                :key="item.classId"
-                :label="item.className"
-                :value="item.classId"
-              ></el-option>
-            </el-select>
-          </el-form-item>-->
           <el-form-item label="班级">
             <el-select v-model="query.classId" placeholder="选择班级">
               <el-option
@@ -54,7 +44,7 @@
       </div>
     </div>
     <div class="page-bd">
-      <el-table :data="tableData" style="width: 100%" stripe size="small">
+      <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="序号" prop="teacherId"></el-table-column>
         <el-table-column label="老师姓名" prop="teacherName"></el-table-column>
         <el-table-column label="性别" prop="sex">

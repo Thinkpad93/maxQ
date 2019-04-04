@@ -26,7 +26,7 @@
             <el-col :span="24">
               <el-tabs class="qx-page-tabs" type="border-card" @tab-click="handleTabClick">
                 <el-tab-pane label="待预发布" name="0">
-                  <el-table :data="tableData" style="width: 100%" stripe size="small">
+                  <el-table :data="tableData" style="width: 100%" size="small">
                     <el-table-column
                       width="150"
                       label="内容编号"
@@ -54,7 +54,7 @@
                   </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="已预发布" name="1">
-                  <el-table :data="tableData2" style="width: 100%" stripe size="small">
+                  <el-table :data="tableData2" style="width: 100%" size="small">
                     <el-table-column
                       width="150"
                       label="内容编号"

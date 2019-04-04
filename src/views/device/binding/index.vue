@@ -65,7 +65,7 @@
           :label-width="formLabelWidth"
         >
           <template v-if="isShow">
-            <el-form-item label="区域选择" prop="regionId">
+            <el-form-item label="区域" prop="regionId">
               <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
             </el-form-item>
           </template>

@@ -26,7 +26,7 @@
     <div class="page-bd">
       <!-- 表格数据 -->
       <template>
-        <el-table :data="tableData" style="width: 100%" stripe size="small">
+        <el-table :data="tableData" style="width: 100%" size="small">
           <el-table-column label="学校ID" prop="schoolId"></el-table-column>
           <el-table-column label="学校名称" prop="schoolName"></el-table-column>
           <el-table-column label="区域" prop="region"></el-table-column>

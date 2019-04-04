@@ -35,7 +35,7 @@
               <el-tab-pane label="内容播放" name="0">
                 <!-- 表格数据 -->
                 <template>
-                  <el-table :data="tableData" style="width: 100%" stripe size="mini">
+                  <el-table :data="tableData" style="width: 100%" size="mini">
                     <el-table-column width="400" label="播放时段">
                       <template slot-scope="scope">
                         <template v-if="scope.row.show">
@@ -219,7 +219,7 @@
               </el-tab-pane>
               <el-tab-pane label="滚动通知" name="1">
                 <!-- 表格数据 -->
-                <el-table :data="scrollData" style="width: 100%" stripe size="mini">
+                <el-table :data="scrollData" style="width: 100%" size="mini">
                   <el-table-column label="内容标题" prop="title"></el-table-column>
                   <el-table-column label="通知内容" prop="content"></el-table-column>
                   <el-table-column label="播放有效期" prop="validType">
