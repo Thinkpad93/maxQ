@@ -256,9 +256,10 @@
 <script>
 import service from "@/api";
 import { checkStage, worksType } from "@/mixins";
+import pageMixins from "@/mixins/page";
 export default {
   name: "worksList",
-  mixins: [checkStage, worksType],
+  mixins: [checkStage, worksType, pageMixins],
   data() {
     return {
       btnLoading: false,
@@ -291,10 +292,8 @@ export default {
         images: [],
         compressFile: ""
       },
-      totalCount: 0,
       worksCount: 0,
       uploadForm: "",
-      tableData: [],
       worksData: []
     };
   },

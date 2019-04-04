@@ -228,9 +228,10 @@
 <script>
 import service from "@/api";
 import { checkStages, worksType } from "@/mixins";
+import pageMixins from "@/mixins/page";
 export default {
   name: "worksCheck",
-  mixins: [checkStages, worksType],
+  mixins: [checkStages, worksType, pageMixins],
   data() {
     return {
       carouselIndex: 0,
@@ -259,9 +260,7 @@ export default {
         verifyStatus: 1,
         verifyDescrition: ""
       },
-      totalCount: 0,
       worksCount: 0,
-      tableData: [],
       worksData: []
     };
   },

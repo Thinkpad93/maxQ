@@ -68,22 +68,13 @@ export default {
 </script>
 <style lang="less" scoped>
 div[data-page="login"] {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgb(240, 242, 245);
   background-image: url("../../assets/TVYTbAXWheQpRcWDaDMu.svg");
-}
-.user-login {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  z-index: 10;
-  transform: translate(-50%, -50%);
 }
 </style>

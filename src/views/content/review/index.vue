@@ -190,12 +190,12 @@
 <script>
 import service from "@/api";
 import { verifyStatus } from "@/mixins";
+import pageMixins from "@/mixins/page";
 export default {
   name: "review",
-  mixins: [verifyStatus],
+  mixins: [verifyStatus, pageMixins],
   data() {
     return {
-      //dialogViewContent: false,
       isShowform: false,
       dialogView: false,
       formLabelWidth: "100px",
@@ -213,9 +213,7 @@ export default {
         checkStage: null,
         contentId: null
       },
-      info: {},
-      tableData: [],
-      totalCount: 0
+      info: {}
     };
   },
   computed: {
@@ -280,11 +278,6 @@ export default {
       if (res.errorCode === 0) {
         this.info = Object.assign({}, res.data);
         this.dialogView = true;
-        // if (str == "view") {
-        //   this.dialogView = true;
-        // } else {
-        //   this.dialogViewContent = true;
-        // }
       }
     }
   },

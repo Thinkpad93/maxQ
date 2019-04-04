@@ -160,6 +160,7 @@ import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import { mapGetters } from "vuex";
 import QTable from "@/components/QTable";
+import pageMixins from "@/mixins/page";
 export default {
   name: "record",
   components: {
@@ -167,6 +168,7 @@ export default {
     "qx-region-t": regiont,
     "base-table": QTable
   },
+  mixins: [pageMixins],
   data() {
     return {
       columns: [
@@ -224,9 +226,7 @@ export default {
       schoolListInner: [],
       form: {
         regionId: []
-      },
-      tableData: [],
-      totalCount: 0
+      }
     };
   },
   computed: {
@@ -259,7 +259,6 @@ export default {
       this.isShow = true;
       this.dialogFormVisible = true;
       this.form = {};
-      //this.form = Object.assign({}); //这里不加的话 共用的表单会有问题
     },
     handleEdit(row) {
       let { address, deviceId, deviceNo, schoolName, ...args } = row;

@@ -141,6 +141,7 @@ import regiont from "@/components/qxregion";
 import { isMac, isPhone } from "@/utils/validator";
 import { mapGetters } from "vuex";
 import QTable from "@/components/QTable";
+import pageMixins from "@/mixins/page";
 export default {
   name: "binding",
   components: {
@@ -148,6 +149,7 @@ export default {
     "qx-region-t": regiont,
     "base-table": QTable
   },
+  mixins: [pageMixins],
   data() {
     return {
       columns: [
@@ -280,8 +282,6 @@ export default {
       schoolList: [],
       //请求的数据
       labelsList: [],
-      tableData: [],
-      totalCount: 0
     };
   },
   computed: {

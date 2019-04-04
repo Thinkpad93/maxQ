@@ -97,11 +97,13 @@
 <script>
 import service from "@/api";
 import QTable from "@/components/QTable";
+import pageMixins from "@/mixins/page";
 export default {
   name: "role",
   components: {
     "base-table": QTable
   },
+  mixins: [pageMixins],
   data() {
     return {
       columns: [
@@ -137,8 +139,6 @@ export default {
       },
       permitIds: [],
       roleLevelList: [{ id: 1, name: "1" }],
-      tableData: [],
-      totalCount: 0, //分页总数
       menuData: [], //菜单数据
       defaultProps: {
         children: "children",

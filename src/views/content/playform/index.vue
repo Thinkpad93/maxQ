@@ -61,12 +61,13 @@
 import service from "@/api";
 import regiont from "@/components/qxregion";
 import { mapGetters } from "vuex";
-
+import pageMixins from "@/mixins/page";
 export default {
   name: "playform",
   components: {
     "qx-region-t": regiont
   },
+  mixins: [pageMixins],
   data() {
     return {
       query: {
@@ -75,9 +76,7 @@ export default {
         scopeId: this.$store.getters.scopeId,
         page: 1,
         pageSize: 20
-      },
-      tableData: [],
-      totalCount: 0
+      }
     };
   },
   computed: {

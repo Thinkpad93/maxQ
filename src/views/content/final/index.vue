@@ -190,9 +190,10 @@
 <script>
 import service from "@/api";
 import { verifyStatus } from "@/mixins";
+import pageMixins from "@/mixins/page";
 export default {
   name: "final",
-  mixins: [verifyStatus],
+  mixins: [verifyStatus, pageMixins],
   data() {
     return {
       isShowform: false,
@@ -212,9 +213,7 @@ export default {
         checkStage: null,
         contentId: null
       },
-      info: {},
-      tableData: [],
-      totalCount: 0
+      info: {}
     };
   },
   computed: {

@@ -234,12 +234,13 @@ import service from "@/api";
 import regiont from "@/components/qxregion";
 import { device } from "@/mixins";
 import { mapGetters } from "vuex";
+import pageMixins from "@/mixins/page";
 export default {
   name: "monitoring",
   components: {
     "qx-region-t": regiont
   },
-  mixins: [device],
+  mixins: [device, pageMixins],
   data() {
     return {
       dialogAdd: false,
@@ -258,8 +259,6 @@ export default {
         pageSize: 20
       },
       viewDevice: {},
-      tableData: [],
-      totalCount: 0,
       runlogData: []
     };
   },

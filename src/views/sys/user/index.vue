@@ -235,11 +235,11 @@ import service from "@/api";
 import region from "@/components/region";
 import regiont from "@/components/qxregion";
 import { accountType } from "@/mixins";
-
+import pageMixins from "@/mixins/page";
 export default {
   name: "account",
   inject: ["reload"], //注入依赖
-  mixins: [accountType],
+  mixins: [accountType, pageMixins],
   components: {
     "qx-region": region,
     "qx-region-t": regiont
@@ -305,9 +305,7 @@ export default {
         checkPass: [{ required: true, validator: checkPass, trigger: "blur" }]
       },
       schoolList: [],
-      roleList: [],
-      tableData: [],
-      totalCount: 0 //分页总数
+      roleList: []
     };
   },
   computed: {
