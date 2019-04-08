@@ -146,10 +146,11 @@
 <script>
 import service from "@/api";
 import { sex, type } from "@/mixins";
+import pageMixins from "@/mixins/page";
 import { isPhone } from "@/utils/validator";
 export default {
   name: "teacher",
-  mixins: [sex, type],
+  mixins: [sex, type, pageMixins],
   data() {
     return {
       isShow: true,
@@ -212,9 +213,7 @@ export default {
           }
         ]
       },
-      classList: [],
-      tableData: [],
-      totalCount: 0
+      classList: []
     };
   },
   methods: {
@@ -270,6 +269,7 @@ export default {
       this.isShow = true;
     },
     handleEdit(row) {
+      console.log(row);
       let { classNames, ...args } = row;
       let classIds = classNames.map(item => item.classId);
       this.isShow = false;

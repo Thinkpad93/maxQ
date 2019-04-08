@@ -162,10 +162,11 @@
 <script>
 import service from "@/api";
 import { sex, relation } from "@/mixins";
+import pageMixins from "@/mixins/page";
 import { isPhone } from "@/utils/validator";
 export default {
   name: "student",
-  mixins: [sex, relation],
+  mixins: [sex, relation, pageMixins],
   data() {
     return {
       isShow: true,
@@ -224,8 +225,6 @@ export default {
           }
         ]
       },
-      tableData: [],
-      totalCount: 0,
       classList: []
     };
   },

@@ -421,7 +421,6 @@ export default {
       }
     }
   },
-  mounted() {},
   activated() {
     this.querySchoolCollection(this.query);
   }

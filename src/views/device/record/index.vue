@@ -54,7 +54,7 @@
     <!-- 新增 or 编辑检修记录 -->
     <template>
       <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="close">
-        <span slot="title" class="dialog-title">{{ isShow ? '新增检修记录': '编辑检修记录' }}</span>
+        <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
         <el-form ref="formRef" :model="form" status-icon size="small" :label-width="formLabelWidth">
           <template v-if="isShow">
             <el-form-item
@@ -325,7 +325,6 @@ export default {
       let res = await service.addDeviceRepair(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showRepairList(this.query);
         this.$refs.formRef.resetFields();
       } else {
@@ -338,16 +337,13 @@ export default {
       let res = await service.updateDeviceRepair(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showRepairList(this.query);
-        //this.$refs.formRef.resetFields();
       }
     },
     //删除检修记录
     async deleteDeviceRepair(repairId) {
       let res = await service.deleteDeviceRepair({ repairId });
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.query.page = 1; //从第一页开始查起
         this.showRepairList(this.query);
       }

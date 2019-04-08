@@ -182,11 +182,8 @@ export default {
       let res = await service.addChannel(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryChannel();
-      } else if (res.errorCode === 1) {
-        this.$message({ message: `${res.errorMsg}`, type: "warning" });
-      } else if (res.errorCode === -1) {
+      } else if (res.errorCode === 1 || res.errorCode === -1) {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
@@ -195,7 +192,6 @@ export default {
       let res = await service.updateChannel(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryChannel();
       }
     },
@@ -203,7 +199,6 @@ export default {
     async deleteChannel(channelId) {
       let res = await service.deleteChannel({ channelId });
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryChannel();
       }
     }

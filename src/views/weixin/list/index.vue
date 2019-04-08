@@ -21,7 +21,7 @@
               size="small"
               icon="el-icon-plus"
               type="primary"
-              @click="dialogFormVisible = true"
+              @click="handleAdd"
             >新增</el-button>
           </el-form-item>
         </el-form>
@@ -40,9 +40,9 @@
               @click="handleEdit(scope.row)"
               v-if="schoolId === 0"
             >编辑</el-button>
-            <el-button size="mini" type="primary" @click="handleOpen(scope.row, 1)">班级管理</el-button>
-            <el-button size="mini" type="primary" @click="handleOpen(scope.row, 2)">老师管理</el-button>
-            <el-button size="mini" type="primary" @click="handleOpen(scope.row, 3)">学生管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 1)">班级管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 2)">老师管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 3)">学生管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,8 +72,8 @@
         size="small"
         :label-width="formLabelWidth"
       >
-        <el-form-item label="区域选择" prop="regionId">
-          <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>
+        <el-form-item label="区域选择" prop="regionIds">
+          <qx-region @last="queryRegion" v-model="form.regionIds"></qx-region>
         </el-form-item>
         <el-form-item label="学校名称" prop="terminalSchoolId">
           <el-select
@@ -106,14 +106,16 @@ import service from "@/api";
 import region from "@/components/region";
 import { isPhone } from "@/utils/validator";
 import { mapGetters } from "vuex";
+import pageMixins from "@/mixins/page";
 export default {
   name: "weixinSchool",
   components: {
     "qx-region": region
   },
+  mixins: [pageMixins],
   data() {
     return {
-      isShow: false,
+      isShow: true,
       dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
@@ -123,13 +125,12 @@ export default {
         pageSize: 20
       },
       form: {
-        regionId: [],
         tel: "",
         schoolName: "",
         terminalSchoolId: null
       },
       rules: {
-        regionId: [
+        regionIds: [
           {
             required: true,
             message: "请选择区域",
@@ -156,8 +157,6 @@ export default {
           }
         ]
       },
-      tableData: [],
-      totalCount: 0,
       schoolList: []
     };
   },
@@ -178,22 +177,38 @@ export default {
       let obj = this.schoolList.find(item => item.id === value);
       this.form.schoolName = obj.name;
     },
-    handleEdit(row) {
-      console.log(row);
+    handleAdd() {
+      this.dialogFormVisible = true;
+      this.form = {
+        regionIds: []
+      };
+    },
+    async handleEdit(row) {
+      let { property, location, leaderName, regionId, ...args } = row;
+      let regArray = [];
+      let res = await service.findRegion({ regionId });
+      if (res.errorCode === 0) {
+        this.isShow = false;
+        this.dialogFormVisible = true;
+        for (let i in res.data) {
+          regArray.push(res.data[i]);
+        }
+        this.form = Object.assign({}, args, { regionIds: regArray });
+      }
     },
     //班级管理 老师管理 学生管理
-    handleOpen(row, index) {
+    handleOpen(schoolId, index) {
       if (index == 1) {
         this.$router.push({
-          path: `/weixin/class/${row.schoolId}`
+          path: `/weixin/class/${schoolId}`
         });
       } else if (index == 2) {
         this.$router.push({
-          path: `/weixin/teacher/${row.schoolId}`
+          path: `/weixin/teacher/${schoolId}`
         });
       } else {
         this.$router.push({
-          path: `/weixin/student/${row.schoolId}`
+          path: `/weixin/student/${schoolId}`
         });
       }
     },
@@ -201,13 +216,17 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let { regionId, ...args } = this.form;
-          this.addLeaderInit(args);
+          if (this.isShow) {
+            this.addLeaderInit(args);
+          } else {
+            this.updateSchool(args);
+          }
         }
       });
     },
     //加载学校数据
     async queryRegion(value) {
-      this.form.regionId = value;
+      this.form.regionIds = value;
       let last = value[value.length - 1];
       let res = await service.queryRegion({ queryId: last, queryType: 3 });
       if (res.errorCode === 0) {
@@ -233,19 +252,29 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
         this.querySchoolList(this.query);
-      }
-    },
-    //根据名称查询学校（微信端）
-    async findSchool(params = {}) {
-      let res = await service.findSchool(params);
-      if (res.errorCode === 0) {
       }
     },
     //编辑学校（微信端）
     async updateSchool(params = {}) {
-      let res = await service.updateSchool(params);
+      let res = await service.updateSchool(params, {
+        headers: { "Content-Type": "application/json" }
+      });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.querySchoolList(this.query);
+      }
+    },
+    //根据区域ID查询省市
+    async findRegion(regionId) {
+      let res = await service.findRegion({ regionId });
+      if (res.errorCode === 0) {
+        let regArray = [];
+        for (let i in res.data) {
+          regArray.push(res.data[i]);
+        }
       }
     }
   },

@@ -55,7 +55,7 @@
     <!-- 新增 or 编辑 -->
     <template>
       <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="handleDialogClose">
-        <span slot="title" class="dialog-title">{{ isShow ? '新增设备': '编辑设备' }}</span>
+        <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
         <el-form
           :rules="rules"
           ref="form"
@@ -281,7 +281,7 @@ export default {
       //学校名称
       schoolList: [],
       //请求的数据
-      labelsList: [],
+      labelsList: []
     };
   },
   computed: {
@@ -386,15 +386,12 @@ export default {
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
         this.totalCount = res.data.totalCount;
-      } else if (res.errorCode === 1) {
-        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //新增设备绑定
     async addDeviceBind(params = {}) {
       let res = await service.addDeviceBind(params);
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.showDeviceList();
@@ -409,7 +406,6 @@ export default {
       let res = await service.updateDeviceBind(params);
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showDeviceList();
       }
     },
@@ -417,7 +413,6 @@ export default {
     async deleteDeviceBind(deviceId) {
       let res = await service.deleteDeviceBind({ deviceId });
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.showDeviceList();
       }
     }

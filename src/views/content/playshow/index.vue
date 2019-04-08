@@ -625,12 +625,6 @@ export default {
           return { contentId: item.contentId };
         });
       }
-
-      // if (!content.length) {
-      //   content = contents.map(item => {
-      //     return { contentId: item.contentId };
-      //   });
-      // }
       //如果播放时段改变了
       if (this.isChangeTime) {
         args.playStartTime = this.value4[0];
@@ -663,19 +657,6 @@ export default {
         //如何栏目下没有内容，则为空
         row.contents = [];
       }
-      // let res = await this.queryPlayContent(
-      //   { schoolId: this.schoolId, itemId: row.itemId },
-      //   "edit"
-      // );
-      // if (res.length) {
-      //   let result = res.map(item => {
-      //     return { title: item.title, contentId: item.contentId };
-      //   });
-      //   row.contents = result;
-      // } else {
-      //   //如何栏目下没有内容，则为空
-      //   row.contents = [];
-      // }
     },
     //编辑
     handleEdit(row) {
@@ -843,16 +824,6 @@ export default {
       if (res.errorCode === 0) {
         this.playContendata = res.data;
       }
-      // let contents;
-      // if (res.errorCode === 0) {
-      //   if (str === "add") {
-      //     this.form.contents = [];
-      //     this.contentsList = res.data;
-      //   } else {
-      //     this.playContendata = res.data;
-      //     return (contents = res.data);
-      //   }
-      // }
     },
     //更新表单播放列表
     async updatePlayList(schoolId) {

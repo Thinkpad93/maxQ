@@ -434,7 +434,6 @@ export default {
         this.dialogAdd = false;
         this.$refs.form.resetFields();
         this.queryAccount();
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
     //重置密码
@@ -442,7 +441,6 @@ export default {
       let res = await service.resetPassword(params);
       if (res.errorCode === 0) {
         this.dialogReset = false;
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
       }
     },
     //修改账号状态

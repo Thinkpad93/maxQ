@@ -218,7 +218,6 @@ export default {
         this.dialogAdd = false;
         this.$refs.form.resetFields();
         this.queryRoleList(this.query);
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
       } else if (res.errorCode === -1) {
         //角色名称已存在
         this.$message({ message: `${res.errorMsg}`, type: "error" });
@@ -232,7 +231,6 @@ export default {
     async deleteRole(roleId) {
       let res = await service.deleteRole({ roleId });
       if (res.errorCode === 0) {
-        this.$message({ message: `${res.errorMsg}`, type: "success" });
         this.queryRoleList(this.query);
       } else if (res.errorCode === 1) {
         this.$message({ message: `${res.errorMsg}`, type: "error" });

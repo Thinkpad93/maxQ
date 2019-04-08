@@ -173,7 +173,6 @@ export default {
       }
     },
     handleEdit(row) {
-      console.log(row);
       this.dialogEdit = true;
       this.editForm = Object.assign({}, row);
     },
@@ -215,7 +214,6 @@ export default {
             parent = 0;
           }
           let obj = Object.assign({}, args, { parent });
-          console.log(obj);
           this.updatePermit(obj);
         }
       });
