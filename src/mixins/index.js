@@ -19,14 +19,12 @@ export const type = {
   data() {
     return {
       typeList: [{
-          name: "管理员",
-          id: 0
-        },
-        {
-          name: "老师",
-          id: 1
-        }
-      ]
+        name: "老师",
+        id: 1
+      }, {
+        name: "管理员",
+        id: 0
+      }]
     }
   }
 }

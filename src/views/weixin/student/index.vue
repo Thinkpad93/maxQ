@@ -10,6 +10,16 @@
           label-width="70px"
           label-position="left"
         >
+          <el-form-item label="班级">
+            <el-select v-model="query.classId" placeholder="选择班级">
+              <el-option
+                v-for="item in classList"
+                :key="item.classId"
+                :label="item.className"
+                :value="item.classId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="学生姓名">
             <el-input v-model="query.studentName" placeholder="请输入学生姓名" maxlength="10"></el-input>
           </el-form-item>
@@ -276,7 +286,6 @@ export default {
       };
     },
     handleEdit(row) {
-      console.log(row);
       this.isShow = false;
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
@@ -300,10 +309,8 @@ export default {
           let schoolId = this.$route.params.id;
           Object.assign(this.form, { schoolId });
           if (this.isShow) {
-            console.log(this.form);
             this.addStudent(this.form);
           } else {
-            console.log(this.form);
             this.updateStudent(this.form);
           }
         }
@@ -354,12 +361,14 @@ export default {
       }
     },
     //查询班级列表（微信端）
-    async queryClasses() {
-      let { schoolId, grade } = this.query;
-      let params = { schoolId, grade, className: "" };
-      let res = await service.queryClasses(params, {
-        headers: { "Content-Type": "application/json" }
-      });
+    async querySchoolClass() {
+      let schoolId = this.$route.params.id;
+      let res = await service.querySchoolClass(
+        { schoolId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
       if (res.errorCode === 0) {
         this.classList = res.data;
       }
@@ -367,7 +376,7 @@ export default {
   },
   activated() {
     this.queryStudent(this.query);
-    this.queryClasses();
+    this.querySchoolClass();
   }
 };
 </script>

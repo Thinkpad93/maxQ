@@ -347,12 +347,14 @@ export default {
       }
     },
     //查询班级列表（微信端）
-    async queryClasses() {
-      let { schoolId, grade } = this.query;
-      let params = { schoolId, grade, className: "" };
-      let res = await service.queryClasses(params, {
-        headers: { "Content-Type": "application/json" }
-      });
+    async querySchoolClass() {
+      let schoolId = this.$route.params.id;
+      let res = await service.querySchoolClass(
+        { schoolId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
       if (res.errorCode === 0) {
         this.classList = res.data;
       }
@@ -360,7 +362,7 @@ export default {
   },
   mounted() {
     this.queryTeachers(this.query);
-    this.queryClasses();
+    this.querySchoolClass();
   }
 };
 </script>

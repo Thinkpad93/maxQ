@@ -595,7 +595,6 @@ export default {
       let res = await service.queryContentList(this.query);
       if (res.errorCode === 0) {
         this.tableData = res.data.data;
-        //this.totalCount = res.data.totalCount;
       }
     },
     //查询滚动通知列表
