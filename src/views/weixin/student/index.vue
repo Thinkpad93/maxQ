@@ -279,6 +279,7 @@ export default {
       return this.form.linkMan.splice(index, 1);
     },
     handleAdd() {
+      this.isShow = true;
       this.dialogFormVisible = true;
       this.form = {
         linkMan: [{ tel: "", relation: 1, patriarchId: 0 }]

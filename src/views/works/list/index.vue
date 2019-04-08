@@ -189,18 +189,31 @@
         :visible.sync="dialogWorksInner"
       >
         <el-carousel
+          ref="carousel"
           indicator-position="none"
-          :height="carouselHeight + 'px'"
+          height="600px"
+          :interval="500"
           :autoplay="false"
           :loop="false"
           arrow="always"
         >
           <el-carousel-item v-for="works in worksData" :key="works.worksId">
-            <img :src="works.imageUrl" class="image" ref="image" @load="handleImageLoad">
+            <div class="works-pic" :style="{ backgroundImage: 'url(' + works.imageUrl +')' }"></div>
           </el-carousel-item>
         </el-carousel>
       </el-dialog>
-      <el-table ref="singleTable" :data="worksData" style="width: 100%" stripe size="small">
+      <div class="table-tools">
+        <el-button type="primary" size="mini" @click="handleBatchRecommend">批量推荐</el-button>
+        <el-button type="danger" size="mini">批量删除</el-button>
+      </div>
+      <el-table
+        ref="singleTable"
+        :data="worksData"
+        style="width: 100%"
+        stripe
+        size="small"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55" :selectable="handleSelectCheckbox"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
@@ -208,7 +221,7 @@
             <img
               :src="scope.row.smallUrl"
               style="width:40px;height:40px"
-              @click="dialogWorksInner = true"
+              @click="handleViewsImg(scope.$index)"
             >
           </template>
         </el-table-column>
@@ -294,7 +307,8 @@ export default {
       },
       worksCount: 0,
       uploadForm: "",
-      worksData: []
+      worksData: [],
+      multipleSelection: []
     };
   },
   computed: {
@@ -341,6 +355,30 @@ export default {
     },
     handleSelectCheckbox(row, index) {
       return row.verifyStatus !== 1 ? true : false;
+    },
+    handleViewsImg(index) {
+      this.$nextTick(() => {
+        this.dialogWorksInner = true;
+        this.$refs.carousel.setActiveItem(index);
+      });
+    },
+    handleSelectionChange(selection) {
+      this.multipleSelection = selection;
+    },
+    //批量推荐
+    handleBatchRecommend() {
+      //this.$refs.singleTable.clearSelection();
+      if (!this.multipleSelection.length) {
+        this.$message({ message: "请选择你要推荐的作品", type: "warning" });
+        return;
+      }
+      let worksIds = [];
+      this.multipleSelection.forEach(elem => {
+        worksIds.push(elem.worksId);
+      });
+      this.recommendWorks({ worksIds, recommend: 1 });
+      console.log(worksIds);
+      console.log(this.multipleSelection);
     },
     async submitAssess() {
       this.uploadForm = new FormData();
@@ -427,8 +465,21 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.table-tools {
+  margin-bottom: 10px;
+}
 .barasingha {
   display: flex;
   justify-content: space-between;
+}
+.works-pic {
+  width: 600px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 </style>

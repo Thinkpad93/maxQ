@@ -178,6 +178,7 @@ export default {
       this.form.schoolName = obj.name;
     },
     handleAdd() {
+       this.isShow = true;
       this.dialogFormVisible = true;
       this.form = {
         regionIds: []
