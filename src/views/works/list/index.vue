@@ -56,8 +56,8 @@
         </el-table-column>
         <el-table-column label="上传类型" prop="uploadType" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span size="mini" v-if="scope.row.uploadType === 1">压缩包上传</span>
-            <span size="mini" v-else>多图片上传</span>
+            <span size="mini" v-if="scope.row.uploadType">压缩包</span>
+            <span size="mini" v-else>图片</span>
           </template>
         </el-table-column>
         <el-table-column label="压缩包处理阶段" prop="processStage" :show-overflow-tooltip="true">
@@ -150,12 +150,13 @@
               :auto-upload="false"
               :multiple="true"
               :with-credentials="true"
+              :limit="1"
               action="#"
-              accept=".rar"
-              :http-request="submitUpload"
+              accept=".rar, .zip"
+              :http-request="submitCompressUpload"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传RAR后缀的压缩文件</div>
+              <div slot="tip" class="el-upload__tip">只能上传rar或zip后缀的压缩文件</div>
             </el-upload>
           </el-form-item>
         </template>
@@ -171,12 +172,11 @@
               :limit="10"
               action="#"
               accept="image/jpeg, image/png"
-              :file-list="imgFileList"
               :on-exceed="handleExceed"
               :http-request="submitUpload"
             >
               <i class="el-icon-plus"></i>
-              <div slot="tip" class="el-upload__tip">每次只能上传10张，每张图片不能超过2M，超出请选择压缩包上传</div>
+              <div slot="tip" class="el-upload__tip">每次只能上传10张，每张图片不能超过5M，超出请选择压缩包上传</div>
             </el-upload>
           </el-form-item>
         </template>
@@ -316,7 +316,6 @@ export default {
         images: [],
         compressFile: ""
       },
-      imgFileList: [],
       worksCount: 0,
       uploadForm: "",
       worksData: [],
@@ -376,6 +375,20 @@ export default {
     handleSelectionChange(selection) {
       this.multipleSelection = selection;
     },
+    //删除不通过作品
+    handleDelWorks(row) {
+      this.$confirm(`确定删除作品吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deleteDetail({ worksIds: [row.worksId] });
+        })
+        .catch(error => {
+          return false;
+        });
+    },
     //批量推荐
     async handleBatchRecommend() {
       if (!this.multipleSelection.length) {
@@ -409,7 +422,7 @@ export default {
     },
     async submitAssess() {
       this.uploadForm = new FormData();
-      this.$refs.uploadImage.submit();
+      this.$refs.uploadImage.submit(); //手动提交
       //通过验证的图片
       if (this.$refs.uploadImage.uploadFiles.length) {
         this.btnLoading = true;
@@ -432,14 +445,35 @@ export default {
         }
       }
     },
-    //自定义文件上传 这里是个循环
+    //压缩包上传
+    submitCompressUpload(params) {
+      let file = params.file;
+      let isLt100M = file.size / 1024 / 1024 < 100;
+      let fileName = file.name.split(".");
+      const extension = fileName[fileName.length - 1] === "rar";
+      const extensions = fileName[fileName.length - 1] === "zip";
+      if (!extension && !extensions) {
+        this.$alert("请选择rar格式或zip格式的文件", "提示", { type: "error" });
+        this.$refs.uploadImage.uploadFiles = [];
+        return false;
+      }
+      if (!isLt100M) {
+        this.$alert("压缩文件不能超过100MB!", "提示", { type: "error" });
+        this.$refs.uploadImage.uploadFiles = [];
+        return false;
+      }
+      if (extension || extensions) {
+        this.uploadForm.append("files", file);
+      }
+    },
+    //图片文件上传 这里是个循环
     submitUpload(params) {
       let file = params.file;
       let fileType = file.type;
       let isImage = fileType.indexOf("image") != -1;
-      let isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$alert("上传图片大小不能超过2MB!", "提示", { type: "error" });
+      let isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        this.$alert("上传图片大小不能超过5MB!", "提示", { type: "error" });
         this.$refs.uploadImage.uploadFiles = [];
         return false;
       }
@@ -474,6 +508,7 @@ export default {
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.$refs.uploadImage.clearFiles();
+        this.form.images = [];
         this.querySchoolCollection(this.query);
       }
     },
@@ -497,12 +532,12 @@ export default {
           this.dialogWorks = true;
           this.worksData = res.data.data || [];
           this.worksCount = res.data.totalCount;
+        } else {
+          //当没有数据返回时，则关闭窗口,重新更新列表
+          this.dialogWorks = false;
+          this.querySchoolCollection(this.query);
         }
       }
-    },
-    //删除不通过作品
-    handleDelWorks(row) {
-      this.deleteDetail({ worksIds: [row.worksId] });
     },
     //作品推荐
     async recommendWorks(params) {

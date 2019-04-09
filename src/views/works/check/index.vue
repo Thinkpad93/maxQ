@@ -109,7 +109,9 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 作品集详情 -->
+    <!-- 作品集详情1 -->
+
+    <!-- 作品集详情2 -->
     <el-dialog
       width="80%"
       top="20px"
@@ -117,42 +119,67 @@
       :visible.sync="dialogWorks"
       @close="querys.page = 1"
     >
-      <el-dialog width="70%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
+      <el-dialog
+        width="70%"
+        append-to-body
+        title="审核作品"
+        :visible.sync="dialogCheckWorks"
+        @open="handleOpen"
+        @close="handleClose"
+      >
         <el-row :gutter="10" type="flex" class="row-bg">
           <div class="one" v-if="!isBatch">
             <div class="image-box">
-              <div class="cheetah" :style="{backgroundImage: 'url(' + imageUrl +')'}"></div>
+              <el-carousel
+                ref="carousel"
+                height="400px"
+                @change="changeCarousel"
+                indicator-position="none"
+                :autoplay="false"
+                :loop="false"
+                arrow="always"
+              >
+                <el-carousel-item v-for="works in worksData" :key="works.worksId">
+                  <div class="cheetah" :style="{backgroundImage: 'url(' + works.imageUrl +')'}"></div>
+                </el-carousel-item>
+              </el-carousel>
             </div>
           </div>
           <div class="two">
-            <el-form
-              ref="check"
-              label-position="left"
-              :model="form"
-              size="mini"
-              :label-width="formLabelWidth"
-            >
-              <el-form-item label="是否通过" prop="verifyStatus">
-                <el-radio-group v-model="form.verifyStatus">
-                  <el-radio :label="1">通过</el-radio>
-                  <el-radio :label="2">不通过</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="审核意见" prop="verifyDescrition">
-                <el-input
-                  type="textarea"
-                  v-model="form.verifyDescrition"
-                  :rows="5"
-                  placeholder="审核意见"
-                ></el-input>
-              </el-form-item>
-            </el-form>
+            <template v-if="verifyStatus === 0">
+              <el-form
+                ref="check"
+                label-position="left"
+                :model="form"
+                size="mini"
+                :label-width="formLabelWidth"
+              >
+                <el-form-item label="是否通过" prop="verifyStatus">
+                  <el-radio-group v-model="form.verifyStatus">
+                    <el-radio :label="1">通过</el-radio>
+                    <el-radio :label="2">不通过</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-form-item label="审核意见" prop="verifyDescrition">
+                  <el-input
+                    type="textarea"
+                    v-model="form.verifyDescrition"
+                    :rows="5"
+                    placeholder="审核意见"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button size="small" @click="dialogCheckWorks = false">取消</el-button>
+                  <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
+                </el-form-item>
+              </el-form>
+            </template>
+            <template v-else>
+              <p>该作品已经审核过了，你可以通过切换图片进行其它作品审核</p>
+            </template>
           </div>
         </el-row>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="small" @click="dialogCheckWorks = false">取消</el-button>
-          <el-button size="small" type="primary" @click="checkForm('check')">确定</el-button>
-        </span>
+        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
       <div class="table-tools">
         <el-button type="primary" size="mini" @click="handleBatchCheckWorks">批量审核</el-button>
@@ -198,7 +225,11 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <template v-if="scope.row.verifyStatus === 0">
-              <el-button size="mini" type="primary" @click="handleWorksCheck(scope.row)">审核</el-button>
+              <el-button
+                size="mini"
+                type="primary"
+                @click="handleWorksCheck(scope.row, scope.$index)"
+              >审核</el-button>
             </template>
           </template>
         </el-table-column>
@@ -227,9 +258,10 @@ export default {
   data() {
     return {
       carouselIndex: 0,
+      verifyStatus: 0,
       worksId: null,
       isShow: false,
-      isBatch: false,
+      isBatch: false, //是批量审核还是单独审核
       dialogCheckWorks: false,
       dialogWorks: false,
       formLabelWidth: "80px",
@@ -258,6 +290,7 @@ export default {
       multipleSelection: []
     };
   },
+  watch: {},
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;
@@ -286,10 +319,22 @@ export default {
     handleDelWorks(row) {
       this.deleteDetail({ worksIds: [row.worksId] });
     },
-    handleWorksCheck(row) {
-      this.imageUrl = row.imageUrl;
-      this.worksId = row.worksId;
+    handleClose() {
+      this.verifyStatus = 0;
+      this.queryWorksDetailList(this.querys);
+    },
+    //
+    handleOpen() {
+      if (!this.isBatch) {
+        setTimeout(() => {
+          this.$refs.carousel.setActiveItem(this.carouselIndex);
+        }, 0);
+      }
+    },
+    handleWorksCheck(row, index) {
       this.dialogCheckWorks = true;
+      this.worksId = row.worksId;
+      this.carouselIndex = index;
       this.isBatch = false;
     },
     handleChangeSwitch(row) {
@@ -299,6 +344,7 @@ export default {
     //当幻灯片切换时
     changeCarousel(newIndex, oloIndex) {
       this.worksId = this.worksData[newIndex].worksId;
+      this.queryWorksDetail(this.worksId);
     },
     handleSelectCheckbox(row, index) {
       if (row.verifyStatus === 0) {
@@ -311,20 +357,27 @@ export default {
       this.multipleSelection = selection;
     },
     //批量审核
-    handleBatchCheckWorks() {
+    async handleBatchCheckWorks() {
       if (!this.multipleSelection.length) {
         this.$message({ message: "请选择你要审核的作品", type: "warning" });
         return;
       }
       this.isBatch = true;
       this.dialogCheckWorks = true;
+      this.form.worksIds = [];
+      this.multipleSelection.forEach(elem => {
+        this.form.worksIds.push(elem.worksId);
+      });
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // this.form.worksIds = [];
-          // this.form.worksIds.push(this.worksId);
-          // this.checkWorks(this.form);
+          if (this.isBatch) {
+          } else {
+            this.form.worksIds = [];
+            this.form.worksIds.push(this.worksId);
+          }
+          this.checkWorks(this.form);
         }
       });
     },
@@ -341,6 +394,18 @@ export default {
         }
         this.tableData = res.data.data || [];
         this.totalCount = res.data.totalCount;
+      }
+    },
+    //作品详情
+    async queryWorksDetail(worksId) {
+      let res = await service.queryWorksDetail(
+        { worksId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      if (res.errorCode === 0) {
+        this.verifyStatus = res.data.verifyStatus;
       }
     },
     //作品集详情查询
@@ -360,9 +425,12 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        this.dialogCheckWorks = false;
+        if (this.isBatch) {
+          this.dialogCheckWorks = false;
+        }
         this.$refs.check.resetFields();
-        this.queryWorksDetailList(this.querys);
+        this.queryWorksDetail(this.worksId);
+        //this.queryWorksDetailList(this.querys);
       }
     },
     //作品推荐

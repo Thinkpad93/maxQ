@@ -12,6 +12,12 @@ export function queryWorksDetailList(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//作品详情
+export function queryWorksDetail(params, config) {
+  return ax.post('/action/mod-xiaojiao/works/queryWorksDetail.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //作品上传
 export function uploadWorks(params, config) {
   return ax.post('/action/mod-xiaojiao/works/uploadWorks.do', params, config)
