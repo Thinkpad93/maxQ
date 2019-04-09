@@ -20,7 +20,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="审核状态">
+          <el-form-item label="审核阶段">
             <el-select v-model="query.checkStage">
               <el-option
                 v-for="item in checkStageList"
@@ -143,11 +143,11 @@
               :multiple="true"
               :with-credentials="true"
               action="#"
-              accept="application/zip, application/x-zip, application/x-zip-compressed"
+              accept=".rar"
               :http-request="submitUpload"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传RAR/ZIP后缀的压缩文件</div>
+              <div slot="tip" class="el-upload__tip">只能上传RAR后缀的压缩文件</div>
             </el-upload>
           </el-form-item>
         </template>
@@ -161,7 +161,7 @@
               :multiple="true"
               :with-credentials="true"
               action="#"
-              accept="image/jpeg, image/gif, image/png, image/bmp"
+              accept="image/jpeg, image/png"
               :http-request="submitUpload"
             >
               <i class="el-icon-plus"></i>
@@ -204,13 +204,11 @@
       </el-dialog>
       <div class="table-tools">
         <el-button type="primary" size="mini" @click="handleBatchRecommend">批量推荐</el-button>
-        <el-button type="danger" size="mini">批量删除</el-button>
       </div>
       <el-table
         ref="singleTable"
         :data="worksData"
         style="width: 100%"
-        stripe
         size="small"
         @selection-change="handleSelectionChange"
       >
@@ -259,9 +257,6 @@
           layout="total,prev, pager, next"
           :total="worksCount"
         ></el-pagination>
-        <!-- <div class="barasingha">
-          <el-button size="mini" type="primary">推荐</el-button>
-        </div>-->
       </div>
     </el-dialog>
   </div>
@@ -318,12 +313,6 @@ export default {
     }
   },
   methods: {
-    //获取图片高度，从而设置carousel高度
-    handleImageLoad() {
-      this.$nextTick(() => {
-        this.carouselHeight = this.$refs.image[0].height;
-      });
-    },
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.querySchoolCollection(this.query);
@@ -353,8 +342,13 @@ export default {
       let { worksId, recommend } = row;
       this.recommendWorks({ recommend, worksIds: [worksId] });
     },
+    //只有未推荐和审核通过的才不能选择
     handleSelectCheckbox(row, index) {
-      return row.verifyStatus !== 1 ? true : false;
+      if (row.recommend === 0 && row.verifyStatus === 1) {
+        return true;
+      } else {
+        return false;
+      }
     },
     handleViewsImg(index) {
       this.$nextTick(() => {
@@ -366,8 +360,7 @@ export default {
       this.multipleSelection = selection;
     },
     //批量推荐
-    handleBatchRecommend() {
-      //this.$refs.singleTable.clearSelection();
+    async handleBatchRecommend() {
       if (!this.multipleSelection.length) {
         this.$message({ message: "请选择你要推荐的作品", type: "warning" });
         return;
@@ -376,9 +369,17 @@ export default {
       this.multipleSelection.forEach(elem => {
         worksIds.push(elem.worksId);
       });
-      this.recommendWorks({ worksIds, recommend: 1 });
-      console.log(worksIds);
-      console.log(this.multipleSelection);
+      let res = await service.recommendWorks(
+        { worksIds, recommend: 1 },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      if (res.errorCode === 0) {
+        this.$refs.singleTable.clearSelection();
+        this.$message({ message: "推荐作品成功", type: "success" });
+        this.queryWorksDetailList(this.querys);
+      }
     },
     async submitAssess() {
       this.uploadForm = new FormData();
@@ -467,10 +468,6 @@ export default {
 <style lang="less" scoped>
 .table-tools {
   margin-bottom: 10px;
-}
-.barasingha {
-  display: flex;
-  justify-content: space-between;
 }
 .works-pic {
   width: 600px;

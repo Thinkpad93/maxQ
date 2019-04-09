@@ -34,7 +34,7 @@
               :with-credentials="true"
               :show-file-list="false"
               action
-              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              accept=".xls, .xlsx"
               :before-upload="beforeUpload"
             >
               <el-button size="small" icon="el-icon-plus" type="primary">文件导入上传</el-button>

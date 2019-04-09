@@ -26,6 +26,7 @@
           <el-form-item>
             <el-button size="small" icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
             <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
+            <!-- accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.zip,.rar" -->
             <el-upload
               class="upload-excel"
               ref="excel"
@@ -34,7 +35,7 @@
               :with-credentials="true"
               :show-file-list="false"
               action
-              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              accept=".xls, .xlsx"
               :before-upload="beforeUpload"
             >
               <el-button size="small" icon="el-icon-plus" type="primary">文件导入上传</el-button>

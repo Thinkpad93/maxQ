@@ -119,21 +119,9 @@
     >
       <el-dialog width="70%" append-to-body title="审核作品" :visible.sync="dialogCheckWorks">
         <el-row :gutter="10" type="flex" class="row-bg">
-          <div class="one">
+          <div class="one" v-if="!isBatch">
             <div class="image-box">
               <div class="cheetah" :style="{backgroundImage: 'url(' + imageUrl +')'}"></div>
-              <!-- <el-carousel
-                height="150px"
-                @change="changeCarousel"
-                indicator-position="none"
-                :autoplay="false"
-                :loop="false"
-                arrow="always"
-              >
-                <el-carousel-item v-for="works in worksData" :key="works.worksId">
-                  <img :src="works.imageUrl" class="image">
-                </el-carousel-item>
-              </el-carousel>-->
             </div>
           </div>
           <div class="two">
@@ -150,13 +138,7 @@
                   <el-radio :label="2">不通过</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item
-                label="审核意见"
-                prop="verifyDescrition"
-                :rules="[
-              { required: true, message: '请填写审核意见', trigger: 'blur' }
-            ]"
-              >
+              <el-form-item label="审核意见" prop="verifyDescrition">
                 <el-input
                   type="textarea"
                   v-model="form.verifyDescrition"
@@ -164,16 +146,26 @@
                   placeholder="审核意见"
                 ></el-input>
               </el-form-item>
-              <el-form-item>
-                <el-button size="small" @click="dialogCheckWorks = false">取消</el-button>
-                <el-button size="small" type="primary" @click="checkForm('check')">审核</el-button>
-              </el-form-item>
             </el-form>
           </div>
         </el-row>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="dialogCheckWorks = false">取消</el-button>
+          <el-button size="small" type="primary" @click="checkForm('check')">确定</el-button>
+        </span>
       </el-dialog>
-      <el-table ref="multipleTable" :data="worksData" style="width: 100%" stripe size="small">
-        <el-table-column type="selection" width="55" :selectable="selectable"></el-table-column>
+      <div class="table-tools">
+        <el-button type="primary" size="mini" @click="handleBatchCheckWorks">批量审核</el-button>
+      </div>
+      <el-table
+        ref="multipleTable"
+        :data="worksData"
+        style="width: 100%"
+        stripe
+        size="small"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" :selectable="handleSelectCheckbox"></el-table-column>
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
@@ -237,6 +229,7 @@ export default {
       carouselIndex: 0,
       worksId: null,
       isShow: false,
+      isBatch: false,
       dialogCheckWorks: false,
       dialogWorks: false,
       formLabelWidth: "80px",
@@ -261,7 +254,8 @@ export default {
         verifyDescrition: ""
       },
       worksCount: 0,
-      worksData: []
+      worksData: [],
+      multipleSelection: []
     };
   },
   methods: {
@@ -296,6 +290,7 @@ export default {
       this.imageUrl = row.imageUrl;
       this.worksId = row.worksId;
       this.dialogCheckWorks = true;
+      this.isBatch = false;
     },
     handleChangeSwitch(row) {
       let { worksId, recommend } = row;
@@ -305,15 +300,31 @@ export default {
     changeCarousel(newIndex, oloIndex) {
       this.worksId = this.worksData[newIndex].worksId;
     },
-    selectable(row, index) {
-      return row.verifyStatus !== 1 ? true : false;
+    handleSelectCheckbox(row, index) {
+      if (row.verifyStatus === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    handleSelectionChange(selection) {
+      this.multipleSelection = selection;
+    },
+    //批量审核
+    handleBatchCheckWorks() {
+      if (!this.multipleSelection.length) {
+        this.$message({ message: "请选择你要审核的作品", type: "warning" });
+        return;
+      }
+      this.isBatch = true;
+      this.dialogCheckWorks = true;
     },
     checkForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.form.worksIds = [];
-          this.form.worksIds.push(this.worksId);
-          this.checkWorks(this.form);
+          // this.form.worksIds = [];
+          // this.form.worksIds.push(this.worksId);
+          // this.checkWorks(this.form);
         }
       });
     },
@@ -378,6 +389,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.table-tools {
+  margin-bottom: 10px;
+}
 .cheetah {
   height: 400px;
   overflow: hidden;
