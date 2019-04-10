@@ -109,8 +109,18 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 作品集详情1 -->
-
+    <!-- 单独查看审核过的作品图片 -->
+    <el-dialog custom-class="qx-dialog" title="作品集查看" :visible.sync="dialogWorksInner">
+      <el-carousel
+        ref="carousel"
+        indicator-position="none"
+        height="600px"
+        :interval="500"
+        :autoplay="false"
+        :loop="false"
+        arrow="always"
+      ></el-carousel>
+    </el-dialog>
     <!-- 作品集详情2 -->
     <el-dialog
       width="80%"
@@ -271,9 +281,7 @@ export default {
         checkStage: 0,
         title: "",
         startTime: [],
-        endTime: "",
-        page: 1,
-        pageSize: 20
+        endTime: ""
       },
       querys: {
         collectionId: null,

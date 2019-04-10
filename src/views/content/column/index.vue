@@ -84,12 +84,14 @@
 <script>
 import service from "@/api";
 import QTable from "@/components/QTable";
+import pageMixins from "@/mixins/page";
 export default {
   name: "column",
   inject: ["reload"], //注入依赖
   components: {
     "base-table": QTable
   },
+  mixins: [pageMixins],
   data() {
     return {
       columns: [
@@ -106,20 +108,15 @@ export default {
           prop: "description"
         }
       ],
-      dialogFormVisible: false,
       formLabelWidth: "100px",
       isDialogTitle: true,
       query: {
-        channelName: "",
-        page: 1,
-        pageSize: 20
+        channelName: ""
       },
       form: {
         name: "",
         description: ""
-      },
-      tableData: [],
-      totalCount: 0 //分页总数
+      }
     };
   },
   methods: {

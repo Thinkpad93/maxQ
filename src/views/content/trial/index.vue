@@ -195,7 +195,6 @@ export default {
   mixins: [verifyStatus, pageMixins],
   data() {
     return {
-      //dialogViewContent: false,
       isShowform: false,
       dialogView: false,
       formLabelWidth: "80px",
@@ -203,9 +202,7 @@ export default {
       query: {
         title: "",
         checkStage: 1,
-        verifyStatus: 0,
-        page: 1,
-        pageSize: 10
+        verifyStatus: 0
       },
       form: {
         verifyStatus: 1,

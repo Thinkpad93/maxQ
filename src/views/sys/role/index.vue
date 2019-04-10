@@ -127,9 +127,7 @@ export default {
       dialogAdd: false,
       formLabelWidth: "100px",
       query: {
-        roleName: "",
-        page: 1,
-        pageSize: 20
+        roleName: ""
       },
       form: {
         roleId: null,

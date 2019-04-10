@@ -105,15 +105,16 @@
 <script>
 import service from "@/api";
 import QTable from "@/components/QTable";
+import pageMixins from "@/mixins/page";
 export default {
   name: "labels",
   inject: ["reload"], //注入依赖
   components: {
     "base-table": QTable
   },
+  mixins: [pageMixins],
   data() {
     return {
-      dialogFormVisible: false,
       formLabelWidth: "100px",
       isShow: true,
       query: {
@@ -131,8 +132,7 @@ export default {
         { id: 1, name: "特色" },
         { id: 2, name: "商圈" },
         { id: 3, name: "冠名企业" }
-      ],
-      tableData: []
+      ]
     };
   },
   computed: {

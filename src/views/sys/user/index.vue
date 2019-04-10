@@ -270,9 +270,7 @@ export default {
       info: {},
       query: {
         schoolName: "",
-        userName: "",
-        page: 1,
-        pageSize: 20
+        userName: ""
       },
       form: {
         queryType: null,

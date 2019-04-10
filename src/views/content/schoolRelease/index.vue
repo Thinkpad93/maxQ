@@ -139,18 +139,14 @@
 </template>
 <script>
 import service from "@/api";
+import pageMixins from "@/mixins/page";
 export default {
   name: "schoolRelease",
+  mixins: [pageMixins],
   data() {
     return {
       dialogView: false,
-      info: {},
-      query: {
-        page: 1,
-        pageSize: 20
-      },
-      totalCount: 0,
-      tableData: []
+      info: {}
     };
   },
   computed: {

@@ -116,13 +116,10 @@ export default {
   data() {
     return {
       isShow: true,
-      dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
         schoolName: "",
-        leaderName: "",
-        page: 1,
-        pageSize: 20
+        leaderName: ""
       },
       form: {
         tel: "",
@@ -178,7 +175,7 @@ export default {
       this.form.schoolName = obj.name;
     },
     handleAdd() {
-       this.isShow = true;
+      this.isShow = true;
       this.dialogFormVisible = true;
       this.form = {
         regionIds: []

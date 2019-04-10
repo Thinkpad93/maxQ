@@ -189,11 +189,13 @@
 import service from "@/api";
 import regiont from "@/components/qxregion";
 import { mapGetters } from "vuex";
+import pageMixins from "@/mixins/page";
 export default {
   name: "schoolManagement",
   components: {
     "qx-region-t": regiont
   },
+  mixins: [pageMixins],
   data() {
     return {
       dialogView: false,
@@ -201,16 +203,11 @@ export default {
       query: {
         queryId: this.$store.getters.scopeId,
         queryType: this.$store.getters.scopeType,
-        schoolName: "",
-        page: 1,
-        pageSize: 20
+        schoolName: ""
       },
       schoolId: null,
       //学校
-      schoolList: [],
-      //标签列表
-      tableData: [],
-      totalCount: 0
+      schoolList: []
     };
   },
   computed: {

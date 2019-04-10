@@ -170,15 +170,12 @@ export default {
   data() {
     return {
       isShow: true,
-      dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
         grade: 0,
         classId: 0,
         studentName: "",
-        schoolId: this.$route.params.id,
-        page: 1,
-        pageSize: 20
+        schoolId: this.$route.params.id
       },
       form: {
         studentName: "",

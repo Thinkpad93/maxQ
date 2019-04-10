@@ -26,26 +26,11 @@
                   </el-form-item>
                 </el-form>
                 <el-row>
-                  <!-- <el-button type="danger" size="small" @click="handlePageDel">删除一页</el-button>
-                  <el-button type="primary" size="small" @click="handlePageAdd">新增一页</el-button>-->
                   <el-button type="primary" size="small" @click="formSubmit('form')">保存</el-button>
                 </el-row>
               </div>
             </el-col>
           </el-row>
-        </template>
-        <template>
-          <!-- <div class="quill-page">
-          <ul class="quill-page-ul">
-            <li 
-              v-for="(item, index) in list" 
-              :key="index" 
-              :class="[index === active ? 'curr':'']"
-              @click="handleLiClick(index)">
-              {{ index + 1 }}
-            </li>
-          </ul>
-          </div>-->
         </template>
         <template>
           <el-row v-loading="loadding">

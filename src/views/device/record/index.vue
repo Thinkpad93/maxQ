@@ -209,16 +209,13 @@ export default {
           prop: "repairMan"
         }
       ],
-      dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",
       //默认参数
       query: {
         schoolName: "",
         scopeType: this.$store.getters.scopeType,
-        scopeId: this.$store.getters.scopeId,
-        page: 1,
-        pageSize: 20
+        scopeId: this.$store.getters.scopeId
       },
       schoolId: null,
       //学校名称

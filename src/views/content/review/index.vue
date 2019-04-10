@@ -203,9 +203,7 @@ export default {
       query: {
         title: "",
         checkStage: 2,
-        verifyStatus: 0,
-        page: 1,
-        pageSize: 20
+        verifyStatus: 0
       },
       form: {
         verifyStatus: 1,

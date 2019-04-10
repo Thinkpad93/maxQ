@@ -156,7 +156,7 @@
               :http-request="submitCompressUpload"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传rar或zip后缀的压缩文件</div>
+              <div slot="tip" class="el-upload__tip">只能上传rar或zip后缀的压缩文件，文件大小不能超过100M</div>
             </el-upload>
           </el-form-item>
         </template>
@@ -296,9 +296,7 @@ export default {
       query: {
         type: 0,
         checkStage: 9,
-        title: "",
-        page: 1,
-        pageSize: 20
+        title: ""
       },
       querys: {
         collectionId: null,
@@ -321,12 +319,6 @@ export default {
       worksData: [],
       multipleSelection: []
     };
-  },
-  computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
   },
   methods: {
     handleCurrentChange(curr) {
@@ -360,11 +352,7 @@ export default {
     },
     //只有未推荐和审核通过的才不能选择
     handleSelectCheckbox(row, index) {
-      if (row.recommend === 0 && row.verifyStatus === 1) {
-        return true;
-      } else {
-        return false;
-      }
+      return row.recommend === 0 && row.verifyStatus === 1 ? true : false;
     },
     handleViewsImg(index) {
       this.$nextTick(() => {
@@ -427,6 +415,7 @@ export default {
       if (this.$refs.uploadImage.uploadFiles.length) {
         this.btnLoading = true;
         let config = {
+          timeout: 50000, //这里由于上传的压缩包文件过大，从而修改等待时间
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -490,7 +479,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          //先上传多张图片
+          //先上传文件
           let res = await this.submitAssess();
           if (res) {
             this.uploadWorks(this.form);

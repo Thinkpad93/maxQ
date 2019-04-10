@@ -186,7 +186,6 @@ export default {
           prop: "phone"
         }
       ],
-      dialogFormVisible: false,
       isShow: true,
       formLabelWidth: "100px",
       selected: "",
@@ -272,9 +271,7 @@ export default {
       query: {
         schoolName: "",
         scopeType: this.$store.getters.scopeType,
-        scopeId: this.$store.getters.scopeId,
-        page: 1,
-        pageSize: 20
+        scopeId: this.$store.getters.scopeId
       },
       //分页
       schoolId: null,

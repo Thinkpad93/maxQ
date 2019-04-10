@@ -161,55 +161,19 @@
     <template>
       <el-dialog width="80%" top="40px" title="设备运行日志" :visible.sync="dialogRunlog">
         <el-table :data="runlogData" style="width: 100%" stripe size="small">
-          <el-table-column
-            :resizable="false"
-            label="日志id"
-            prop="logId"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="设备id"
-            prop="deviceId"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="学校名称"
-            prop="schoolName"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="mac地址"
-            prop="mac"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
-          <el-table-column :resizable="false" label="IP地址" prop="ip" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="日志详细信息"
-            prop="logText"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="状态码"
-            prop="status"
-            :show-overflow-tooltip="true"
-          >
+          <el-table-column label="日志id" prop="logId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="设备id" prop="deviceId" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="学校名称" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="mac地址" prop="mac" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="日志详细信息" prop="logText" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="状态码" prop="status" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <p v-if="scope.row.status === 0">正常</p>
               <p v-else-if="scope.row.status === 1">故障</p>
               <p v-else>正常关机</p>
             </template>
           </el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="错误码"
-            prop="deviceError"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
+          <el-table-column label="错误码" prop="deviceError" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column :resizable="false" label="日志级别" prop="level">
             <template slot-scope="scope">
               <p v-if="scope.row.level === 0">无法描述的错误</p>
@@ -218,12 +182,7 @@
               <p v-else style="color:#F56C6C">严重</p>
             </template>
           </el-table-column>
-          <el-table-column
-            :resizable="false"
-            label="日志时间"
-            prop="postTime"
-            :show-overflow-tooltip="true"
-          ></el-table-column>
+          <el-table-column label="日志时间" prop="postTime" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
       </el-dialog>
     </template>
@@ -254,18 +213,13 @@ export default {
         schoolName: "",
         scopeType: this.$store.getters.scopeType,
         scopeId: this.$store.getters.scopeId,
-        status: 0,
-        page: 1,
-        pageSize: 20
+        status: 0
       },
       viewDevice: {},
       runlogData: []
     };
   },
   computed: {
-    tableHeight() {
-      return window.innerHeight - 255;
-    },
     ...mapGetters(["scopeType"])
   },
   methods: {

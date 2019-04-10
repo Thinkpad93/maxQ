@@ -74,8 +74,6 @@ export default {
         schoolName: "",
         scopeType: this.$store.getters.scopeType,
         scopeId: this.$store.getters.scopeId,
-        page: 1,
-        pageSize: 20
       }
     };
   },
