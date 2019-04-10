@@ -63,8 +63,8 @@
         <el-table-column label="压缩包处理阶段" prop="processStage" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <template v-if="scope.row.uploadType">
-              <span v-if="scope.row.processStage === 0">文件解压中</span>
-              <span v-else>解压完成</span>
+              <span v-if="scope.row.processStage === 1">解压完成</span>
+              <span v-else>文件解压中</span>
             </template>
           </template>
         </el-table-column>
