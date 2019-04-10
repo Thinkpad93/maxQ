@@ -265,7 +265,6 @@ export default {
       dialogAdd: false,
       dialogReset: false,
       dialogView: false,
-      formLabelWidth: "100px",
       disabled: 0,
       info: {},
       query: {

@@ -210,7 +210,6 @@ export default {
         }
       ],
       isShow: true,
-      formLabelWidth: "100px",
       //默认参数
       query: {
         schoolName: "",

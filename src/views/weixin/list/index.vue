@@ -116,7 +116,6 @@ export default {
   data() {
     return {
       isShow: true,
-      formLabelWidth: "100px",
       query: {
         schoolName: "",
         leaderName: ""

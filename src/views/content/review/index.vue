@@ -198,7 +198,6 @@ export default {
     return {
       isShowform: false,
       dialogView: false,
-      formLabelWidth: "100px",
       title: "",
       query: {
         title: "",
@@ -213,12 +212,6 @@ export default {
       },
       info: {}
     };
-  },
-  computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
   },
   methods: {
     handleCurrentChange(curr) {

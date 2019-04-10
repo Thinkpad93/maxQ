@@ -125,7 +125,6 @@ export default {
         }
       ],
       dialogAdd: false,
-      formLabelWidth: "100px",
       query: {
         roleName: ""
       },

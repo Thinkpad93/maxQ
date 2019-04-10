@@ -187,7 +187,6 @@ export default {
         }
       ],
       isShow: true,
-      formLabelWidth: "100px",
       selected: "",
       form: {
         regionId: [],

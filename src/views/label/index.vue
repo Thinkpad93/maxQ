@@ -115,7 +115,6 @@ export default {
   mixins: [pageMixins],
   data() {
     return {
-      formLabelWidth: "100px",
       isShow: true,
       query: {
         queryType: 0,

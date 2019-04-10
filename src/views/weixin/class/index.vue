@@ -73,13 +73,13 @@
 </template>
 <script>
 import service from "@/api";
+import pageMixins from "@/mixins/page";
 export default {
   name: "class",
+  mixins: [pageMixins],
   data() {
     return {
       isShow: true,
-      dialogFormVisible: false,
-      formLabelWidth: "100px",
       query: {
         className: "",
         schoolId: this.$route.params.id,
@@ -94,8 +94,7 @@ export default {
         { id: 2, name: "二年级" },
         { id: 3, name: "三年级" },
         { id: 4, name: "四年级" }
-      ],
-      tableData: []
+      ]
     };
   },
   methods: {

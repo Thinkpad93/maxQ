@@ -211,10 +211,6 @@ export default {
     };
   },
   computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 230;
-    },
     ...mapGetters(["scopeType"])
   },
   methods: {

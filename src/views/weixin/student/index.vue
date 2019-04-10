@@ -170,7 +170,6 @@ export default {
   data() {
     return {
       isShow: true,
-      formLabelWidth: "100px",
       query: {
         grade: 0,
         classId: 0,

@@ -198,7 +198,6 @@ export default {
     return {
       isShowform: false,
       dialogView: false,
-      formLabelWidth: "100px",
       title: "",
       query: {
         title: "",

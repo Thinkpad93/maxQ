@@ -108,7 +108,6 @@ export default {
           prop: "description"
         }
       ],
-      formLabelWidth: "100px",
       isDialogTitle: true,
       query: {
         channelName: ""

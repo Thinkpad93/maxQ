@@ -119,7 +119,11 @@
         :autoplay="false"
         :loop="false"
         arrow="always"
-      ></el-carousel>
+      >
+        <el-carousel-item v-for="works in worksData" :key="works.worksId">
+          <div class="works-pic" :style="{ backgroundImage: 'url(' + works.imageUrl +')' }"></div>
+        </el-carousel-item>
+      </el-carousel>
     </el-dialog>
     <!-- 作品集详情2 -->
     <el-dialog
@@ -206,7 +210,11 @@
         <el-table-column prop="worksId" label="作品ID"></el-table-column>
         <el-table-column prop="smallUrl" label="图片">
           <template slot-scope="scope">
-            <img :src="scope.row.smallUrl" alt style="width:40px;height:40px">
+            <img
+              :src="scope.row.smallUrl"
+              style="width:40px;height:40px"
+              @click="handleViewsImg(scope.$index)"
+            >
           </template>
         </el-table-column>
         <el-table-column prop="verifyStatus" label="审核状态">
@@ -274,7 +282,7 @@ export default {
       isBatch: false, //是批量审核还是单独审核
       dialogCheckWorks: false,
       dialogWorks: false,
-      formLabelWidth: "80px",
+      dialogWorksInner: false,
       imageUrl: "",
       query: {
         type: 0,
@@ -355,11 +363,10 @@ export default {
       this.queryWorksDetail(this.worksId);
     },
     handleSelectCheckbox(row, index) {
-      if (row.verifyStatus === 0) {
-        return true;
-      } else {
-        return false;
-      }
+      return row.verifyStatus === 0 ? true : false;
+    },
+    handleViewsImg(index) {
+      this.dialogWorksInner = true;
     },
     handleSelectionChange(selection) {
       this.multipleSelection = selection;
@@ -467,6 +474,16 @@ export default {
 <style lang="less" scoped>
 .table-tools {
   margin-bottom: 10px;
+}
+.works-pic {
+  width: 600px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 .cheetah {
   height: 400px;

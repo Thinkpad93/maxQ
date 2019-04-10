@@ -198,6 +198,7 @@
         append-to-body
         title="作品集查看"
         :visible.sync="dialogWorksInner"
+        @open="handleOpen"
       >
         <el-carousel
           ref="carousel"
@@ -286,13 +287,12 @@ export default {
   mixins: [checkStage, worksType, pageMixins],
   data() {
     return {
+      carouselIndex: 0,
       btnLoading: false,
-      carouselHeight: 0,
       rowIndex: null,
       dialogFormVisible: false,
       dialogWorks: false,
       dialogWorksInner: false,
-      formLabelWidth: "100px",
       query: {
         type: 0,
         checkStage: 9,
@@ -355,10 +355,13 @@ export default {
       return row.recommend === 0 && row.verifyStatus === 1 ? true : false;
     },
     handleViewsImg(index) {
-      this.$nextTick(() => {
-        this.dialogWorksInner = true;
-        this.$refs.carousel.setActiveItem(index);
-      });
+      this.dialogWorksInner = true;
+      this.carouselIndex = index;
+    },
+    handleOpen() {
+      setTimeout(() => {
+        this.$refs.carousel.setActiveItem(this.carouselIndex);
+      }, 0);
     },
     handleSelectionChange(selection) {
       this.multipleSelection = selection;
