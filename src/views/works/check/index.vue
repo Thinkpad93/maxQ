@@ -175,7 +175,7 @@
               </el-form>
             </template>
             <template v-else>
-              <p>该作品已经审核过了，你可以通过切换图片进行其它作品审核</p>
+              <p>本页作品已审核完成！您可切换图片审核其它作品。</p>
             </template>
           </div>
         </el-row>

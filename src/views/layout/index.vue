@@ -9,7 +9,7 @@
         <!-- 主体 内容 -->
         <el-main id="main">
           <qx-tabs></qx-tabs>
-          <transition>
+          <transition name="fade-transform" mode="out-in">
             <keep-alive>
               <router-view :key="$route.fullPath"/>
             </keep-alive>
@@ -30,17 +30,14 @@ export default {
     "qx-header": qxheader,
     "qx-aside": qxaside,
     "qx-tabs": qxtabs
-  },
-  data() {
-    return {};
-  },
-  methods: {},
-  mounted() {}
+  }
 };
 </script>
 <style lang="less" scoped>
 #main {
   position: relative;
   padding: 0 !important;
+  display: flex;
+  flex-direction: column;
 }
 </style>
