@@ -209,7 +209,6 @@ export default {
           prop: "repairMan"
         }
       ],
-      isShow: true,
       //默认参数
       query: {
         schoolName: "",

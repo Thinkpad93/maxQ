@@ -186,7 +186,6 @@ export default {
           prop: "phone"
         }
       ],
-      isShow: true,
       selected: "",
       form: {
         regionId: [],
@@ -281,10 +280,6 @@ export default {
     };
   },
   computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    },
     ...mapGetters(["scopeType"])
   },
   methods: {

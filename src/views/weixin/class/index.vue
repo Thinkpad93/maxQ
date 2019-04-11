@@ -79,7 +79,6 @@ export default {
   mixins: [pageMixins],
   data() {
     return {
-      isShow: true,
       query: {
         className: "",
         schoolId: this.$route.params.id,

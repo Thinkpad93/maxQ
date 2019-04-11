@@ -115,7 +115,6 @@ export default {
   mixins: [pageMixins],
   data() {
     return {
-      isShow: true,
       query: {
         schoolName: "",
         leaderName: ""

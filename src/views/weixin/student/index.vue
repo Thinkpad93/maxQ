@@ -169,7 +169,6 @@ export default {
   mixins: [sex, relation, pageMixins],
   data() {
     return {
-      isShow: true,
       query: {
         grade: 0,
         classId: 0,

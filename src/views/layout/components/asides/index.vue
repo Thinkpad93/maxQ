@@ -32,12 +32,14 @@
     >
       <!-- 首页组件不需要后台返回 -->
       <el-menu-item index="/home">
+        <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
       </el-menu-item>
       <template v-for="item in menu">
         <template v-if="item.children.length >= 1">
           <el-submenu :index="item.path" :key="item.path">
             <template slot="title">
+              <i class="el-icon-menu"></i>
               <span>{{ item.name }}</span>
             </template>
             <el-menu-item-group>

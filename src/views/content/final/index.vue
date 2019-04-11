@@ -213,12 +213,6 @@ export default {
       info: {}
     };
   },
-  computed: {
-    //设置表格高度
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
-  },
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;

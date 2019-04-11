@@ -48,7 +48,8 @@
       </div>
     </div>
     <!-- 新增 or 编辑 -->
-    <el-dialog top="40px" title="新增角色" :visible.sync="dialogAdd" @open="show" @close="close">
+    <el-dialog top="40px" :visible.sync="dialogFormVisible" @open="show" @close="close">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
         <el-form-item
           label="角色名称"
@@ -88,7 +89,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogAdd = false">取消</el-button>
+        <el-button size="small" @click="dialogFormVisible = false">取消</el-button>
         <el-button size="small" type="primary" @click="formSubmit('form')">确定</el-button>
       </span>
     </el-dialog>
@@ -124,7 +125,6 @@ export default {
           prop: "description"
         }
       ],
-      dialogAdd: false,
       query: {
         roleName: ""
       },
@@ -171,11 +171,13 @@ export default {
       this.$refs.tree.setCheckedKeys([]);
     },
     handleAdd() {
-      this.dialogAdd = true;
+      this.isShow = true;
+      this.dialogFormVisible = true;
       this.form = {};
     },
     handleEdit(row) {
-      this.dialogAdd = true;
+      this.isShow = false;
+      this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
     },
     handleDel(row) {
@@ -212,9 +214,10 @@ export default {
     async addRole(params = {}) {
       let res = await service.addRole(params);
       if (res.errorCode === 0) {
-        this.dialogAdd = false;
+        this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.queryRoleList(this.query);
+        this.$message({ message: `${res.errorMsg}`, type: "success" });
       } else if (res.errorCode === -1) {
         //角色名称已存在
         this.$message({ message: `${res.errorMsg}`, type: "error" });

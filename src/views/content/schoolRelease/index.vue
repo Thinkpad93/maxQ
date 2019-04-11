@@ -149,11 +149,6 @@ export default {
       info: {}
     };
   },
-  computed: {
-    tableHeight() {
-      return window.innerHeight - 255;
-    }
-  },
   methods: {
     handleCurrentChange(curr) {
       this.query.page = curr;

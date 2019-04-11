@@ -1,7 +1,6 @@
 <template>
   <div class="page">
     <div class="page-hd">
-      <!-- 表单 -->
       <div class="page-form">
         <el-form
           class="demo-form-inline"
