@@ -66,9 +66,9 @@
         <el-table-column label="作品标题" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="作品类型" prop="type" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span size="mini" v-if="scope.row.type === 1">美术</span>
-            <span size="mini" v-else-if="scope.row.type === 2">书法</span>
-            <span size="mini" v-else>作业</span>
+            <span size="mini" v-if="scope.row.type === 1">学生作品</span>
+            <span size="mini" v-else-if="scope.row.type === 2">班级风采</span>
+            <span size="mini" v-else>精选优品</span>
           </template>
         </el-table-column>
         <el-table-column label="所属学校" prop="schoolName" :show-overflow-tooltip="true"></el-table-column>

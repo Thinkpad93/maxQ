@@ -308,15 +308,15 @@ export const worksType = {
           name: "全部"
         }, {
           id: 1,
-          name: "美术"
+          name: "学生作品"
         },
         {
           id: 2,
-          name: "书法"
+          name: "班级风采"
         },
         {
           id: 3,
-          name: "作业"
+          name: "精选优品"
         }
       ]
     }
