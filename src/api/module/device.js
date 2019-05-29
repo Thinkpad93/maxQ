@@ -26,8 +26,9 @@ export function deleteDeviceBind(params) {
 }
 //显示设备状态
 //   http://120.77.233.111:8080/qxiao-cms/action/mod-xiaojiao/device/status/showDeviceStatus.do
+///action/mod-xiaojiao/device/status/showDeviceStatus.do
 export function showDeviceStatus(params) {
-  return ax.post('/action/mod-xiaojiao/device/status/showDeviceStatus.do', params)
+  return ax.post('http://120.77.233.111:8080/qxiao-cms/action/mod-xiaojiao/device/status/showDeviceStatus.do', params)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

@@ -1,7 +1,9 @@
 * {
   box-sizing: border-box;
 }
-*:before, *:after {
+
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -11,13 +13,47 @@ body {
   font-size: 14px;
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  //font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, "Microsoft JhengHei", "Microsoft YaHei", Tohoma, Arial;
   background-color: #fff;
 }
 
 
-div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6,
-pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td,
-hr, button, article, aside, details, figcaption, figure, footer, header, menu, nav, section {
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+hr,
+button,
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+menu,
+nav,
+section {
   margin: 0;
   padding: 0;
   font-family: inherit;
@@ -28,25 +64,49 @@ hr, button, article, aside, details, figcaption, figure, footer, header, menu, n
 
 
 
-ul, ol {
+ul,
+ol {
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
 
-h1,h2,h3,h4,h5,h6,span,i,address,abbr,
-del,ins,time,kbd,label,q,rp,rt,figure,figcaption {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+i,
+address,
+abbr,
+del,
+ins,
+time,
+kbd,
+label,
+q,
+rp,
+rt,
+figure,
+figcaption {
   font-style: normal;
   font-weight: normal;
 }
 
-strong,b,em {
+strong,
+b,
+em {
   font-weight: bold;
   font-style: normal;
 }
 
-a, button, input, textarea {
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+a,
+button,
+input,
+textarea {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 a {
@@ -62,13 +122,19 @@ img {
   vertical-align: top;
 }
 
-input, button, textarea {
+input,
+button,
+textarea {
   border: 0 none;
   outline: 0;
   background-color: transparent;
 }
 
-button, label, input, select, textarea {
+button,
+label,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: 100%;
   line-height: inherit;
@@ -94,6 +160,7 @@ iframe {
   background: #aaa;
   opacity: .5;
 }
+
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track-piece {
@@ -104,4 +171,6 @@ iframe {
 }
 
 //IE 11
-input::-ms-clear { display: none; }
+input::-ms-clear {
+  display: none;
+}

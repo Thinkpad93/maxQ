@@ -6,7 +6,6 @@
           class="demo-form-inline"
           :inline="true"
           :model="query"
-          size="small"
           label-width="70px"
           label-position="left"
         >
@@ -40,7 +39,6 @@
         <div class="qx-pagination" v-if="totalCount">
           <el-pagination
             background
-            small
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="query.page"
