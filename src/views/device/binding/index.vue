@@ -37,20 +37,18 @@
     </div>
     <div class="page-ft">
       <!-- 分页 -->
-      <template>
-        <div class="qx-pagination" v-if="totalCount">
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount"
-          ></el-pagination>
-        </div>
-      </template>
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
     </div>
     <!-- 新增 or 编辑 -->
     <template>

@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-hd">
       <div class="page-form">
-        <el-form class="demo-form-inline" :inline="true" :model="query">
+        <el-form class="demo-form-inline" :inline="true" :model="query" size="small">
           <el-form-item label="学生姓名">
             <el-input v-model="query.studentName" placeholder="请输入学生姓名"></el-input>
           </el-form-item>
@@ -14,7 +14,7 @@
     </div>
     <div class="page-bd">
       <!-- 表格数据 -->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="ID" prop="labelId"></el-table-column>
         <el-table-column label="学生姓名" prop="labelId"></el-table-column>
         <el-table-column label="点评内容" prop="labelId"></el-table-column>

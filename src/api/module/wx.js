@@ -168,18 +168,6 @@ export function queryAllAction(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
-// //查询自定义行为
-// export function queryUserAction(params, config) {
-//   return ax.post('/action/mod-xiaojiao/weixin/action/queryUserAction.do', params, config)
-//     .then(res => res.data)
-//     .catch(e => console.log(e));
-// }
-// //查询系统默认行为
-// export function queryAllActionDefault(params, config) {
-//   return ax.post('/action/mod-xiaojiao/weixin/action/queryAllActionDefault.do', params, config)
-//     .then(res => res.data)
-//     .catch(e => console.log(e));
-// }
 //编辑系统默认行为
 export function updateDefault(params, config) {
   return ax.post('/action/mod-xiaojiao/weixin/action/updateDefault.do', params, config)
@@ -195,6 +183,42 @@ export function deleteAction(params, config) {
 //新增系统默认行为
 export function addAction(params, config) {
   return ax.post('/action/mod-xiaojiao/weixin/action/addAction.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//查询所有奖项
+export function queryPrizeDefual(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/prize/queryPrizeDefual.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//编辑奖项
+export function updatePrize(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/prize/updatePrize.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//删除奖项
+export function deletePrize(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/prize/deletePrize.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//新增奖项
+export function addPrize(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/prize/addPrize.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//用户统计
+export function statistics(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/statistics/statistics.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
+//班级统计
+export function classStatistics(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/statistics/classStatistics.do', params, config)
     .then(res => res.data)
     .catch(e => console.log(e));
 }

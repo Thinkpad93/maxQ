@@ -74,7 +74,8 @@
         ></el-pagination>
       </div>
     </div>
-    <el-dialog top="40px" title="新增系统默认行为" :visible.sync="dialogFormVisible">
+    <el-dialog top="40px" :visible.sync="dialogFormVisible">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
         <el-form-item
           label="行为名称"
@@ -110,6 +111,7 @@
           <el-col :span="8">
             <el-form-item>
               <el-button
+                v-if="form.rules.length != 1"
                 size="mini"
                 icon="el-icon-delete"
                 circle
@@ -133,6 +135,7 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
+      isShow: false, //判断dialog弹窗是新增还是编辑
       formLabelWidth: "100px",
       actionTypeList: [
         {
@@ -152,7 +155,7 @@ export default {
       form: {
         title: "",
         textContent: "",
-        rules: [{ ruleContent: "" }]
+        rules: []
       },
       rules: [{ ruleContent: "" }],
       rulesRules: {
@@ -182,9 +185,17 @@ export default {
       this.queryAllAction(this.query);
     },
     handleAdd() {
+      this.isShow = true;
       this.dialogFormVisible = true;
+      this.form = {
+        rules: [{ ruleId: 0, ruleContent: "" }]
+      };
     },
-    handleEdit() {},
+    handleEdit(row) {
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+    },
     handleDel(actionId) {
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
@@ -199,7 +210,7 @@ export default {
         });
     },
     handleAddRules() {
-      this.form.rules.push({ ruleContent: "" });
+      this.form.rules.push({ ruleId: 0, ruleContent: "" });
     },
     handleRemoveRules(index) {
       return this.form.rules.splice(index, 1);
@@ -207,7 +218,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.form);
+          if (this.isShow) {
+            this.addAction(this.form);
+          } else {
+            this.updateDefault(this.form);
+          }
         }
       });
     },
@@ -227,6 +242,9 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryAllAction(this.query);
       }
     },
     //删除系统默认行为
@@ -247,6 +265,9 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryAllAction(this.query);
       }
     }
   },

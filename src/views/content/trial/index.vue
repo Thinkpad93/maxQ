@@ -6,6 +6,7 @@
           class="demo-form-inline"
           :inline="true"
           :model="query"
+          size="small"
           label-width="70px"
           label-position="left"
         >

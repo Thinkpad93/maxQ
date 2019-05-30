@@ -43,6 +43,7 @@
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 1)">班级管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 2)">老师管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 3)">学生管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 4)">学生点评</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -62,7 +63,7 @@
       </div>
     </div>
     <!-- 新增 or 编辑 -->
-    <el-dialog title top="40px" :visible.sync="dialogFormVisible">
+    <el-dialog top="40px" :visible.sync="dialogFormVisible">
       <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form
         :rules="rules"

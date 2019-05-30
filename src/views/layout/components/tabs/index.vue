@@ -46,10 +46,10 @@ export default {
 </script>
 <style lang="less" scoped>
 .tabs-contaier {
-  // position: absolute;
-  // left: 0;
-  // top: 0;
-  // z-index: 990;
+  position: fixed;
+  left: 200px;
+  top: 60px;
+  z-index: 990;
   width: 100%;
   display: flex;
   background-color: #fff;

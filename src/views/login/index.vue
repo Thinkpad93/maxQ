@@ -4,7 +4,7 @@
       <div class="top">
         <div class="header">
           <!-- <img class="logo" src="@/assets/logo.png" width="60" height="60"> -->
-          <span class="title">Q校网业务综合管理后台</span>
+          <!-- <span class="title">Q校网业务综合管理后台</span> -->
         </div>
         <h3 class="desc">欢迎使用Q校网系统</h3>
       </div>

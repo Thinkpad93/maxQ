@@ -7,6 +7,7 @@
           class="demo-form-inline"
           :inline="true"
           :model="query"
+          size="small"
           label-width="70px"
           label-position="left"
         >
@@ -64,20 +65,18 @@
     </div>
     <div class="page-ft">
       <!-- 分页 -->
-      <template>
-        <div class="qx-pagination" v-if="totalCount">
-          <el-pagination
-            background
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="query.page"
-            :page-size="query.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount"
-          ></el-pagination>
-        </div>
-      </template>
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
     </div>
 
     <template>

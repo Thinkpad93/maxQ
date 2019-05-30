@@ -6,14 +6,12 @@
           class="demo-form-inline"
           :inline="true"
           :model="query"
+          size="small"
           label-width="70px"
           label-position="left"
         >
-          <el-form-item label="奖项名称">
-            <el-input v-model="query.schoolName" placeholder="请输入奖项名称"></el-input>
-          </el-form-item>
-          <el-form-item label="类型">
-            <el-select v-model="query.channelId" placeholder="请选择">
+          <el-form-item label="奖励类型">
+            <el-select v-model="query.prizeType" placeholder="请选择">
               <el-option
                 v-for="item in prizeTypelList"
                 :key="item.id"
@@ -34,35 +32,51 @@
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+            <el-button size="mini" type="danger" @click="handleDel(scope.row.itemId)">删除</el-button>
           </template>
         </el-table-column>
       </base-table>
     </div>
+    <div class="page-ft">
+      <!-- 分页 -->
+      <div class="qx-pagination" v-if="totalCount">
+        <el-pagination
+          background
+          small
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="query.page"
+          :page-size="query.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+        ></el-pagination>
+      </div>
+    </div>
     <!-- 新增 or 编辑 -->
-    <el-dialog top="40px" title="学生点评" :visible.sync="dialogFormVisible">
-      <el-form ref="form" :model="form" status-icon>
+    <el-dialog top="40px" :visible.sync="dialogFormVisible">
+      <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
+      <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
         <el-form-item
           label="奖项名称"
-          prop="commentContent"
+          prop="textContent"
           :rules="[
           { required: true, message: '请输入奖项名称', trigger: 'blur' }
         ]"
         >
-          <el-input v-model="form.commentContent" placeholder="请输入奖项名称"></el-input>
+          <el-input v-model="form.textContent" placeholder="请输入奖项名称"></el-input>
         </el-form-item>
         <el-form-item
           label="兑换数量"
-          prop="commentContent"
+          prop="starCount"
           :rules="[
           { required: true, message: '请输入兑换数量', trigger: 'blur' }
         ]"
         >
-          <el-input v-model="form.commentContent" placeholder="请输入兑换数量"></el-input>
+          <el-input type="number" v-model="form.starCount" placeholder="请输入兑换数量"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('form')">提交</el-button>
+        <el-button size="small" type="primary" @click="submitForm('form')">提交</el-button>
       </span>
     </el-dialog>
   </div>
@@ -78,56 +92,139 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
+      isShow: false, //判断dialog弹窗是新增还是编辑
+      formLabelWidth: "100px",
       columns: [
         {
           label: "序号",
-          prop: "deviceId"
+          prop: "itemId"
         },
         {
           label: "奖项名称",
-          prop: "deviceId"
+          prop: "textContent"
         },
         {
-          label: "兑换Q星",
-          prop: "deviceId"
-        },
-        {
-          label: "类型",
-          prop: "deviceId"
+          label: "兑换Q星数",
+          prop: "starCount"
         }
       ],
       prizeTypelList: [
         {
+          id: 0,
+          name: "系统默认"
+        },
+        {
           id: 1,
-          name: "全部"
-        },
-        {
-          id: 2,
           name: "自定义"
-        },
-        {
-          id: 3,
-          name: "默认"
         }
       ],
-      query: {},
-      form: {},
-      tableData: []
+      query: {
+        prizeType: 0,
+        page: 1,
+        pageSize: 20
+      },
+      form: {
+        textContent: "",
+        starCount: null
+      },
+      tableData: [],
+      totalCount: 0
     };
   },
   methods: {
-    handleSearch() {},
-    handleAdd() {},
-    handleEdit(row) {},
-    handleDel(row) {},
+    handleSearch() {
+      this.queryPrizeDefual(this.query);
+    },
+    handleCurrentChange(curr) {
+      this.query.page = curr;
+      this.queryPrizeDefual(this.query);
+    },
+    handleSizeChange(size) {
+      this.query.pageSize = size;
+      this.queryPrizeDefual(this.query);
+    },
+    handleAdd() {
+      this.form = {};
+      this.isShow = true;
+      this.dialogFormVisible = true;
+    },
+    handleEdit(row) {
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+    },
+    handleDel(itemId) {
+      this.$confirm(`确定删除吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deletePrize(itemId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          if (this.isShow) {
+            this.addPrize(this.form);
+          } else {
+            this.updatePrize(this.form);
+          }
         }
       });
+    },
+    //查询所有奖项
+    async queryPrizeDefual(params = {}) {
+      let res = await service.queryPrizeDefual(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
+      }
+    },
+    //编辑奖项
+    async updatePrize(params = {}) {
+      let res = await service.updatePrize(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryPrizeDefual(this.query);
+      }
+    },
+    //删除奖项
+    async deletePrize(itemId) {
+      let res = await service.deletePrize(
+        { itemId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      if (res.errorCode === 0) {
+        this.queryPrizeDefual(this.query);
+      }
+    },
+    //新增奖项
+    async addPrize(params = {}) {
+      let res = await service.addPrize(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryPrizeDefual(this.query);
+      }
     }
   },
-  mounted() {}
+  mounted() {
+    this.queryPrizeDefual(this.query);
+  }
 };
 </script>
 <style lang="less" scoped>
