@@ -7,6 +7,7 @@
           class="demo-form-inline"
           :inline="true"
           :model="query"
+          size="small"
           label-width="70px"
           label-position="left"
         >
@@ -55,7 +56,14 @@
     <template>
       <el-dialog top="40px" :visible.sync="dialogFormVisible" @close="handleDialogClose">
         <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
-        <el-form :rules="rules" ref="form" :model="form" status-icon :label-width="formLabelWidth">
+        <el-form
+          :rules="rules"
+          ref="form"
+          :model="form"
+          status-icon
+          size="small"
+          :label-width="formLabelWidth"
+        >
           <template v-if="isShow">
             <el-form-item label="区域" prop="regionId">
               <qx-region @last="queryRegion" v-model="form.regionId"></qx-region>

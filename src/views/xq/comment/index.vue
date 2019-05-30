@@ -83,6 +83,18 @@ export default {
       if (res.errorCode === 0) {
         this.tableData = res.data;
       }
+    },
+    //添加学生点评
+    async addComment(params = {}) {
+      let res = await service.addComment(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+    },
+    //删除学生点评
+    async deleteComment(params = {}) {
+      let res = await service.deleteComment(params, {
+        headers: { "Content-Type": "application/json" }
+      });
     }
   },
   mounted() {

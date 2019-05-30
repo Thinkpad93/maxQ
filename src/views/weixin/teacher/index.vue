@@ -6,7 +6,6 @@
           class="demo-form-inline"
           :inline="true"
           :model="query"
-          size="small"
           label-width="70px"
           label-position="left"
         >
@@ -63,17 +62,24 @@
         </el-table-column>
         <el-table-column label="任教班级" prop="className">
           <template slot-scope="scope">
-            <el-tag
-              size="small"
-              v-for="name in scope.row.classNames"
-              :key="name.classId"
-            >{{ name.className }}</el-tag>
+            <el-dropdown>
+              <el-button size="mini" type="primary">
+                查看
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="name in scope.row.classNames"
+                  :key="name.classId"
+                >{{ name.className }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
+            <el-button type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button type="danger" @click="handleDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
