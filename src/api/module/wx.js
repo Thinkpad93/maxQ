@@ -60,6 +60,12 @@ export function teacherBatchAdd(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//根据班级ID查询老师列表（微信端）
+export function queryTeacherWithClassId(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/teacher/queryTeacherWithClassId.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
 //查询班级列表（微信端）
 export function querySchoolClass(params, config) {
   return ax.post('/action/mod-xiaojiao/weixin/class/querySchoolClass.do', params, config)

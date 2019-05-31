@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-bd">
       <el-row :gutter="10">
-        <el-col :span="8" :offset="4">
+        <el-col :span="6">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>用户统计</span>
@@ -29,7 +29,7 @@
             </el-row>
           </el-card>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>班级统计</span>
@@ -104,7 +104,7 @@ export default {
     font-style: normal;
     font-size: 16px;
     font-weight: 300;
-    color: #009688;
+    color: #409eff;
   }
 }
 </style>

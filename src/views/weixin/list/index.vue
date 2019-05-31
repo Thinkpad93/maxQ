@@ -32,7 +32,7 @@
         <el-table-column label="学校ID" prop="schoolId"></el-table-column>
         <el-table-column label="学校名称" prop="schoolName"></el-table-column>
         <el-table-column label="手机号" prop="tel"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="550">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -203,9 +203,13 @@ export default {
         this.$router.push({
           path: `/weixin/teacher/${schoolId}`
         });
-      } else {
+      } else if (index == 3) {
         this.$router.push({
           path: `/weixin/student/${schoolId}`
+        });
+      } else {
+        this.$router.push({
+          path: `/weixin/comment/${schoolId}`
         });
       }
     },
