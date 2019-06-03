@@ -114,6 +114,7 @@ export default {
     return {
       dialogViewComment: false,
       dialogFormVisible: false,
+      isShow: false, //判断dialog弹窗是新增还是编辑
       formLabelWidth: "100px",
       query: {
         classId: 1,
@@ -150,9 +151,11 @@ export default {
     },
     //查看点评内容列表
     handleViewComment(row) {
+      this.dialogViewComment = true;
       this.queryCommentList(row.studentId);
     },
     handleAddComment(row) {
+      this.isShow = true;
       this.form.studentId = row.studentId;
       this.dialogFormVisible = true;
     },
@@ -172,11 +175,19 @@ export default {
           return false;
         });
     },
-    handleEdit(row) {},
+    handleEdit(row) {
+      this.isShow = false;
+      this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addComment(this.form);
+          if (this.isShow) {
+            this.addComment(this.form);
+          } else {
+            this.updateComment(this.form);
+          }
         }
       });
     },
@@ -198,7 +209,6 @@ export default {
         }
       );
       if (res.errorCode === 0) {
-        this.dialogViewComment = true;
         this.viewCommentData = res.data;
       }
     },
@@ -236,11 +246,14 @@ export default {
       }
     },
     //修改学生点评
-    async updateComment() {
+    async updateComment(params = {}) {
       let res = await service.updateComment(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.queryCommentList(params.studentId);
       }
     },
     //查询学生点评（单条）
