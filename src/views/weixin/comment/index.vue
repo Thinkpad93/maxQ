@@ -56,7 +56,7 @@
       </div>
     </div>
     <!-- dialog -->
-    <el-dialog top="40px" title="学生点评" :visible.sync="dialogFormVisible">
+    <el-dialog top="40px" title="学生点评" :visible.sync="dialogFormVisible" @open="handleOpen">
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
         <el-form-item
           label="点评内容"
@@ -117,13 +117,10 @@ export default {
       isShow: false, //判断dialog弹窗是新增还是编辑
       formLabelWidth: "100px",
       query: {
-        classId: 1,
+        classId: null,
         studentName: "",
         page: 1,
         pageSize: 20
-      },
-      querys: {
-        classId: 1
       },
       form: {
         studentId: null,
@@ -148,6 +145,9 @@ export default {
     handleSizeChange(size) {
       this.query.pageSize = size;
       this.queryStudentList(this.query);
+    },
+    handleOpen() {
+      this.queryTeacherWithClassId(this.query.classId);
     },
     //查看点评内容列表
     handleViewComment(row) {
@@ -192,10 +192,13 @@ export default {
       });
     },
     //查询老师列表（微信端）
-    async queryTeacherWithClassId(params = {}) {
-      let res = await service.queryTeacherWithClassId(params, {
-        headers: { "Content-Type": "application/json" }
-      });
+    async queryTeacherWithClassId(classId) {
+      let res = await service.queryTeacherWithClassId(
+        { classId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
       if (res.errorCode === 0) {
         this.teacherList = res.data;
       }
@@ -257,7 +260,7 @@ export default {
       }
     },
     //查询学生点评（单条）
-    async queryComment() {
+    async queryComment(params = {}) {
       let res = await service.queryComment(params, {
         headers: { "Content-Type": "application/json" }
       });
@@ -275,12 +278,12 @@ export default {
       );
       if (res.errorCode === 0) {
         this.classList = res.data;
+        this.query.classId = res.data[0].classId;
+        this.queryStudentList(this.query);
       }
     }
   },
   mounted() {
-    this.queryStudentList(this.query);
-    this.queryTeacherWithClassId(this.querys);
     this.querySchoolClass();
   }
 };

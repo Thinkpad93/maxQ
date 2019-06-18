@@ -272,7 +272,6 @@ export default {
       this.isShow = true;
     },
     handleEdit(row) {
-      console.log(row);
       let { classNames, ...args } = row;
       let classIds = classNames.map(item => item.classId);
       this.isShow = false;
