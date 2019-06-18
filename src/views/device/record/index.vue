@@ -40,7 +40,6 @@
         <div class="qx-pagination" v-if="totalCount">
           <el-pagination
             background
-            small
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="query.page"

@@ -63,11 +63,18 @@
         </el-table-column>
         <el-table-column label="任教班级" prop="className">
           <template slot-scope="scope">
-            <el-tag
-              size="small"
-              v-for="name in scope.row.classNames"
-              :key="name.classId"
-            >{{ name.className }}</el-tag>
+            <el-dropdown>
+              <el-button size="mini" type="primary">
+                查看
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="name in scope.row.classNames"
+                  :key="name.classId"
+                >{{ name.className }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -265,7 +272,6 @@ export default {
       this.isShow = true;
     },
     handleEdit(row) {
-      console.log(row);
       let { classNames, ...args } = row;
       let classIds = classNames.map(item => item.classId);
       this.isShow = false;

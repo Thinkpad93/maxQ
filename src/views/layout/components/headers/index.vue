@@ -2,7 +2,7 @@
   <el-header id="header">
     <div class="head-container">
       <div class="toggle-aside" @click="collapseChage">
-        <i class="icon iconfont icon-weibiaoti26"></i>
+        <i class="el-icon-menu"></i>
       </div>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
@@ -65,8 +65,9 @@ export default {
   height: 100%;
 }
 #header {
-  height: 60px;
-  background-color: #ebf1f6;
+  // height: 60px;
+  border-bottom: 1px solid #f6f6f6;
+  background-color: #fff;
   .toggle-aside {
     cursor: pointer;
     i {
@@ -74,5 +75,9 @@ export default {
       color: #606266;
     }
   }
+}
+.tabs {
+  color: #fff;
+  background-color: #606266;
 }
 </style>

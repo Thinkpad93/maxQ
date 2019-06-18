@@ -38,9 +38,9 @@
         <div class="container-block">
           <el-row :gutter="20">
             <el-col
-              :xs="6"
-              :sm="6"
-              :md="4"
+              :xs="8"
+              :sm="8"
+              :md="6"
               :lg="4"
               :xl="4"
               v-for="(item,index) in tableData"
@@ -320,12 +320,12 @@ export default {
   box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.12), 0 0 16px 0 rgba(0, 0, 0, 0.04);
   > a {
     display: block;
-    height: 260px;
+    height: 464px;
     background-size: cover;
     background-repeat: no-repeat;
   }
   img {
-    height: 260px;
+    height: 464px;
   }
 }
 .layer {
@@ -333,6 +333,9 @@ export default {
   h4 {
     font-size: 16px;
     margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   > span {
     color: #9a9a9a;

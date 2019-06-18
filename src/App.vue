@@ -29,5 +29,5 @@ export default {
 <style lang="less">
 @import "normalize.css/normalize.css";
 @import "./styles/site.less";
-@import "./iconfont/iconfont.css";
+//@import "./iconfont/iconfont.css";
 </style>

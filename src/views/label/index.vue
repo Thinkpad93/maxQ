@@ -25,8 +25,8 @@
             <el-input v-model="query.name" placeholder="请输入标签名称" maxlength="10"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button size="small" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-            <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
+            <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">添加标签</el-button>
           </el-form-item>
         </el-form>
       </div>

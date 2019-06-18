@@ -11,10 +11,13 @@
 <script>
 //在组件中分发 Action
 import { mapState, mapActions } from "vuex";
+import bus from "@/utils/bus";
 export default {
   name: "tabs",
   data() {
-    return {};
+    return {
+      left: 200
+    };
   },
   watch: {
     $route(news, old) {
@@ -40,16 +43,17 @@ export default {
     }
   },
   mounted() {
+    bus.$on("collapse", msg => {});
     return this.$store.commit("tabs/adds", this.$route);
   }
 };
 </script>
 <style lang="less" scoped>
 .tabs-contaier {
-  // position: absolute;
-  // left: 0;
-  // top: 0;
-  // z-index: 990;
+  position: fixed;
+  //left: 200px;
+  top: 60px;
+  z-index: 990;
   width: 100%;
   display: flex;
   background-color: #fff;

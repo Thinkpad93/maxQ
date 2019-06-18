@@ -925,6 +925,6 @@ export default {
   align-items: center;
   padding: 10px;
   text-align: left;
-  background-color: #fff;
+  // background-color: #fff;
 }
 </style>

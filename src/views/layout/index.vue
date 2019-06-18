@@ -39,5 +39,6 @@ export default {
   padding: 0 !important;
   display: flex;
   flex-direction: column;
+  background-color: #f0f2f5;
 }
 </style>
