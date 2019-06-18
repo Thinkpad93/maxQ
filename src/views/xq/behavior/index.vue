@@ -74,6 +74,7 @@
         ></el-pagination>
       </div>
     </div>
+    <!-- dialog -->
     <el-dialog top="40px" :visible.sync="dialogFormVisible">
       <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">

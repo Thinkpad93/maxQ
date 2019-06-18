@@ -7,6 +7,7 @@ import * as terminal from './module/terminal';
 import * as portal from './module/portal';
 import * as wx from './module/wx';
 import * as works from './module/works';
+import * as paper from './module/paper';
 export default {
   ...device,
   ...content,
@@ -16,5 +17,6 @@ export default {
   ...terminal,
   ...portal,
   ...wx,
-  ...works
+  ...works,
+  ...paper
 }
