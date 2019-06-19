@@ -57,7 +57,7 @@ export default {
   width: 100%;
   display: flex;
   background-color: #fff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid #ebf1f6;
   a {
     display: flex;
@@ -75,7 +75,7 @@ export default {
     }
     &.router-link-exact-active {
       color: #333;
-      background-color: #f6f6f6;
+      background-color: #f0f2f5;
       &::after {
         content: "";
         position: absolute;

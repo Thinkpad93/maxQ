@@ -67,7 +67,7 @@ export default {
 #header {
   // height: 60px;
   border-bottom: 1px solid #f6f6f6;
-  background-color: #fff;
+  background-color: #ebf1f6;
   .toggle-aside {
     cursor: pointer;
     i {

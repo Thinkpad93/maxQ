@@ -72,8 +72,16 @@
       </div>
     </div>
     <!-- 视频查看 -->
-    <el-dialog top="40px" title="视频查看" :visible.sync="dialogViewVideo">
-      <video :src="videoUrl" controls width="400" height="230"></video>
+    <el-dialog
+      width="500px"
+      custom-class="qx-dialog"
+      top="40px"
+      title="视频查看"
+      :visible.sync="dialogViewVideo"
+    >
+      <div class="video">
+        <video :src="videoUrl" controls loop></video>
+      </div>
     </el-dialog>
     <!-- dialog -->
     <el-dialog top="40px" :visible.sync="dialogFormVisible">
@@ -164,6 +172,7 @@
             action="/qxiao-cms/action/mod-xiaojiao/weixin/paper/fileUploadVideo.do"
             accept="video/mp4, video/flv, video/mov"
             :on-success="handleVideoSuccess"
+            :before-remove="handleBeforeRemove"
             :before-upload="beforeVideoUpload"
           >
             <el-button size="small" type="primary">上传</el-button>
@@ -228,9 +237,19 @@ export default {
       this.form = {};
     },
     handleEdit(row) {
+      //清除文件列表
+      this.fileList = [];
       this.isShow = false;
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
+      if (row) {
+        let v = row.videoUrl.split("/");
+        let obj = {
+          name: v[v.length - 1],
+          url: row.videoUrl
+        };
+        this.fileList.push(obj);
+      }
     },
     handleDel(row) {
       let { paperId } = row;
@@ -274,11 +293,23 @@ export default {
         this.form.videoUrl = response.data.url;
       }
     },
+    //删除文件之前的钩子
+    handleBeforeRemove(file, fileList) {
+      if (file && file.status === "success") {
+        this.form.videoUrl = "";
+      } else {
+        return false;
+      }
+    },
     //表单提交
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addPaperVideo(this.form);
+          if (this.isShow) {
+            this.addPaperVideo(this.form);
+          } else {
+            this.updatePaper(this.form);
+          }
         }
       });
     },
@@ -289,6 +320,20 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.$refs.uploadVideo.clearFiles(); //清空已上传的文件列表
+        this.queryPaperList(this.query);
+      }
+    },
+    //修改试卷
+    async updatePaper(params = {}) {
+      let res = await service.updatePaper(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
+        this.$refs.uploadVideo.clearFiles(); //清空已上传的文件列表
         this.queryPaperList(this.query);
       }
     },
@@ -341,4 +386,14 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.video {
+  width: 500px;
+  height: 500px;
+  video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
 </style>
