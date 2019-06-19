@@ -44,6 +44,7 @@
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 2)">老师管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 3)">学生管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 4)">学生点评</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 5)">成绩管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -207,9 +208,13 @@ export default {
         this.$router.push({
           path: `/weixin/student/${schoolId}`
         });
-      } else {
+      } else if (index === 4) {
         this.$router.push({
           path: `/weixin/comment/${schoolId}`
+        });
+      } else {
+        this.$router.push({
+          path: `/weixin/score/${schoolId}`
         });
       }
     },

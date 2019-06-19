@@ -8,6 +8,7 @@ import * as portal from './module/portal';
 import * as wx from './module/wx';
 import * as works from './module/works';
 import * as paper from './module/paper';
+import * as score from './module/score';
 export default {
   ...device,
   ...content,
@@ -18,5 +19,6 @@ export default {
   ...portal,
   ...wx,
   ...works,
-  ...paper
+  ...paper,
+  ...score
 }

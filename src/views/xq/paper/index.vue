@@ -3,7 +3,7 @@
     <div class="page-hd">
       <div class="page-form">
         <el-form class="demo-form-inline" :inline="true" :model="query" size="small">
-          <el-form-item label="学生姓名">
+          <el-form-item label="学校名称">
             <el-input v-model="query.schoolName" placeholder="请输入学生姓名"></el-input>
           </el-form-item>
           <el-form-item label="年级">
@@ -16,8 +16,8 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="学科">
-            <el-select v-model="query.lessonId" placeholder="学科">
+          <el-form-item label="科目">
+            <el-select v-model="query.lessonId" placeholder="科目">
               <el-option
                 v-for="item in lessonList"
                 :key="item.lessonId"
@@ -45,7 +45,7 @@
         <el-table-column label="资费" prop="fee"></el-table-column>
         <el-table-column label="视频" prop="videoUrl">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleViewVideo(scope.row)">查看</el-button>
+            <span style="color:#409EFF;cursor:pointer;" @click="handleViewVideo(scope.row)">查看</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
