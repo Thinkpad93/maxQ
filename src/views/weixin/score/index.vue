@@ -102,7 +102,16 @@
       <el-table :data="scoreData" style="width: 100%" size="small">
         <el-table-column label="序号" prop="studentId"></el-table-column>
         <el-table-column label="学生姓名" prop="studentName"></el-table-column>
-        <el-table-column label="成绩" prop="score"></el-table-column>
+        <el-table-column label="成绩" prop="score">
+          <template slot-scope="scope">
+            <el-input
+              v-model="scope.row.score"
+              placeholder="请输入学生成绩"
+              maxlength="3"
+              @blur="handleBlur(scope.row)"
+            ></el-input>
+          </template>
+        </el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -165,7 +174,11 @@ export default {
     },
     handleSearchScore() {
       let { stageId, ...args } = this.form;
+      //成绩录入
       this.addStage(args);
+    },
+    handleBlur(row) {
+      console.log(row);
     },
     //班级学生考试成绩列表
     async queryScoreStageList(params = {}) {
@@ -195,6 +208,27 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
+        this.form.stageId = res.data.stageId;
+        let { title, ...args } = this.form;
+        this.studentStageScoreList(args);
+      }
+    },
+    //录入学生成绩
+    async addStageScore(params = {}) {
+      let res = await service.addStageScore(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.$message({ message: `成绩录入成功`, type: "success" });
+      }
+    },
+    //班级学生考试成绩列表
+    async studentStageScoreList(params = {}) {
+      let res = await service.studentStageScoreList(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.scoreData = res.data;
       }
     },
     //考试单元

@@ -3,8 +3,8 @@
     <div class="page-hd">
       <div class="page-form">
         <el-form class="demo-form-inline" :inline="true" :model="query" size="small">
-          <el-form-item label="学校名称">
-            <el-input v-model="query.schoolName" placeholder="请输入学生姓名"></el-input>
+          <el-form-item label="课程名称">
+            <el-input v-model="query.lessonName" placeholder="请输入课程名称"></el-input>
           </el-form-item>
           <el-form-item label="年级">
             <el-select v-model="query.gradeId" placeholder="年级">
@@ -36,18 +36,17 @@
     <div class="page-bd">
       <!-- 表格数据 -->
       <el-table :data="tableData" style="width: 100%" size="small">
-        <el-table-column label="序号" prop="paperId"></el-table-column>
-        <el-table-column label="所属年级" prop="gradeName"></el-table-column>
-        <el-table-column label="学校名称" prop="schoolName"></el-table-column>
-        <el-table-column label="所属科目" prop="lessonTitie"></el-table-column>
-        <el-table-column label="试卷视频名称" prop="title" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="说明" prop="textContent" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="资费" prop="fee"></el-table-column>
-        <el-table-column label="视频" prop="videoUrl">
+        <el-table-column label="序号" prop="id"></el-table-column>
+        <el-table-column label="年级名称" prop="gradeName"></el-table-column>
+        <el-table-column label="科目" prop="title"></el-table-column>
+        <el-table-column label="课程名称" prop="lessonName"></el-table-column>
+        <el-table-column label="课程说明" prop="textContent"></el-table-column>
+        <el-table-column label="课程视频" prop="lessonUrl">
           <template slot-scope="scope">
             <span style="color:#409EFF;cursor:pointer;" @click="handleViewVideo(scope.row)">查看</span>
           </template>
         </el-table-column>
+        <el-table-column label="资费" prop="fee"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
@@ -71,31 +70,10 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 视频查看 -->
-    <el-dialog
-      width="500px"
-      custom-class="qx-dialog"
-      top="40px"
-      title="视频查看"
-      :visible.sync="dialogViewVideo"
-    >
-      <div class="video">
-        <video :src="videoUrl" controls loop></video>
-      </div>
-    </el-dialog>
     <!-- dialog -->
     <el-dialog top="40px" :visible.sync="dialogFormVisible">
       <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
       <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
-        <el-form-item
-          label="学校名称"
-          prop="title"
-          :rules="[
-          { required: true, message: '请输入学校名称', trigger: 'blur' }
-        ]"
-        >
-          <el-input v-model="form.schoolName" placeholder="请输入学校名称" maxlength="10"></el-input>
-        </el-form-item>
         <el-form-item
           label="年级"
           prop="gradeId"
@@ -116,10 +94,10 @@
           label="科目"
           prop="lessonId"
           :rules="[
-          { required: true, message: '请选择学科', trigger: 'blur' }
+          { required: true, message: '请选择科目', trigger: 'blur' }
         ]"
         >
-          <el-select v-model="form.lessonId" placeholder="学科">
+          <el-select v-model="form.lessonId" placeholder="科目">
             <el-option
               v-for="item in lessonList"
               :key="item.lessonId"
@@ -129,26 +107,26 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="试卷名称"
-          prop="title"
+          label="课程名称"
+          prop="lessonName"
           :rules="[
-          { required: true, message: '请输入试卷名称', trigger: 'blur' }
+          { required: true, message: '请输入课程名称', trigger: 'blur' }
         ]"
         >
-          <el-input v-model="form.title" placeholder="请输入试卷名称"></el-input>
+          <el-input v-model="form.lessonName" placeholder="请输入课程名称"></el-input>
         </el-form-item>
         <el-form-item
-          label="试卷说明"
+          label="课程说明"
           prop="textContent"
           :rules="[
-              { required: true, message: '请输入试卷说明', trigger: 'blur' }
+              { required: true, message: '请输入课程说明', trigger: 'blur' }
             ]"
         >
-          <el-input type="textarea" v-model="form.textContent" :rows="6" placeholder="请输入试卷说明"></el-input>
+          <el-input type="textarea" v-model="form.textContent" :rows="6" placeholder="请输入课程说明"></el-input>
         </el-form-item>
         <el-form-item
           label="资费"
-          prop="title"
+          prop="fee"
           :rules="[
           { required: true, message: '请输入资费', trigger: 'blur' }
         ]"
@@ -157,7 +135,7 @@
         </el-form-item>
         <el-form-item
           label="上传视频"
-          prop="videoUrl"
+          prop="lessonUrl"
           :rules="[
           { required: true, message: '请上传视频', trigger: 'blur' }
         ]"
@@ -188,30 +166,27 @@
 <script>
 import service from "@/api";
 export default {
-  name: "paper",
+  name: "lesson",
   data() {
     return {
-      dialogViewVideo: false,
-      videoUrl: "",
       dialogFormVisible: false,
       isShow: false, //判断dialog弹窗是新增还是编辑
       formLabelWidth: "100px",
       fileList: [],
       query: {
-        schoolName: "",
         gradeId: 0,
         lessonId: 0,
+        lessonName: "",
         page: 1,
         pageSize: 20
       },
       form: {
-        schoolName: "",
         gradeId: null,
         lessonId: null,
-        title: "",
+        lessonName: "",
         textContent: "",
-        fee: "",
-        videoUrl: ""
+        fee: 0,
+        lessonUrl: ""
       },
       gradeList: [],
       lessonList: [],
@@ -220,16 +195,14 @@ export default {
     };
   },
   methods: {
-    handleSearch() {
-      this.queryPaperList(this.query);
-    },
+    handleSearch() {},
     handleCurrentChange(curr) {
       this.query.page = curr;
-      this.queryPaperList(this.query);
+      this.queryVideoLessonList(this.query);
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
-      this.queryPaperList(this.query);
+      this.queryVideoLessonList(this.query);
     },
     handleAdd() {
       this.isShow = true;
@@ -237,35 +210,22 @@ export default {
       this.form = {};
     },
     handleEdit(row) {
-      //清除文件列表
-      this.fileList = [];
       this.isShow = false;
       this.dialogFormVisible = true;
-      this.form = Object.assign({}, row);
-      if (row) {
-        let v = row.videoUrl.split("/");
-        let obj = {
-          name: v[v.length - 1],
-          url: row.videoUrl
-        };
-        this.fileList.push(obj);
-      }
     },
     handleDel(row) {
-      let { paperId } = row;
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.deletePaperId(paperId);
+          this.deleteVideoLesson(row.id);
         })
         .catch(error => {
           return false;
         });
     },
-    //查看视频
     handleViewVideo(row) {
       this.videoUrl = row.videoUrl;
       this.dialogViewVideo = true;
@@ -290,13 +250,13 @@ export default {
     //文件上传成功时的钩子
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.videoUrl = response.data.url;
+        this.form.lessonUrl = response.data.url;
       }
     },
     //删除文件之前的钩子
     handleBeforeRemove(file, fileList) {
       if (file && file.status === "success") {
-        this.form.videoUrl = "";
+        this.form.lessonUrl = "";
       } else {
         return false;
       }
@@ -306,57 +266,57 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.isShow) {
-            this.addPaperVideo(this.form);
+            this.addVideoLesson(this.form);
           } else {
-            this.updatePaper(this.form);
+            this.updateVideoLesson(this.form);
           }
         }
       });
     },
-    //新增试卷视频
-    async addPaperVideo(params = {}) {
-      let res = await service.addPaperVideo(params, {
+    //添加课程视频
+    async addVideoLesson(params = {}) {
+      let res = await service.addVideoLesson(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.$refs.uploadVideo.clearFiles(); //清空已上传的文件列表
-        this.queryPaperList(this.query);
+        this.queryVideoLessonList(this.query);
       }
     },
-    //修改试卷
-    async updatePaper(params = {}) {
-      let res = await service.updatePaper(params, {
+    //修改 课程
+    async updateVideoLesson() {
+      let res = await service.updateVideoLesson(params, {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.$refs.uploadVideo.clearFiles(); //清空已上传的文件列表
-        this.queryPaperList(this.query);
+        this.queryVideoLessonList(this.query);
       }
     },
-    //视频列表查询
-    async queryPaperList(params = {}) {
-      let res = await service.queryPaperList(params, {
-        headers: { "Content-Type": "application/json" }
-      });
-      if (res.errorCode === 0) {
-        this.tableData = res.data.data;
-        this.totalCount = res.data.totalCount;
-      }
-    },
-    //删除试卷
-    async deletePaperId(paperId) {
-      let res = await service.deletePaperId(
-        { paperId },
+    //删除课程
+    async deleteVideoLesson(id) {
+      let res = await service.deleteVideoLesson(
+        { id },
         {
           headers: { "Content-Type": "application/json" }
         }
       );
       if (res.errorCode === 0) {
-        this.queryPaperList(this.query);
+        this.queryVideoLessonList(this.query);
+      }
+    },
+    //视频课程列表
+    async queryVideoLessonList(params = {}) {
+      let res = await service.queryVideoLessonList(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.tableData = res.data.data;
+        this.totalCount = res.data.totalCount;
       }
     },
     //年级查询
@@ -379,21 +339,11 @@ export default {
     }
   },
   mounted() {
-    this.queryPaperList(this.query);
+    this.queryVideoLessonList(this.query);
     this.queryGrade();
     this.queryLesson();
   }
 };
 </script>
 <style lang="less" scoped>
-.video {
-  width: 500px;
-  height: 500px;
-  video {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-}
 </style>

@@ -9,6 +9,7 @@ import * as wx from './module/wx';
 import * as works from './module/works';
 import * as paper from './module/paper';
 import * as score from './module/score';
+import * as lesson from './module/lesson';
 export default {
   ...device,
   ...content,
@@ -20,5 +21,6 @@ export default {
   ...wx,
   ...works,
   ...paper,
-  ...score
+  ...score,
+  ...lesson
 }
