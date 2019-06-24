@@ -18,7 +18,7 @@
     </el-menu>-->
     <el-menu
       class="el-menu-vertical-demo"
-      background-color="#001529"
+      background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b"
       router
@@ -98,7 +98,7 @@ export default {
 <style lang="less" scoped>
 #aside {
   transition: width 0.6s;
-  background-color: #001529;
+  background-color: #545c64;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;

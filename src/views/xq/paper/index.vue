@@ -245,7 +245,7 @@ export default {
       if (row) {
         let v = row.videoUrl.split("/");
         let obj = {
-          name: v[v.length - 1],
+          name: v[v.length - 1], //取数组最后一个元素
           url: row.videoUrl
         };
         this.fileList.push(obj);
@@ -366,6 +366,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.gradeList = res.data;
+        this.gradeList.unshift({ gradeId: 0, gradeName: "全部" });
       }
     },
     //课程查询
@@ -375,6 +376,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.lessonList = res.data;
+        this.lessonList.unshift({ lessonId: 0, title: "全部" });
       }
     }
   },

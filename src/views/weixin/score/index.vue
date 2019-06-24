@@ -18,7 +18,7 @@
               <el-option
                 v-for="item in stageList"
                 :key="item.stageId"
-                :label="item.gradeName"
+                :label="item.stageTitle"
                 :value="item.stageId"
               ></el-option>
             </el-select>
@@ -40,7 +40,7 @@
         <el-table-column label="录入日期" prop="postTime"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="primary" @click="handleEdit(scope.row)">录入学生成绩</el-button>
             <el-button size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -62,16 +62,15 @@
       </div>
     </div>
     <!-- dialog -->
-    <el-dialog width="80%" top="40px" title="成绩录入" :visible.sync="dialogFormVisible">
-      <el-form
-        class="demo-form-inline"
-        :inline="true"
-        ref="form"
-        :model="form"
-        status-icon
-        size="small"
-      >
-        <el-form-item label="班级" prop="classId">
+    <el-dialog top="40px" title="考试类型录入" :visible.sync="dialogFormVisible">
+      <el-form ref="form" :model="form" status-icon size="small" :label-width="formLabelWidth">
+        <el-form-item
+          label="班级"
+          prop="classId"
+          :rules="[
+          { required: true, message: '请选择班级', trigger: 'blur' }
+        ]"
+        >
           <el-select v-model="form.classId" placeholder="班级">
             <el-option
               v-for="item in classList"
@@ -81,7 +80,13 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="科目" prop="lessonId">
+        <el-form-item
+          label="科目"
+          prop="lessonId"
+          :rules="[
+          { required: true, message: '请选择科目', trigger: 'blur' }
+        ]"
+        >
           <el-select v-model="form.lessonId" placeholder="科目">
             <el-option
               v-for="item in lessonList"
@@ -91,14 +96,22 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="考试类型" prop="title">
-          <el-input v-model="form.title" placeholder="请输入考试类型"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" type="primary" @click="handleSearchScore">查询</el-button>
+        <el-form-item
+          label="考试类型"
+          prop="stageTitle"
+          :rules="[
+          { required: true, message: '请输入考试类型', trigger: 'blur' }
+        ]"
+        >
+          <el-input v-model="form.stageTitle" placeholder="请输入考试类型"></el-input>
         </el-form-item>
       </el-form>
-      <!-- 查询的数据表格 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" type="primary" @click="submitForm('form')">提交</el-button>
+      </span>
+    </el-dialog>
+    <!-- 查询的数据表格 -->
+    <el-dialog width="60%" top="40px" title="学生成绩录入" :visible.sync="dialogScore">
       <el-table :data="scoreData" style="width: 100%" size="small">
         <el-table-column label="序号" prop="studentId"></el-table-column>
         <el-table-column label="学生姓名" prop="studentName"></el-table-column>
@@ -107,9 +120,13 @@
             <el-input
               v-model="scope.row.score"
               placeholder="请输入学生成绩"
-              maxlength="3"
-              @blur="handleBlur(scope.row)"
-            ></el-input>
+              min="1"
+              max="100"
+              size="small"
+              type="number"
+            >
+              <el-button slot="append" type="primary" @click="handleBlur(scope.row)">更新成绩</el-button>
+            </el-input>
           </template>
         </el-table-column>
       </el-table>
@@ -122,6 +139,7 @@ export default {
   name: "score",
   data() {
     return {
+      dialogScore: false,
       dialogFormVisible: false,
       formLabelWidth: "100px",
       query: {
@@ -133,8 +151,8 @@ export default {
       form: {
         classId: null,
         lessonId: null,
-        stageId: null,
-        title: ""
+        //stageId: null,
+        stageTitle: ""
       },
       classList: [],
       lessonList: [],
@@ -157,7 +175,10 @@ export default {
     handleAdd() {
       this.dialogFormVisible = true;
     },
-    handleEdit(row) {},
+    handleEdit(row) {
+      let { classId, stageId, lessonId } = row;
+      this.studentStageScoreList({ classId, stageId, lessonId });
+    },
     handleDel(row) {
       let { stageId } = row;
       this.$confirm(`确定删除吗?`, "提示", {
@@ -172,13 +193,20 @@ export default {
           return false;
         });
     },
-    handleSearchScore() {
-      let { stageId, ...args } = this.form;
-      //成绩录入
-      this.addStage(args);
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.addStage(this.form);
+        }
+      });
     },
+    //学生成绩录入
     handleBlur(row) {
-      console.log(row);
+      let { studentId, stageId, scoreId, score } = row;
+      if (scoreId == null) {
+        scoreId = 0;
+      }
+      this.addStageScore({ studentId, stageId, scoreId, score });
     },
     //班级学生考试成绩列表
     async queryScoreStageList(params = {}) {
@@ -208,9 +236,8 @@ export default {
         headers: { "Content-Type": "application/json" }
       });
       if (res.errorCode === 0) {
-        this.form.stageId = res.data.stageId;
-        let { title, ...args } = this.form;
-        this.studentStageScoreList(args);
+        this.dialogFormVisible = false;
+        this.queryScoreStageList(this.query);
       }
     },
     //录入学生成绩
@@ -227,8 +254,11 @@ export default {
       let res = await service.studentStageScoreList(params, {
         headers: { "Content-Type": "application/json" }
       });
-      if (res.errorCode === 0) {
+      if (res.errorCode === 0 && res.data.length) {
+        this.dialogScore = true;
         this.scoreData = res.data;
+      } else {
+        this.$message({ message: `当前班级没有学生`, type: "warning" });
       }
     },
     //考试单元

@@ -85,7 +85,7 @@
           { required: true, message: '请输入行为名称', trigger: 'blur' }
         ]"
         >
-          <el-input v-model="form.title" placeholder="请输入行为名称" maxlength="10"></el-input>
+          <el-input v-model="form.title" placeholder="请输入行为名称" maxlength="4"></el-input>
         </el-form-item>
         <el-form-item
           label="行为说明"

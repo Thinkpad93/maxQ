@@ -41,7 +41,7 @@
         <el-table-column label="科目" prop="title"></el-table-column>
         <el-table-column label="课程名称" prop="lessonName"></el-table-column>
         <el-table-column label="课程说明" prop="textContent"></el-table-column>
-        <el-table-column label="课程视频" prop="lessonUrl">
+        <el-table-column label="课程视频" prop="videoUrl">
           <template slot-scope="scope">
             <span style="color:#409EFF;cursor:pointer;" @click="handleViewVideo(scope.row)">查看</span>
           </template>
@@ -70,6 +70,18 @@
         ></el-pagination>
       </div>
     </div>
+    <!-- 视频查看 -->
+    <el-dialog
+      width="500px"
+      custom-class="qx-dialog"
+      top="40px"
+      title="视频查看"
+      :visible.sync="dialogViewVideo"
+    >
+      <div class="video">
+        <video :src="videoUrl" controls loop></video>
+      </div>
+    </el-dialog>
     <!-- dialog -->
     <el-dialog top="40px" :visible.sync="dialogFormVisible">
       <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
@@ -135,7 +147,7 @@
         </el-form-item>
         <el-form-item
           label="上传视频"
-          prop="lessonUrl"
+          prop="videoUrl"
           :rules="[
           { required: true, message: '请上传视频', trigger: 'blur' }
         ]"
@@ -169,7 +181,9 @@ export default {
   name: "lesson",
   data() {
     return {
+      dialogViewVideo: false,
       dialogFormVisible: false,
+      videoUrl: "",
       isShow: false, //判断dialog弹窗是新增还是编辑
       formLabelWidth: "100px",
       fileList: [],
@@ -186,7 +200,7 @@ export default {
         lessonName: "",
         textContent: "",
         fee: 0,
-        lessonUrl: ""
+        videoUrl: ""
       },
       gradeList: [],
       lessonList: [],
@@ -195,7 +209,9 @@ export default {
     };
   },
   methods: {
-    handleSearch() {},
+    handleSearch() {
+      this.queryVideoLessonList(this.query);
+    },
     handleCurrentChange(curr) {
       this.query.page = curr;
       this.queryVideoLessonList(this.query);
@@ -210,8 +226,19 @@ export default {
       this.form = {};
     },
     handleEdit(row) {
+      //清除文件列表
+      this.fileList = [];
       this.isShow = false;
       this.dialogFormVisible = true;
+      this.form = Object.assign({}, row);
+      if (row) {
+        let v = row.videoUrl.split("/");
+        let obj = {
+          name: v[v.length - 1], //取数组最后一个元素
+          url: row.videoUrl
+        };
+        this.fileList.push(obj);
+      }
     },
     handleDel(row) {
       this.$confirm(`确定删除吗?`, "提示", {
@@ -250,13 +277,13 @@ export default {
     //文件上传成功时的钩子
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.lessonUrl = response.data.url;
+        this.form.videoUrl = response.data.url;
       }
     },
     //删除文件之前的钩子
     handleBeforeRemove(file, fileList) {
       if (file && file.status === "success") {
-        this.form.lessonUrl = "";
+        this.form.videoUrl = "";
       } else {
         return false;
       }
@@ -285,8 +312,8 @@ export default {
         this.queryVideoLessonList(this.query);
       }
     },
-    //修改 课程
-    async updateVideoLesson() {
+    //修改课程
+    async updateVideoLesson(params = {}) {
       let res = await service.updateVideoLesson(params, {
         headers: { "Content-Type": "application/json" }
       });
@@ -326,6 +353,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.gradeList = res.data;
+        this.gradeList.unshift({ gradeId: 0, gradeName: "全部" });
       }
     },
     //课程查询
@@ -335,6 +363,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.lessonList = res.data;
+        this.lessonList.unshift({ lessonId: 0, title: "全部" });
       }
     }
   },
@@ -346,4 +375,14 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.video {
+  width: 500px;
+  height: 500px;
+  video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
 </style>
