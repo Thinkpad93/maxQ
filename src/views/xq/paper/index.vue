@@ -4,7 +4,7 @@
       <div class="page-form">
         <el-form class="demo-form-inline" :inline="true" :model="query" size="small">
           <el-form-item label="学校名称">
-            <el-input v-model="query.schoolName" placeholder="请输入学生姓名"></el-input>
+            <el-input v-model="query.schoolName" placeholder="请输入学校名称"></el-input>
           </el-form-item>
           <el-form-item label="年级">
             <el-select v-model="query.gradeId" placeholder="年级">
@@ -105,7 +105,7 @@
         >
           <el-select v-model="form.gradeId" placeholder="年级">
             <el-option
-              v-for="item in gradeList"
+              v-for="item in gradeList.slice(1)"
               :key="item.gradeId"
               :label="item.gradeName"
               :value="item.gradeId"
@@ -121,7 +121,7 @@
         >
           <el-select v-model="form.lessonId" placeholder="学科">
             <el-option
-              v-for="item in lessonList"
+              v-for="item in lessonList.slice(1)"
               :key="item.lessonId"
               :label="item.title"
               :value="item.lessonId"

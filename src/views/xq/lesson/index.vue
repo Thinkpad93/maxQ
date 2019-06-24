@@ -95,7 +95,7 @@
         >
           <el-select v-model="form.gradeId" placeholder="年级">
             <el-option
-              v-for="item in gradeList"
+              v-for="item in gradeList.slice(1)"
               :key="item.gradeId"
               :label="item.gradeName"
               :value="item.gradeId"
@@ -111,7 +111,7 @@
         >
           <el-select v-model="form.lessonId" placeholder="科目">
             <el-option
-              v-for="item in lessonList"
+              v-for="item in lessonList.slice(1)"
               :key="item.lessonId"
               :label="item.title"
               :value="item.lessonId"

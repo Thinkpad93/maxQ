@@ -14,7 +14,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="考试单元">
-            <el-select v-model="query.classId" placeholder="考试单元">
+            <el-select v-model="query.stageId" placeholder="考试单元">
               <el-option
                 v-for="item in stageList"
                 :key="item.stageId"
@@ -73,7 +73,7 @@
         >
           <el-select v-model="form.classId" placeholder="班级">
             <el-option
-              v-for="item in classList"
+              v-for="item in classList.slice(1)"
               :key="item.classId"
               :label="item.className"
               :value="item.classId"
@@ -151,7 +151,6 @@ export default {
       form: {
         classId: null,
         lessonId: null,
-        //stageId: null,
         stageTitle: ""
       },
       classList: [],
@@ -168,9 +167,11 @@ export default {
     },
     handleCurrentChange(curr) {
       this.query.page = curr;
+      this.queryScoreStageList(this.query);
     },
     handleSizeChange(size) {
       this.query.pageSize = size;
+      this.queryScoreStageList(this.query);
     },
     handleAdd() {
       this.dialogFormVisible = true;
@@ -237,6 +238,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
         this.queryScoreStageList(this.query);
       }
     },
@@ -268,6 +270,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.stageList = res.data;
+        this.stageList.unshift({ stageId: 0, stageTitle: "全部" });
       }
     },
     //课程查询
@@ -290,6 +293,7 @@ export default {
       );
       if (res.errorCode === 0) {
         this.classList = res.data;
+        this.classList.unshift({ classId: 0, className: "全部" });
       }
     }
   },
