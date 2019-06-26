@@ -148,12 +148,14 @@
         </el-form-item>
         <el-form-item
           label="资费"
-          prop="title"
+          prop="fee"
           :rules="[
           { required: true, message: '请输入资费', trigger: 'blur' }
         ]"
         >
-          <el-input v-model="form.fee" placeholder="请输入资费" maxlength="10"></el-input>
+          <el-input v-model="form.fee" placeholder="请输入资费" style="width:215px">
+            <template slot="append">元</template>
+          </el-input>
         </el-form-item>
         <el-form-item
           label="上传视频"

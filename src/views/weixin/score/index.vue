@@ -73,7 +73,7 @@
         >
           <el-select v-model="form.classId" placeholder="班级">
             <el-option
-              v-for="item in classList.slice(1)"
+              v-for="item in classList"
               :key="item.classId"
               :label="item.className"
               :value="item.classId"
@@ -293,12 +293,12 @@ export default {
       );
       if (res.errorCode === 0) {
         this.classList = res.data;
-        this.classList.unshift({ classId: 0, className: "全部" });
+        this.query.classId = res.data[0].classId;
+        this.queryScoreStageList(this.query);
       }
     }
   },
   mounted() {
-    this.queryScoreStageList(this.query);
     this.queryExamStage();
     this.queryLesson();
     this.queryStudentClass();
