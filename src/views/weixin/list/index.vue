@@ -32,7 +32,7 @@
         <el-table-column label="学校ID" prop="schoolId"></el-table-column>
         <el-table-column label="学校名称" prop="schoolName"></el-table-column>
         <el-table-column label="手机号" prop="tel"></el-table-column>
-        <el-table-column label="操作" width="550">
+        <el-table-column label="操作" width="666">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -45,6 +45,7 @@
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 3)">学生管理</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 4)">学生点评</el-button>
             <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 5)">成绩管理</el-button>
+            <el-button size="mini" type="primary" @click="handleOpen(scope.row.schoolId, 6)">课表管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -212,9 +213,13 @@ export default {
         this.$router.push({
           path: `/weixin/comment/${schoolId}`
         });
-      } else {
+      } else if (index === 5) {
         this.$router.push({
           path: `/weixin/score/${schoolId}`
+        });
+      } else {
+        this.$router.push({
+          path: `/weixin/schedule/${schoolId}`
         });
       }
     },
@@ -260,6 +265,8 @@ export default {
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.querySchoolList(this.query);
+      } else {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //编辑学校（微信端）

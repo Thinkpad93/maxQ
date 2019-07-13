@@ -1,12 +1,26 @@
 <template>
   <div class="wrapper">
-    <el-container style="height:100vh;">
-      <!-- 主体 侧边栏 -->
+    <el-container class="is-vertical" style="height:100vh;">
+      <qx-header></qx-header>
+      <el-container>
+        <qx-aside></qx-aside>
+        <el-main id="main">
+          <qx-tabs></qx-tabs>
+          <transition name="fade-transform" mode="out-in">
+            <keep-alive>
+              <router-view :key="$route.fullPath" />
+            </keep-alive>
+          </transition>
+        </el-main>
+      </el-container>
+    </el-container>
+    <!-- <el-container style="height:100vh;">
+     
       <qx-aside></qx-aside>
       <el-container class="is-vertical">
-        <!-- 主体 顶栏 -->
+       
         <qx-header></qx-header>
-        <!-- 主体 内容 -->
+        
         <el-main id="main">
           <qx-tabs></qx-tabs>
           <transition name="fade-transform" mode="out-in">
@@ -16,7 +30,7 @@
           </transition>
         </el-main>
       </el-container>
-    </el-container>
+    </el-container>-->
   </div>
 </template>
 <script>
@@ -37,8 +51,8 @@ export default {
 #main {
   position: relative;
   padding: 0 !important;
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
   background-color: #f0f2f5;
 }
 </style>
