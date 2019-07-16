@@ -15,11 +15,12 @@
           </el-form-item>
           <el-form-item>
             <el-button icon="el-icon-search" type="primary" @click="handleSearch">查询</el-button>
-            <el-button icon="el-icon-plus" type="primary" @click="handleAddScheduleTemplate">新增模板</el-button>
-            <el-button icon="el-icon-plus" type="primary" @click="handleAddSchedule">新增课表</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="handleAddTemplate">新增模板</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增课表</el-button>
           </el-form-item>
         </el-form>
         <div class="update-btn" v-if="tableData.length">
+          <el-button size="small" type="danger" @click="handleDelete">删除课表</el-button>
           <el-button
             size="small"
             type="success"
@@ -39,9 +40,11 @@
             <span>{{ scope.row.endTime }}</span>
           </template>
         </el-table-column>
+
         <!-- 自定义列的遍历-->
         <el-table-column v-for="(item, index) in column" :key="index" :label="item.lable">
           <template slot-scope="scope">
+            <!-- <template v-if="scope.row.list[index] != undefined"> -->
             <el-select v-model="scope.row.list[index].lessonId" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in lessonList"
@@ -72,6 +75,10 @@
         ]"
         >
           <el-input v-model="form.scheduleName" placeholder="请输入模板名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <!-- 新增按钮 -->
+          <el-button type="primary" @click="handleAddTemplastRow">添加课堂时间</el-button>
         </el-form-item>
       </el-form>
       <el-table :data="form.tepmlate" style="width: 100%" size="small" stripe>
@@ -104,8 +111,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 新增按钮 -->
-      <el-button size="mini" type="primary" @click="handleAddTemplastRow">添加课堂时间</el-button>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" type="primary" @click="submitForm('form')">保存</el-button>
       </span>
@@ -114,7 +119,13 @@
     <!-- dialog  新增课表 -->
     <el-dialog width="80%" top="40px" title="新增课表" :visible.sync="dialogSchedule">
       <el-form ref="scheduleForm" :model="scheduleForm" :inline="true" status-icon size="small">
-        <el-form-item label="班级" prop="classId">
+        <el-form-item
+          label="班级"
+          prop="classId"
+          :rules="[
+          { required: true, message: '请选择班级', trigger: 'blur' }
+        ]"
+        >
           <el-select v-model="scheduleForm.classId" placeholder="班级">
             <el-option
               v-for="item in classList"
@@ -168,7 +179,12 @@
         </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" type="primary">保存</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="handleAddSchedule('scheduleForm')"
+          v-if="schedeleTplData.length"
+        >新增课表</el-button>
       </span>
     </el-dialog>
   </div>
@@ -238,10 +254,10 @@ export default {
     handleSearch() {
       this.queryScheduleList(this.query);
     },
-    handleAddScheduleTemplate() {
+    handleAddTemplate() {
       this.dialogFormVisible = true;
     },
-    handleAddSchedule() {
+    handleAdd() {
       this.dialogSchedule = true;
     },
     //新增课堂时间段
@@ -266,10 +282,34 @@ export default {
       this.btnLoading = true;
       this.updateSchedule({ schedule });
     },
-    //查询课表模板
-    handleSearchSchedule() {
-      let { scheduleId } = this.scheduleForm;
-      console.log(scheduleId);
+    //删除课表
+    handleDelete() {
+      let { classId } = this.query;
+      this.$confirm(`确定删除课表吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.deteleSchedule(classId);
+        })
+        .catch(error => {
+          return false;
+        });
+    },
+    //生成课表
+    handleAddSchedule() {
+      let schedeleTplData = this.schedeleTplData;
+      let classId = this.scheduleForm.classId;
+      let result = [];
+      for (let i = 0; i < schedeleTplData.length; i++) {
+        let list = schedeleTplData[i].list;
+        for (let s = 0; s < list.length; s++) {
+          result.push(list[s]);
+        }
+      }
+      //保存选择的课表
+      this.addSchedule({ classId, schedule: result });
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -294,7 +334,7 @@ export default {
       if (res.errorCode === 0 && res.data.length) {
         this.tableData = res.data;
       } else {
-        this.$message({ message: `没有课表数据哦~`, type: "warning" });
+        this.$message({ message: `没有课表数据哦`, type: "warning" });
       }
     },
     //查询学校课表模板
@@ -317,6 +357,7 @@ export default {
       });
       if (res.errorCode === 0) {
         this.lessonList = res.data;
+        this.lessonList.unshift({ lessonId: 0, title: "无课" });
       }
     },
     //班级查询
@@ -350,6 +391,18 @@ export default {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
+    //
+    async addSchedule(params = {}) {
+      let res = await service.addSchedule(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.dialogSchedule = false;
+        this.$refs.scheduleForm.resetFields();
+        //清空课表数据
+        this.schedeleTplData = [];
+      }
+    },
     //修改课表
     async updateSchedule(params = {}) {
       let res = await service.updateSchedule(params, {
@@ -361,6 +414,18 @@ export default {
         this.queryScheduleList(this.query);
       }
     },
+    //删除课表
+    async deteleSchedule(classId) {
+      let res = await service.deteleSchedule(
+        { classId },
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      if (res.errorCode === 0) {
+        this.$message({ message: `${res.data}`, type: "success" });
+      }
+    },
     //查询课表模板详情
     async queryScheduleTemplateDetail(scheduleId) {
       let res = await service.queryScheduleTemplateDetail(
@@ -369,8 +434,26 @@ export default {
           headers: { "Content-Type": "application/json" }
         }
       );
-      if (res.errorCode === 0) {
-        this.schedeleTplData = res.data;
+      if (res.errorCode === 0 && res.data.length) {
+        let len = res.data.length;
+        let result = [];
+        for (let i = 0; i < len; i++) {
+          let pitchId = res.data[i].pitchId;
+          let startTime = res.data[i].startTime;
+          let endTime = res.data[i].endTime;
+          let list = [];
+          for (let s = 1; s <= 5; s++) {
+            let obj = {
+              lessonId: 0,
+              pitchId,
+              day: s,
+              classId: this.scheduleForm.classId || 0
+            };
+            list.push(obj);
+          }
+          result.push({ startTime, endTime, list });
+        }
+        this.schedeleTplData = result;
       }
     }
   },

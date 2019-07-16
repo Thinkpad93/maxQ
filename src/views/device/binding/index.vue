@@ -317,14 +317,13 @@ export default {
       this.queryProvinceCityRegionBySchoolId(row.schoolId);
     },
     handleDel(row) {
-      let that = this;
       this.$confirm(`确定删除吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(function() {
-          that.deleteDeviceBind(row.deviceId);
+        .then(() => {
+          this.deleteDeviceBind(row.deviceId);
         })
         .catch(error => {
           return false;

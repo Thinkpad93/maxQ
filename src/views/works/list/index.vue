@@ -460,6 +460,8 @@ export default {
     },
     //图片文件上传 这里是个循环
     submitUpload(params) {
+      console.log(params);
+      console.log("++++++++++++++++++++++");
       let file = params.file;
       let fileType = file.type;
       let isImage = fileType.indexOf("image") != -1;

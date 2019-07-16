@@ -264,3 +264,9 @@ export function updateSchedule(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//删除课表
+export function deteleSchedule(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/schedule/deteleSchedule.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}
