@@ -205,12 +205,7 @@ export default {
       form: {
         schoolId: this.$route.params.id,
         scheduleName: "",
-        tepmlate: [
-          {
-            startTime: "07:00",
-            endTime: "07:45"
-          }
-        ]
+        tepmlate: []
       },
       scheduleForm: {
         classId: null,
@@ -308,6 +303,7 @@ export default {
           result.push(list[s]);
         }
       }
+      console.log(result);
       //保存选择的课表
       this.addSchedule({ classId, schedule: result });
     },
@@ -444,7 +440,7 @@ export default {
           let list = [];
           for (let s = 1; s <= 5; s++) {
             let obj = {
-              lessonId: 0,
+              lessonId: 0, //默认无课
               pitchId,
               day: s,
               classId: this.scheduleForm.classId || 0
@@ -455,12 +451,22 @@ export default {
         }
         this.schedeleTplData = result;
       }
+    },
+    //查询默认时间模板
+    async queryTeplateDefault(params = {}) {
+      let res = await service.queryTeplateDefault(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.form.tepmlate = res.data;
+      }
     }
   },
   mounted() {
     this.queryStudentClass();
     this.queryLesson();
     this.queryScheduleTemplateAll();
+    this.queryTeplateDefault();
   }
 };
 </script>

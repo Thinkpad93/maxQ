@@ -10,6 +10,12 @@ import * as works from './module/works';
 import * as paper from './module/paper';
 import * as score from './module/score';
 import * as lesson from './module/lesson';
+import * as action from './module/action';
+import * as comment from './module/comment';
+import * as prize from './module/prize';
+import * as schedule from './module/schedule';
+import * as student from './module/student';
+import * as teacher from './module/teacher';
 export default {
   ...device,
   ...content,
@@ -22,5 +28,11 @@ export default {
   ...works,
   ...paper,
   ...score,
-  ...lesson
+  ...lesson,
+  ...action,
+  ...comment,
+  ...prize,
+  ...schedule,
+  ...student,
+  ...teacher
 }
