@@ -48,3 +48,9 @@ export function fileUploadVideo(params, config) {
     .then(res => res.data)
     .catch(e => console.log(e));
 }
+//导入word文件
+export function fileUploadWord(params, config) {
+  return ax.post('/action/mod-xiaojiao/weixin/paper/fileUploadWord.do', params, config)
+    .then(res => res.data)
+    .catch(e => console.log(e));
+}

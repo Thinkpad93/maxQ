@@ -40,7 +40,7 @@
         <el-table-column label="所属年级" prop="gradeName"></el-table-column>
         <el-table-column label="学校名称" prop="schoolName"></el-table-column>
         <el-table-column label="所属科目" prop="lessonTitie"></el-table-column>
-        <el-table-column label="试卷视频名称" prop="title" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="文件名称" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="说明" prop="textContent" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="资费" prop="fee"></el-table-column>
         <el-table-column label="视频" prop="videoUrl">
@@ -94,7 +94,7 @@
           { required: true, message: '请输入学校名称', trigger: 'blur' }
         ]"
         >
-          <el-input v-model="form.schoolName" placeholder="请输入学校名称" maxlength="10"></el-input>
+          <el-input v-model="form.schoolName" placeholder="请输入学校名称"></el-input>
         </el-form-item>
         <el-form-item
           label="年级"
@@ -158,10 +158,10 @@
           </el-input>
         </el-form-item>
         <el-form-item
-          label="上传视频"
+          label="word文件"
           prop="videoUrl"
           :rules="[
-          { required: true, message: '请上传视频', trigger: 'blur' }
+          { required: true, message: '请上传word文件', trigger: 'blur' }
         ]"
         >
           <el-upload
@@ -171,8 +171,8 @@
             :file-list="fileList"
             :multiple="false"
             :with-credentials="true"
-            action="/qxiao-cms/action/mod-xiaojiao/weixin/paper/fileUploadVideo.do"
-            accept="video/mp4, video/flv, video/mov"
+            action="/qxiao-cms/action/mod-xiaojiao/weixin/paper/fileUploadWord.do"
+            accept=".doc, .docx"
             :on-success="handleVideoSuccess"
             :before-remove="handleBeforeRemove"
             :before-upload="beforeVideoUpload"
@@ -274,20 +274,20 @@ export default {
     },
     //上传文件之前的钩子
     beforeVideoUpload(file) {
-      let isMP4 = file.type === "video/mp4";
-      let isFLV = file.type === "video/flv";
-      let isMOV = file.type === "video/mov";
-      let isLt200M = file.size / 1024 / 1024 < 200;
-
-      if (!isMP4 && !isFLV && !isMOV) {
-        this.$message.error("视频必须是MP4/FLV/MOV/格式!");
+      let fileName = [];
+      fileName = file.name.split(".");
+      const extension = fileName[fileName.length - 1] === "doc";
+      const extensions = fileName[fileName.length - 1] === "docx";
+      if (!extension && !extensions) {
+        this.$message({
+          message: "文件只能是doc、docx格式!",
+          type: "warning"
+        });
+        return false;
       }
-
-      if (!isLt200M) {
-        this.$message.error("视频大小不能超过200MB!");
+      if (extension || extensions) {
+        return true;
       }
-
-      return (isMP4 || isFLV || isMOV) && isLt200M;
     },
     //文件上传成功时的钩子
     handleVideoSuccess(response, file, fileList) {
