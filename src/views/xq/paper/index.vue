@@ -43,9 +43,9 @@
         <el-table-column label="文件名称" prop="title" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="说明" prop="textContent" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="资费" prop="fee"></el-table-column>
-        <el-table-column label="视频" prop="videoUrl">
+        <el-table-column label="文档" prop="wordUrl">
           <template slot-scope="scope">
-            <span style="color:#409EFF;cursor:pointer;" @click="handleViewVideo(scope.row)">查看</span>
+            <a :href="scope.row.wordUrl" style="color:#409EFF;cursor:pointer;">下载文档</a>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -71,18 +71,6 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 视频查看 -->
-    <el-dialog
-      width="500px"
-      custom-class="qx-dialog"
-      top="40px"
-      title="视频查看"
-      :visible.sync="dialogViewVideo"
-    >
-      <div class="video">
-        <video :src="videoUrl" controls loop></video>
-      </div>
-    </el-dialog>
     <!-- dialog -->
     <el-dialog top="40px" :visible.sync="dialogFormVisible">
       <span slot="title" class="dialog-title">{{ isShow ? '新增': '编辑' }}</span>
@@ -159,7 +147,7 @@
         </el-form-item>
         <el-form-item
           label="word文件"
-          prop="videoUrl"
+          prop="wordUrl"
           :rules="[
           { required: true, message: '请上传word文件', trigger: 'blur' }
         ]"
@@ -193,7 +181,6 @@ export default {
   name: "paper",
   data() {
     return {
-      dialogViewVideo: false,
       videoUrl: "",
       dialogFormVisible: false,
       isShow: false, //判断dialog弹窗是新增还是编辑
@@ -213,7 +200,7 @@ export default {
         title: "",
         textContent: "",
         fee: "",
-        videoUrl: ""
+        wordUrl: ""
       },
       gradeList: [],
       lessonList: [],
@@ -245,10 +232,10 @@ export default {
       this.dialogFormVisible = true;
       this.form = Object.assign({}, row);
       if (row) {
-        let v = row.videoUrl.split("/");
+        let v = row.wordUrl.split("/");
         let obj = {
           name: v[v.length - 1], //取数组最后一个元素
-          url: row.videoUrl
+          url: row.wordUrl
         };
         this.fileList.push(obj);
       }
@@ -266,11 +253,6 @@ export default {
         .catch(error => {
           return false;
         });
-    },
-    //查看视频
-    handleViewVideo(row) {
-      this.videoUrl = row.videoUrl;
-      this.dialogViewVideo = true;
     },
     //上传文件之前的钩子
     beforeVideoUpload(file) {
@@ -292,13 +274,13 @@ export default {
     //文件上传成功时的钩子
     handleVideoSuccess(response, file, fileList) {
       if (response.errorCode === 0) {
-        this.form.videoUrl = response.data.url;
+        this.form.wordUrl = response.data.url;
       }
     },
     //删除文件之前的钩子
     handleBeforeRemove(file, fileList) {
       if (file && file.status === "success") {
-        this.form.videoUrl = "";
+        this.form.wordUrl = "";
       } else {
         return false;
       }
