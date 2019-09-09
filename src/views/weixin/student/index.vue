@@ -47,7 +47,7 @@
       <el-table :data="tableData" style="width: 100%" size="small">
         <el-table-column label="序号" prop="studentId"></el-table-column>
         <el-table-column label="学生姓名" prop="studentName"></el-table-column>
-        <el-table-column label="年级" prop="grade"></el-table-column>
+        <el-table-column label="年级" prop="gradeName"></el-table-column>
         <el-table-column label="班级" prop="className"></el-table-column>
         <el-table-column label="家长" prop="linkMan">
           <template slot-scope="scope">
@@ -330,6 +330,8 @@ export default {
         this.dialogFormVisible = false;
         this.$refs.form.resetFields();
         this.queryStudent(this.query);
+      } else {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //编辑学生信息（微信端）

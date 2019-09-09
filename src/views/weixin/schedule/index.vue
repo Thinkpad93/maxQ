@@ -4,7 +4,7 @@
       <div class="page-form">
         <el-form class="demo-form-inline" :inline="true" :model="query" size="small">
           <el-form-item label="班级">
-            <el-select v-model="query.classId" placeholder="班级">
+            <el-select v-model="query.classId" placeholder="请选择班级查询">
               <el-option
                 v-for="item in classList"
                 :key="item.classId"
@@ -76,14 +76,13 @@
         >
           <el-input v-model="form.scheduleName" placeholder="请输入模板名称"></el-input>
         </el-form-item>
-        <el-form-item>
-          <!-- 新增按钮 -->
+        <!-- <el-form-item>
           <el-button type="primary" @click="handleAddTemplastRow">添加课堂时间</el-button>
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
       <el-table :data="form.tepmlate" style="width: 100%" size="small" stripe>
-        <el-table-column type="index"></el-table-column>
-        <el-table-column label="课堂时间">
+        <!-- <el-table-column type="index"></el-table-column> -->
+        <el-table-column label="上课时间">
           <template slot-scope="scope">
             <el-time-select
               size="small"
@@ -96,6 +95,10 @@
               end: '18:00'
             }"
             ></el-time-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="下课时间">
+          <template slot-scope="scope">
             <el-time-select
               size="small"
               :clearable="false"
@@ -108,6 +111,17 @@
               minTime: scope.row.startTime
             }"
             ></el-time-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="handleAddTemplateRow">新增</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDeleTemplateRow(scope.$index)"
+              v-if="scope.$index != 0"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -205,7 +219,7 @@ export default {
       form: {
         schoolId: this.$route.params.id,
         scheduleName: "",
-        tepmlate: []
+        tepmlate: [{ startTime: "07:00", endTime: "07:45" }]
       },
       scheduleForm: {
         classId: null,
@@ -256,11 +270,15 @@ export default {
       this.dialogSchedule = true;
     },
     //新增课堂时间段
-    handleAddTemplastRow() {
+    handleAddTemplateRow() {
       this.form.tepmlate.push({
         startTime: "",
         endTime: ""
       });
+    },
+    //删除课堂时间段
+    handleDeleTemplateRow(index) {
+      this.form.tepmlate.splice(index, 1);
     },
     //更新课表
     handleSaveSchedule() {
@@ -303,7 +321,6 @@ export default {
           result.push(list[s]);
         }
       }
-      console.log(result);
       //保存选择的课表
       this.addSchedule({ classId, schedule: result });
     },
@@ -327,7 +344,7 @@ export default {
       let res = await service.queryScheduleList(params, {
         headers: { "Content-Type": "application/json" }
       });
-      if (res.errorCode === 0 && res.data.length) {
+      if (res.errorCode === 0) {
         this.tableData = res.data;
       } else {
         this.$message({ message: `没有课表数据哦`, type: "warning" });
@@ -367,9 +384,8 @@ export default {
       );
       if (res.errorCode === 0) {
         this.classList = res.data;
-        this.query.classId = res.data[0].classId;
+        //this.query.classId = res.data[0].classId;
         //先查班级，在调用查询列表数据的方法
-        this.queryScheduleList(this.query);
       }
     },
     //新增模板
@@ -387,7 +403,7 @@ export default {
         this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
-    //
+    //新增课表
     async addSchedule(params = {}) {
       let res = await service.addSchedule(params, {
         headers: { "Content-Type": "application/json" }
@@ -397,6 +413,11 @@ export default {
         this.$refs.scheduleForm.resetFields();
         //清空课表数据
         this.schedeleTplData = [];
+        //根据新建的课表查询
+        this.query.classId = params.classId;
+        this.queryScheduleList(this.query);
+      } else {
+        this.$message({ message: `${res.errorMsg}`, type: "warning" });
       }
     },
     //修改课表
@@ -419,6 +440,7 @@ export default {
         }
       );
       if (res.errorCode === 0) {
+        this.tableData = [];
         this.$message({ message: `${res.data}`, type: "success" });
       }
     },
@@ -451,22 +473,23 @@ export default {
         }
         this.schedeleTplData = result;
       }
-    },
-    //查询默认时间模板
-    async queryTeplateDefault(params = {}) {
-      let res = await service.queryTeplateDefault(params, {
-        headers: { "Content-Type": "application/json" }
-      });
-      if (res.errorCode === 0) {
-        this.form.tepmlate = res.data;
-      }
     }
+    //查询默认时间模板
+    // async queryTeplateDefault(params = {}) {
+    //   let res = await service.queryTeplateDefault(params, {
+    //     headers: { "Content-Type": "application/json" }
+    //   });
+    //   if (res.errorCode === 0) {
+    //     this.form.tepmlate = res.data;
+    //   }
+    // }
   },
   mounted() {
     this.queryStudentClass();
+    //this.queryScheduleList(this.query);
     this.queryLesson();
     this.queryScheduleTemplateAll();
-    this.queryTeplateDefault();
+    //this.queryTeplateDefault();
   }
 };
 </script>

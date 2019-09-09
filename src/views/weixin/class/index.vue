@@ -47,10 +47,10 @@
         >
           <el-select v-model="form.grade" placeholder="选择年级">
             <el-option
-              v-for="item in mpClassList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              v-for="item in gradeList"
+              :key="item.gradeId"
+              :label="item.gradeName"
+              :value="item.gradeId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -88,12 +88,7 @@ export default {
         className: "",
         grade: null
       },
-      mpClassList: [
-        { id: 1, name: "一年级" },
-        { id: 2, name: "二年级" },
-        { id: 3, name: "三年级" },
-        { id: 4, name: "四年级" }
-      ]
+      gradeList: []
     };
   },
   methods: {
@@ -179,10 +174,20 @@ export default {
       if (res.errorCode === 0) {
         this.queryClasses(this.query);
       }
+    },
+    //年级查询
+    async queryGrade(params = {}) {
+      let res = await service.queryGrade(params, {
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.errorCode === 0) {
+        this.gradeList = res.data;
+      }
     }
   },
   activated() {
     this.queryClasses(this.query);
+    this.queryGrade();
   }
 };
 </script>
