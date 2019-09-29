@@ -57,7 +57,7 @@ const ws = new WebSocket("ws://localhost:8080");
       - uploadContentEdit 我的上传编辑
     - device 设备管理
       - binding 设备列表页
-      - monitoring 设备监页
+      - monitoring 设备监控页
       - record 设备检修记录页
     - errorpage 错误页，用于 404 跳转显示
     - home 首页
@@ -104,4 +104,6 @@ const ws = new WebSocket("ws://localhost:8080");
 - .babelrc babel 配置文件
 - .eslint eslint 配置文件
 - .postcssrc webpack 处理 css 插件配置
-- .package npm 配置信息
+- .package.json npm 配置信息
+
+> 前端路由是由后端返回的(接口地址为: querySystemMenu)，做了角色权限管理控制，具体代码可查看 src/permission.js 文件
