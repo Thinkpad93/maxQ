@@ -106,4 +106,5 @@ const ws = new WebSocket("ws://localhost:8080");
 - .postcssrc webpack 处理 css 插件配置
 - .package.json npm 配置信息
 
+> 项目选用 elementUI 库，使用版本号可在 package.json 查看，对于遇到 elementUI 开发的问题，建议去官网多看看组件文档说明
 > 前端路由是由后端返回的(接口地址为: querySystemMenu)，做了角色权限管理控制，具体代码可查看 src/permission.js 文件
