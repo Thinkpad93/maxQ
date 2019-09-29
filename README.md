@@ -1,5 +1,9 @@
 > Q 校网业务综合管理后台
 
+### 访问地址
+
+http://120.77.233.111:8080/#/login?redirect
+
 ```javascript
 echo "# maxQ" >> README.md
 git init
